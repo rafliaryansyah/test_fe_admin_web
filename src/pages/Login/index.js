@@ -1,6 +1,9 @@
 import { useState } from "react";
 import useStyles from "./styles";
 
+// notistack
+import { useSnackbar } from "notistack";
+
 // validator
 import isEmail from "validator/lib/isEmail";
 
@@ -16,8 +19,9 @@ import Button from "@material-ui/core/Button";
 // material-ui icons
 import { Visibility, VisibilityOff } from "@material-ui/icons";
 
-function Login() {
+function Login({ history }) {
   const classes = useStyles();
+  const { enqueueSnackbar } = useSnackbar();
 
   const [form, setForm] = useState({
     email: "",
@@ -46,7 +50,7 @@ function Login() {
 
     if (!form.email) {
       newError.email = "Email tidak boleh kosong";
-    } else if (isEmail(form.email)) {
+    } else if (!isEmail(form.email)) {
       newError.email = "Format Email salah";
     }
 
@@ -67,7 +71,8 @@ function Login() {
     if (Object.values(findErrors).some((err) => err !== "")) {
       setError(findErrors);
     } else {
-      console.log("Submit : ", form);
+      history.push("/");
+      enqueueSnackbar("Selamat datang di aplikasi", { variant: "success" });
     }
   };
 
@@ -86,7 +91,7 @@ function Login() {
           <OutlinedInput
             name="email"
             id="email"
-            color="secondary"
+            color="primary"
             onChange={handleChange}
             value={form.email}
             error={error.email ? true : false}
@@ -120,14 +125,14 @@ function Login() {
                   edge="end"
                 >
                   {showPassword ? (
-                    <Visibility color="secondary" />
+                    <Visibility color="primary" />
                   ) : (
-                    <VisibilityOff color="secondary" />
+                    <VisibilityOff color="primary" />
                   )}
                 </IconButton>
               </InputAdornment>
             }
-            color="secondary"
+            color="primary"
             aria-describedby="outlined-helper-text"
           />
           <FormHelperText id="outlined-helper-text" error={error.password}>
@@ -137,7 +142,7 @@ function Login() {
         <Button
           type="submit"
           variant="contained"
-          color="secondary"
+          color="primary"
           size="large"
           fullWidth
           className={classes.button}
