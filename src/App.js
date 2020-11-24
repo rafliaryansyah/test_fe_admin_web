@@ -1,17 +1,18 @@
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-
-// Pages
-import Login from "./pages/Login";
-import Main from "./pages/Main";
-import NotFound from "./pages/NotFound";
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import { appRoutes } from 'routes';
 
 function App() {
   return (
     <Router>
       <Switch>
-        <Route exact path="/" component={Main} />
-        <Route path="/login" component={Login} />
-        <Route component={NotFound} />
+        {appRoutes.map(route => (
+          <Route
+            key={route.id}
+            path={route.path}
+            component={route.component}
+            exact={route.exact}
+          />
+        ))}
       </Switch>
     </Router>
   );
