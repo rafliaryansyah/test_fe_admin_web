@@ -4,7 +4,7 @@ import useStyles from "./styles";
 import Button from "@material-ui/core/Button";
 
 // assets
-import NotFoundIlustration from "../../assets/pixeltrue-error-1.svg";
+import { PixelTrueError } from "../../assets";
 
 function NotFound({ history }) {
   const classes = useStyles();
@@ -12,7 +12,7 @@ function NotFound({ history }) {
   return (
     <div className={classes.wrapper}>
       <img
-        src={NotFoundIlustration}
+        src={PixelTrueError}
         alt="ilustration"
         className={classes.ilustration}
       />

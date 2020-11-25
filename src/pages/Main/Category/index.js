@@ -16,8 +16,8 @@ import Button from "@material-ui/core/Button";
 import SearchIcon from "@material-ui/icons/Search";
 
 // components
-import Paginasi from "../../../components/Paginasi";
-import DetailDialog from "../../../components/DetailDialog";
+import Paginasi from "../../../components/molecules/Paginasi";
+import DetailDialog from "../../../components/molecules/DetailDialog";
 
 function Category({ history }) {
   const classes = useStyles();

@@ -1,0 +1,51 @@
+{
+
+    "compilerOptions": {
+  
+      "module": "commonjs",
+  
+      "target": "es6",
+  
+      "baseUrl": "./src",
+  
+      "sourceMap": true,
+  
+      "paths": {
+  
+        "assets": ["./assets"],
+  
+        "components/atoms": ["./components/atoms"],
+  
+        "components/molecules": ["./components/molecules"],
+  
+        "components/organisms": ["./components/organisms"],
+  
+        "components": ["./components"],
+  
+        "containers": ["./containers"],
+  
+        "configs": ["./configs"],
+  
+        "utils": ["./utils"],
+  
+        "pages": ["./pages"],
+  
+        "modules": ["./modules"],
+  
+        "services": ["./services"],
+  
+        "routes": ["./routes"]
+  
+      }
+  
+    },
+  
+    "exclude": [
+  
+      "node_modules",
+  
+      "**/node_modules/*"
+  
+    ]
+  
+  }

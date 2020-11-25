@@ -1,6 +1,10 @@
 import { useState } from "react";
 import useStyles from "./styles";
 
+// Redux connect
+import { connect } from "react-redux";
+import {} from "../../modules/Redux";
+
 // notistack
 import { useSnackbar } from "notistack";
 
@@ -19,7 +23,7 @@ import Button from "@material-ui/core/Button";
 // material-ui icons
 import { Visibility, VisibilityOff } from "@material-ui/icons";
 
-function Login({ history }) {
+function Login({ history, login }) {
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
 
@@ -49,15 +53,15 @@ function Login({ history }) {
     const newError = { ...error };
 
     if (!form.email) {
-      newError.email = "Email tidak boleh kosong";
+      newError.email = "Field kosong";
     } else if (!isEmail(form.email)) {
       newError.email = "Format Email salah";
     }
 
     if (!form.password) {
-      newError.password = "Password tidak boleh kosong";
-    } else if (form.password <= 6) {
-      newError.password = "Password minimal 6";
+      newError.password = "Field kosong";
+    } else if (form.password < 8) {
+      newError.password = "Minimal Password 8";
     }
 
     return newError;
@@ -71,15 +75,26 @@ function Login({ history }) {
     if (Object.values(findErrors).some((err) => err !== "")) {
       setError(findErrors);
     } else {
-      history.push("/");
-      enqueueSnackbar("Selamat datang di aplikasi", { variant: "success" });
+      const result = await login(form);
+
+      if (result.success) {
+        setForm({
+          email: "",
+          password: "",
+        });
+        enqueueSnackbar("Selamat datang di aplikasi Grocery Web Admin", {
+          variant: "success",
+        });
+      } else {
+        enqueueSnackbar(result.data.message, { variant: "error" });
+      }
     }
   };
 
   return (
     <div className={classes.wrapper}>
       <form onSubmit={submit} className={classes.form}>
-        <p className={classes.title}>ecommerce admin</p>
+        <p className={classes.title}>grocery web admin</p>
         <InputLabel
           htmlFor="email"
           error={error.email ? true : false}
@@ -96,7 +111,10 @@ function Login({ history }) {
             value={form.email}
             error={error.email ? true : false}
           />
-          <FormHelperText id="outlined-helper-text" error={error.email}>
+          <FormHelperText
+            id="outlined-helper-text"
+            error={error.email ? true : false}
+          >
             {error.email}
           </FormHelperText>
         </FormControl>
@@ -135,7 +153,10 @@ function Login({ history }) {
             color="primary"
             aria-describedby="outlined-helper-text"
           />
-          <FormHelperText id="outlined-helper-text" error={error.password}>
+          <FormHelperText
+            id="outlined-helper-text"
+            error={error.password ? true : false}
+          >
             {error.password}
           </FormHelperText>
         </FormControl>
@@ -154,4 +175,8 @@ function Login({ history }) {
   );
 }
 
-export default Login;
+const mapDispatchToProps = (dispatch) => ({
+  login: (form) => dispatch(),
+});
+
+export default connect(null, mapDispatchToProps)(Login);

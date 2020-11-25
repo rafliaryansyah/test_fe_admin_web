@@ -32,7 +32,7 @@ import Voucher from "./Voucher";
 import Profile from "./Profile";
 
 // components
-import ConfirmDialog from "../../components/ConfirmDialog";
+import ConfirmDialog from "../../components/molecules/ConfirmDialog";
 
 function Main() {
   const classes = useStyles();

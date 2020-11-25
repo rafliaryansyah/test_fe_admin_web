@@ -10,7 +10,7 @@ import Avatar from "@material-ui/core/Avatar";
 import SearchIcon from "@material-ui/icons/Search";
 
 // components
-import Paginasi from "../../../../components/Paginasi";
+import Paginasi from "../../../../components/molecules/Paginasi";
 
 function ListToko({ history }) {
   const classes = useStyles();

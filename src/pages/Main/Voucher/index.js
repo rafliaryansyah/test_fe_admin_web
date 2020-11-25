@@ -18,8 +18,8 @@ import MenuItem from "@material-ui/core/MenuItem";
 import SearchIcon from "@material-ui/icons/Search";
 
 // components
-import Paginasi from "../../../components/Paginasi";
-import DetailDialog from "../../../components/DetailDialog";
+import Paginasi from "../../../components/molecules/Paginasi";
+import DetailDialog from "../../../components/molecules/DetailDialog";
 
 function Voucher({ history }) {
   const classes = useStyles();
@@ -264,6 +264,7 @@ function Voucher({ history }) {
             fullWidth
           >
             <OutlinedInput
+              type="date"
               name="berlaku_hingga"
               id="berlaku_hingga"
               color="primary"

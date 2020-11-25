@@ -15,42 +15,49 @@ const useStyles = makeStyles((theme) => ({
     boxShadow: "0px 0px 1px rgba(0, 0, 0, 0.5)",
   },
 
-  wrapperTable: {
-    height: 480,
-    overflow: "auto",
-    marginBottom: 30,
-    backgroundColor: "#ffffff",
+  wrapperCard: {
+    marginBottom: 15,
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
+    gridGap: 30,
   },
 
-  table: {
-    width: "100%",
-    backgroundColor: "#FFFFFF",
-    padding: 0,
-    boxShadow: "0px 0px 1px rgba(0, 0, 0, 0.5)",
-  },
+  // wrapperTable: {
+  //   height: 480,
+  //   overflow: "auto",
+  //   marginBottom: 30,
+  //   backgroundColor: "#ffffff",
+  // },
 
-  th: {
-    border: "1px solid #C4C4C4",
-    padding: 15,
-  },
+  // table: {
+  //   width: "100%",
+  //   backgroundColor: "#FFFFFF",
+  //   padding: 0,
+  //   boxShadow: "0px 0px 1px rgba(0, 0, 0, 0.5)",
+  // },
 
-  tr: {
-    cursor: "pointer",
-    "&:hover": {
-      backgroundColor: "#f2f2f2",
-    },
-  },
+  // th: {
+  //   border: "1px solid #C4C4C4",
+  //   padding: 15,
+  // },
 
-  td: {
-    textAlign: "center",
-    padding: 10,
-    margin: "auto",
-    color: "#424242",
-  },
+  // tr: {
+  //   cursor: "pointer",
+  //   "&:hover": {
+  //     backgroundColor: "#f2f2f2",
+  //   },
+  // },
 
-  avatar: {
-    objectFit: "cover",
-  },
+  // td: {
+  //   textAlign: "center",
+  //   padding: 10,
+  //   margin: "auto",
+  //   color: "#424242",
+  // },
+
+  // avatar: {
+  //   objectFit: "cover",
+  // },
 }));
 
 export default useStyles;

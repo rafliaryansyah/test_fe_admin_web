@@ -22,11 +22,13 @@ function User() {
   const [isAktif, setIsAktif] = useState(false);
 
   const [form, setForm] = useState({
+    src_avatar: "",
     firts_name: "",
     last_name: "",
     email: "",
   });
   const [error, setError] = useState({
+    src_avatar: "",
     firts_name: "",
     last_name: "",
     email: "",
@@ -71,6 +73,7 @@ function User() {
       setError(findErrors);
     } else {
       setForm({
+        src_avatar: "",
         firts_name: "",
         last_name: "",
         email: "",
@@ -85,33 +88,50 @@ function User() {
     <div className={classes.wrapper}>
       <div className={classes.wrapperTitle}>
         <label className={classes.label}>informasi akun</label>
-        <Switch
-          checked={isAktif}
-          onChange={(e) => {
-            setError({
-              firts_name: "",
-              last_name: "",
-              email: "",
-            });
-            setIsAktif(e.target.checked);
-          }}
-          name="is_aktif"
-          color="primary"
-        />
+        <div>
+          Edit
+          <Switch
+            checked={isAktif}
+            onChange={(e) => {
+              setError({
+                src_avatar: "",
+                firts_name: "",
+                last_name: "",
+                email: "",
+              });
+              setIsAktif(e.target.checked);
+            }}
+            name="is_aktif"
+            color="primary"
+          />
+        </div>
       </div>
 
       <div className={classes.wrapperInfo}>
         <div className={classes.wrapperImageUpload}>
           <img
-            src="https://images.unsplash.com/photo-1605628458120-5e52dd239a14?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=400&q=80"
+            src={
+              form.src_avatar
+                ? form.src_avatar
+                : "https://images.unsplash.com/photo-1605628458120-5e52dd239a14?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=400&q=80"
+            }
             alt="foto"
             className={classes.img}
           />
-          <input type="file" id="upload" style={{ display: "none" }} />
-          <label htmlFor="upload" className={classes.upload}>
-            <CloudUploadIcon />
-            gambar
-          </label>
+          <input
+            type="file"
+            name="src_avatar"
+            id="upload"
+            value={form.src_avatar}
+            onChange={handleChange}
+            style={{ display: "none" }}
+          />
+          {isAktif && (
+            <label htmlFor="upload" className={classes.upload}>
+              <CloudUploadIcon />
+              gambar
+            </label>
+          )}
         </div>
         <div className={classes.wrapperInput}>
           <InputLabel

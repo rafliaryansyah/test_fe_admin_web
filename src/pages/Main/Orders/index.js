@@ -12,8 +12,8 @@ import MenuItem from "@material-ui/core/MenuItem";
 import SearchIcon from "@material-ui/icons/Search";
 
 // components
-import Paginasi from "../../../components/Paginasi";
-import DetailDialog from "../../../components/DetailDialog";
+import Paginasi from "../../../components/molecules/Paginasi";
+import DetailDialog from "../../../components/molecules/DetailDialog";
 
 function Orders({ history }) {
   const classes = useStyles();

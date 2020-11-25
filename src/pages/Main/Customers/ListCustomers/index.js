@@ -4,13 +4,13 @@ import useStyles from "./styles";
 import FormControl from "@material-ui/core/FormControl";
 import OutlinedInput from "@material-ui/core/OutlinedInput";
 import InputAdornment from "@material-ui/core/InputAdornment";
-import Avatar from "@material-ui/core/Avatar";
+// import Avatar from "@material-ui/core/Avatar";
 
 // material-ui icons
 import SearchIcon from "@material-ui/icons/Search";
 
 // components
-import Paginasi from "../../../../components/Paginasi";
+import { CardCustomers, Paginasi } from "../../../../components";
 
 function ListCustomers({ history }) {
   const classes = useStyles();
@@ -33,7 +33,12 @@ function ListCustomers({ history }) {
         </FormControl>
       </div>
 
-      <div className={classes.wrapperTable}>
+      <div className={classes.wrapperCard}>
+        <CardCustomers />
+        <CardCustomers />
+      </div>
+
+      {/* <div className={classes.wrapperTable}>
         <table cellSpacing="0" className={classes.table}>
           <thead>
             <tr>
@@ -67,7 +72,7 @@ function ListCustomers({ history }) {
             </tr>
           </tbody>
         </table>
-      </div>
+      </div> */}
 
       <Paginasi count={5} page={1} onClick={() => console.log("Click")} />
     </div>
