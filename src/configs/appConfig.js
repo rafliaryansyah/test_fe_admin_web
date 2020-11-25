@@ -2,9 +2,9 @@
  * app initial info
  */
 const appInfo = {
-  name: "Grocery Admin",
-  version: "1.0.0",
-  environment: "dev",
+  name: 'Admin Market App',
+  version: '1.0.0',
+  environment: 'dev',
 };
 
 /**
@@ -13,12 +13,18 @@ const appInfo = {
 const appEnvironment = {
   dev: {
     api: {
-      baseUrl: "",
+      baseurl: '',
+    },
+    firebase: {
+      config: {},
     },
   },
   prod: {
     api: {
-      baseUrl: "",
+      baseurl: '',
+    },
+    firebase: {
+      config: {},
     },
   },
 };

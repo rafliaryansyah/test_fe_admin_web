@@ -1,38 +1,37 @@
-import { useState } from "react";
-import useStyles from "./styles";
-import { Switch, Route } from "react-router-dom";
+import { useState } from 'react';
+import { Switch, Route } from 'react-router-dom';
+import useStyles from './styles';
 
 // material-ui core
-import SwipeableDrawer from "@material-ui/core/SwipeableDrawer";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-import ListItemText from "@material-ui/core/ListItemText";
-import IconButton from "@material-ui/core/IconButton";
-import Button from "@material-ui/core/Button";
-import Avatar from "@material-ui/core/Avatar";
+import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
+import IconButton from '@material-ui/core/IconButton';
+import Button from '@material-ui/core/Button';
+import Avatar from '@material-ui/core/Avatar';
 
 // material-ui icons
-
-import MenuIcon from "@material-ui/icons/Menu";
-import DashboardIcon from "@material-ui/icons/Dashboard";
-import GroupIcon from "@material-ui/icons/Group";
-import StoreIcon from "@material-ui/icons/Store";
-import ShoppingBasketIcon from "@material-ui/icons/ShoppingBasket";
-import BorderAllIcon from "@material-ui/icons/BorderAll";
-import StyleIcon from "@material-ui/icons/Style";
+import MenuIcon from '@material-ui/icons/Menu';
+import DashboardIcon from '@material-ui/icons/Dashboard';
+import GroupIcon from '@material-ui/icons/Group';
+import StoreIcon from '@material-ui/icons/Store';
+import ShoppingBasketIcon from '@material-ui/icons/ShoppingBasket';
+import BorderAllIcon from '@material-ui/icons/BorderAll';
+import StyleIcon from '@material-ui/icons/Style';
 
 // Pages
-import Dashboard from "./Dahsboard";
-import Customers from "./Customers";
-import Toko from "./Toko";
-import Orders from "./Orders";
-import Category from "./Category";
-import Voucher from "./Voucher";
-import Profile from "./Profile";
+import Dashboard from './Dahsboard';
+import Customers from './Customers';
+import Toko from './Toko';
+import Orders from './Orders';
+import Category from './Category';
+import Voucher from './Voucher';
+import Profile from './Profile';
 
 // components
-import ConfirmDialog from "../../components/molecules/ConfirmDialog";
+import { PrivateRoute, ConfirmDialog } from '../../components';
 
 function Main() {
   const classes = useStyles();
@@ -45,8 +44,7 @@ function Main() {
       <div className={classes.header}>
         <IconButton
           onClick={() => setDrawerNav(!drawerNav)}
-          className={classes.toggle}
-        >
+          className={classes.toggle}>
           <MenuIcon />
         </IconButton>
         <label className={classes.title}>
@@ -64,9 +62,8 @@ function Main() {
           children={({ history }) => {
             return (
               <IconButton
-                onClick={() => history.push("/profile")}
-                className={classes.avatar}
-              >
+                onClick={() => history.push('/profile')}
+                className={classes.avatar}>
                 <Avatar alt="Remy Sharp" src="" />
               </IconButton>
             );
@@ -79,8 +76,7 @@ function Main() {
         open={drawerNav}
         onClose={() => setDrawerNav(false)}
         onOpen={() => setDrawerNav(!drawerNav)}
-        className={classes.menu}
-      >
+        className={classes.menu}>
         <div className={classes.wrapperList}>
           <List component="nav">
             <Route
@@ -93,9 +89,8 @@ function Main() {
                     selected={match ? true : false}
                     onClick={() => {
                       setDrawerNav(false);
-                      history.push("/");
-                    }}
-                  >
+                      history.push('/');
+                    }}>
                     <ListItemIcon>
                       <DashboardIcon
                         className={match ? classes.labelAktif : null}
@@ -118,9 +113,8 @@ function Main() {
                     selected={match ? true : false}
                     onClick={() => {
                       setDrawerNav(false);
-                      history.push("/customers");
-                    }}
-                  >
+                      history.push('/customers');
+                    }}>
                     <ListItemIcon>
                       <GroupIcon
                         className={match ? classes.labelAktif : null}
@@ -143,9 +137,8 @@ function Main() {
                     selected={match ? true : false}
                     onClick={() => {
                       setDrawerNav(false);
-                      history.push("/toko");
-                    }}
-                  >
+                      history.push('/toko');
+                    }}>
                     <ListItemIcon>
                       <StoreIcon
                         className={match ? classes.labelAktif : null}
@@ -168,9 +161,8 @@ function Main() {
                     selected={match ? true : false}
                     onClick={() => {
                       setDrawerNav(false);
-                      history.push("/orders");
-                    }}
-                  >
+                      history.push('/orders');
+                    }}>
                     <ListItemIcon>
                       <ShoppingBasketIcon
                         className={match ? classes.labelAktif : null}
@@ -193,9 +185,8 @@ function Main() {
                     selected={match ? true : false}
                     onClick={() => {
                       setDrawerNav(false);
-                      history.push("/category");
-                    }}
-                  >
+                      history.push('/category');
+                    }}>
                     <ListItemIcon>
                       <BorderAllIcon
                         className={match ? classes.labelAktif : null}
@@ -218,9 +209,8 @@ function Main() {
                     selected={match ? true : false}
                     onClick={() => {
                       setDrawerNav(false);
-                      history.push("/voucher");
-                    }}
-                  >
+                      history.push('/voucher');
+                    }}>
                     <ListItemIcon>
                       <StyleIcon
                         className={match ? classes.labelAktif : null}
@@ -245,8 +235,7 @@ function Main() {
             onClick={() => {
               setDrawerNav(false);
               setOpen(true);
-            }}
-          >
+            }}>
             keluar
           </Button>
         </div>
@@ -254,13 +243,13 @@ function Main() {
 
       <div className={classes.main}>
         <Switch>
-          <Route exact path="/" component={Dashboard} />
-          <Route path="/customers" component={Customers} />
-          <Route path="/toko" component={Toko} />
-          <Route path="/orders" component={Orders} />
-          <Route path="/category" component={Category} />
-          <Route path="/voucher" component={Voucher} />
-          <Route path="/profile" component={Profile} />
+          <PrivateRoute exact path="/" component={Dashboard} />
+          <PrivateRoute path="/customers" component={Customers} />
+          <PrivateRoute path="/toko" component={Toko} />
+          <PrivateRoute path="/orders" component={Orders} />
+          <PrivateRoute path="/category" component={Category} />
+          <PrivateRoute path="/voucher" component={Voucher} />
+          <PrivateRoute path="/profile" component={Profile} />
         </Switch>
         <div className={classes.footer}>
           <span className={classes.copyRight}>
@@ -272,9 +261,8 @@ function Main() {
       <ConfirmDialog
         open={open}
         close={() => setOpen(false)}
-        submit={() => console.log("keluar")}
-        title="Keluar dari Grocery"
-      >
+        submit={() => console.log('keluar')}
+        title="Keluar dari Grocery">
         Apakah anda yakin ingin keluar dari Grocery?
       </ConfirmDialog>
     </div>

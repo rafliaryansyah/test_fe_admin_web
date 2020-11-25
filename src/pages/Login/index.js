@@ -1,39 +1,39 @@
-import { useState } from "react";
-import useStyles from "./styles";
+import { useState } from 'react';
+import useStyles from './styles';
 
 // Redux connect
-import { connect } from "react-redux";
-import {} from "../../modules/Redux";
+import { connect } from 'react-redux';
+import {} from '../../modules/Redux';
 
 // notistack
-import { useSnackbar } from "notistack";
+import { useSnackbar } from 'notistack';
 
 // validator
-import isEmail from "validator/lib/isEmail";
+import isEmail from 'validator/lib/isEmail';
 
 // material-ui core
-import FormControl from "@material-ui/core/FormControl";
-import InputLabel from "@material-ui/core/InputLabel";
-import OutlinedInput from "@material-ui/core/OutlinedInput";
-import FormHelperText from "@material-ui/core/FormHelperText";
-import InputAdornment from "@material-ui/core/InputAdornment";
-import IconButton from "@material-ui/core/IconButton";
-import Button from "@material-ui/core/Button";
+import FormControl from '@material-ui/core/FormControl';
+import InputLabel from '@material-ui/core/InputLabel';
+import OutlinedInput from '@material-ui/core/OutlinedInput';
+import FormHelperText from '@material-ui/core/FormHelperText';
+import InputAdornment from '@material-ui/core/InputAdornment';
+import IconButton from '@material-ui/core/IconButton';
+import Button from '@material-ui/core/Button';
 
 // material-ui icons
-import { Visibility, VisibilityOff } from "@material-ui/icons";
+import { Visibility, VisibilityOff } from '@material-ui/icons';
 
 function Login({ history, login }) {
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
 
   const [form, setForm] = useState({
-    email: "",
-    password: "",
+    email: '',
+    password: '',
   });
   const [error, setError] = useState({
-    email: "",
-    password: "",
+    email: '',
+    password: '',
   });
   const [showPassword, setShowPassword] = useState(false);
 
@@ -45,7 +45,7 @@ function Login({ history, login }) {
 
     setError({
       ...error,
-      [e.target.name]: "",
+      [e.target.name]: '',
     });
   };
 
@@ -53,15 +53,15 @@ function Login({ history, login }) {
     const newError = { ...error };
 
     if (!form.email) {
-      newError.email = "Field kosong";
+      newError.email = 'Field masih kosong';
     } else if (!isEmail(form.email)) {
-      newError.email = "Format Email salah";
+      newError.email = 'Format Email salah';
     }
 
     if (!form.password) {
-      newError.password = "Field kosong";
-    } else if (form.password < 8) {
-      newError.password = "Minimal Password 8";
+      newError.password = 'Field masih kosong';
+    } else if (form.password.length < 6) {
+      newError.password = 'Password minimal 6';
     }
 
     return newError;
@@ -72,22 +72,10 @@ function Login({ history, login }) {
 
     const findErrors = validate();
 
-    if (Object.values(findErrors).some((err) => err !== "")) {
+    if (Object.values(findErrors).some((err) => err !== '')) {
       setError(findErrors);
     } else {
-      const result = await login(form);
-
-      if (result.success) {
-        setForm({
-          email: "",
-          password: "",
-        });
-        enqueueSnackbar("Selamat datang di aplikasi Grocery Web Admin", {
-          variant: "success",
-        });
-      } else {
-        enqueueSnackbar(result.data.message, { variant: "error" });
-      }
+      console.log('Submit : ', form);
     }
   };
 
@@ -98,8 +86,7 @@ function Login({ history, login }) {
         <InputLabel
           htmlFor="email"
           error={error.email ? true : false}
-          className={classes.label}
-        >
+          className={classes.label}>
           Email
         </InputLabel>
         <FormControl variant="outlined" size="small" margin="normal" fullWidth>
@@ -113,8 +100,7 @@ function Login({ history, login }) {
           />
           <FormHelperText
             id="outlined-helper-text"
-            error={error.email ? true : false}
-          >
+            error={error.email ? true : false}>
             {error.email}
           </FormHelperText>
         </FormControl>
@@ -122,13 +108,12 @@ function Login({ history, login }) {
         <InputLabel
           htmlFor="password"
           error={error.password ? true : false}
-          className={classes.label}
-        >
+          className={classes.label}>
           Password
         </InputLabel>
         <FormControl variant="outlined" size="small" margin="normal" fullWidth>
           <OutlinedInput
-            type={showPassword ? "text" : "password"}
+            type={showPassword ? 'text' : 'password'}
             name="password"
             id="password"
             onChange={handleChange}
@@ -140,8 +125,7 @@ function Login({ history, login }) {
                   aria-label="toggle password visibility"
                   onClick={() => setShowPassword(!showPassword)}
                   onMouseDown={(e) => e.preventDefault()}
-                  edge="end"
-                >
+                  edge="end">
                   {showPassword ? (
                     <Visibility color="primary" />
                   ) : (
@@ -155,8 +139,7 @@ function Login({ history, login }) {
           />
           <FormHelperText
             id="outlined-helper-text"
-            error={error.password ? true : false}
-          >
+            error={error.password ? true : false}>
             {error.password}
           </FormHelperText>
         </FormControl>
@@ -166,8 +149,7 @@ function Login({ history, login }) {
           color="primary"
           size="large"
           fullWidth
-          className={classes.button}
-        >
+          className={classes.button}>
           login
         </Button>
       </form>

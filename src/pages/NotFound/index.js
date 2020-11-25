@@ -1,4 +1,4 @@
-import useStyles from "./styles";
+import useStyles from './styles';
 
 // material-ui core
 import Button from "@material-ui/core/Button";
