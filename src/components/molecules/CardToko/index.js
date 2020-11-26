@@ -1,21 +1,17 @@
 import useStyles from './styles';
 import propTypes from 'prop-types';
 
-const CardCustomers = ({
-  srcImage,
-  nama,
-  status,
-  jenisKelamin,
-  email,
-  noTelp,
-  handleDetail
-}) => {
+function CardToko({ nama, status, alamat, bukaSejak, handleDetail }) {
   const classes = useStyles();
 
   return (
     <div className={classes.card} onClick={handleDetail}>
       <div className={classes.info}>
-        <img src={srcImage} alt="foto" className={classes.img} />
+        <img
+          src="https://images.unsplash.com/photo-1549913772-820279f909b7?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=747&q=80"
+          alt="foto"
+          className={classes.img}
+        />
         <div className={classes.text}>
           <div className={classes.labelText}>
             <div className={classes.label}>
@@ -29,48 +25,34 @@ const CardCustomers = ({
               <span className={classes.isi}>status </span>
               <span className={classes.isi}>:</span>
             </div>
-            <span className={classes.isi}>{status}</span>
+            <span className={classes.aktif}>{status}</span>
           </div>
           <div className={classes.labelText}>
             <div className={classes.label}>
-              <span className={classes.isi}>jenis kelamin </span>
+              <span className={classes.isi}>alamat </span>
               <span className={classes.isi}>:</span>
             </div>
-            <span className={classes.isi}>{jenisKelamin}</span>
+            <span className={classes.isi}>{alamat}</span>
           </div>
           <div className={classes.labelText}>
             <div className={classes.label}>
-              <span className={classes.isi}>email </span>
+              <span className={classes.isi}>buka sejak </span>
               <span className={classes.isi}>:</span>
             </div>
-            <span className={classes.email}>{email}</span>
-          </div>
-          <div className={classes.labelText}>
-            <div className={classes.label}>
-              <span className={classes.isi}>no telp </span>
-              <span className={classes.isi}>:</span>
-            </div>
-            <span className={classes.isi}>{noTelp}</span>
+            <span className={classes.isi}>{bukaSejak}</span>
           </div>
         </div>
       </div>
-      <div className={classes.garis}></div>
-      <div className={classes.role}>
-        <p className={classes.isiRole}>customer</p>
-        <p className={classes.isiRoleNonAktif}>SA.Merchant</p>
-      </div>
     </div>
   );
-};
+}
 
-CardCustomers.propTypes = {
-  srcImage: propTypes.string.isRequired,
+CardToko.propTypes = {
   nama: propTypes.string.isRequired,
   status: propTypes.string.isRequired,
-  jenisKelamin: propTypes.string.isRequired,
-  email: propTypes.string.isRequired,
-  noTelp: propTypes.string.isRequired,
+  alamat: propTypes.string.isRequired,
+  bukaSejak: propTypes.string.isRequired,
   handleDetail: propTypes.func.isRequired
 };
 
-export default CardCustomers;
+export default CardToko;

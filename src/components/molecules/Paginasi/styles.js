@@ -1,11 +1,11 @@
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from '@material-ui/core/styles';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   wrapper: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-  },
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center'
+  }
 }));
 
 export default useStyles;

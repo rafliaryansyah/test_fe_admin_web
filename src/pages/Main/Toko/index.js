@@ -1,14 +1,17 @@
-import { Switch, Route } from "react-router-dom";
+import { Switch } from 'react-router-dom';
+
+// components
+import { PrivateRoute } from '../../../components';
 
 // pages
-import ListToko from "./ListToko";
-import Detail from "./Detail";
+import ListToko from './ListToko';
+import Detail from './Detail';
 
 function Toko() {
   return (
     <Switch>
-      <Route path="/toko/detail" component={Detail} />
-      <Route component={ListToko} />
+      <PrivateRoute path="/toko/detail" component={Detail} />
+      <PrivateRoute component={ListToko} />
     </Switch>
   );
 }

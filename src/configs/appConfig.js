@@ -4,7 +4,7 @@
 const appInfo = {
   name: 'Admin Market App',
   version: '1.0.0',
-  environment: 'dev',
+  environment: 'dev'
 };
 
 /**
@@ -13,20 +13,20 @@ const appInfo = {
 const appEnvironment = {
   dev: {
     api: {
-      baseurl: '',
+      baseurl: ''
     },
     firebase: {
-      config: {},
-    },
+      config: {}
+    }
   },
   prod: {
     api: {
-      baseurl: '',
+      baseurl: ''
     },
     firebase: {
-      config: {},
-    },
-  },
+      config: {}
+    }
+  }
 };
 
 /**

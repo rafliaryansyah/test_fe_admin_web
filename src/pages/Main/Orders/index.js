@@ -1,19 +1,19 @@
-import { useState } from "react";
-import useStyles from "./styles";
+import { useState } from 'react';
+import useStyles from './styles';
 
 // material-ui core
-import FormControl from "@material-ui/core/FormControl";
-import OutlinedInput from "@material-ui/core/OutlinedInput";
-import InputAdornment from "@material-ui/core/InputAdornment";
-import Select from "@material-ui/core/Select";
-import MenuItem from "@material-ui/core/MenuItem";
+import FormControl from '@material-ui/core/FormControl';
+import OutlinedInput from '@material-ui/core/OutlinedInput';
+import InputAdornment from '@material-ui/core/InputAdornment';
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
 
 // material-ui icons
-import SearchIcon from "@material-ui/icons/Search";
+import SearchIcon from '@material-ui/icons/Search';
 
 // components
-import Paginasi from "../../../components/molecules/Paginasi";
-import DetailDialog from "../../../components/molecules/DetailDialog";
+import Paginasi from '../../../components/molecules/Paginasi';
+import DetailDialog from '../../../components/molecules/DetailDialog';
 
 function Orders({ history }) {
   const classes = useStyles();
@@ -29,14 +29,8 @@ function Orders({ history }) {
             variant="outlined"
             size="small"
             margin="normal"
-            className={classes.select}
-          >
-            <Select
-              name="filter"
-              id="filter"
-              // value={filter}
-              // onChange={}
-            >
+            className={classes.select}>
+            <Select name="filter" id="filter" value="filter">
               <MenuItem value="">Toko</MenuItem>
             </Select>
           </FormControl>
@@ -77,7 +71,7 @@ function Orders({ history }) {
           </tbody>
         </table>
       </div>
-      <Paginasi count={5} page={1} onClick={() => console.log("click")} />
+      <Paginasi count={5} page={1} onClick={() => console.log('click')} />
       <DetailDialog open={open} close={() => setOpen(false)}></DetailDialog>
     </div>
   );

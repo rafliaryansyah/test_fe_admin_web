@@ -1,19 +1,19 @@
-import { useState } from "react";
-import useStyles from "./styles";
+import { useState } from 'react';
+import useStyles from './styles';
 
 // notistack
-import { useSnackbar } from "notistack";
+import { useSnackbar } from 'notistack';
 
 // material-ui core
-import InputLabel from "@material-ui/core/InputLabel";
-import FormHelperText from "@material-ui/core/FormHelperText";
-import FormControl from "@material-ui/core/FormControl";
-import OutlinedInput from "@material-ui/core/OutlinedInput";
-import Switch from "@material-ui/core/Switch";
-import Button from "@material-ui/core/Button";
+import InputLabel from '@material-ui/core/InputLabel';
+import FormHelperText from '@material-ui/core/FormHelperText';
+import FormControl from '@material-ui/core/FormControl';
+import OutlinedInput from '@material-ui/core/OutlinedInput';
+import Switch from '@material-ui/core/Switch';
+import Button from '@material-ui/core/Button';
 
 // material-ui icons
-import CloudUploadIcon from "@material-ui/icons/CloudUpload";
+import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 
 function User() {
   const classes = useStyles();
@@ -22,27 +22,27 @@ function User() {
   const [isAktif, setIsAktif] = useState(false);
 
   const [form, setForm] = useState({
-    src_avatar: "",
-    firts_name: "",
-    last_name: "",
-    email: "",
+    src_avatar: '',
+    firts_name: '',
+    last_name: '',
+    email: ''
   });
   const [error, setError] = useState({
-    src_avatar: "",
-    firts_name: "",
-    last_name: "",
-    email: "",
+    src_avatar: '',
+    firts_name: '',
+    last_name: '',
+    email: ''
   });
 
-  const handleChange = (e) => {
+  const handleChange = e => {
     setForm({
       ...form,
-      [e.target.name]: e.target.value,
+      [e.target.name]: e.target.value
     });
 
     setError({
       ...error,
-      [e.target.name]: "",
+      [e.target.name]: ''
     });
   };
 
@@ -50,36 +50,36 @@ function User() {
     const newError = { ...error };
 
     if (!form.firts_name) {
-      newError.firts_name = "Field masih kosong";
+      newError.firts_name = 'Field masih kosong';
     }
 
     if (!form.last_name) {
-      newError.last_name = "Field masih kosong";
+      newError.last_name = 'Field masih kosong';
     }
 
     if (!form.email) {
-      newError.email = "Field masih kosong";
+      newError.email = 'Field masih kosong';
     }
 
     return newError;
   };
 
-  const submit = async (e) => {
+  const submit = async e => {
     e.preventDefault();
 
     const findErrors = validate();
 
-    if (Object.values(findErrors).some((err) => err !== "")) {
+    if (Object.values(findErrors).some(err => err !== '')) {
       setError(findErrors);
     } else {
       setForm({
-        src_avatar: "",
-        firts_name: "",
-        last_name: "",
-        email: "",
+        src_avatar: '',
+        firts_name: '',
+        last_name: '',
+        email: ''
       });
-      enqueueSnackbar("Berhasil memperbarui profile anda", {
-        variant: "success",
+      enqueueSnackbar('Berhasil memperbarui profile anda', {
+        variant: 'success'
       });
     }
   };
@@ -92,12 +92,12 @@ function User() {
           Edit
           <Switch
             checked={isAktif}
-            onChange={(e) => {
+            onChange={e => {
               setError({
-                src_avatar: "",
-                firts_name: "",
-                last_name: "",
-                email: "",
+                src_avatar: '',
+                firts_name: '',
+                last_name: '',
+                email: ''
               });
               setIsAktif(e.target.checked);
             }}
@@ -113,7 +113,7 @@ function User() {
             src={
               form.src_avatar
                 ? form.src_avatar
-                : "https://images.unsplash.com/photo-1605628458120-5e52dd239a14?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=400&q=80"
+                : 'https://images.unsplash.com/photo-1605628458120-5e52dd239a14?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=400&q=80'
             }
             alt="foto"
             className={classes.img}
@@ -124,7 +124,7 @@ function User() {
             id="upload"
             value={form.src_avatar}
             onChange={handleChange}
-            style={{ display: "none" }}
+            style={{ display: 'none' }}
           />
           {isAktif && (
             <label htmlFor="upload" className={classes.upload}>
@@ -136,16 +136,14 @@ function User() {
         <div className={classes.wrapperInput}>
           <InputLabel
             htmlFor="firts_name"
-            error={error.firts_name ? true : false}
-          >
+            error={error.firts_name ? true : false}>
             Firts Name
           </InputLabel>
           <FormControl
             variant="outlined"
             size="small"
             margin="normal"
-            fullWidth
-          >
+            fullWidth>
             <OutlinedInput
               name="firts_name"
               id="firts_name"
@@ -162,16 +160,14 @@ function User() {
 
           <InputLabel
             htmlFor="last_name"
-            error={error.last_name ? true : false}
-          >
+            error={error.last_name ? true : false}>
             Last Name
           </InputLabel>
           <FormControl
             variant="outlined"
             size="small"
             margin="normal"
-            fullWidth
-          >
+            fullWidth>
             <OutlinedInput
               name="last_name"
               id="last_name"
@@ -193,8 +189,7 @@ function User() {
             variant="outlined"
             size="small"
             margin="normal"
-            fullWidth
-          >
+            fullWidth>
             <OutlinedInput
               name="email"
               id="email"
@@ -213,8 +208,7 @@ function User() {
             color="primary"
             fullWidth
             onClick={submit}
-            disabled={isAktif ? false : true}
-          >
+            disabled={isAktif ? false : true}>
             simpan
           </Button>
         </div>

@@ -1,63 +1,46 @@
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from '@material-ui/core/styles';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   wrapper: {
-    // border: "1px solid",
+    // border: "1px solid"
   },
 
   pencarian: {
-    backgroundColor: "#ffffff",
+    backgroundColor: '#ffffff',
     padding: 15,
-    display: "flex",
-    justifyContent: "flex-end",
-    alignItems: "center",
+    display: 'flex',
+    justifyContent: 'flex-end',
+    gridGap: 15,
     marginBottom: 30,
-    boxShadow: "0px 0px 1px rgba(0, 0, 0, 0.5)",
+    boxShadow: '0px 0px 1px rgba(0, 0, 0, 0.5)',
+
+    [theme.breakpoints.down('sm')]: {
+      flexDirection: 'column'
+    }
+  },
+
+  formControl: {
+    width: 200,
+
+    [theme.breakpoints.down('sm')]: {
+      width: '100%'
+    }
   },
 
   wrapperCard: {
     marginBottom: 15,
-    display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(599px, 1fr))',
+    justifyContent: 'space-between',
     gridGap: 30,
-  },
+    padding: 30,
+    backgroundColor: '#ffffff',
+    boxShadow: '0px 0px 1px rgba(0, 0, 0, 0.5)',
 
-  // wrapperTable: {
-  //   height: 480,
-  //   overflow: "auto",
-  //   marginBottom: 30,
-  //   backgroundColor: "#ffffff",
-  // },
-
-  // table: {
-  //   width: "100%",
-  //   backgroundColor: "#FFFFFF",
-  //   padding: 0,
-  //   boxShadow: "0px 0px 1px rgba(0, 0, 0, 0.5)",
-  // },
-
-  // th: {
-  //   border: "1px solid #C4C4C4",
-  //   padding: 15,
-  // },
-
-  // tr: {
-  //   cursor: "pointer",
-  //   "&:hover": {
-  //     backgroundColor: "#f2f2f2",
-  //   },
-  // },
-
-  // td: {
-  //   textAlign: "center",
-  //   padding: 10,
-  //   margin: "auto",
-  //   color: "#424242",
-  // },
-
-  // avatar: {
-  //   objectFit: "cover",
-  // },
+    [theme.breakpoints.down('sm')]: {
+      gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))'
+    }
+  }
 }));
 
 export default useStyles;

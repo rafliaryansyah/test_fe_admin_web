@@ -3,7 +3,7 @@ import useStyles from './styles';
 
 // Redux connect
 import { connect } from 'react-redux';
-import {} from '../../modules/Redux';
+import { } from '../../modules/Redux';
 
 // notistack
 import { useSnackbar } from 'notistack';
@@ -29,23 +29,23 @@ function Login({ history, login }) {
 
   const [form, setForm] = useState({
     email: '',
-    password: '',
+    password: ''
   });
   const [error, setError] = useState({
     email: '',
-    password: '',
+    password: ''
   });
   const [showPassword, setShowPassword] = useState(false);
 
-  const handleChange = (e) => {
+  const handleChange = e => {
     setForm({
       ...form,
-      [e.target.name]: e.target.value,
+      [e.target.name]: e.target.value
     });
 
     setError({
       ...error,
-      [e.target.name]: '',
+      [e.target.name]: ''
     });
   };
 
@@ -67,12 +67,12 @@ function Login({ history, login }) {
     return newError;
   };
 
-  const submit = async (e) => {
+  const submit = async e => {
     e.preventDefault();
 
     const findErrors = validate();
 
-    if (Object.values(findErrors).some((err) => err !== '')) {
+    if (Object.values(findErrors).some(err => err !== '')) {
       setError(findErrors);
     } else {
       console.log('Submit : ', form);
@@ -124,13 +124,13 @@ function Login({ history, login }) {
                 <IconButton
                   aria-label="toggle password visibility"
                   onClick={() => setShowPassword(!showPassword)}
-                  onMouseDown={(e) => e.preventDefault()}
+                  onMouseDown={e => e.preventDefault()}
                   edge="end">
                   {showPassword ? (
                     <Visibility color="primary" />
                   ) : (
-                    <VisibilityOff color="primary" />
-                  )}
+                      <VisibilityOff color="primary" />
+                    )}
                 </IconButton>
               </InputAdornment>
             }
@@ -157,8 +157,8 @@ function Login({ history, login }) {
   );
 }
 
-const mapDispatchToProps = (dispatch) => ({
-  login: (form) => dispatch(),
+const mapDispatchToProps = dispatch => ({
+  login: form => dispatch()
 });
 
 export default connect(null, mapDispatchToProps)(Login);

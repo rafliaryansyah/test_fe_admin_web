@@ -1,23 +1,23 @@
-import { useState } from "react";
-import useStyles from "./styles";
+import { useState } from 'react';
+import useStyles from './styles';
 
 // notistack
-import { useSnackbar } from "notistack";
+import { useSnackbar } from 'notistack';
 
 // material-ui core
-import InputLabel from "@material-ui/core/InputLabel";
-import FormHelperText from "@material-ui/core/FormHelperText";
-import FormControl from "@material-ui/core/FormControl";
-import OutlinedInput from "@material-ui/core/OutlinedInput";
-import InputAdornment from "@material-ui/core/InputAdornment";
-import Button from "@material-ui/core/Button";
+import InputLabel from '@material-ui/core/InputLabel';
+import FormHelperText from '@material-ui/core/FormHelperText';
+import FormControl from '@material-ui/core/FormControl';
+import OutlinedInput from '@material-ui/core/OutlinedInput';
+import InputAdornment from '@material-ui/core/InputAdornment';
+import Button from '@material-ui/core/Button';
 
 // material-ui icons
-import SearchIcon from "@material-ui/icons/Search";
+import SearchIcon from '@material-ui/icons/Search';
 
 // components
-import Paginasi from "../../../components/molecules/Paginasi";
-import DetailDialog from "../../../components/molecules/DetailDialog";
+import Paginasi from '../../../components/molecules/Paginasi';
+import DetailDialog from '../../../components/molecules/DetailDialog';
 
 function Category({ history }) {
   const classes = useStyles();
@@ -26,23 +26,23 @@ function Category({ history }) {
   const [open, setOpen] = useState(false);
 
   const [form, setForm] = useState({
-    tipe: "",
-    nama: "",
+    tipe: '',
+    nama: ''
   });
   const [error, setError] = useState({
-    tipe: "",
-    nama: "",
+    tipe: '',
+    nama: ''
   });
 
-  const handleChange = (e) => {
+  const handleChange = e => {
     setForm({
       ...form,
-      [e.target.name]: e.target.value,
+      [e.target.name]: e.target.value
     });
 
     setError({
       ...error,
-      [e.target.name]: "",
+      [e.target.name]: ''
     });
   };
 
@@ -50,31 +50,31 @@ function Category({ history }) {
     const newError = { ...error };
 
     if (!form.tipe) {
-      newError.tipe = "Field masih kosong";
+      newError.tipe = 'Field masih kosong';
     }
 
     if (!form.nama) {
-      newError.nama = "Field masih kosong";
+      newError.nama = 'Field masih kosong';
     }
 
     return newError;
   };
 
-  const submit = async (e) => {
+  const submit = async e => {
     e.preventDefault();
 
     const findErrors = validate();
 
-    if (Object.values(findErrors).some((err) => err !== "")) {
+    if (Object.values(findErrors).some(err => err !== '')) {
       setError(findErrors);
     } else {
       setForm({
-        tipe: "",
-        nama: "",
+        tipe: '',
+        nama: ''
       });
       setOpen(false);
-      enqueueSnackbar("Berhasil menambahkan kategori baru", {
-        variant: "success",
+      enqueueSnackbar('Berhasil menambahkan kategori baru', {
+        variant: 'success'
       });
     }
   };
@@ -86,8 +86,7 @@ function Category({ history }) {
           variant="contained"
           color="primary"
           size="small"
-          onClick={() => setOpen(true)}
-        >
+          onClick={() => setOpen(true)}>
           tambah kategori
         </Button>
         <FormControl variant="outlined" size="small">
@@ -124,18 +123,17 @@ function Category({ history }) {
         </table>
       </div>
 
-      <Paginasi count={5} page={1} onClick={() => console.log("click")} />
+      <Paginasi count={5} page={1} onClick={() => console.log('click')} />
 
       <DetailDialog
         open={open}
         close={() => {
           setOpen(false);
           setForm({
-            tipe: "",
-            nama: "",
+            tipe: '',
+            nama: ''
           });
-        }}
-      >
+        }}>
         <InputLabel htmlFor="tipe" error={error.tipe ? true : false}>
           Tipe
         </InputLabel>
@@ -174,8 +172,7 @@ function Category({ history }) {
           color="primary"
           size="small"
           fullWidth
-          onClick={submit}
-        >
+          onClick={submit}>
           tambah
         </Button>
       </DetailDialog>

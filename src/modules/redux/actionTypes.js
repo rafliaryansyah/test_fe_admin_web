@@ -3,14 +3,14 @@
  */
 const profile = {
   SET_PROFILE: 'PROFILE/SET',
-  CLEAR_PROFILE: 'PROFILE/CLEAR',
+  CLEAR_PROFILE: 'PROFILE/CLEAR'
 };
 
 /**
  * Action types
  */
 const actionTypes = {
-  profile,
+  profile
 };
 
 export default actionTypes;

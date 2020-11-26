@@ -1,18 +1,18 @@
-import useStyles from "./styles";
-import { Switch, Route, Redirect } from "react-router-dom";
+import useStyles from './styles';
+import { Switch, Route, Redirect } from 'react-router-dom';
 
 // material-ui core
-import IconButton from "@material-ui/core/IconButton";
-import Tabs from "@material-ui/core/Tabs";
-import Tab from "@material-ui/core/Tab";
+import IconButton from '@material-ui/core/IconButton';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
 
 // material-ui icons
-import { ArrowBack } from "@material-ui/icons";
+import { ArrowBack } from '@material-ui/icons';
 
 // pages tab
-import Beranda from "./Beranda";
-import Produk from "./Produk";
-import Ulasan from "./Ulasan";
+import Beranda from './Beranda';
+import Produk from './Produk';
+import Ulasan from './Ulasan';
 
 function Detail({ history, location }) {
   const classes = useStyles();
@@ -20,7 +20,7 @@ function Detail({ history, location }) {
   return (
     <div className={classes.wrapper}>
       <div className={classes.wrapperTitlePage}>
-        <IconButton onClick={() => history.push("/toko")}>
+        <IconButton onClick={() => history.push('/toko')}>
           <ArrowBack />
         </IconButton>
       </div>
@@ -48,8 +48,7 @@ function Detail({ history, location }) {
             indicatorColor="primary"
             textColor="primary"
             onChange={(event, value) => history.push(value)}
-            aria-label="disabled tabs example"
-          >
+            aria-label="disabled tabs example">
             <Tab label="Beranda" value="/toko/detail" />
             <Tab label="Produk" value="/toko/detail/produk" />
             <Tab label="Ulasan" value="/toko/detail/ulasan" />

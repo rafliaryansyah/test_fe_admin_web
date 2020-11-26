@@ -1,40 +1,40 @@
-import { useState } from "react";
-import useStyles from "./styles";
+import { useState } from 'react';
+import useStyles from './styles';
 
 // notistack
-import { useSnackbar } from "notistack";
+import { useSnackbar } from 'notistack';
 
 // material-ui core
-import InputLabel from "@material-ui/core/InputLabel";
-import FormHelperText from "@material-ui/core/FormHelperText";
-import FormControl from "@material-ui/core/FormControl";
-import OutlinedInput from "@material-ui/core/OutlinedInput";
-import Button from "@material-ui/core/Button";
+import InputLabel from '@material-ui/core/InputLabel';
+import FormHelperText from '@material-ui/core/FormHelperText';
+import FormControl from '@material-ui/core/FormControl';
+import OutlinedInput from '@material-ui/core/OutlinedInput';
+import Button from '@material-ui/core/Button';
 
 function ChangePassword() {
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
 
   const [form, setForm] = useState({
-    old_password: "",
-    new_password: "",
-    confirm_password: "",
+    old_password: '',
+    new_password: '',
+    confirm_password: ''
   });
   const [error, setError] = useState({
-    old_password: "",
-    new_password: "",
-    confirm_password: "",
+    old_password: '',
+    new_password: '',
+    confirm_password: ''
   });
 
-  const handleChange = (e) => {
+  const handleChange = e => {
     setForm({
       ...form,
-      [e.target.name]: e.target.value,
+      [e.target.name]: e.target.value
     });
 
     setError({
       ...error,
-      [e.target.name]: "",
+      [e.target.name]: ''
     });
   };
 
@@ -42,35 +42,35 @@ function ChangePassword() {
     const newError = { ...error };
 
     if (!form.old_password) {
-      newError.old_password = "Field masih kosong";
+      newError.old_password = 'Field masih kosong';
     }
 
     if (!form.new_password) {
-      newError.new_password = "Field masih kosong";
+      newError.new_password = 'Field masih kosong';
     }
 
     if (!form.confirm_password) {
-      newError.confirm_password = "Field masih kosong";
+      newError.confirm_password = 'Field masih kosong';
     }
 
     return newError;
   };
 
-  const submit = async (e) => {
+  const submit = async e => {
     e.preventDefault();
 
     const findErrors = validate();
 
-    if (Object.values(findErrors).some((err) => err !== "")) {
+    if (Object.values(findErrors).some(err => err !== '')) {
       setError(findErrors);
     } else {
       setForm({
-        old_password: "",
-        new_password: "",
-        confirm_password: "",
+        old_password: '',
+        new_password: '',
+        confirm_password: ''
       });
-      enqueueSnackbar("Berhasil memperbarui password anda", {
-        variant: "success",
+      enqueueSnackbar('Berhasil memperbarui password anda', {
+        variant: 'success'
       });
     }
   };
@@ -79,8 +79,7 @@ function ChangePassword() {
     <div className={classes.wrapper}>
       <InputLabel
         htmlFor="old_password"
-        error={error.old_password ? true : false}
-      >
+        error={error.old_password ? true : false}>
         Password Lama
       </InputLabel>
       <FormControl variant="outlined" size="small" margin="normal" fullWidth>
@@ -99,8 +98,7 @@ function ChangePassword() {
 
       <InputLabel
         htmlFor="new_password"
-        error={error.new_password ? true : false}
-      >
+        error={error.new_password ? true : false}>
         Password Baru
       </InputLabel>
       <FormControl variant="outlined" size="small" margin="normal" fullWidth>
@@ -119,8 +117,7 @@ function ChangePassword() {
 
       <InputLabel
         htmlFor="confirm_password"
-        error={error.confirm_password ? true : false}
-      >
+        error={error.confirm_password ? true : false}>
         Konfirmasi Password Baru
       </InputLabel>
       <FormControl variant="outlined" size="small" margin="normal" fullWidth>
@@ -134,8 +131,7 @@ function ChangePassword() {
         />
         <FormHelperText
           id="outlined-helper-text"
-          error={error.confirm_password}
-        >
+          error={error.confirm_password}>
           {error.confirm_password}
         </FormHelperText>
       </FormControl>
@@ -148,8 +144,7 @@ function ChangePassword() {
           form.old_password && form.new_password && form.confirm_password
             ? false
             : true
-        }
-      >
+        }>
         simpan
       </Button>
     </div>

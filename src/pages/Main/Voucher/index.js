@@ -1,25 +1,25 @@
-import { useState } from "react";
-import useStyles from "./styles";
+import { useState } from 'react';
+import useStyles from './styles';
 
 // notistack
-import { useSnackbar } from "notistack";
+import { useSnackbar } from 'notistack';
 
 // material-ui core
-import InputLabel from "@material-ui/core/InputLabel";
-import FormControl from "@material-ui/core/FormControl";
-import FormHelperText from "@material-ui/core/FormHelperText";
-import OutlinedInput from "@material-ui/core/OutlinedInput";
-import InputAdornment from "@material-ui/core/InputAdornment";
-import Button from "@material-ui/core/Button";
-import Select from "@material-ui/core/Select";
-import MenuItem from "@material-ui/core/MenuItem";
+import InputLabel from '@material-ui/core/InputLabel';
+import FormControl from '@material-ui/core/FormControl';
+import FormHelperText from '@material-ui/core/FormHelperText';
+import OutlinedInput from '@material-ui/core/OutlinedInput';
+import InputAdornment from '@material-ui/core/InputAdornment';
+import Button from '@material-ui/core/Button';
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
 
 // material-ui icons
-import SearchIcon from "@material-ui/icons/Search";
+import SearchIcon from '@material-ui/icons/Search';
 
 // components
-import Paginasi from "../../../components/molecules/Paginasi";
-import DetailDialog from "../../../components/molecules/DetailDialog";
+import Paginasi from '../../../components/molecules/Paginasi';
+import DetailDialog from '../../../components/molecules/DetailDialog';
 
 function Voucher({ history }) {
   const classes = useStyles();
@@ -27,35 +27,35 @@ function Voucher({ history }) {
 
   const [open, setOpen] = useState({
     detail: false,
-    form: false,
+    form: false
   });
 
   const [form, setForm] = useState({
-    nama: "",
-    berlaku_hingga: "",
-    minimum_transaksi: "",
-    potongan_harga: "",
-    deskripsi: "",
-    status: "",
+    nama: '',
+    berlaku_hingga: '',
+    minimum_transaksi: '',
+    potongan_harga: '',
+    deskripsi: '',
+    status: ''
   });
   const [error, setError] = useState({
-    nama: "",
-    berlaku_hingga: "",
-    minimum_transaksi: "",
-    potongan_harga: "",
-    deskripsi: "",
-    status: "",
+    nama: '',
+    berlaku_hingga: '',
+    minimum_transaksi: '',
+    potongan_harga: '',
+    deskripsi: '',
+    status: ''
   });
 
-  const handleChange = (e) => {
+  const handleChange = e => {
     setForm({
       ...form,
-      [e.target.name]: e.target.value,
+      [e.target.name]: e.target.value
     });
 
     setError({
       ...error,
-      [e.target.name]: "",
+      [e.target.name]: ''
     });
   };
 
@@ -63,51 +63,51 @@ function Voucher({ history }) {
     const newError = { ...error };
 
     if (!form.nama) {
-      newError.nama = "Field masih kosong";
+      newError.nama = 'Field masih kosong';
     }
 
     if (!form.berlaku_hingga) {
-      newError.berlaku_hingga = "Field masih kosong";
+      newError.berlaku_hingga = 'Field masih kosong';
     }
 
     if (!form.minimum_transaksi) {
-      newError.minimum_transaksi = "Field masih kosong";
+      newError.minimum_transaksi = 'Field masih kosong';
     }
 
     if (!form.potongan_harga) {
-      newError.potongan_harga = "Field masih kosong";
+      newError.potongan_harga = 'Field masih kosong';
     }
 
     if (!form.deskripsi) {
-      newError.deskripsi = "Field masih kosong";
+      newError.deskripsi = 'Field masih kosong';
     }
 
     if (!form.status) {
-      newError.status = "Field masih kosong";
+      newError.status = 'Field masih kosong';
     }
 
     return newError;
   };
 
-  const submit = async (e) => {
+  const submit = async e => {
     e.preventDefault();
 
     const findErrors = validate();
 
-    if (Object.values(findErrors).some((err) => err !== "")) {
+    if (Object.values(findErrors).some(err => err !== '')) {
       setError(findErrors);
     } else {
       setForm({
-        nama: "",
-        berlaku_hingga: "",
-        minimum_transaksi: "",
-        potongan_harga: "",
-        deskripsi: "",
-        status: "",
+        nama: '',
+        berlaku_hingga: '',
+        minimum_transaksi: '',
+        potongan_harga: '',
+        deskripsi: '',
+        status: ''
       });
       setOpen({ ...open, form: false });
-      enqueueSnackbar("Berhasil menambahkan voucher baru", {
-        variant: "success",
+      enqueueSnackbar('Berhasil menambahkan voucher baru', {
+        variant: 'success'
       });
     }
   };
@@ -122,10 +122,9 @@ function Voucher({ history }) {
           onClick={() =>
             setOpen({
               ...open,
-              form: true,
+              form: true
             })
-          }
-        >
+          }>
           tambah voucher
         </Button>
         <FormControl variant="outlined" size="small">
@@ -158,8 +157,7 @@ function Voucher({ history }) {
           <tbody>
             <tr
               onClick={() => setOpen({ ...open, detail: true })}
-              className={classes.tr}
-            >
+              className={classes.tr}>
               <td className={classes.td}>1</td>
               <td className={classes.td}>
                 <img
@@ -177,12 +175,11 @@ function Voucher({ history }) {
           </tbody>
         </table>
       </div>
-      <Paginasi count={5} page={1} onClick={() => console.log("click")} />
+      <Paginasi count={5} page={1} onClick={() => console.log('click')} />
       <DetailDialog
         open={open.detail}
         close={() => setOpen({ ...open, detail: false })}
-        title="AKHIRTAHUN"
-      >
+        title="AKHIRTAHUN">
         <img
           src="https://ecs7.tokopedia.net/img/blog/seller/2020/04/voucher-toko.jpg"
           alt="avatar"
@@ -226,8 +223,7 @@ function Voucher({ history }) {
       <DetailDialog
         open={open.form}
         close={() => setOpen({ ...open, form: false })}
-        title="Form Tambah"
-      >
+        title="Form Tambah">
         <div className={classes.form}>
           <InputLabel htmlFor="nama" error={error.nama ? true : false}>
             Nama
@@ -236,8 +232,7 @@ function Voucher({ history }) {
             variant="outlined"
             size="small"
             margin="normal"
-            fullWidth
-          >
+            fullWidth>
             <OutlinedInput
               name="nama"
               id="nama"
@@ -253,16 +248,14 @@ function Voucher({ history }) {
 
           <InputLabel
             htmlFor="berlaku_hingga"
-            error={error.berlaku_hingga ? true : false}
-          >
+            error={error.berlaku_hingga ? true : false}>
             Berlaku Hingga
           </InputLabel>
           <FormControl
             variant="outlined"
             size="small"
             margin="normal"
-            fullWidth
-          >
+            fullWidth>
             <OutlinedInput
               type="date"
               name="berlaku_hingga"
@@ -274,24 +267,21 @@ function Voucher({ history }) {
             />
             <FormHelperText
               id="outlined-helper-text"
-              error={error.berlaku_hingga}
-            >
+              error={error.berlaku_hingga}>
               {error.berlaku_hingga}
             </FormHelperText>
           </FormControl>
 
           <InputLabel
             htmlFor="minimum_transaksi"
-            error={error.minimum_transaksi ? true : false}
-          >
+            error={error.minimum_transaksi ? true : false}>
             Minimum Transaksi
           </InputLabel>
           <FormControl
             variant="outlined"
             size="small"
             margin="normal"
-            fullWidth
-          >
+            fullWidth>
             <OutlinedInput
               name="minimum_transaksi"
               id="minimum_transaksi"
@@ -302,24 +292,21 @@ function Voucher({ history }) {
             />
             <FormHelperText
               id="outlined-helper-text"
-              error={error.minimum_transaksi}
-            >
+              error={error.minimum_transaksi}>
               {error.minimum_transaksi}
             </FormHelperText>
           </FormControl>
 
           <InputLabel
             htmlFor="potongan_harga"
-            error={error.potongan_harga ? true : false}
-          >
+            error={error.potongan_harga ? true : false}>
             Potongan Harga
           </InputLabel>
           <FormControl
             variant="outlined"
             size="small"
             margin="normal"
-            fullWidth
-          >
+            fullWidth>
             <OutlinedInput
               name="potongan_harga"
               id="potongan_harga"
@@ -330,24 +317,21 @@ function Voucher({ history }) {
             />
             <FormHelperText
               id="outlined-helper-text"
-              error={error.potongan_harga}
-            >
+              error={error.potongan_harga}>
               {error.potongan_harga}
             </FormHelperText>
           </FormControl>
 
           <InputLabel
             htmlFor="deskripsi"
-            error={error.deskripsi ? true : false}
-          >
+            error={error.deskripsi ? true : false}>
             Deskripsi
           </InputLabel>
           <FormControl
             variant="outlined"
             size="small"
             margin="normal"
-            fullWidth
-          >
+            fullWidth>
             <OutlinedInput
               name="deskripsi"
               id="deskripsi"
@@ -372,8 +356,7 @@ function Voucher({ history }) {
                 id="status"
                 value={form.status}
                 onChange={handleChange}
-                error={error.status ? true : false}
-              >
+                error={error.status ? true : false}>
                 <MenuItem value="Aktif">Aktif</MenuItem>
                 <MenuItem value="Tidak Aktif">Tidak Aktif</MenuItem>
               </Select>
@@ -388,8 +371,7 @@ function Voucher({ history }) {
             color="primary"
             size="small"
             fullWidth
-            onClick={submit}
-          >
+            onClick={submit}>
             Tambah
           </Button>
         </div>
