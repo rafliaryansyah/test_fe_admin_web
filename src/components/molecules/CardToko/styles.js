@@ -10,14 +10,23 @@ const useStyles = makeStyles(theme => ({
 
   info: {
     display: 'flex',
-    gridGap: 20
+    gridGap: 20,
+
+    [theme.breakpoints.down('sm')]: {
+      flexDirection: 'column'
+    }
   },
 
   img: {
     objectFit: 'cover',
     width: 100,
     height: 100,
-    borderRadius: 10
+    borderRadius: 10,
+
+    [theme.breakpoints.down('sm')]: {
+      width: '100%',
+      height: '100%'
+    }
   },
 
   text: {
@@ -53,7 +62,11 @@ const useStyles = makeStyles(theme => ({
   aktif: {
     fontSize: 15,
     textTransform: 'lowercase',
-    letterSpacing: 1
+    letterSpacing: 1,
+
+    [theme.breakpoints.down('sm')]: {
+      fontSize: 10
+    }
   }
 }));
 

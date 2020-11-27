@@ -4,19 +4,15 @@ const useStyles = makeStyles(theme => ({
   wrapper: {
     display: 'grid',
     gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    gridGap: 30,
     padding: '30px 0px 30px 0px',
-    gridGap: 300,
 
     [theme.breakpoints.down('sm')]: {
-      gridGap: 30
+      gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))',
+      gridGap: 10
     }
-  },
-
-  wrapperButton: {
-    display: 'flex',
-    justifyContent: 'flex-end',
-    gridGap: 15,
-    marginTop: 15
   }
 }));
 
