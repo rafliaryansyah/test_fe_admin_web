@@ -1,13 +1,13 @@
-import useStyles from "./styles";
-import { Switch, Route, Redirect } from "react-router-dom";
+import useStyles from './styles';
+import { Switch, Route, Redirect } from 'react-router-dom';
 
 // material-ui core
-import Tabs from "@material-ui/core/Tabs";
-import Tab from "@material-ui/core/Tab";
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
 
 // pages
-import User from "./User";
-import ChangePassword from "./ChangePassword";
+import User from './User';
+import ChangePassword from './ChangePassword';
 
 function Profile({ history, location }) {
   const classes = useStyles();
@@ -18,8 +18,7 @@ function Profile({ history, location }) {
         indicatorColor="primary"
         textColor="primary"
         onChange={(event, value) => history.push(value)}
-        aria-label="disabled tabs example"
-      >
+        aria-label="disabled tabs example">
         <Tab label="Profile" value="/profile" />
         <Tab label="Change Password" value="/profile/change-password" />
       </Tabs>

@@ -1,14 +1,14 @@
 /**
  * service authentication for log in
  */
-export const login = () => {};
+export const login = () => { };
 
 /**
  * service authentication for registration
  */
-export const registration = () => {};
+export const registration = () => { };
 
 /**
  * service authentication for registration
  */
-export const logout = () => {};
+export const logout = () => { };

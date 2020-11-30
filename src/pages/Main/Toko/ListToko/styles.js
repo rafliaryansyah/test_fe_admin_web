@@ -1,52 +1,36 @@
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from '@material-ui/core/styles';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   wrapper: {
-    // border: "1px solid",
+    // border: '1px solid',
   },
 
   pencarian: {
-    backgroundColor: "#ffffff",
+    backgroundColor: '#ffffff',
     padding: 15,
-    display: "flex",
-    justifyContent: "flex-end",
-    alignItems: "center",
+    display: 'flex',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    gridGap: 15,
     marginBottom: 30,
-    boxShadow: "0px 0px 1px rgba(0, 0, 0, 0.5)",
+    boxShadow: '0px 0px 1px rgba(0, 0, 0, 0.5)'
   },
 
-  wrapperTable: {
-    height: 480,
-    overflow: "auto",
-    marginBottom: 30,
-    backgroundColor: "#ffffff",
+  formControl: {
+    width: 200
   },
 
-  table: {
-    width: "100%",
-    backgroundColor: "#FFFFFF",
-    padding: 0,
-    boxShadow: "0px 0px 1px rgba(0, 0, 0, 0.5)",
-  },
-
-  th: {
-    border: "1px solid #C4C4C4",
-    padding: 15,
-  },
-
-  tr: {
-    cursor: "pointer",
-    "&:hover": {
-      backgroundColor: "#f2f2f2",
-    },
-  },
-
-  td: {
-    textAlign: "center",
-    padding: 10,
-    margin: "auto",
-    color: "#424242",
-  },
+  wrapperCard: {
+    boxShadow: '0px 0px 1px rgba(0, 0, 0, 0.5)',
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+    gridGap: 30,
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 30,
+    marginBottom: 15,
+    backgroundColor: '#ffffff'
+  }
 }));
 
 export default useStyles;

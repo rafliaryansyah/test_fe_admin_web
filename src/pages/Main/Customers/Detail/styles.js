@@ -1,93 +1,87 @@
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from '@material-ui/core/styles';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   wrapper: {
-    // border: "1px solid",
+    // border: "1px solid"
   },
 
   wrapperTitlePage: {
-    display: "flex",
-    justifyContent: "flex-start",
-    alignItems: "center",
+    display: 'flex',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
     gridGap: 15,
     padding: 5,
-    marginBottom: 15,
+    marginBottom: 15
   },
 
-  wrapperInfoToko: {
-    display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(290px, 1fr))",
-    justifyContent: "space-between",
+  wrapperInfo: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+    justifyContent: 'space-between',
     gridGap: 15,
+    padding: 30,
+    backgroundColor: '#ffffff'
   },
 
-  cardDetailToko: {
-    backgroundColor: "#FFFFFF",
-    boxShadow: "0px 0px 1px rgba(0, 0, 0, 0.3)",
-    borderRadius: 15,
-    display: "flex",
-    justifyContent: "flex-start",
-    alignItems: "center",
-    gridGap: 15,
-    padding: 15,
-    height: 90,
-
-    [theme.breakpoints.down("sm")]: {
-      fontSize: 15,
-      height: 45,
-    },
+  itemFotoDanRoles: {
+    // border: '1px solid'
   },
 
-  profilToko: {
-    width: 150,
-    height: 150,
-    borderRadius: "25%",
-    boxShadow: "0px 0px 9px rgba(0, 0, 0, 0.1)",
-    objectFit: "cover",
+  img: {
+    objectFit: 'cover',
+    width: 300,
+    height: 300,
+    borderRadius: 10,
 
-    [theme.breakpoints.down("sm")]: {
-      width: 90,
-      height: 90,
-    },
+    [theme.breakpoints.down('sm')]: {
+      width: '100%'
+    }
   },
 
-  nama: {
+  roles: {
+    display: 'flex',
+    flexDirection: 'column'
+  },
+
+  title: {
     fontSize: 25,
-    textTransform: "capitalize",
-    letterSpacing: 1,
-    fontWeight: "bold",
-    lineHeight: 0,
-
-    [theme.breakpoints.down("sm")]: {
-      fontSize: 15,
-    },
+    textTransform: 'capitalize',
+    letterSpacing: 1
   },
 
-  deks: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    gridGap: 15,
+  itemDataUser: {
+    // border: '1px solid',
+    display: 'flex',
+    flexDirection: 'column',
+    gridGap: 15
   },
 
-  teks: {
+  input: {
+    borderBottom: '1px solid #c4c4c4',
+    padding: '5px 0px 5px 0px',
+    display: 'flex',
+    flexDirection: 'column',
+    gridGap: 5
+  },
+
+  label: {
     fontSize: 13,
-    textTransform: "capitalize",
+    textTransform: 'capitalize',
+    letterSpacing: 3
+  },
+
+  text: {
+    fontSize: 18,
+    textTransform: 'capitalize',
     letterSpacing: 1,
-    fontWeight: "lighter",
-    color: "#424242",
-
-    [theme.breakpoints.down("sm")]: {
-      fontSize: 10,
-    },
+    fontWeight: 'bold'
   },
 
-  cardMenuTabToko: {
-    backgroundColor: "#FFFFFF",
-    boxShadow: "0px 0px 1px rgba(0, 0, 0, 0.3)",
-    borderRadius: 15,
-    padding: 15,
-  },
+  wrapperButton: {
+    display: 'flex',
+    justifyContent: 'flex-end',
+    marginTop: 15
+  }
 }));
 
 export default useStyles;

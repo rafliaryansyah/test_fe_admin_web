@@ -1,9 +1,9 @@
 import { makeStyles } from '@material-ui/core/styles';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   wrapper: {
     backgroundColor: '#F2F2F2',
-    height: '100vh',
+    height: '100vh'
   },
 
   // Header
@@ -17,26 +17,26 @@ const useStyles = makeStyles((theme) => ({
     width: '100%',
     boxShadow: '0px 0px 3px rgba(0, 0, 0, 0.1)',
     zIndex: 2,
-    textTransform: 'capitalize',
+    textTransform: 'capitalize'
   },
 
   toggle: {
     color: '#41337A',
     '&:hover': {
       backgroundColor: '#41337A',
-      color: '#ffffff',
-    },
+      color: '#ffffff'
+    }
   },
 
   title: {
     fontSize: 18,
     textTransform: 'capitalize',
     fontWeight: 'bold',
-    color: '#41337A',
+    color: '#41337A'
   },
 
   avatar: {
-    right: 35,
+    right: 35
   },
 
   labelAktif: {
@@ -47,23 +47,23 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     justifyContent: 'flex-start',
     alignItems: 'center',
-    gridGap: 15,
+    gridGap: 15
   },
 
   wrapperList: {
     overflowY: 'auto',
     padding: 15,
-    maxHeight: 400,
+    maxHeight: 400
   },
 
   keluar: {
-    margin: '0px 15px 0px 15px',
+    margin: '0px 15px 0px 15px'
   },
 
   // Content
   main: {
     backgroundColor: '#F2F2F2',
-    padding: '110px 30px 30px 30px',
+    padding: '110px 30px 30px 30px'
   },
 
   // footer
@@ -78,9 +78,9 @@ const useStyles = makeStyles((theme) => ({
     color: '#424242',
 
     [theme.breakpoints.down('sm')]: {
-      fontSize: 13,
-    },
-  },
+      fontSize: 13
+    }
+  }
 }));
 
 export default useStyles;

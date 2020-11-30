@@ -1,0 +1,60 @@
+import { makeStyles } from '@material-ui/core/styles';
+
+const useStyles = makeStyles(theme => ({
+  card: {
+    boxShadow: '0px 0px 3px rgba(0, 0, 0, 0.5)',
+    borderRadius: 10,
+    padding: 20,
+    cursor: 'pointer'
+  },
+
+  info: {
+    display: 'flex',
+    gridGap: 20
+  },
+
+  img: {
+    objectFit: 'cover',
+    width: 100,
+    height: 100,
+    borderRadius: 10
+  },
+
+  text: {
+    display: 'grid',
+    gridGap: 15,
+    width: '100%'
+  },
+
+  labelText: {
+    display: 'flex',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    gridGap: 5
+  },
+
+  label: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    width: 130
+  },
+
+  isi: {
+    fontSize: 15,
+    textTransform: 'capitalize',
+    letterSpacing: 1,
+
+    [theme.breakpoints.down('sm')]: {
+      fontSize: 10
+    }
+  },
+
+  aktif: {
+    fontSize: 15,
+    textTransform: 'lowercase',
+    letterSpacing: 1
+  }
+}));
+
+export default useStyles;

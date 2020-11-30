@@ -1,10 +1,10 @@
 import useStyles from './styles';
 
 // material-ui core
-import Button from "@material-ui/core/Button";
+import Button from '@material-ui/core/Button';
 
 // assets
-import { PixelTrueError } from "../../assets";
+import { PixelTrueError } from '../../assets';
 
 function NotFound({ history }) {
   const classes = useStyles();
@@ -19,8 +19,7 @@ function NotFound({ history }) {
       <Button
         variant="outlined"
         color="primary"
-        onClick={() => history.push("/")}
-      >
+        onClick={() => history.push('/')}>
         back to dashboard
       </Button>
     </div>

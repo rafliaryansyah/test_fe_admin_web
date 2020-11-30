@@ -11,7 +11,7 @@ import profile from './profile/reducer';
  * Reducer yang terpisah digabung jadi satu disini
  */
 const reducer = combineReducers({
-  profile,
+  profile
 });
 
 /**

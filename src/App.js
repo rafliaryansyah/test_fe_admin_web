@@ -19,7 +19,7 @@ function App() {
         <SnackbarProvider maxSnack={1} autoHideDuration={3000}>
           <Router>
             <Switch>
-              {appRoutes.map((route) => (
+              {appRoutes.map(route => (
                 <Route
                   key={route.id}
                   path={route.path}
