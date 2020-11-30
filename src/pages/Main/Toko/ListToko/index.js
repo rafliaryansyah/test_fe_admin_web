@@ -52,6 +52,31 @@ const ListToko = ({ history }) => {
 
       <div className={classes.wrapperCard}>
         <CardToko
+          srcImage="https://images.unsplash.com/photo-1549913772-820279f909b7?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=747&q=80"
+          nama="sanjaya"
+          status="aktif"
+          alamat="Surabaya"
+          bukaSejak="26 November 2020"
+          handleDetail={() => history.push('/toko/detail')}
+        />
+        <CardToko
+          srcImage="https://images.unsplash.com/photo-1549913772-820279f909b7?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=747&q=80"
+          nama="sanjaya"
+          status="aktif"
+          alamat="Surabaya"
+          bukaSejak="26 November 2020"
+          handleDetail={() => history.push('/toko/detail')}
+        />
+        <CardToko
+          srcImage="https://images.unsplash.com/photo-1549913772-820279f909b7?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=747&q=80"
+          nama="sanjaya"
+          status="aktif"
+          alamat="Surabaya"
+          bukaSejak="26 November 2020"
+          handleDetail={() => history.push('/toko/detail')}
+        />
+        <CardToko
+          srcImage="https://images.unsplash.com/photo-1549913772-820279f909b7?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=747&q=80"
           nama="sanjaya"
           status="aktif"
           alamat="Surabaya"
