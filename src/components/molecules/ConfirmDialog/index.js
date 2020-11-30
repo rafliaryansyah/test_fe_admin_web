@@ -5,22 +5,16 @@ import propTypes from 'prop-types';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogActions from '@material-ui/core/DialogActions';
+import DialogTitle from '@material-ui/core/DialogTitle';
 
 function ConfirmDialog({ open, close, title, submit, children }) {
   const classes = useStyles();
   return (
-    <Dialog
-      open={open}
-      onClose={close}
-      aria-labelledby="alert-dialog-title"
-      aria-describedby="alert-dialog-description">
-      <label className={classes.title}>{title}</label>
+    <Dialog open={open} onClose={close}>
+      <DialogTitle className={classes.title}>{title}</DialogTitle>
       <DialogContent>
-        <DialogContentText className={classes.teks}>
-          {children}
-        </DialogContentText>
+        <div className={classes.teks}>{children}</div>
       </DialogContent>
       <DialogActions>
         <Button onClick={close}>batal</Button>
@@ -28,8 +22,8 @@ function ConfirmDialog({ open, close, title, submit, children }) {
           variant="text"
           onClick={submit}
           color="primary"
-          className={classes.ya}>
-          ya
+          className={classes.lanjut}>
+          Lanjut
         </Button>
       </DialogActions>
     </Dialog>

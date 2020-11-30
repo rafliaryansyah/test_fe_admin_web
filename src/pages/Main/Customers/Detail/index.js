@@ -6,13 +6,28 @@ import IconButton from '@material-ui/core/IconButton';
 import Button from '@material-ui/core/Button';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
+import Radio from '@material-ui/core/Radio';
+import RadioGroup from '@material-ui/core/RadioGroup';
+import FormControl from '@material-ui/core/FormControl';
+import FormLabel from '@material-ui/core/FormLabel';
 
 // material-ui icons
 import { ArrowBack } from '@material-ui/icons';
 import { useState } from 'react';
 
+// components
+import { DetailDialog, ConfirmDialog } from '../../../../components';
+
 function Detail({ history }) {
   const classes = useStyles();
+
+  const [open, setOpen] = useState(false);
+  const [confirmHapus, setConfirmHapus] = useState(false);
+  const [confirmAktif, setConfirmAktif] = useState(false);
+
+  const [form, setForm] = useState({
+    role: ''
+  });
 
   const [roles, setRoles] = useState({
     customer: true,
@@ -21,6 +36,10 @@ function Detail({ history }) {
 
   const handleChange = e => {
     setRoles({ ...roles, [e.target.name]: e.target.checked });
+  };
+
+  const submit = e => {
+    e.preventDefault();
   };
 
   return (
@@ -87,10 +106,63 @@ function Detail({ history }) {
             <span className={classes.text}>+6217178909121</span>
           </div>
           <div className={classes.wrapperButton}>
-            <Button variant="contained" color="primary">nonaktifkan</Button>
+            <Button
+              variant="contained"
+              color="primary"
+              fullWidth
+              onClick={() => setOpen(true)}>
+              tambahkan role
+            </Button>
           </div>
         </div>
       </div>
+      <DetailDialog
+        open={open}
+        close={() => setOpen(false)}
+        title="Tambah Role">
+        <div>
+          <FormControl component="fieldset">
+            <FormLabel component="legend">Pilih Role</FormLabel>
+            <RadioGroup
+              row
+              aria-label="tambah_role"
+              name="tambah_role"
+              value={form.role}
+              onChange={e => setForm({ ...form, role: e.target.value })}
+              defaultValue="top">
+              <FormControlLabel
+                value="admin"
+                control={<Radio color="primary" />}
+                label="Admin"
+              />
+              <FormControlLabel
+                value="finance"
+                control={<Radio color="primary" />}
+                label="Finance"
+              />
+              <FormControlLabel
+                value="contributor"
+                control={<Radio color="primary" />}
+                label="Contributor"
+              />
+            </RadioGroup>
+          </FormControl>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={submit}
+            disabled={form.role ? false : true}
+            fullWidth>
+            simpan
+          </Button>
+        </div>
+      </DetailDialog>
+      <ConfirmDialog
+        open={confirmHapus}
+        close={() => setConfirmHapus(false)}
+        title="Hapus Role">
+        Yakin ingin menghapus role ?
+      </ConfirmDialog>
     </div>
   );
 }
