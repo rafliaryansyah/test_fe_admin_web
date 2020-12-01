@@ -12,8 +12,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import SearchIcon from '@material-ui/icons/Search';
 
 // components
-import Paginasi from '../../../components/molecules/Paginasi';
-import DetailDialog from '../../../components/molecules/DetailDialog';
+import { Paginasi, CompDialog } from '../../../components';
 
 function Orders({ history }) {
   const classes = useStyles();
@@ -72,7 +71,7 @@ function Orders({ history }) {
         </table>
       </div>
       <Paginasi count={5} page={1} onClick={() => console.log('click')} />
-      <DetailDialog open={open} close={() => setOpen(false)}></DetailDialog>
+      <CompDialog open={open} close={() => setOpen(false)}></CompDialog>
     </div>
   );
 }

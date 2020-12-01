@@ -21,7 +21,7 @@ import FormLabel from '@material-ui/core/FormLabel';
 import SearchIcon from '@material-ui/icons/Search';
 
 // components
-import { PrivateRoute, DetailDialog } from '../../../components';
+import { PrivateRoute, CompDialog} from '../../../components';
 
 // pages
 import TabProduk from './TabProduk';
@@ -126,7 +126,7 @@ function Category({ location, history }) {
           </Switch>
         </div>
       </div>
-      <DetailDialog
+      <CompDialog
         open={open}
         close={() => setOpen(false)}
         title="Buat Kategori">
@@ -194,7 +194,7 @@ function Category({ location, history }) {
             simpan
           </Button>
         </div>
-      </DetailDialog>
+      </CompDialog>
     </div>
   );
 }

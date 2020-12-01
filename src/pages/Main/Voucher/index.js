@@ -5,21 +5,28 @@ import useStyles from './styles';
 import { useSnackbar } from 'notistack';
 
 // material-ui core
-import InputLabel from '@material-ui/core/InputLabel';
-import FormControl from '@material-ui/core/FormControl';
-import FormHelperText from '@material-ui/core/FormHelperText';
-import OutlinedInput from '@material-ui/core/OutlinedInput';
-import InputAdornment from '@material-ui/core/InputAdornment';
-import Button from '@material-ui/core/Button';
-import Select from '@material-ui/core/Select';
-import MenuItem from '@material-ui/core/MenuItem';
+import {
+  Button,
+  IconButton,
+  InputLabel,
+  FormControl,
+  FormHelperText,
+  OutlinedInput,
+  InputAdornment,
+  Select,
+  MenuItem,
+  Card,
+  CardActionArea,
+  CardActions,
+  CardMedia,
+  CardContent
+} from '@material-ui/core';
 
 // material-ui icons
-import SearchIcon from '@material-ui/icons/Search';
+import { Search, Delete, Edit } from '@material-ui/icons';
 
 // components
-import Paginasi from '../../../components/molecules/Paginasi';
-import DetailDialog from '../../../components/molecules/DetailDialog';
+import { Paginasi, CompDialog, ConfirmDialog } from '../../../components';
 
 function Voucher({ history }) {
   const classes = useStyles();
@@ -27,7 +34,8 @@ function Voucher({ history }) {
 
   const [open, setOpen] = useState({
     detail: false,
-    form: false
+    form: false,
+    hapus: false
   });
 
   const [form, setForm] = useState({
@@ -112,6 +120,8 @@ function Voucher({ history }) {
     }
   };
 
+  const handleHapus = () => {};
+
   return (
     <div className={classes.wrapper}>
       <div className={classes.pencarian}>
@@ -135,48 +145,105 @@ function Voucher({ history }) {
             placeholder="Search By Name"
             endAdornment={
               <InputAdornment position="start">
-                <SearchIcon />
+                <Search />
               </InputAdornment>
             }
           />
         </FormControl>
       </div>
-      <div className={classes.wrapperTable}>
-        <table cellSpacing="0" className={classes.table}>
-          <thead>
-            <tr>
-              <th className={classes.th}>No</th>
-              <th className={classes.th}>Banner</th>
-              <th className={classes.th}>Nama</th>
-              <th className={classes.th}>Berlaku Hingga</th>
-              <th className={classes.th}>Minimum Transaksi</th>
-              <th className={classes.th}>Potongan Harga</th>
-              <th className={classes.th}>Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr
-              onClick={() => setOpen({ ...open, detail: true })}
-              className={classes.tr}>
-              <td className={classes.td}>1</td>
-              <td className={classes.td}>
-                <img
-                  src="https://ecs7.tokopedia.net/img/blog/seller/2020/04/voucher-toko.jpg"
-                  alt=""
-                  className={classes.banner}
-                />
-              </td>
-              <td className={classes.td}>AKHIRTAHUN</td>
-              <td className={classes.td}>Jumat, 05/Februari/2021</td>
-              <td className={classes.td}>Rp 10.000</td>
-              <td className={classes.td}>Rp 50.000</td>
-              <td className={classes.td}>Aktif</td>
-            </tr>
-          </tbody>
-        </table>
+
+      <div className={classes.main}>
+        <Card>
+          <CardActionArea onClick={() => setOpen({ ...open, detail: true })}>
+            <CardMedia
+              component="img"
+              alt="Contemplative Reptile"
+              height="200"
+              image="https://ecs7.tokopedia.net/img/blog/seller/2020/04/voucher-toko.jpg"
+              title="Contemplative Reptile"
+            />
+            <CardContent className={classes.content}>
+              <span>akhirtahun</span>
+            </CardContent>
+          </CardActionArea>
+          <CardActions className={classes.action}>
+            <IconButton
+              size="small"
+              color="primary"
+              onClick={() => setOpen({ ...open, form: true })}>
+              <Edit />
+            </IconButton>
+            <IconButton
+              size="small"
+              color="primary"
+              onClick={() => setOpen({ ...open, hapus: true })}>
+              <Delete />
+            </IconButton>
+          </CardActions>
+        </Card>
+
+        <Card>
+          <CardActionArea onClick={() => setOpen({ ...open, detail: true })}>
+            <CardMedia
+              component="img"
+              alt="Contemplative Reptile"
+              height="200"
+              image="https://ecs7.tokopedia.net/img/blog/seller/2020/04/voucher-toko.jpg"
+              title="Contemplative Reptile"
+            />
+            <CardContent className={classes.content}>
+              <span>akhirtahun</span>
+            </CardContent>
+          </CardActionArea>
+          <CardActions className={classes.action}>
+            <IconButton
+              size="small"
+              color="primary"
+              onClick={() => setOpen({ ...open, form: true })}>
+              <Edit />
+            </IconButton>
+            <IconButton
+              size="small"
+              color="primary"
+              onClick={() => setOpen({ ...open, hapus: true })}>
+              <Delete />
+            </IconButton>
+          </CardActions>
+        </Card>
+
+        <Card>
+          <CardActionArea onClick={() => setOpen({ ...open, detail: true })}>
+            <CardMedia
+              component="img"
+              alt="Contemplative Reptile"
+              height="200"
+              image="https://ecs7.tokopedia.net/img/blog/seller/2020/04/voucher-toko.jpg"
+              title="Contemplative Reptile"
+            />
+            <CardContent className={classes.content}>
+              <span>akhirtahun</span>
+            </CardContent>
+          </CardActionArea>
+          <CardActions className={classes.action}>
+            <IconButton
+              size="small"
+              color="primary"
+              onClick={() => setOpen({ ...open, form: true })}>
+              <Edit />
+            </IconButton>
+            <IconButton
+              size="small"
+              color="primary"
+              onClick={() => setOpen({ ...open, hapus: true })}>
+              <Delete />
+            </IconButton>
+          </CardActions>
+        </Card>
       </div>
-      <Paginasi count={5} page={1} onClick={() => console.log('click')} />
-      <DetailDialog
+
+      <Paginasi count={5} page={1} onClick={(e, value) => value} />
+
+      <CompDialog
         open={open.detail}
         close={() => setOpen({ ...open, detail: false })}
         title="AKHIRTAHUN">
@@ -219,11 +286,12 @@ function Voucher({ history }) {
           rhoncus non sit morbi eu lorem. Quisque nunc nibh adipiscing ultrices
           iaculis vitae orci purus. Fermentum facilisi tortor elit a.
         </p>
-      </DetailDialog>
-      <DetailDialog
+      </CompDialog>
+
+      <CompDialog
         open={open.form}
         close={() => setOpen({ ...open, form: false })}
-        title="Form Tambah">
+        title="Form Voucher">
         <div className={classes.form}>
           <InputLabel htmlFor="nama" error={error.nama ? true : false}>
             Nama
@@ -369,13 +437,19 @@ function Voucher({ history }) {
           <Button
             variant="contained"
             color="primary"
-            size="small"
             fullWidth
             onClick={submit}>
-            Tambah
+            simpan
           </Button>
         </div>
-      </DetailDialog>
+      </CompDialog>
+      <ConfirmDialog
+        open={open.hapus}
+        title="Hapus Voucher"
+        close={() => setOpen({ ...open, hapus: false })}
+        submit={handleHapus}>
+        Yakin ingin menghapus voucher ?
+      </ConfirmDialog>
     </div>
   );
 }

@@ -9,46 +9,37 @@ const useStyles = makeStyles(theme => ({
     backgroundColor: '#ffffff',
     padding: 15,
     display: 'flex',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-end',
     alignItems: 'center',
     gridGap: 15,
     marginBottom: 30,
     boxShadow: '0px 0px 1px rgba(0, 0, 0, 0.5)'
   },
 
-  wrapperTable: {
-    height: 480,
-    overflow: 'auto',
-    marginBottom: 30,
-    backgroundColor: '#ffffff'
+  main: {
+    backgroundColor: '#ffffff',
+    boxShadow: '0px 0px 1px rgba(0, 0, 0, 0.5)',
+    padding: 30,
+    marginBottom: 15,
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+    gridGap: 30
   },
 
-  table: {
-    width: '100%',
-    backgroundColor: '#FFFFFF',
-    padding: 0,
-    boxShadow: '0px 0px 1px rgba(0, 0, 0, 0.5)'
+  content: {
+    fontSize: 18,
+    textTransform: 'uppercase',
+    letterSpacing: 3,
+    fontWeight: 'bold',
+    textAlign: 'center'
   },
 
-  th: {
-    border: '1px solid #C4C4C4',
-    padding: 15
+  action: {
+    display: 'flex',
+    justifyContent: 'flex-end'
   },
 
-  tr: {
-    cursor: 'pointer',
-    '&:hover': {
-      backgroundColor: '#f2f2f2'
-    }
-  },
-
-  td: {
-    textAlign: 'center',
-    padding: 10,
-    margin: 'auto',
-    color: '#424242'
-  },
-
+  // detail
   banner: {
     width: 100,
     height: 50
@@ -100,6 +91,7 @@ const useStyles = makeStyles(theme => ({
     color: '#424242'
   },
 
+  // form
   form: {
     width: 534,
 

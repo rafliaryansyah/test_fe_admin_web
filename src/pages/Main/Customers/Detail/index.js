@@ -16,7 +16,7 @@ import { ArrowBack } from '@material-ui/icons';
 import { useState } from 'react';
 
 // components
-import { DetailDialog, ConfirmDialog } from '../../../../components';
+import { CompDialog, ConfirmDialog } from '../../../../components';
 
 function Detail({ history }) {
   const classes = useStyles();
@@ -116,10 +116,7 @@ function Detail({ history }) {
           </div>
         </div>
       </div>
-      <DetailDialog
-        open={open}
-        close={() => setOpen(false)}
-        title="Tambah Role">
+      <CompDialog open={open} close={() => setOpen(false)} title="Tambah Role">
         <div>
           <FormControl component="fieldset">
             <FormLabel component="legend">Pilih Role</FormLabel>
@@ -156,7 +153,7 @@ function Detail({ history }) {
             simpan
           </Button>
         </div>
-      </DetailDialog>
+      </CompDialog>
       <ConfirmDialog
         open={confirmHapus}
         close={() => setConfirmHapus(false)}

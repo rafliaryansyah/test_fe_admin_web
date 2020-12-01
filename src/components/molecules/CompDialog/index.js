@@ -11,7 +11,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 // material-ui icons
 import CloseIcon from '@material-ui/icons/Close';
 
-function DetailDialog({ open, close, title, children }) {
+function CompDialog({ open, close, title, children }) {
   const classes = useStyles();
   return (
     <Dialog open={open} onClose={close}>
@@ -30,11 +30,11 @@ function DetailDialog({ open, close, title, children }) {
   );
 }
 
-DetailDialog.propTypes = {
+CompDialog.propTypes = {
   open: propTypes.bool.isRequired,
   close: propTypes.func.isRequired,
   title: propTypes.string,
   children: propTypes.element
 };
 
-export default DetailDialog;
+export default CompDialog;
