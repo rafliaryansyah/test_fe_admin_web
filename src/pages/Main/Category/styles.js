@@ -21,7 +21,8 @@ const useStyles = makeStyles(() => ({
     padding: 50,
     display: 'flex',
     justifyContent: 'center',
-    border: '1px solid'
+    border: '2px solid',
+    borderStyle: 'dashed'
   },
 
   preview: {

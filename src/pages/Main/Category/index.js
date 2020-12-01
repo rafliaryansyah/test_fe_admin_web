@@ -189,7 +189,8 @@ function Category({ location, history }) {
             variant="contained"
             color="primary"
             onClick={submit}
-            className={classes.submit}>
+            className={classes.submit}
+            disabled={form.type && form.name && form.src_img ? false : true}>
             simpan
           </Button>
         </div>

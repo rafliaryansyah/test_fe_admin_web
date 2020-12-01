@@ -14,17 +14,12 @@ const useStyles = makeStyles(() => ({
     padding: 15,
     borderRadius: 10,
     display: 'flex',
-    flexDirection: 'column'
-  },
-
-  action: {
-    display: 'flex',
-    justifyContent: 'flex-end'
+    justifyContent: 'space-between',
+    alignItems: 'center'
   },
 
   content: {
-    display: 'flex',
-    marginTop: -48
+    display: 'flex'
   },
 
   img: {
