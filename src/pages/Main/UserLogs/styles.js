@@ -39,36 +39,48 @@ const useStyles = makeStyles(theme => ({
     marginTop: 10
   },
 
-  wrapperTable: {
-    height: 480,
-    overflow: 'auto',
-    marginBottom: 30,
-    backgroundColor: '#ffffff'
+  main: {
+    backgroundColor: '#ffffff',
+    boxShadow: '0px 0px 1px rgba(0, 0, 0, 0.5)',
+    display: 'grid',
+    padding: '20px 30px 20px 30px',
+    marginBottom: 15
   },
 
-  table: {
-    width: '100%',
-    backgroundColor: '#FFFFFF',
-    padding: 0,
-    boxShadow: '0px 0px 1px rgba(0, 0, 0, 0.5)'
-  },
-
-  th: {
-    border: '1px solid #C4C4C4',
+  item: {
+    borderBottom: '1px solid #c4c4c4',
+    display: 'flex',
+    justifyContent: 'space-between',
     padding: 15
   },
 
-  tr: {
-    cursor: 'pointer',
-    '&:hover': {
-      backgroundColor: '#f2f2f2'
-    }
+  desk: {
+    display: 'flex',
+    justifyContent: 'flex-start',
+    gridGap: 5
   },
 
-  td: {
-    textAlign: 'center',
-    padding: 10,
-    margin: 'auto',
+  nama: {
+    fontSize: 15,
+    textTransform: 'capitalize',
+    color: '#FFA53A'
+  },
+
+  aksi: {
+    fontSize: 15,
+    textTransform: 'lowercase',
+    color: '#424242'
+  },
+
+  ket: {
+    fontSize: 15,
+    textTransform: 'capitalize',
+    color: '#FFA53A'
+  },
+
+  date: {
+    fontSize: 15,
+    textTransform: 'capitalize',
     color: '#424242'
   }
 }));

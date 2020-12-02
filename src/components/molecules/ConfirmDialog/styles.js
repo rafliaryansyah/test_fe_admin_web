@@ -4,7 +4,8 @@ const useStyles = makeStyles(() => ({
   title: {
     fontSize: 15,
     margin: '15px 0px 0px 15px',
-    fontWeight: 'bold'
+    fontWeight: 'bold',
+    textAlign: 'center'
   },
 
   teks: {

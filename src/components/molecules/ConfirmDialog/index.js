@@ -23,7 +23,7 @@ function ConfirmDialog({ open, close, title, submit, children }) {
           onClick={submit}
           color="primary"
           className={classes.lanjut}>
-          Lanjut
+          yakin
         </Button>
       </DialogActions>
     </Dialog>

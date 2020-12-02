@@ -25,9 +25,9 @@ import StyleIcon from '@material-ui/icons/Style';
 import Dashboard from './Dahsboard';
 import Customers from './Customers';
 import Toko from './Toko';
-import Orders from './Orders';
 import Category from './Category';
 import Voucher from './Voucher';
+import UserLogs from './UserLogs';
 import Profile from './Profile';
 
 // components
@@ -152,30 +152,7 @@ function Main() {
                 );
               }}
             />
-            <Route
-              path="/orders"
-              children={({ match, history }) => {
-                return (
-                  <ListItem
-                    button
-                    selected={match ? true : false}
-                    onClick={() => {
-                      setDrawerNav(false);
-                      history.push('/orders');
-                    }}>
-                    <ListItemIcon>
-                      <ShoppingBasketIcon
-                        className={match ? classes.labelAktif : null}
-                      />
-                    </ListItemIcon>
-                    <ListItemText
-                      primary="Orders"
-                      className={match ? classes.labelAktif : null}
-                    />
-                  </ListItem>
-                );
-              }}
-            />
+            
             <Route
               path="/category"
               children={({ match, history }) => {
@@ -224,6 +201,30 @@ function Main() {
                 );
               }}
             />
+            <Route
+              path="/user-logs"
+              children={({ match, history }) => {
+                return (
+                  <ListItem
+                    button
+                    selected={match ? true : false}
+                    onClick={() => {
+                      setDrawerNav(false);
+                      history.push('/user-logs');
+                    }}>
+                    <ListItemIcon>
+                      <ShoppingBasketIcon
+                        className={match ? classes.labelAktif : null}
+                      />
+                    </ListItemIcon>
+                    <ListItemText
+                      primary="User Logs"
+                      className={match ? classes.labelAktif : null}
+                    />
+                  </ListItem>
+                );
+              }}
+            />
           </List>
         </div>
 
@@ -246,9 +247,9 @@ function Main() {
           <PrivateRoute exact path="/" component={Dashboard} />
           <PrivateRoute path="/customers" component={Customers} />
           <PrivateRoute path="/toko" component={Toko} />
-          <PrivateRoute path="/orders" component={Orders} />
           <PrivateRoute path="/category" component={Category} />
           <PrivateRoute path="/voucher" component={Voucher} />
+          <PrivateRoute path="/user-logs" component={UserLogs} />
           <PrivateRoute path="/profile" component={Profile} />
         </Switch>
         <div className={classes.footer}>
