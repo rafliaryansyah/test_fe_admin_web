@@ -2,7 +2,7 @@ import { Route, Redirect } from 'react-router-dom';
 import propTypes from 'prop-types';
 
 export function PrivateRoute({ component: Component, ...rest }) {
-  const user = false;
+  const user = true;
   return (
     <Route
       {...rest}
@@ -10,15 +10,15 @@ export function PrivateRoute({ component: Component, ...rest }) {
         return user ? (
           <Component {...props} />
         ) : (
-            <Redirect
-              to={{
-                pathname: '/login',
-                state: {
-                  from: props.location
-                }
-              }}
-            />
-          );
+          <Redirect
+            to={{
+              pathname: '/login',
+              state: {
+                from: props.location
+              }
+            }}
+          />
+        );
       }}
     />
   );

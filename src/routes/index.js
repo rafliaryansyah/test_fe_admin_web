@@ -3,16 +3,23 @@ import { Login, Main, NotFound } from '../pages';
 // main routes here
 const appRoutes = [
   {
-    id: 17,
+    id: 18,
     title: 'Login',
     path: '/login',
     component: Login,
     exact: true
   },
   {
-    id: 16,
+    id: 17,
     title: 'Profile',
     path: '/profile',
+    component: Main,
+    exact: true
+  },
+  {
+    id: 16,
+    title: 'Promo',
+    path: '/promo',
     component: Main,
     exact: true
   },

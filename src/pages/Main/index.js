@@ -29,6 +29,7 @@ import Category from './Category';
 import Voucher from './Voucher';
 import UserLogs from './UserLogs';
 import Banner from './Banner';
+import Promo from './Promo';
 import Profile from './Profile';
 
 // components
@@ -255,6 +256,31 @@ function Main() {
                 );
               }}
             />
+
+            <Route
+              path="/promo"
+              children={({ match, history }) => {
+                return (
+                  <ListItem
+                    button
+                    selected={match ? true : false}
+                    onClick={() => {
+                      setDrawerNav(false);
+                      history.push('/promo');
+                    }}>
+                    <ListItemIcon>
+                      <ShoppingBasketIcon
+                        className={match ? classes.labelAktif : null}
+                      />
+                    </ListItemIcon>
+                    <ListItemText
+                      primary="Promo"
+                      className={match ? classes.labelAktif : null}
+                    />
+                  </ListItem>
+                );
+              }}
+            />
           </List>
         </div>
 
@@ -281,6 +307,7 @@ function Main() {
           <PrivateRoute path="/voucher" component={Voucher} />
           <PrivateRoute path="/user-logs" component={UserLogs} />
           <PrivateRoute path="/banner" component={Banner} />
+          <PrivateRoute path="/promo" component={Promo} />
           <PrivateRoute path="/profile" component={Profile} />
         </Switch>
         <div className={classes.footer}>
