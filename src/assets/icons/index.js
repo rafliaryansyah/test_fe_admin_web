@@ -1,5 +1,6 @@
 // import icons
+import DashboardIcon from './Vector.svg';
 
-const icons = {};
+const icons = { DashboardIcon };
 
 export { icons };

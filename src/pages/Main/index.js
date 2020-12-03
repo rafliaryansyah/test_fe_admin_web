@@ -28,6 +28,7 @@ import Toko from './Toko';
 import Category from './Category';
 import Voucher from './Voucher';
 import UserLogs from './UserLogs';
+import Banner from './Banner';
 import Profile from './Profile';
 
 // components
@@ -104,6 +105,7 @@ function Main() {
                 );
               }}
             />
+            
             <Route
               path="/customers"
               children={({ match, history }) => {
@@ -128,6 +130,7 @@ function Main() {
                 );
               }}
             />
+
             <Route
               path="/toko"
               children={({ match, history }) => {
@@ -177,6 +180,7 @@ function Main() {
                 );
               }}
             />
+
             <Route
               path="/voucher"
               children={({ match, history }) => {
@@ -201,6 +205,7 @@ function Main() {
                 );
               }}
             />
+
             <Route
               path="/user-logs"
               children={({ match, history }) => {
@@ -219,6 +224,31 @@ function Main() {
                     </ListItemIcon>
                     <ListItemText
                       primary="User Logs"
+                      className={match ? classes.labelAktif : null}
+                    />
+                  </ListItem>
+                );
+              }}
+            />
+
+            <Route
+              path="/banner"
+              children={({ match, history }) => {
+                return (
+                  <ListItem
+                    button
+                    selected={match ? true : false}
+                    onClick={() => {
+                      setDrawerNav(false);
+                      history.push('/banner');
+                    }}>
+                    <ListItemIcon>
+                      <ShoppingBasketIcon
+                        className={match ? classes.labelAktif : null}
+                      />
+                    </ListItemIcon>
+                    <ListItemText
+                      primary="Banner"
                       className={match ? classes.labelAktif : null}
                     />
                   </ListItem>
@@ -250,6 +280,7 @@ function Main() {
           <PrivateRoute path="/category" component={Category} />
           <PrivateRoute path="/voucher" component={Voucher} />
           <PrivateRoute path="/user-logs" component={UserLogs} />
+          <PrivateRoute path="/banner" component={Banner} />
           <PrivateRoute path="/profile" component={Profile} />
         </Switch>
         <div className={classes.footer}>
