@@ -1,6 +1,8 @@
 import actionTypes from '../actionTypes';
 
-const initialState = {};
+const initialState = {
+  user: {}
+};
 
 /**
  * @name profile

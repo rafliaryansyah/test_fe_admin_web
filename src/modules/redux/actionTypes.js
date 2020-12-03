@@ -1,4 +1,14 @@
 /**
+ * Global action types
+ */
+const global = {
+  SET_LOADING_APP: 'LOADING_APP/SET',
+  SET_SUCCESS: 'SUCCESS/SET',
+  SET_ERROR: 'ERROR/SET',
+  CLEAR_GLOBAL: 'GLOBAL/CLEAR'
+};
+
+/**
  * Profile action types
  */
 const profile = {
@@ -10,6 +20,7 @@ const profile = {
  * Action types
  */
 const actionTypes = {
+  global,
   profile
 };
 

@@ -13,7 +13,7 @@ const appInfo = {
 const appEnvironment = {
   dev: {
     api: {
-      baseurl: ''
+      baseurl: 'http://groceryapi.kabayancoding.com/api/v1'
     },
     firebase: {
       config: {}
@@ -21,7 +21,7 @@ const appEnvironment = {
   },
   prod: {
     api: {
-      baseurl: ''
+      baseurl: 'http://groceryapi.kabayancoding.com/api/v1'
     },
     firebase: {
       config: {}

@@ -1,2 +1,2 @@
-export * from './redux';
+export * from './Redux';
 export * from './Theme';

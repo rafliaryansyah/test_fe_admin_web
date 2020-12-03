@@ -1,9 +1,12 @@
 import { useState } from 'react';
 import useStyles from './styles';
 
-// Redux connect
+// react redux
 import { connect } from 'react-redux';
-import { } from '../../modules/Redux';
+import { setLoadingApp } from 'modules';
+
+// services
+import { login } from 'services';
 
 // notistack
 import { useSnackbar } from 'notistack';
@@ -23,7 +26,7 @@ import Button from '@material-ui/core/Button';
 // material-ui icons
 import { Visibility, VisibilityOff } from '@material-ui/icons';
 
-function Login({ history, login }) {
+function Login({ requestLoadingApp, loadingApp }) {
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
 
@@ -31,10 +34,12 @@ function Login({ history, login }) {
     email: '',
     password: ''
   });
+
   const [error, setError] = useState({
     email: '',
     password: ''
   });
+
   const [showPassword, setShowPassword] = useState(false);
 
   const handleChange = e => {
@@ -75,9 +80,12 @@ function Login({ history, login }) {
     if (Object.values(findErrors).some(err => err !== '')) {
       setError(findErrors);
     } else {
-      console.log('Submit : ', form);
+      requestLoadingApp(true);
+      await login(form);
     }
+    console.log(loadingApp);
   };
+
 
   return (
     <div className={classes.wrapper}>
@@ -129,8 +137,8 @@ function Login({ history, login }) {
                   {showPassword ? (
                     <Visibility color="primary" />
                   ) : (
-                      <VisibilityOff color="primary" />
-                    )}
+                    <VisibilityOff color="primary" />
+                  )}
                 </IconButton>
               </InputAdornment>
             }
@@ -157,8 +165,13 @@ function Login({ history, login }) {
   );
 }
 
-const mapDispatchToProps = dispatch => ({
-  login: form => dispatch()
+const mapStateToProps = state => ({
+  loadingApp: state.global.loadingApp
 });
 
-export default connect(null, mapDispatchToProps)(Login);
+const mapDispatchToProps = dispatch => ({
+  requestLoadingApp: value => dispatch(setLoadingApp(value))
+});
+
+// export default Login;
+export default connect(mapStateToProps, mapDispatchToProps)(Login);
