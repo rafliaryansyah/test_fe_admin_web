@@ -2,12 +2,12 @@ import { Route, Redirect } from 'react-router-dom';
 import propTypes from 'prop-types';
 
 export function PrivateRoute({ component: Component, ...rest }) {
-  const user = true;
+  const access_token = JSON.parse(localStorage.getItem('token'));
   return (
     <Route
       {...rest}
       render={props => {
-        return user ? (
+        return access_token ? (
           <Component {...props} />
         ) : (
           <Redirect
@@ -25,7 +25,6 @@ export function PrivateRoute({ component: Component, ...rest }) {
 }
 
 PrivateRoute.propTypes = {
-  component: propTypes,
   props: propTypes.object,
   location: propTypes.object
 };

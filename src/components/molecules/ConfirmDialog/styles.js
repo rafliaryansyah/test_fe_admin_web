@@ -11,7 +11,12 @@ const useStyles = makeStyles(() => ({
   teks: {
     fontSize: 13,
     marginLeft: -8,
-    letterSpacing: 1
+    letterSpacing: 1,
+    width: 250,
+    height: 50,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center'
   },
 
   lanjut: {

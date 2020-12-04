@@ -1,4 +1,4 @@
-import { Login, Main, NotFound } from '../pages';
+import { Login, Main, NotFound } from 'pages';
 
 // main routes here
 const appRoutes = [

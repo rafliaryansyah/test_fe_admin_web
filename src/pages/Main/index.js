@@ -300,7 +300,6 @@ function Main() {
 
       <div className={classes.main}>
         <Switch>
-          <PrivateRoute exact path="/" component={Dashboard} />
           <PrivateRoute path="/customers" component={Customers} />
           <PrivateRoute path="/toko" component={Toko} />
           <PrivateRoute path="/category" component={Category} />
@@ -309,6 +308,7 @@ function Main() {
           <PrivateRoute path="/banner" component={Banner} />
           <PrivateRoute path="/promo" component={Promo} />
           <PrivateRoute path="/profile" component={Profile} />
+          <PrivateRoute exact path="/" component={Dashboard} />
         </Switch>
         <div className={classes.footer}>
           <span className={classes.copyRight}>

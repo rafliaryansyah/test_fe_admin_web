@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Redirect } from 'react-router-dom';
 import useStyles from './styles';
 
 // react redux
@@ -26,7 +27,7 @@ import Button from '@material-ui/core/Button';
 // material-ui icons
 import { Visibility, VisibilityOff } from '@material-ui/icons';
 
-function Login({ requestLoadingApp, loadingApp }) {
+function Login({ requestLoadingApp, loadingApp, history }) {
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
 
@@ -72,6 +73,15 @@ function Login({ requestLoadingApp, loadingApp }) {
     return newError;
   };
 
+  if (JSON.parse(localStorage.getItem('token'))) {
+    const RedirectTo =
+      location.state && location.state.from && location.state.from.pathname
+        ? location.state.from.pathname
+        : '/';
+
+    return <Redirect to={RedirectTo} />;
+  }
+
   const submit = async e => {
     e.preventDefault();
 
@@ -81,11 +91,21 @@ function Login({ requestLoadingApp, loadingApp }) {
       setError(findErrors);
     } else {
       requestLoadingApp(true);
-      await login(form);
+      const result = await login(form);
+
+      if (result.success) {
+        history.replace('/');
+        enqueueSnackbar('Selamat datang di Grocery Admin App', {
+          variant: 'success'
+        });
+      } else {
+        enqueueSnackbar('Gagal masuk ke Grocery Admin App', {
+          variant: 'error'
+        });
+      }
     }
     console.log(loadingApp);
   };
-
 
   return (
     <div className={classes.wrapper}>

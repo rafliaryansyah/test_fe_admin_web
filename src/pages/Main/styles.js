@@ -21,9 +21,9 @@ const useStyles = makeStyles(theme => ({
   },
 
   toggle: {
-    color: '#41337A',
+    color: theme.palette.primary.main,
     '&:hover': {
-      backgroundColor: '#41337A',
+      backgroundColor: theme.palette.primary.main,
       color: '#ffffff'
     }
   },
@@ -32,7 +32,7 @@ const useStyles = makeStyles(theme => ({
     fontSize: 18,
     textTransform: 'capitalize',
     fontWeight: 'bold',
-    color: '#41337A'
+    color: theme.palette.primary.main
   },
 
   avatar: {
@@ -43,7 +43,7 @@ const useStyles = makeStyles(theme => ({
     textTransform: 'capitalize',
     fontWeight: 'bold',
     letterSpacing: 1,
-    color: '#41337A',
+    color: theme.palette.primary.main,
     display: 'flex',
     justifyContent: 'flex-start',
     alignItems: 'center',

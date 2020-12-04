@@ -38,7 +38,7 @@ const useStyles = makeStyles(theme => ({
   upload: {
     width: 269,
     padding: 15,
-    backgroundColor: '#41337A',
+    backgroundColor: theme.palette.primary.main,
     boxShadow: '0px 0px 3px rgba(0, 0, 0, 0.5)',
     borderRadius: 10
   },
