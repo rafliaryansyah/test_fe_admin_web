@@ -1,4 +1,12 @@
 /**
+ * Customer action types
+ */
+const customer = {
+  SET_CUSTOMERS: 'CUSTOMERS/SET',
+  CLEAR_CUSTOMER: 'CUSTOMER/CLEAR'
+};
+
+/**
  * Global action types
  */
 const global = {
@@ -21,7 +29,8 @@ const profile = {
  */
 const actionTypes = {
   global,
-  profile
+  profile,
+  customer
 };
 
 export default actionTypes;

@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import useStyles from './styles';
 import propTypes from 'prop-types';
 
@@ -13,10 +14,25 @@ import Select from '@material-ui/core/Select';
 import SearchIcon from '@material-ui/icons/Search';
 
 // components
-import { CardCustomers, Paginasi } from '../../../../components';
+import { CardCustomers, Paginasi } from 'components';
 
-function ListCustomers({ history }) {
+// services
+import { getCustomer } from 'services';
+
+// redux
+import { connect } from 'react-redux';
+import { setCustomers } from 'modules';
+
+function ListCustomers({ dataCustomers, history }) {
   const classes = useStyles();
+
+  useEffect(() => {
+    const resultGet = getCustomer();
+    if (resultGet.success) {
+      setCustomers(resultGet.data);
+    }
+    return resultGet;
+  }, []);
 
   return (
     <div className={classes.wrapper}>
@@ -51,42 +67,11 @@ function ListCustomers({ history }) {
       </div>
 
       <div className={classes.wrapperCard}>
-        <CardCustomers
-          srcImage="https://images.unsplash.com/photo-1549913772-820279f909b7?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=747&q=80"
-          nama="Sanjaya"
-          status="aktif"
-          jenisKelamin="pria"
-          email="sanjaya@customer.com"
-          noTelp="081232212320"
-          handleDetail={() => history.push('/customers/detail')}
-        />
-        <CardCustomers
-          srcImage="https://images.unsplash.com/photo-1549913772-820279f909b7?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=747&q=80"
-          nama="Sanjaya"
-          status="aktif"
-          jenisKelamin="pria"
-          email="sanjaya@customer.com"
-          noTelp="081232212320"
-          handleDetail={() => history.push('/customers/detail')}
-        />
-        <CardCustomers
-          srcImage="https://images.unsplash.com/photo-1549913772-820279f909b7?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=747&q=80"
-          nama="Sanjaya"
-          status="aktif"
-          jenisKelamin="pria"
-          email="sanjaya@customer.com"
-          noTelp="081232212320"
-          handleDetail={() => history.push('/customers/detail')}
-        />
-        <CardCustomers
-          srcImage="https://images.unsplash.com/photo-1549913772-820279f909b7?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=747&q=80"
-          nama="Sanjaya"
-          status="aktif"
-          jenisKelamin="pria"
-          email="sanjaya@customer.com"
-          noTelp="081232212320"
-          handleDetail={() => history.push('/customers/detail')}
-        />
+        {dataCustomers.map(data => (
+          <CardCustomers
+            handleDetail={() => history.push('/customers/detail')}
+          />
+        ))}
       </div>
 
       <Paginasi count={5} page={1} onClick={(e, value) => value} />
@@ -95,7 +80,11 @@ function ListCustomers({ history }) {
 }
 
 ListCustomers.propTypes = {
-  history: propTypes.object
+  dataCustomers: propTypes.array
 };
 
-export default ListCustomers;
+const mapStateToProps = state => ({
+  dataCustomers: state.customer.customers
+});
+
+export default connect(mapStateToProps, null)(ListCustomers);
