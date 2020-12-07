@@ -35,8 +35,10 @@ const useStyles = makeStyles(theme => ({
   },
 
   itemCart: {
-    border: '1px solid',
-    width: '100%'
+    width: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+    gridGap: 15
   },
 
   itemCard: {
