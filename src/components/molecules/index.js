@@ -5,6 +5,8 @@ import Paginasi from './Paginasi';
 import CardCustomers from './CardCustomers';
 import CardToko from './CardToko';
 import CardProduk from './CardProduk';
+import SimpleBarChart from './SimpleBarChart';
+import SimpleAreaChart from './SimpleAreaChart';
 
 export {
   ConfirmDialog,
@@ -12,5 +14,7 @@ export {
   Paginasi,
   CardCustomers,
   CardToko,
-  CardProduk
+  CardProduk,
+  SimpleBarChart,
+  SimpleAreaChart
 };

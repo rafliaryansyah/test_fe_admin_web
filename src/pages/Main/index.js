@@ -2,27 +2,43 @@ import { useState } from 'react';
 import { Switch, Route } from 'react-router-dom';
 import useStyles from './styles';
 
+// useTheme
+import { useTheme } from '@material-ui/core/styles';
+
 // material-ui core
-import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import IconButton from '@material-ui/core/IconButton';
-import Button from '@material-ui/core/Button';
-import Avatar from '@material-ui/core/Avatar';
+import {
+  AppBar,
+  Toolbar,
+  Button,
+  IconButton,
+  Typography,
+  Drawer,
+  Divider,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  Avatar
+} from '@material-ui/core';
 
 // material-ui icons
-import MenuIcon from '@material-ui/icons/Menu';
-import DashboardIcon from '@material-ui/icons/Dashboard';
-import GroupIcon from '@material-ui/icons/Group';
-import StoreIcon from '@material-ui/icons/Store';
-import ShoppingBasketIcon from '@material-ui/icons/ShoppingBasket';
-import BorderAllIcon from '@material-ui/icons/BorderAll';
-import StyleIcon from '@material-ui/icons/Style';
+import {
+  Menu,
+  ChevronRight,
+  ChevronLeft,
+  Inbox,
+  Mail,
+  Dashboard,
+  Group,
+  Store,
+  BorderAll,
+  Style,
+  ShoppingBasket,
+  ExitToApp
+} from '@material-ui/icons';
 
 // Pages
-import Dashboard from './Dahsboard';
+import DashboardPage from './Dahsboard';
 import Customers from './Customers';
 import Toko from './Toko';
 import Category from './Category';
@@ -33,52 +49,38 @@ import Promo from './Promo';
 import Profile from './Profile';
 
 // components
-import { PrivateRoute, ConfirmDialog } from '../../components';
+import { PrivateRoute, ConfirmDialog, NavLink } from 'components';
 
-function Main() {
+function Main({ history }) {
   const classes = useStyles();
+  const theme = useTheme();
 
   const [drawerNav, setDrawerNav] = useState(false);
   const [open, setOpen] = useState(false);
 
   return (
     <div className={classes.wrapper}>
-      <div className={classes.header}>
-        <IconButton
-          onClick={() => setDrawerNav(!drawerNav)}
-          className={classes.toggle}>
-          <MenuIcon />
-        </IconButton>
-        <label className={classes.title}>
-          <Switch>
-            <Route exact path="/" children="Grocery Web Admin" />
-            <Route path="/customers" children="customers" />
-            <Route path="/toko" children="toko" />
-            <Route path="/orders" children="orders" />
-            <Route path="/category" children="category" />
-            <Route path="/voucher" children="voucher" />
-          </Switch>
-        </label>
-        <Route
-          path="/profile"
-          children={({ history }) => {
-            return (
-              <IconButton
-                onClick={() => history.push('/profile')}
-                className={classes.avatar}>
-                <Avatar alt="Remy Sharp" src="" />
-              </IconButton>
-            );
-          }}
-        />
+      <div className={classes.appBar}>
+        <div className={classes.buttonDanTitle}>
+          <IconButton onClick={() => setDrawerNav(!drawerNav)} color="primary">
+            <Menu />
+          </IconButton>
+          <label className={classes.title}>Grocery App</label>
+        </div>
+        <div className={classes.wrapperAvatar}>
+          <IconButton
+            onClick={() => history.push('/profile')}
+            className={classes.avatar}>
+            <Avatar alt="Remy Sharp" src="" />
+          </IconButton>
+          <div className={classes.teks}>
+            <span className={classes.nama}>budiman</span>
+            <span className={classes.akses}>admin</span>
+          </div>
+        </div>
       </div>
 
-      <SwipeableDrawer
-        anchor="left"
-        open={drawerNav}
-        onClose={() => setDrawerNav(false)}
-        onOpen={() => setDrawerNav(!drawerNav)}
-        className={classes.menu}>
+      <div className={drawerNav ? classes.menu : classes.menuShift}>
         <div className={classes.wrapperList}>
           <List component="nav">
             <Route
@@ -94,19 +96,21 @@ function Main() {
                       history.push('/');
                     }}>
                     <ListItemIcon>
-                      <DashboardIcon
+                      <Dashboard
                         className={match ? classes.labelAktif : null}
                       />
                     </ListItemIcon>
-                    <ListItemText
-                      primary="Dashboard"
-                      className={match ? classes.labelAktif : null}
-                    />
+                    {drawerNav ? (
+                      <ListItemText
+                        primary="Dashboard"
+                        className={match ? classes.labelAktif : null}
+                      />
+                    ) : null}
                   </ListItem>
                 );
               }}
             />
-            
+
             <Route
               path="/customers"
               children={({ match, history }) => {
@@ -119,14 +123,14 @@ function Main() {
                       history.push('/customers');
                     }}>
                     <ListItemIcon>
-                      <GroupIcon
+                      <Group className={match ? classes.labelAktif : null} />
+                    </ListItemIcon>
+                    {drawerNav ? (
+                      <ListItemText
+                        primary="Customers"
                         className={match ? classes.labelAktif : null}
                       />
-                    </ListItemIcon>
-                    <ListItemText
-                      primary="Customers"
-                      className={match ? classes.labelAktif : null}
-                    />
+                    ) : null}
                   </ListItem>
                 );
               }}
@@ -144,19 +148,19 @@ function Main() {
                       history.push('/toko');
                     }}>
                     <ListItemIcon>
-                      <StoreIcon
+                      <Store className={match ? classes.labelAktif : null} />
+                    </ListItemIcon>
+                    {drawerNav ? (
+                      <ListItemText
+                        primary="Toko"
                         className={match ? classes.labelAktif : null}
                       />
-                    </ListItemIcon>
-                    <ListItemText
-                      primary="Toko"
-                      className={match ? classes.labelAktif : null}
-                    />
+                    ) : null}
                   </ListItem>
                 );
               }}
             />
-            
+
             <Route
               path="/category"
               children={({ match, history }) => {
@@ -169,14 +173,16 @@ function Main() {
                       history.push('/category');
                     }}>
                     <ListItemIcon>
-                      <BorderAllIcon
+                      <BorderAll
                         className={match ? classes.labelAktif : null}
                       />
                     </ListItemIcon>
-                    <ListItemText
-                      primary="Category"
-                      className={match ? classes.labelAktif : null}
-                    />
+                    {drawerNav ? (
+                      <ListItemText
+                        primary="Category"
+                        className={match ? classes.labelAktif : null}
+                      />
+                    ) : null}
                   </ListItem>
                 );
               }}
@@ -194,14 +200,14 @@ function Main() {
                       history.push('/voucher');
                     }}>
                     <ListItemIcon>
-                      <StyleIcon
+                      <Style className={match ? classes.labelAktif : null} />
+                    </ListItemIcon>
+                    {drawerNav ? (
+                      <ListItemText
+                        primary="Voucher"
                         className={match ? classes.labelAktif : null}
                       />
-                    </ListItemIcon>
-                    <ListItemText
-                      primary="Voucher"
-                      className={match ? classes.labelAktif : null}
-                    />
+                    ) : null}
                   </ListItem>
                 );
               }}
@@ -219,14 +225,16 @@ function Main() {
                       history.push('/user-logs');
                     }}>
                     <ListItemIcon>
-                      <ShoppingBasketIcon
+                      <ShoppingBasket
                         className={match ? classes.labelAktif : null}
                       />
                     </ListItemIcon>
-                    <ListItemText
-                      primary="User Logs"
-                      className={match ? classes.labelAktif : null}
-                    />
+                    {drawerNav ? (
+                      <ListItemText
+                        primary="User Logs"
+                        className={match ? classes.labelAktif : null}
+                      />
+                    ) : null}
                   </ListItem>
                 );
               }}
@@ -244,14 +252,16 @@ function Main() {
                       history.push('/banner');
                     }}>
                     <ListItemIcon>
-                      <ShoppingBasketIcon
+                      <ShoppingBasket
                         className={match ? classes.labelAktif : null}
                       />
                     </ListItemIcon>
-                    <ListItemText
-                      primary="Banner"
-                      className={match ? classes.labelAktif : null}
-                    />
+                    {drawerNav ? (
+                      <ListItemText
+                        primary="Banner"
+                        className={match ? classes.labelAktif : null}
+                      />
+                    ) : null}
                   </ListItem>
                 );
               }}
@@ -269,14 +279,16 @@ function Main() {
                       history.push('/promo');
                     }}>
                     <ListItemIcon>
-                      <ShoppingBasketIcon
+                      <ShoppingBasket
                         className={match ? classes.labelAktif : null}
                       />
                     </ListItemIcon>
-                    <ListItemText
-                      primary="Promo"
-                      className={match ? classes.labelAktif : null}
-                    />
+                    {drawerNav ? (
+                      <ListItemText
+                        primary="Promo"
+                        className={match ? classes.labelAktif : null}
+                      />
+                    ) : null}
                   </ListItem>
                 );
               }}
@@ -286,19 +298,19 @@ function Main() {
 
         <div className={classes.keluar}>
           <Button
-            variant="outlined"
+            variant="contained"
             color="secondary"
             fullWidth
             onClick={() => {
               setDrawerNav(false);
               setOpen(true);
             }}>
-            keluar
+            {drawerNav ? 'keluar' : <ExitToApp />}
           </Button>
         </div>
-      </SwipeableDrawer>
+      </div>
 
-      <div className={classes.main}>
+      <div className={drawerNav ? classes.main : classes.mainShift}>
         <Switch>
           <PrivateRoute path="/customers" component={Customers} />
           <PrivateRoute path="/toko" component={Toko} />
@@ -308,7 +320,7 @@ function Main() {
           <PrivateRoute path="/banner" component={Banner} />
           <PrivateRoute path="/promo" component={Promo} />
           <PrivateRoute path="/profile" component={Profile} />
-          <PrivateRoute exact path="/" component={Dashboard} />
+          <PrivateRoute exact path="/" component={DashboardPage} />
         </Switch>
         <div className={classes.footer}>
           <span className={classes.copyRight}>

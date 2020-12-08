@@ -1,103 +1,26 @@
 import useStyles from './styles';
 
-// react chart js 2
-import { Bar, Line } from 'react-chartjs-2';
-
 // material-ui core
 import {
+  Button,
   FormControl,
   InputLabel,
   Select,
   MenuItem,
   Card,
   CardActionArea,
-  CardContent
+  CardContent,
+  CardActions
 } from '@material-ui/core';
 
 // material-ui icons
 import { Money } from '@material-ui/icons';
-import { useState } from 'react';
+
+// components
+import { SimpleBarChart, SimpleAreaChart } from 'components';
 
 function Dashboard() {
   const classes = useStyles();
-
-  const [dataBar, setDataBar] = useState([300, 290, 250, 240, 180]);
-  const [dataLine, setDataLine] = useState([300, 290, 250, 240, 180]);
-
-  // data for bar
-  const dataChartForBar = {
-    labels: [
-      'Sanjaya Store',
-      'Pet Carez',
-      'Clean Freak',
-      'Chips Factory',
-      'Toy Haven'
-    ],
-    datasets: [
-      {
-        label: 'Top 5 Toko',
-        data: dataBar,
-        backgroundColor: [
-          'rgba(255, 99, 132, 0.2)',
-          'rgba(54, 162, 235, 0.2)',
-          'rgba(255, 206, 86, 0.2)',
-          'rgba(75, 192, 192, 0.2)',
-          'rgba(153, 102, 255, 0.2)',
-          'rgba(255, 159, 64, 0.2)'
-        ],
-        borderColor: [
-          'rgba(255, 99, 132, 1)',
-          'rgba(54, 162, 235, 1)',
-          'rgba(255, 206, 86, 1)',
-          'rgba(75, 192, 192, 1)',
-          'rgba(153, 102, 255, 1)',
-          'rgba(255, 159, 64, 1)'
-        ],
-        borderWidth: 1
-      }
-    ]
-  };
-
-  // data for line
-  const dataChartForLine = {
-    labels: [
-      'Jan',
-      'Feb',
-      'Mar',
-      'Apr',
-      'Mei',
-      'Jun',
-      'Jul',
-      'Agu',
-      'Sep',
-      'Okt',
-      'Nov',
-      'Des'
-    ],
-    datasets: [
-      {
-        label: 'Top 5 Toko',
-        data: dataLine,
-        backgroundColor: [
-          'rgba(255, 99, 132, 0.2)',
-          'rgba(54, 162, 235, 0.2)',
-          'rgba(255, 206, 86, 0.2)',
-          'rgba(75, 192, 192, 0.2)',
-          'rgba(153, 102, 255, 0.2)',
-          'rgba(255, 159, 64, 0.2)'
-        ],
-        borderColor: [
-          'rgba(255, 99, 132, 1)',
-          'rgba(54, 162, 235, 1)',
-          'rgba(255, 206, 86, 1)',
-          'rgba(75, 192, 192, 1)',
-          'rgba(153, 102, 255, 1)',
-          'rgba(255, 159, 64, 1)'
-        ],
-        borderWidth: 1
-      }
-    ]
-  };
 
   return (
     <div className={classes.wrapper}>
@@ -118,39 +41,13 @@ function Dashboard() {
         </FormControl>
       </div>
       <div className={classes.main}>
-        <div className={classes.itemCart}>
-          <Bar
-            data={dataChartForBar}
-            width={100}
-            options={{
-              maintainAspectRatio: false,
-              scales: {
-                yAxes: [
-                  {
-                    ticks: {
-                      beginAtZero: true
-                    }
-                  }
-                ]
-              }
-            }}
-          />
-          <Line
-            data={dataChartForLine}
-            width={100}
-            options={{
-              maintainAspectRatio: false,
-              scales: {
-                yAxes: [
-                  {
-                    ticks: {
-                      beginAtZero: true
-                    }
-                  }
-                ]
-              }
-            }}
-          />
+        <div className={classes.itemCharts}>
+          <div>
+            <SimpleBarChart />
+          </div>
+          <div>
+            <SimpleAreaChart />
+          </div>
         </div>
         <div className={classes.itemCard}>
           <Card className={classes.card}>

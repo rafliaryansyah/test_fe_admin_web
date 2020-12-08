@@ -25,29 +25,30 @@ const useStyles = makeStyles(theme => ({
     }
   },
 
+  // main
   main: {
     backgroundColor: '#ffffff',
     boxShadow: '0px 0px 1px rgba(0, 0, 0, 0.3)',
     padding: 30,
-    display: 'flex',
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
     justifyContent: 'space-between',
     gridGap: 30
   },
 
-  itemCart: {
-    width: '100%',
-    display: 'flex',
-    flexDirection: 'column',
+  itemCharts: {
+    display: 'grid',
     gridGap: 15
   },
 
   itemCard: {
-    width: 400
+    display: 'grid',
+    gridGap: 15
   },
 
+  // card info
   card: {
     borderRadius: 10,
-    marginBottom: 15,
     backgroundColor: theme.palette.primary.main,
     color: '#ffffff'
   },
@@ -68,6 +69,7 @@ const useStyles = makeStyles(theme => ({
     letterSpacing: 1,
     fontWeight: 'bold'
   }
+  // -----------------------------------------
 }));
 
 export default useStyles;

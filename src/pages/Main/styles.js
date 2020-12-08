@@ -1,42 +1,107 @@
 import { makeStyles } from '@material-ui/core/styles';
 
-const useStyles = makeStyles(theme => ({
-  wrapper: {
-    backgroundColor: '#F2F2F2',
-    height: '100vh'
-  },
+const drawerWidth = 87;
 
-  // Header
-  header: {
-    backgroundColor: '#FFFFFF',
+const useStyles = makeStyles(theme => ({
+  wrapper: {},
+
+  // app bar
+  appBar: {
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 15,
+    gridGap: 15,
+    padding: '0px 15px 0px 15px',
+    boxShadow: '0px 0px 1px rgba(0, 0, 0, 0.5)',
     position: 'fixed',
+    zIndex: 10,
     width: '100%',
-    boxShadow: '0px 0px 3px rgba(0, 0, 0, 0.1)',
-    zIndex: 2,
-    textTransform: 'capitalize'
-  },
+    backgroundColor: '#ffffff',
 
-  toggle: {
-    color: theme.palette.primary.main,
-    '&:hover': {
-      backgroundColor: theme.palette.primary.main,
-      color: '#ffffff'
+    [theme.breakpoints.down('sm')]: {
+      padding: 0
     }
   },
 
-  title: {
-    fontSize: 18,
-    textTransform: 'capitalize',
-    fontWeight: 'bold',
-    color: theme.palette.primary.main
+  buttonDanTitle: {
+    display: 'flex',
+    alignItems: 'center'
   },
 
-  avatar: {
-    right: 35
+  // nama app
+  title: {
+    fontSize: 20,
+    textTransform: 'capitalize',
+    fontWeight: 'bold',
+    color: theme.palette.primary.main,
+
+    [theme.breakpoints.down('sm')]: {
+      fontSize: 15
+    }
+  },
+
+  // avatar
+  wrapperAvatar: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    gridGap: 5,
+    marginRight: 64,
+
+    [theme.breakpoints.down('sm')]: {
+      marginRight: 14
+    }
+  },
+
+  teks: {
+    display: 'flex',
+    flexDirection: 'column',
+    gridGap: 10
+  },
+
+  nama: {
+    fontSize: 13,
+    textTransform: 'capitalize',
+    letterSpacing: 1,
+    fontWeight: 'bold'
+  },
+
+  akses: {
+    fontSize: 10,
+    textTransform: 'capitalize',
+    letterSpacing: 1,
+    fontWeight: 'lighter'
+  },
+
+  // menu
+  menu: {
+    width: 240,
+    height: '100vh',
+    position: 'fixed',
+    top: 65,
+    backgroundColor: '#ffffff',
+    boxShadow: '0px 0px 1px rgba(0, 0, 0, 0.5)',
+    display: 'flex',
+    flexDirection: 'column',
+    gridGap: 80
+  },
+
+  menuShift: {
+    width: drawerWidth,
+    height: '100vh',
+    position: 'fixed',
+    top: 65,
+    backgroundColor: '#ffffff',
+    boxShadow: '0px 0px 1px rgba(0, 0, 0, 0.5)',
+    display: 'flex',
+    flexDirection: 'column',
+    gridGap: 126
+  },
+
+  wrapperList: {
+    overflowY: 'auto',
+    padding: 15,
+    maxHeight: 400
   },
 
   labelAktif: {
@@ -50,20 +115,33 @@ const useStyles = makeStyles(theme => ({
     gridGap: 15
   },
 
-  wrapperList: {
-    overflowY: 'auto',
-    padding: 15,
-    maxHeight: 400
-  },
-
   keluar: {
-    margin: '0px 15px 0px 15px'
+    margin: '0px 10px 0px 10px'
   },
 
   // Content
   main: {
+    padding: theme.spacing(3),
     backgroundColor: '#F2F2F2',
-    padding: '110px 30px 30px 30px'
+    paddingTop: 86,
+
+    transition: theme.transitions.create('margin', {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.leavingScreen
+    }),
+    marginLeft: 240
+  },
+
+  mainShift: {
+    padding: theme.spacing(3),
+    backgroundColor: '#F2F2F2',
+    paddingTop: 86,
+
+    transition: theme.transitions.create('margin', {
+      easing: theme.transitions.easing.easeOut,
+      duration: theme.transitions.duration.enteringScreen
+    }),
+    marginLeft: drawerWidth
   },
 
   // footer
