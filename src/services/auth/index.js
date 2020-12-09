@@ -4,29 +4,23 @@ import API from 'configs/api';
 /**
  * service authentication for log in
  */
-export const login = async form => {
+export const login = form => {
   return new Promise((resolve, reject) => {
-    const payload = {
+    const data = {
       body: form
     };
 
-    API.login(payload)
+    API.login(data)
       .then(res => {
-        console.log(res.data);
-
         if (res.data.code === 200) {
-          if (res && res.data && res.data.token) {
-            const token = JSON.stringify(res.data.token);
+          const token = JSON.stringify(res.data.token);
 
-            localStorage.setItem('token', token);
-          }
+          localStorage.setItem('token', token);
         }
 
         resolve({ success: true, data: res.data });
       })
       .catch(err => {
-        console.log(err);
-
         reject({ success: false, data: err });
       });
   });
@@ -36,8 +30,3 @@ export const login = async form => {
  * service authentication for registration
  */
 export const registration = () => {};
-
-/**
- * service authentication for registration
- */
-export const logout = () => {};

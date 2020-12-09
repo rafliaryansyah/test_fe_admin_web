@@ -1,9 +1,7 @@
 import actionTypes from '../actionTypes';
 
 const initialState = {
-  loadingApp: false,
-  success: '',
-  error: ''
+  loadingApp: false
 };
 
 /**
@@ -16,18 +14,6 @@ const global = (state = initialState, action) => {
       return {
         ...state,
         loadingApp: action.value
-      };
-
-    case actionTypes.global.SET_SUCCESS:
-      return {
-        ...state,
-        success: action.value
-      };
-
-    case actionTypes.global.SET_ERROR:
-      return {
-        ...state,
-        error: action.value
       };
 
     case actionTypes.global.CLEAR_GLOBAL:

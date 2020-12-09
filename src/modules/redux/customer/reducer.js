@@ -81,7 +81,7 @@ const initialState = {
     isDeleted: false,
     isDeletedAt: false,
     createdAt: 1607177455,
-    roles: ['customer']
+    roles: ['customer', 'super-admin-merchant']
   }
 };
 
