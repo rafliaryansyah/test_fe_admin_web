@@ -1,8 +1,5 @@
 import useStyles from './styles';
 
-// react chart js 2
-import { Bar, Line } from 'react-chartjs-2';
-
 // material-ui core
 import {
   FormControl,
@@ -119,38 +116,7 @@ function Dashboard() {
       </div>
       <div className={classes.main}>
         <div className={classes.itemCart}>
-          <Bar
-            data={dataChartForBar}
-            width={100}
-            options={{
-              maintainAspectRatio: false,
-              scales: {
-                yAxes: [
-                  {
-                    ticks: {
-                      beginAtZero: true
-                    }
-                  }
-                ]
-              }
-            }}
-          />
-          <Line
-            data={dataChartForLine}
-            width={100}
-            options={{
-              maintainAspectRatio: false,
-              scales: {
-                yAxes: [
-                  {
-                    ticks: {
-                      beginAtZero: true
-                    }
-                  }
-                ]
-              }
-            }}
-          />
+          
         </div>
         <div className={classes.itemCard}>
           <Card className={classes.card}>

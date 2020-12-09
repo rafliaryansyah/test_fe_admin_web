@@ -17,21 +17,17 @@ import SearchIcon from '@material-ui/icons/Search';
 import { CardCustomers, Paginasi } from 'components';
 
 // services
-import { getCustomer } from 'services';
+import { getCustomers } from 'services';
 
 // redux
 import { connect } from 'react-redux';
 import { setCustomers } from 'modules';
 
-function ListCustomers({ dataCustomers, history }) {
+function ListCustomers({ setDataCustomers, dataCustomers, history }) {
   const classes = useStyles();
 
   useEffect(() => {
-    const resultGet = getCustomer();
-    if (resultGet.success) {
-      setCustomers(resultGet.data);
-    }
-    return resultGet;
+    // getCustomers().then(res => setDataCustomers(res.data));
   }, []);
 
   return (
@@ -67,9 +63,16 @@ function ListCustomers({ dataCustomers, history }) {
       </div>
 
       <div className={classes.wrapperCard}>
-        {dataCustomers.map(data => (
+        {dataCustomers.map(user => (
           <CardCustomers
-            handleDetail={() => history.push('/customers/detail')}
+            key={user.id}
+            nama={user.name}
+            status={user.statusUser && user.statusUser.name}
+            jenisKelamin={user.gender && user.gender.name}
+            email={user.email}
+            noTelp={user.phone}
+            roles={user.roles}
+            handleDetail={() => history.push(`/customers/${user.id}`)}
           />
         ))}
       </div>
@@ -80,11 +83,16 @@ function ListCustomers({ dataCustomers, history }) {
 }
 
 ListCustomers.propTypes = {
-  dataCustomers: propTypes.array
+  dataCustomers: propTypes.array,
+  setDataCustomers: propTypes.func
 };
 
 const mapStateToProps = state => ({
   dataCustomers: state.customer.customers
 });
 
-export default connect(mapStateToProps, null)(ListCustomers);
+const mapDispatchToProps = dispatch => ({
+  setDataCustomers: value => dispatch(setCustomers(value))
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(ListCustomers);

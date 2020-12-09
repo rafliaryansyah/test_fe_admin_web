@@ -1,16 +1,33 @@
 import API from 'configs/api';
 
 /**
- * service customer for get data customer
+ * service customer for get all data customer
  */
-export const getCustomer = () => {
+export const getCustomers = () => {
   return new Promise((resolve, reject) => {
     API.customers()
       .then(res => {
-        if (res.data && res.data.code === 200) {
-          console.log(res.data);
-        }
+        resolve({ success: true, data: res.data });
+      })
+      .catch(err => {
+        console.log(err);
 
+        reject({ success: false, data: err });
+      });
+  });
+};
+
+/**
+ * service customer for get per data customer
+ */
+export const getCustomer = id => {
+  return new Promise((resolve, reject) => {
+    const data = {
+      path: `${id}/detail`
+    };
+
+    API.customer(data)
+      .then(res => {
         resolve({ success: true, data: res.data });
       })
       .catch(err => {

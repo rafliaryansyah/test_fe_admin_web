@@ -103,7 +103,7 @@ const appRoutes = [
   {
     id: 4,
     title: 'Detail Customer',
-    path: '/customers/detail',
+    path: '/customers/:id',
     component: Main,
     exact: true
   },
