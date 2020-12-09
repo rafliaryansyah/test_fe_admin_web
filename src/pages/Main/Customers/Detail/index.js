@@ -29,23 +29,17 @@ import { getCustomer } from 'services';
 function Detail({ setDataCustomer, dataCustomer, history }) {
   const classes = useStyles();
 
+  // useParams untuk mengambil id dari url
   const { id } = useParams();
 
   const [open, setOpen] = useState(false);
-  const [confirmHapus, setConfirmHapus] = useState(false);
-  const [confirmAktif, setConfirmAktif] = useState(false);
 
   const [form, setForm] = useState({
-    role: ''
-  });
-
-  const [roles, setRoles] = useState({
-    customer: true,
-    sa_merchant: false
+    roles: dataCustomer.roles
   });
 
   const handleChange = e => {
-    setRoles({ ...roles, [e.target.name]: e.target.checked });
+    setForm();
   };
 
   const submit = e => {
@@ -75,28 +69,19 @@ function Detail({ setDataCustomer, dataCustomer, history }) {
           />
           <div className={classes.roles}>
             <p className={classes.title}>roles :</p>
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={roles.customer}
-                  onChange={handleChange}
-                  name="customer"
-                  color="primary"
-                />
-              }
-              label="Customer"
-            />
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={roles.sa_merchant}
-                  onChange={handleChange}
-                  name="sa_merchant"
-                  color="primary"
-                />
-              }
-              label="SA.Merchant"
-            />
+            {dataCustomer.roles.map(role => (
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    // checked={roles.customer}
+                    onChange={handleChange}
+                    name={role}
+                    color="primary"
+                  />
+                }
+                label={role}
+              />
+            ))}
           </div>
         </div>
 
@@ -140,10 +125,10 @@ function Detail({ setDataCustomer, dataCustomer, history }) {
             <FormLabel component="legend">Pilih Role</FormLabel>
             <RadioGroup
               row
-              aria-label="tambah_role"
-              name="tambah_role"
-              value={form.role}
-              onChange={e => setForm({ ...form, role: e.target.value })}
+              aria-label="tambah_roles"
+              name="tambah_roles"
+              value={form.roles}
+              onChange={e => setForm({ ...form, roles: e.target.value })}
               defaultValue="top">
               <FormControlLabel
                 value="admin"
@@ -166,18 +151,18 @@ function Detail({ setDataCustomer, dataCustomer, history }) {
             variant="contained"
             color="primary"
             onClick={submit}
-            disabled={form.role ? false : true}
+            disabled={form.roles ? false : true}
             fullWidth>
             simpan
           </Button>
         </div>
       </CompDialog>
-      <ConfirmDialog
+      {/* <ConfirmDialog
         open={confirmHapus}
         close={() => setConfirmHapus(false)}
         title="Hapus Role">
         Yakin ingin menghapus role ?
-      </ConfirmDialog>
+      </ConfirmDialog> */}
     </div>
   );
 }

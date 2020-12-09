@@ -1,3 +1,4 @@
 // import
+import LoadingApp from './LoadingApp';
 
-export { };
+export { LoadingApp };

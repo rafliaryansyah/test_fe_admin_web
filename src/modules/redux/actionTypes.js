@@ -12,8 +12,6 @@ const customer = {
  */
 const global = {
   SET_LOADING_APP: 'LOADING_APP/SET',
-  SET_SUCCESS: 'SUCCESS/SET',
-  SET_ERROR: 'ERROR/SET',
   CLEAR_GLOBAL: 'GLOBAL/CLEAR'
 };
 

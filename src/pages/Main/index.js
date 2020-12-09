@@ -58,6 +58,12 @@ function Main({ history }) {
   const [drawerNav, setDrawerNav] = useState(false);
   const [open, setOpen] = useState(false);
 
+  const logout = () => {
+    setOpen(false);
+    localStorage.removeItem('token');
+    history.push('/login');
+  }
+
   return (
     <div className={classes.wrapper}>
       <div className={classes.appBar}>
@@ -332,7 +338,7 @@ function Main({ history }) {
       <ConfirmDialog
         open={open}
         close={() => setOpen(false)}
-        submit={() => console.log('keluar')}
+        submit={logout}
         title="Keluar dari Grocery">
         Apakah anda yakin ingin keluar dari Grocery?
       </ConfirmDialog>

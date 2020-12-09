@@ -11,26 +11,6 @@ export const setLoadingApp = value => ({
 });
 
 /**
- * @name setSuccess
- * @param {*} value
- * @description redux action untuk set profile
- */
-export const setSuccess = value => ({
-  type: actionTypes.global.SET_SUCCESS,
-  value
-});
-
-/**
- * @name setError
- * @param {*} value
- * @description redux action untuk set profile
- */
-export const setError = value => ({
-  type: actionTypes.global.SET_ERROR,
-  value
-});
-
-/**
  * @name clearGlobal
  * @description redux action untuk clear data profile
  */

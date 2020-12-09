@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Redirect } from 'react-router-dom';
 import useStyles from './styles';
+import propTypes from 'prop-types';
 
 // react redux
 import { connect } from 'react-redux';
@@ -27,7 +28,10 @@ import Button from '@material-ui/core/Button';
 // material-ui icons
 import { Visibility, VisibilityOff } from '@material-ui/icons';
 
-function Login({ requestLoadingApp, loadingApp, history }) {
+// components
+import { LoadingApp } from 'components';
+
+function Login({ requestLoadingApp, loadingApp }) {
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
 
@@ -73,6 +77,10 @@ function Login({ requestLoadingApp, loadingApp, history }) {
     return newError;
   };
 
+  if (loadingApp) {
+    return <LoadingApp />;
+  }
+
   if (JSON.parse(localStorage.getItem('token'))) {
     const RedirectTo =
       location.state && location.state.from && location.state.from.pathname
@@ -91,20 +99,20 @@ function Login({ requestLoadingApp, loadingApp, history }) {
       setError(findErrors);
     } else {
       requestLoadingApp(true);
-      const result = await login(form);
+      const result = await login(form).catch(err => err);
 
       if (result.success) {
-        history.replace('/');
+        requestLoadingApp(false);
         enqueueSnackbar('Selamat datang di Grocery Admin App', {
           variant: 'success'
         });
       } else {
-        enqueueSnackbar('Gagal masuk ke Grocery Admin App', {
+        requestLoadingApp(false);
+        enqueueSnackbar(result.data.message, {
           variant: 'error'
         });
       }
     }
-    console.log(loadingApp);
   };
 
   return (
@@ -185,6 +193,11 @@ function Login({ requestLoadingApp, loadingApp, history }) {
   );
 }
 
+Login.propTypes = {
+  requestLoadingApp: propTypes.func,
+  loadingApp: propTypes.bool
+};
+
 const mapStateToProps = state => ({
   loadingApp: state.global.loadingApp
 });
@@ -193,5 +206,4 @@ const mapDispatchToProps = dispatch => ({
   requestLoadingApp: value => dispatch(setLoadingApp(value))
 });
 
-// export default Login;
 export default connect(mapStateToProps, mapDispatchToProps)(Login);
