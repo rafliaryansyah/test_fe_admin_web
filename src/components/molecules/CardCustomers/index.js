@@ -8,6 +8,7 @@ const CardCustomers = ({
   jenisKelamin,
   email,
   noTelp,
+  roles,
   handleDetail
 }) => {
   const classes = useStyles();
@@ -56,8 +57,7 @@ const CardCustomers = ({
       </div>
       <div className={classes.garis}></div>
       <div className={classes.role}>
-        <p className={classes.isiRole}>customer</p>
-        <p className={classes.isiRoleNonAktif}>SA.Merchant</p>
+        {roles.map(item => <p className={classes.isiRole}>{item}</p>)}
       </div>
     </div>
   );
@@ -70,6 +70,7 @@ CardCustomers.propTypes = {
   jenisKelamin: propTypes.string.isRequired,
   email: propTypes.string.isRequired,
   noTelp: propTypes.string.isRequired,
+  roles: propTypes.array,
   handleDetail: propTypes.func.isRequired
 };
 

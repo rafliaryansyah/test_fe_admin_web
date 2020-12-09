@@ -59,7 +59,7 @@ class ApiRequest {
    * @param {*} token
    * @description Method untuk handling call api
    */
-  static async request(method, route, payload = {}) {
+  static async request(method, route, payload = {}, token) {
     const path = payload.path ? `/${payload.path}` : '';
 
     const params = payload.params
@@ -74,6 +74,11 @@ class ApiRequest {
           ? 'multipart/form-data'
           : 'application/json'
     };
+
+    if (token) {
+      const token = JSON.parse(localStorage.getItem('token'));
+      baseHeaders.Authorization = `Bearer ${token || ''}`;
+    }
 
     const requestPayload = {
       url: customUrl.length > 0 ? customUrl : route + path + params,

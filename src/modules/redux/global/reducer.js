@@ -15,19 +15,19 @@ const global = (state = initialState, action) => {
     case actionTypes.global.SET_LOADING_APP:
       return {
         ...state,
-        ...action.value
+        loadingApp: action.value
       };
 
     case actionTypes.global.SET_SUCCESS:
       return {
         ...state,
-        ...action.value
+        success: action.value
       };
 
     case actionTypes.global.SET_ERROR:
       return {
         ...state,
-        ...action.value
+        error: action.value
       };
 
     case actionTypes.global.CLEAR_GLOBAL:

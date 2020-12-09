@@ -1,3 +1,5 @@
+import { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import useStyles from './styles';
 import propTypes from 'prop-types';
 
@@ -13,13 +15,21 @@ import FormLabel from '@material-ui/core/FormLabel';
 
 // material-ui icons
 import { ArrowBack } from '@material-ui/icons';
-import { useState } from 'react';
 
 // components
-import { CompDialog, ConfirmDialog } from '../../../../components';
+import { CompDialog, ConfirmDialog } from 'components';
 
-function Detail({ history }) {
+// react redux
+import { connect } from 'react-redux';
+import { setCustomer } from 'modules';
+
+// services
+import { getCustomer } from 'services';
+
+function Detail({ setDataCustomer, dataCustomer, history }) {
   const classes = useStyles();
+
+  const { id } = useParams();
 
   const [open, setOpen] = useState(false);
   const [confirmHapus, setConfirmHapus] = useState(false);
@@ -41,6 +51,12 @@ function Detail({ history }) {
   const submit = e => {
     e.preventDefault();
   };
+
+  useEffect(() => {
+    // getCustomer(id).then(res => setDataCustomer(res.data));
+  }, []);
+
+  console.log(dataCustomer);
 
   return (
     <div className={classes.wrapper}>
@@ -87,23 +103,25 @@ function Detail({ history }) {
         <div className={classes.itemDataUser}>
           <div className={classes.input}>
             <label className={classes.label}>nama</label>
-            <span className={classes.text}>nabila syaharani</span>
+            <span className={classes.text}>{dataCustomer.name}</span>
           </div>
           <div className={classes.input}>
             <label className={classes.label}>tanggal lahir</label>
-            <span className={classes.text}>21 februari 1995</span>
+            <span className={classes.text}>{}</span>
           </div>
           <div className={classes.input}>
             <label className={classes.label}>jenis kelamin</label>
-            <span className={classes.text}>perempuan</span>
+            <span className={classes.text}>
+              {dataCustomer.gender && dataCustomer.gender.name}
+            </span>
           </div>
           <div className={classes.input}>
             <label className={classes.label}>email</label>
-            <span className={classes.text}>nabsyah@gmail.com</span>
+            <span className={classes.text}>{dataCustomer.email}</span>
           </div>
           <div className={classes.input}>
             <label className={classes.label}>nomor telepon</label>
-            <span className={classes.text}>+6217178909121</span>
+            <span className={classes.text}>{dataCustomer.phone}</span>
           </div>
           <div className={classes.wrapperButton}>
             <Button
@@ -165,7 +183,16 @@ function Detail({ history }) {
 }
 
 Detail.propTypes = {
-  history: propTypes.object
+  dataCustomer: propTypes.object,
+  setDataCustomer: propTypes.func
 };
 
-export default Detail;
+const mapStateToProps = state => ({
+  dataCustomer: state.customer.customer
+});
+
+const mapDispatchToProps = dispatch => ({
+  setDataCustomer: value => dispatch(setCustomer(value))
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Detail);

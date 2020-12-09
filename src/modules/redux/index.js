@@ -7,13 +7,15 @@ import actionTypes from './actionTypes';
  */
 import global from './global/reducer';
 import profile from './profile/reducer';
+import customer from './customer/reducer';
 
 /**
  * Reducer yang terpisah digabung jadi satu disini
  */
 const reducer = combineReducers({
   global,
-  profile
+  profile,
+  customer
 });
 
 /**
@@ -28,3 +30,4 @@ export { store, actionTypes };
  */
 export * from './global/action';
 export * from './profile/action';
+export * from './customer/action';
