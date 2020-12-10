@@ -3,30 +3,44 @@ import { Login, Main, NotFound } from 'pages';
 // main routes here
 const appRoutes = [
   {
-    id: 18,
+    id: 20,
     title: 'Login',
     path: '/login',
     component: Login,
     exact: true
   },
   {
-    id: 17,
+    id: 19,
     title: 'Profile',
     path: '/profile',
     component: Main,
     exact: true
   },
   {
-    id: 16,
+    id: 18,
     title: 'Promo',
     path: '/promo',
     component: Main,
     exact: true
   },
   {
+    id: 17,
+    title: 'Banner',
+    path: '/banner/mini',
+    component: Main,
+    exact: true
+  },
+  {
+    id: 16,
+    title: 'Banner',
+    path: '/banner/highlight',
+    component: Main,
+    exact: true
+  },
+  {
     id: 15,
     title: 'Banner',
-    path: '/banner',
+    path: '/banner/main',
     component: Main,
     exact: true
   },

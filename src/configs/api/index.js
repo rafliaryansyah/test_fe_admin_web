@@ -14,4 +14,11 @@ API.customerAccessAdmin = apiRequest.get(apiEndpoint.customerAccessAdmin, true);
 API.customerDelete = apiRequest.get(apiEndpoint.customerDelete, true);
 API.customerRestore = apiRequest.get(apiEndpoint.customerRestore, true);
 
+// category
+API.category = apiRequest.get(apiEndpoint.category, true);
+API.createCategory = apiRequest.get(apiEndpoint.createCategory, true);
+API.updateCategory = apiRequest.get(apiEndpoint.updateCategory, true);
+API.deleteCategory = apiRequest.get(apiEndpoint.deleteCategory, true);
+API.restoreCategory = apiRequest.get(apiEndpoint.restoreCategory, true);
+
 export default API;

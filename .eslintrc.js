@@ -53,7 +53,13 @@ module.exports = {
     'react/prop-types': [
       'error',
       {
-        ignore: ['navigation', 'screenProps', 'history', 'component']
+        ignore: [
+          'navigation',
+          'screenProps',
+          'history',
+          'location',
+          'component'
+        ]
       }
     ],
     'no-console': [

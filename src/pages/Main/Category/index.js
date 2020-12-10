@@ -33,15 +33,15 @@ function Category({ location, history }) {
   const [open, setOpen] = useState(false);
 
   const [form, setForm] = useState({
-    type: '',
+    type: 1,
     name: '',
-    src_img: ''
+    image: ''
   });
 
   const [error, setError] = useState({
     type: '',
     name: '',
-    src_img: ''
+    image: ''
   });
 
   const handleChange = e => {
@@ -65,8 +65,8 @@ function Category({ location, history }) {
     if (!form.name) {
       newError.name = 'Field masih kosong';
     }
-    if (!form.src_img) {
-      newError.src_img = 'Field masih kosong';
+    if (!form.image) {
+      newError.image = 'Field masih kosong';
     }
 
     return newError;
@@ -135,8 +135,8 @@ function Category({ location, history }) {
             <FormLabel component="legend">Pilih Tipe</FormLabel>
             <RadioGroup
               row
-              aria-label="pilih_tipe"
-              name="pilih_tipe"
+              aria-label="type"
+              name="type"
               value={form.type}
               onChange={handleChange}>
               <FormControlLabel

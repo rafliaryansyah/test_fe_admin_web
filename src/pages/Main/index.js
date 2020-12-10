@@ -247,7 +247,7 @@ function Main({ history }) {
             />
 
             <Route
-              path="/banner"
+              path="/banner/main"
               children={({ match, history }) => {
                 return (
                   <ListItem
@@ -255,7 +255,7 @@ function Main({ history }) {
                     selected={match ? true : false}
                     onClick={() => {
                       setDrawerNav(false);
-                      history.push('/banner');
+                      history.push('/banner/main');
                     }}>
                     <ListItemIcon>
                       <ShoppingBasket

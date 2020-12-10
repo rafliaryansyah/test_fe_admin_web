@@ -7,9 +7,7 @@ import axios from 'axios';
 
 const apiInstance = axios.create({
   baseURL: '',
-
   timeout: 60000,
-
   validateStatus: status => status >= 200 && status < 300
 });
 
@@ -45,9 +43,7 @@ class ApiRequest {
    */
   static resolveParams(params) {
     const paramsResult = [];
-
     Object.keys(params).map(e => paramsResult.push(`${e}=${params[e]}`));
-
     return paramsResult.join('&');
   }
 
@@ -82,13 +78,10 @@ class ApiRequest {
 
     const requestPayload = {
       url: customUrl.length > 0 ? customUrl : route + path + params,
-
       method,
-
       headers: payload.headers
         ? { ...baseHeaders, ...payload.headers }
         : baseHeaders,
-
       data: payload.body ? payload.body : {}
     };
 

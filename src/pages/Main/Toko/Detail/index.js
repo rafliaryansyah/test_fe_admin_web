@@ -1,5 +1,4 @@
 import useStyles from './styles';
-import propTypes from 'prop-types';
 import { Switch, Redirect } from 'react-router-dom';
 
 // material-ui core
@@ -53,10 +52,5 @@ function Detail({ history, location }) {
     </div>
   );
 }
-
-Detail.propTypes = {
-  history: propTypes.object,
-  location: propTypes.object
-};
 
 export default Detail;

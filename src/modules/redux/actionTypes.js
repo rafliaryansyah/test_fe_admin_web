@@ -1,4 +1,12 @@
 /**
+ * Category action types
+ */
+const category = {
+  SET_CATEGORY: 'CATEGORY/SET',
+  CLEAR_CUSTOMER: 'CUSTOMER/CLEAR'
+};
+
+/**
  * Customer action types
  */
 const customer = {
@@ -29,7 +37,8 @@ const profile = {
 const actionTypes = {
   global,
   profile,
-  customer
+  customer,
+  category
 };
 
 export default actionTypes;
