@@ -20,20 +20,6 @@ const useStyles = makeStyles(theme => ({
     marginBottom: 30
   },
 
-  buttonLeft: {
-    height: '100%',
-    backgroundColor: theme.palette.primary.light,
-    color: '#ffffff',
-    borderRadius: '5px 0px 0px 5px'
-  },
-
-  buttonRight: {
-    height: '100%',
-    backgroundColor: theme.palette.primary.light,
-    color: '#ffffff',
-    borderRadius: '0px 5px 5px 0px'
-  },
-
   action: {
     display: 'flex',
     justifyContent: 'flex-end'
@@ -45,6 +31,48 @@ const useStyles = makeStyles(theme => ({
     alignItems: 'center',
     gridGap: 15,
     marginTop: 30
+  },
+
+  form: {
+    display: 'grid',
+    padding: 15
+  },
+
+  inputFile: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    gridGap: 10
+  },
+
+  itemPreview: {
+    width: '100%',
+    border: `2px solid ${theme.palette.primary.main}`,
+    borderStyle: 'dashed',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 15
+  },
+
+  preview: {
+    objectFit: 'cover',
+    width: '100%',
+    height: 130
+  },
+  
+  itemUpload: {
+    width: '15%',
+    border: `1px solid ${theme.palette.primary.main}`,
+    borderRadius: 10,
+    padding: 50,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    cursor: 'pointer'
+  },
+
+  submit: {
+    marginTop: 15
   }
 }));
 
