@@ -1,6 +1,6 @@
 import { makeStyles } from '@material-ui/core/styles';
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles(theme => ({
   wrapper: {
     // border: "1px solid",
     display: 'grid'
@@ -17,18 +17,37 @@ const useStyles = makeStyles(() => ({
     boxShadow: '0px 0px 1px rgba(0, 0, 0, 0.5)'
   },
 
-  upload: {
-    padding: 50,
+  inputFile: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    gridGap: 10
+  },
+
+  itemPreview: {
+    width: '100%',
+    border: `2px solid ${theme.palette.primary.main}`,
+    borderStyle: 'dashed',
     display: 'flex',
     justifyContent: 'center',
-    border: '2px solid',
-    borderStyle: 'dashed'
+    alignItems: 'center',
+    padding: 15
   },
 
   preview: {
     objectFit: 'cover',
-    width: 250,
+    width: '100%',
     height: 130
+  },
+
+  itemUpload: {
+    width: '15%',
+    border: `1px solid ${theme.palette.primary.main}`,
+    borderRadius: 10,
+    padding: 50,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    cursor: 'pointer'
   },
 
   submit: {

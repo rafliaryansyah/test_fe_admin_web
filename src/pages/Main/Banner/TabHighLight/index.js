@@ -15,6 +15,10 @@ import {
   FormControl,
   InputLabel,
   OutlinedInput,
+  Select,
+  TextField,
+  List,
+  MenuItem,
   FormHelperText
 } from '@material-ui/core';
 
@@ -22,7 +26,7 @@ import {
 import { Edit, Delete, ChevronLeft, ChevronRight } from '@material-ui/icons';
 
 // components
-import { CompDialog } from 'components';
+import { CompDialog, ConfirmDialog } from 'components';
 
 function TabHighLight() {
   const classes = useStyles();
@@ -34,7 +38,9 @@ function TabHighLight() {
 
   const [open, setOpen] = useState({
     highlightProduk: false,
-    highlightJasa: false
+    hapusHighlightProduk: false,
+    highlightJasa: false,
+    hapusHighlightJasa: false
   });
 
   const [form, setForm] = useState({
@@ -168,6 +174,10 @@ function TabHighLight() {
     }
   };
 
+  const hapus = () => {
+    console.log('hapus');
+  };
+
   return (
     <div className={classes.wrapper}>
       <div>
@@ -218,10 +228,20 @@ function TabHighLight() {
                     />
                   </CardActionArea>
                   <CardActions className={classes.action}>
-                    <IconButton size="small" color="primary">
+                    <IconButton
+                      size="small"
+                      color="primary"
+                      onClick={() =>
+                        setOpen({ ...open, highlightProduk: true })
+                      }>
                       <Edit />
                     </IconButton>
-                    <IconButton size="small" color="primary">
+                    <IconButton
+                      size="small"
+                      color="primary"
+                      onClick={() =>
+                        setOpen({ ...open, hapusHighlightProduk: true })
+                      }>
                       <Delete />
                     </IconButton>
                   </CardActions>
@@ -280,10 +300,20 @@ function TabHighLight() {
                     />
                   </CardActionArea>
                   <CardActions className={classes.action}>
-                    <IconButton size="small" color="primary">
+                    <IconButton
+                      size="small"
+                      color="primary"
+                      onClick={() =>
+                        setOpen({ ...open, highlightProduk: true })
+                      }>
                       <Edit />
                     </IconButton>
-                    <IconButton size="small" color="primary">
+                    <IconButton
+                      size="small"
+                      color="primary"
+                      onClick={() =>
+                        setOpen({ ...open, hapusHighlightProduk: true })
+                      }>
                       <Delete />
                     </IconButton>
                   </CardActions>
@@ -352,10 +382,20 @@ function TabHighLight() {
                     />
                   </CardActionArea>
                   <CardActions className={classes.action}>
-                    <IconButton size="small" color="primary">
+                    <IconButton
+                      size="small"
+                      color="primary"
+                      onClick={() =>
+                        setOpen({ ...open, highlightProduk: true })
+                      }>
                       <Edit />
                     </IconButton>
-                    <IconButton size="small" color="primary">
+                    <IconButton
+                      size="small"
+                      color="primary"
+                      onClick={() =>
+                        setOpen({ ...open, hapusHighlightProduk: true })
+                      }>
                       <Delete />
                     </IconButton>
                   </CardActions>
@@ -414,10 +454,20 @@ function TabHighLight() {
                     />
                   </CardActionArea>
                   <CardActions className={classes.action}>
-                    <IconButton size="small" color="primary">
+                    <IconButton
+                      size="small"
+                      color="primary"
+                      onClick={() =>
+                        setOpen({ ...open, highlightProduk: true })
+                      }>
                       <Edit />
                     </IconButton>
-                    <IconButton size="small" color="primary">
+                    <IconButton
+                      size="small"
+                      color="primary"
+                      onClick={() =>
+                        setOpen({ ...open, hapusHighlightProduk: true })
+                      }>
                       <Delete />
                     </IconButton>
                   </CardActions>
@@ -462,116 +512,6 @@ function TabHighLight() {
             </FormHelperText>
           </FormControl>
 
-          <InputLabel
-            htmlFor="id_product1"
-            error={error.id_product1 ? true : false}
-            className={classes.label}>
-            ID Produk 1
-          </InputLabel>
-          <FormControl variant="outlined" size="small" margin="normal">
-            <OutlinedInput
-              name="id_product1"
-              id="id_product1"
-              color="primary"
-              onChange={handleChange}
-              value={form.id_product1}
-              error={error.id_product1 ? true : false}
-            />
-            <FormHelperText
-              id="outlined-helper-text"
-              error={error.id_product1 ? true : false}>
-              {error.id_product1}
-            </FormHelperText>
-          </FormControl>
-
-          <InputLabel
-            htmlFor="id_product2"
-            error={error.id_product2 ? true : false}
-            className={classes.label}>
-            ID Produk 2
-          </InputLabel>
-          <FormControl variant="outlined" size="small" margin="normal">
-            <OutlinedInput
-              name="id_product2"
-              id="id_product2"
-              color="primary"
-              onChange={handleChange}
-              value={form.id_product2}
-              error={error.id_product2 ? true : false}
-            />
-            <FormHelperText
-              id="outlined-helper-text"
-              error={error.id_product2 ? true : false}>
-              {error.id_product2}
-            </FormHelperText>
-          </FormControl>
-
-          <InputLabel
-            htmlFor="id_product3"
-            error={error.id_product3 ? true : false}
-            className={classes.label}>
-            ID Produk 3
-          </InputLabel>
-          <FormControl variant="outlined" size="small" margin="normal">
-            <OutlinedInput
-              name="id_product3"
-              id="id_product3"
-              color="primary"
-              onChange={handleChange}
-              value={form.id_product3}
-              error={error.id_product3 ? true : false}
-            />
-            <FormHelperText
-              id="outlined-helper-text"
-              error={error.id_product3 ? true : false}>
-              {error.id_product3}
-            </FormHelperText>
-          </FormControl>
-
-          <InputLabel
-            htmlFor="id_product4"
-            error={error.id_product4 ? true : false}
-            className={classes.label}>
-            ID Produk 4
-          </InputLabel>
-          <FormControl variant="outlined" size="small" margin="normal">
-            <OutlinedInput
-              name="id_product4"
-              id="id_product4"
-              color="primary"
-              onChange={handleChange}
-              value={form.id_product4}
-              error={error.id_product4 ? true : false}
-            />
-            <FormHelperText
-              id="outlined-helper-text"
-              error={error.id_product4 ? true : false}>
-              {error.id_product4}
-            </FormHelperText>
-          </FormControl>
-
-          <InputLabel
-            htmlFor="id_product5"
-            error={error.id_product5 ? true : false}
-            className={classes.label}>
-            ID Produk 5
-          </InputLabel>
-          <FormControl variant="outlined" size="small" margin="normal">
-            <OutlinedInput
-              name="id_product5"
-              id="id_product5"
-              color="primary"
-              onChange={handleChange}
-              value={form.id_product5}
-              error={error.id_product5 ? true : false}
-            />
-            <FormHelperText
-              id="outlined-helper-text"
-              error={error.id_product5 ? true : false}>
-              {error.id_product5}
-            </FormHelperText>
-          </FormControl>
-
           <div className={classes.inputFile}>
             <div className={classes.itemPreview}>
               {form.image ? (
@@ -601,6 +541,34 @@ function TabHighLight() {
             error={error.image ? true : false}>
             {error.image}
           </FormHelperText>
+
+          <InputLabel
+            htmlFor="id_product1"
+            error={error.id_product1 ? true : false}
+            className={classes.label}>
+            Pilih Produk (max 5)
+          </InputLabel>
+          <FormControl variant="outlined" size="small" margin="normal">
+            <Select
+              id="id_product1"
+              value={form.id_product1}
+              onChange={handleChange}>
+              <TextField
+                className={classes.input}
+                placeholder="Search"
+                fullWidth
+                onChange={e => console.log(e.target.value)}
+              />
+              <List>
+                <MenuItem value={1}>Satu</MenuItem>
+              </List>
+            </Select>
+            <FormHelperText
+              id="outlined-helper-text"
+              error={error.id_product1 ? true : false}>
+              {error.id_product1}
+            </FormHelperText>
+          </FormControl>
 
           <Button
             variant="contained"
@@ -809,6 +777,13 @@ function TabHighLight() {
           </Button>
         </div>
       </CompDialog>
+      <ConfirmDialog
+        open={open.hapusHighlightProduk}
+        close={() => setOpen({ ...open, hapusHighlightProduk: false })}
+        submit={hapus}
+        title="Hapus Banner">
+        Apakah yakin ingin hapus ?
+      </ConfirmDialog>
     </div>
   );
 }

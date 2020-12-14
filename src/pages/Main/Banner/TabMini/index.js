@@ -32,7 +32,7 @@ import {
 } from '@material-ui/icons';
 
 // components
-import { CompDialog } from 'components';
+import { CompDialog, ConfirmDialog } from 'components';
 
 function TabMini() {
   const classes = useStyles();
@@ -44,7 +44,8 @@ function TabMini() {
 
   const [open, setOpen] = useState({
     buat: false,
-    atur: false
+    atur: false,
+    hapus: false
   });
 
   // atur
@@ -188,6 +189,10 @@ function TabMini() {
     }
   };
 
+  const hapus = () => {
+    console.log('hapus');
+  };
+
   return (
     <div className={classes.wrapper}>
       <div>
@@ -238,10 +243,16 @@ function TabMini() {
                     />
                   </CardActionArea>
                   <CardActions className={classes.action}>
-                    <IconButton size="small" color="primary">
+                    <IconButton
+                      size="small"
+                      color="primary"
+                      onClick={() => setOpen({ ...open, buat: true })}>
                       <Edit />
                     </IconButton>
-                    <IconButton size="small" color="primary">
+                    <IconButton
+                      size="small"
+                      color="primary"
+                      onClick={() => setOpen({ ...open, hapus: true })}>
                       <Delete />
                     </IconButton>
                   </CardActions>
@@ -300,10 +311,16 @@ function TabMini() {
                     />
                   </CardActionArea>
                   <CardActions className={classes.action}>
-                    <IconButton size="small" color="primary">
+                    <IconButton
+                      size="small"
+                      color="primary"
+                      onClick={() => setOpen({ ...open, buat: true })}>
                       <Edit />
                     </IconButton>
-                    <IconButton size="small" color="primary">
+                    <IconButton
+                      size="small"
+                      color="primary"
+                      onClick={() => setOpen({ ...open, hapus: true })}>
                       <Delete />
                     </IconButton>
                   </CardActions>
@@ -378,10 +395,16 @@ function TabMini() {
                     />
                   </CardActionArea>
                   <CardActions className={classes.action}>
-                    <IconButton size="small" color="primary">
+                    <IconButton
+                      size="small"
+                      color="primary"
+                      onClick={() => setOpen({ ...open, buat: true })}>
                       <Edit />
                     </IconButton>
-                    <IconButton size="small" color="primary">
+                    <IconButton
+                      size="small"
+                      color="primary"
+                      onClick={() => setOpen({ ...open, hapus: true })}>
                       <Delete />
                     </IconButton>
                   </CardActions>
@@ -440,10 +463,16 @@ function TabMini() {
                     />
                   </CardActionArea>
                   <CardActions className={classes.action}>
-                    <IconButton size="small" color="primary">
+                    <IconButton
+                      size="small"
+                      color="primary"
+                      onClick={() => setOpen({ ...open, buat: true })}>
                       <Edit />
                     </IconButton>
-                    <IconButton size="small" color="primary">
+                    <IconButton
+                      size="small"
+                      color="primary"
+                      onClick={() => setOpen({ ...open, hapus: true })}>
                       <Delete />
                     </IconButton>
                   </CardActions>
@@ -602,6 +631,13 @@ function TabMini() {
           </Button>
         </div>
       </CompDialog>
+      <ConfirmDialog
+        open={open.hapus}
+        close={() => setOpen({ ...open, hapus: false })}
+        submit={hapus}
+        title="Hapus Banner">
+        Apakah yakin ingin hapus ?
+      </ConfirmDialog>
     </div>
   );
 }

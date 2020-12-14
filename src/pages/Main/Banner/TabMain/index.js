@@ -23,10 +23,16 @@ import {
 } from '@material-ui/core';
 
 // material-ui icons
-import { Edit, Delete, ChevronLeft, ChevronRight, CloudUpload } from '@material-ui/icons';
+import {
+  Edit,
+  Delete,
+  ChevronLeft,
+  ChevronRight,
+  CloudUpload
+} from '@material-ui/icons';
 
 // components
-import { CompDialog } from 'components';
+import { CompDialog, ConfirmDialog } from 'components';
 
 function TabMain() {
   const classes = useStyles();
@@ -36,7 +42,10 @@ function TabMain() {
     history: 0
   });
 
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState({
+    form: false,
+    hapus: false
+  });
 
   const [form, setForm] = useState({
     ke: '',
@@ -143,6 +152,10 @@ function TabMain() {
     }
   };
 
+  const hapus = () => {
+    console.log('hapus');
+  };
+
   return (
     <div className={classes.wrapper}>
       <div>
@@ -193,10 +206,16 @@ function TabMain() {
                     />
                   </CardActionArea>
                   <CardActions className={classes.action}>
-                    <IconButton size="small" color="primary">
+                  <IconButton
+                      size="small"
+                      color="primary"
+                      onClick={() => setOpen({ ...open, form: true })}>
                       <Edit />
                     </IconButton>
-                    <IconButton size="small" color="primary">
+                    <IconButton
+                      size="small"
+                      color="primary"
+                      onClick={() => setOpen({ ...open, hapus: true })}>
                       <Delete />
                     </IconButton>
                   </CardActions>
@@ -255,10 +274,16 @@ function TabMain() {
                     />
                   </CardActionArea>
                   <CardActions className={classes.action}>
-                    <IconButton size="small" color="primary">
+                    <IconButton
+                      size="small"
+                      color="primary"
+                      onClick={() => setOpen({ ...open, form: true })}>
                       <Edit />
                     </IconButton>
-                    <IconButton size="small" color="primary">
+                    <IconButton
+                      size="small"
+                      color="primary"
+                      onClick={() => setOpen({ ...open, hapus: true })}>
                       <Delete />
                     </IconButton>
                   </CardActions>
@@ -271,12 +296,15 @@ function TabMain() {
           <Button
             variant="contained"
             color="primary"
-            onClick={() => setOpen(true)}>
+            onClick={() => setOpen({ ...open, form: true })}>
             buat banner
           </Button>
         </div>
       </div>
-      <CompDialog open={open} close={() => setOpen(false)} title="Buat Banner">
+      <CompDialog
+        open={open.form}
+        close={() => setOpen({ ...open, form: false })}
+        title="Buat Banner">
         <div className={classes.form}>
           <FormControl component="fieldset">
             <FormLabel component="legend" error={error.ke ? true : false}>
@@ -368,6 +396,13 @@ function TabMain() {
           </Button>
         </div>
       </CompDialog>
+      <ConfirmDialog
+        open={open.hapus}
+        close={() => setOpen({ ...open, hapus: false })}
+        submit={hapus}
+        title="Hapus Banner">
+        Apakah yakin ingin hapus ?
+      </ConfirmDialog>
     </div>
   );
 }

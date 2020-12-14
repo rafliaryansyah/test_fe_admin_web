@@ -37,7 +37,7 @@ function Detail({ history, location }) {
           onChange={(event, value) => history.push(value)}
           aria-label="disabled tabs example">
           <Tab label="Beranda" value="/toko/detail" />
-          <Tab label="Produk" value="/toko/detail/produk" />
+          <Tab label="Produk / Jasa" value="/toko/detail/produk" />
           <Tab label="Report" value="/toko/detail/report" />
         </Tabs>
         <div className={classes.tabsMain}>

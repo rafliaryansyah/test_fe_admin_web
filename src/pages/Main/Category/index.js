@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import useStyles from './styles';
-import propTypes from 'prop-types';
 import { Switch, Redirect } from 'react-router-dom';
 
 // material-ui core
@@ -21,7 +20,7 @@ import FormLabel from '@material-ui/core/FormLabel';
 import SearchIcon from '@material-ui/icons/Search';
 
 // components
-import { PrivateRoute, CompDialog} from '../../../components';
+import { CompDialog, PrivateRoute } from 'components';
 
 // pages
 import TabProduk from './TabProduk';
@@ -81,6 +80,59 @@ function Category({ location, history }) {
       setError(findErrors);
     } else {
       console.log('Submit : ', form);
+    }
+  };
+
+  const handleUploadFile = async e => {
+    const file = e.target.files[0];
+
+    if (!['image/png', 'image/jpeg'].includes(file.type)) {
+      setError({
+        ...error,
+        image: `Tipe file tidak didukung: ${file.type}`
+      });
+    } else if (file.size >= 512000) {
+      setError({
+        ...error,
+        image: 'Ukuran file terlalu besar dari 500KB'
+      });
+    } else {
+      const reader = new FileReader();
+
+      reader.onabort = () => {
+        setError({
+          ...error,
+          image: 'Proses pembacaan file dibatalkan'
+        });
+      };
+
+      reader.onerror = () => {
+        setError({
+          ...error,
+          image: 'File tidak terbaca'
+        });
+      };
+
+      reader.onload = async () => {
+        setError({
+          ...error,
+          image: ''
+        });
+
+        try {
+          setForm({
+            ...form,
+            image: file
+          });
+        } catch (e) {
+          setError({
+            ...error,
+            image: e.message
+          });
+        }
+      };
+
+      reader.readAsDataURL(file);
     }
   };
 
@@ -174,16 +226,35 @@ function Category({ location, history }) {
             </FormHelperText>
           </FormControl>
 
-          {form.src_img ? (
-            <img src={form.src_img} alt="" className={classes.preview} />
-          ) : (
-            <div>
-              <input type="file" id="upload" style={{ display: 'none' }} />
-              <label htmlFor="upload" className={classes.upload}>
-                Upload Foto
-              </label>
+          <div className={classes.inputFile}>
+            <div className={classes.itemPreview}>
+              {form.image ? (
+                <img
+                  src={URL.createObjectURL(form.image)}
+                  alt="Foto Banner"
+                  className={classes.preview}
+                />
+              ) : (
+                'Image Preview'
+              )}
             </div>
-          )}
+            <input
+              type="file"
+              id="upload"
+              accept="image/jpeg,image/png"
+              onChange={handleUploadFile}
+              style={{ display: 'none' }}
+            />
+            <label htmlFor="upload" className={classes.itemUpload}>
+              Upload Foto
+            </label>
+          </div>
+          <br />
+          <FormHelperText
+            id="outlined-helper-text"
+            error={error.image ? true : false}>
+            {error.image}
+          </FormHelperText>
 
           <Button
             variant="contained"
@@ -198,10 +269,5 @@ function Category({ location, history }) {
     </div>
   );
 }
-
-Category.propTypes = {
-  history: propTypes.object,
-  location: propTypes.object
-};
 
 export default Category;

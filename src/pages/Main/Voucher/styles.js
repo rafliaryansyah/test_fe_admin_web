@@ -93,18 +93,41 @@ const useStyles = makeStyles(theme => ({
 
   // form
   form: {
-    width: 534,
-
-    [theme.breakpoints.down('sm')]: {
-      width: 300
-    }
+    display: 'grid',
+    padding: 15
   },
 
-  select: {
+  inputFile: {
     display: 'flex',
-    justifyContent: 'flex-start',
+    justifyContent: 'space-between',
+    gridGap: 10
+  },
+
+  itemPreview: {
+    width: '100%',
+    border: `2px solid ${theme.palette.primary.main}`,
+    borderStyle: 'dashed',
+    display: 'flex',
+    justifyContent: 'center',
     alignItems: 'center',
-    gridGap: 15
+    padding: 15
+  },
+
+  preview: {
+    objectFit: 'cover',
+    width: '100%',
+    height: 130
+  },
+
+  itemUpload: {
+    width: '15%',
+    border: `1px solid ${theme.palette.primary.main}`,
+    borderRadius: 10,
+    padding: 50,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    cursor: 'pointer'
   }
 }));
 

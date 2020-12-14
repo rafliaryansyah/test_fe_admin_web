@@ -9,12 +9,14 @@ import {
   Button,
   IconButton,
   InputLabel,
+  FormLabel,
   FormControl,
+  FormControlLabel,
   FormHelperText,
+  RadioGroup,
+  Radio,
   OutlinedInput,
   InputAdornment,
-  Select,
-  MenuItem,
   Card,
   CardActionArea,
   CardActions,
@@ -40,6 +42,7 @@ function Voucher({ history }) {
 
   const [form, setForm] = useState({
     nama: '',
+    type: '',
     berlaku_hingga: '',
     minimum_transaksi: '',
     potongan_harga: '',
@@ -48,6 +51,7 @@ function Voucher({ history }) {
   });
   const [error, setError] = useState({
     nama: '',
+    type: '',
     berlaku_hingga: '',
     minimum_transaksi: '',
     potongan_harga: '',
@@ -72,6 +76,10 @@ function Voucher({ history }) {
 
     if (!form.nama) {
       newError.nama = 'Field masih kosong';
+    }
+
+    if (!form.type) {
+      newError.type = 'Field masih kosong';
     }
 
     if (!form.berlaku_hingga) {
@@ -117,6 +125,59 @@ function Voucher({ history }) {
       enqueueSnackbar('Berhasil menambahkan voucher baru', {
         variant: 'success'
       });
+    }
+  };
+
+  const handleUploadFile = async e => {
+    const file = e.target.files[0];
+
+    if (!['image/png', 'image/jpeg'].includes(file.type)) {
+      setError({
+        ...error,
+        image: `Tipe file tidak didukung: ${file.type}`
+      });
+    } else if (file.size >= 512000) {
+      setError({
+        ...error,
+        image: 'Ukuran file terlalu besar dari 500KB'
+      });
+    } else {
+      const reader = new FileReader();
+
+      reader.onabort = () => {
+        setError({
+          ...error,
+          image: 'Proses pembacaan file dibatalkan'
+        });
+      };
+
+      reader.onerror = () => {
+        setError({
+          ...error,
+          image: 'File tidak terbaca'
+        });
+      };
+
+      reader.onload = async () => {
+        setError({
+          ...error,
+          image: ''
+        });
+
+        try {
+          setForm({
+            ...form,
+            image: file
+          });
+        } catch (e) {
+          setError({
+            ...error,
+            image: e.message
+          });
+        }
+      };
+
+      reader.readAsDataURL(file);
     }
   };
 
@@ -314,6 +375,27 @@ function Voucher({ history }) {
             </FormHelperText>
           </FormControl>
 
+          <FormControl component="fieldset">
+            <FormLabel component="legend">Pilih Tipe</FormLabel>
+            <RadioGroup
+              row
+              aria-label="type"
+              name="type"
+              value={form.type}
+              onChange={handleChange}>
+              <FormControlLabel
+                value="produk"
+                control={<Radio color="primary" />}
+                label="Produk"
+              />
+              <FormControlLabel
+                value="jasa"
+                control={<Radio color="primary" />}
+                label="Jasa"
+              />
+            </RadioGroup>
+          </FormControl>
+
           <InputLabel
             htmlFor="berlaku_hingga"
             error={error.berlaku_hingga ? true : false}>
@@ -414,25 +496,61 @@ function Voucher({ history }) {
             </FormHelperText>
           </FormControl>
 
-          <div className={classes.select}>
-            <InputLabel htmlFor="status" error={error.status ? true : false}>
-              Status
-            </InputLabel>
-            <FormControl variant="outlined" size="small" margin="normal">
-              <Select
-                name="status"
-                id="status"
-                value={form.status}
-                onChange={handleChange}
-                error={error.status ? true : false}>
-                <MenuItem value="Aktif">Aktif</MenuItem>
-                <MenuItem value="Tidak Aktif">Tidak Aktif</MenuItem>
-              </Select>
-              <FormHelperText id="outlined-helper-text" error={error.status}>
-                {error.status}
-              </FormHelperText>
-            </FormControl>
+          <InputLabel
+            htmlFor="syarat_ketentuan"
+            error={error.syarat_ketentuan ? true : false}>
+            Syarat & Ketentuan
+          </InputLabel>
+          <FormControl
+            variant="outlined"
+            size="small"
+            margin="normal"
+            fullWidth>
+            <OutlinedInput
+              name="syarat_ketentuan"
+              id="syarat_ketentuan"
+              color="primary"
+              onChange={handleChange}
+              value={form.syarat_ketentuan}
+              error={error.syarat_ketentuan ? true : false}
+              multiline
+            />
+            <FormHelperText
+              id="outlined-helper-text"
+              error={error.syarat_ketentuan}>
+              {error.syarat_ketentuan}
+            </FormHelperText>
+          </FormControl>
+
+          <div className={classes.inputFile}>
+            <div className={classes.itemPreview}>
+              {form.image ? (
+                <img
+                  src={URL.createObjectURL(form.image)}
+                  alt="Foto Banner"
+                  className={classes.preview}
+                />
+              ) : (
+                'Image Preview'
+              )}
+            </div>
+            <input
+              type="file"
+              id="upload"
+              accept="image/jpeg,image/png"
+              onChange={handleUploadFile}
+              style={{ display: 'none' }}
+            />
+            <label htmlFor="upload" className={classes.itemUpload}>
+              Upload Foto
+            </label>
           </div>
+          <br />
+          <FormHelperText
+            id="outlined-helper-text"
+            error={error.image ? true : false}>
+            {error.image}
+          </FormHelperText>
 
           <Button
             variant="contained"
