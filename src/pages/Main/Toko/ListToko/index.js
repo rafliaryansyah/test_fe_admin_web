@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import useStyles from './styles';
 import propTypes from 'prop-types';
 
@@ -13,10 +14,26 @@ import Select from '@material-ui/core/Select';
 import SearchIcon from '@material-ui/icons/Search';
 
 // components
-import { CardToko, Paginasi } from '../../../../components';
+import { CardToko, Paginasi } from 'components';
 
-const ListToko = ({ history }) => {
+// redux
+import { connect } from 'react-redux';
+import { setStores } from 'modules';
+
+// services
+import { getStores } from 'services';
+
+// utils
+import { dateConverterRes } from 'utils';
+
+const ListToko = ({ dataStores, setDataStores, history }) => {
   const classes = useStyles();
+
+  useEffect(() => {
+    getStores().then(res => {
+      setDataStores(res.data.data);
+    });
+  }, []);
 
   return (
     <div className={classes.wrapper}>
@@ -51,38 +68,18 @@ const ListToko = ({ history }) => {
       </div>
 
       <div className={classes.wrapperCard}>
-        <CardToko
-          srcImage="https://images.unsplash.com/photo-1549913772-820279f909b7?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=747&q=80"
-          nama="sanjaya"
-          status="aktif"
-          alamat="Surabaya"
-          bukaSejak="26 November 2020"
-          handleDetail={() => history.push('/toko/detail')}
-        />
-        <CardToko
-          srcImage="https://images.unsplash.com/photo-1549913772-820279f909b7?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=747&q=80"
-          nama="sanjaya"
-          status="aktif"
-          alamat="Surabaya"
-          bukaSejak="26 November 2020"
-          handleDetail={() => history.push('/toko/detail')}
-        />
-        <CardToko
-          srcImage="https://images.unsplash.com/photo-1549913772-820279f909b7?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=747&q=80"
-          nama="sanjaya"
-          status="aktif"
-          alamat="Surabaya"
-          bukaSejak="26 November 2020"
-          handleDetail={() => history.push('/toko/detail')}
-        />
-        <CardToko
-          srcImage="https://images.unsplash.com/photo-1549913772-820279f909b7?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=747&q=80"
-          nama="sanjaya"
-          status="aktif"
-          alamat="Surabaya"
-          bukaSejak="26 November 2020"
-          handleDetail={() => history.push('/toko/detail')}
-        />
+        {dataStores &&
+          dataStores.map(data => (
+            <CardToko
+              key={data.id}
+              srcImage="https://images.unsplash.com/photo-1549913772-820279f909b7?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=747&q=80"
+              nama={data.name}
+              status={data.status && data.status.name}
+              alamat={data.address}
+              bukaSejak={dateConverterRes(data.joinedAt)}
+              handleDetail={() => history.push(`/toko/${data.id}`)}
+            />
+          ))}
       </div>
 
       <Paginasi count={5} page={1} onClick={(e, value) => value} />
@@ -91,7 +88,15 @@ const ListToko = ({ history }) => {
 };
 
 ListToko.propTypes = {
-  history: propTypes.object
+  dataStores: propTypes.array,
+  setDataStores: propTypes.func
 };
 
-export default ListToko;
+const mapStateToProps = state => ({
+  dataStores: state.stores.stores
+});
+const mapDispatchToProps = dispatch => ({
+  setDataStores: value => dispatch(setStores(value))
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(ListToko);

@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import useStyles from './styles';
+import propTypes from 'prop-types';
 
 // react items carousel
 import ItemsCarousel from 'react-items-carousel';
@@ -34,7 +35,14 @@ import {
 // components
 import { CompDialog, ConfirmDialog } from 'components';
 
-function TabMain() {
+// redux
+import { connect } from 'react-redux';
+import { setBanners } from 'modules';
+
+// services
+import { getBanners } from 'services';
+
+function TabMain({ setDataBanners, dataBanners }) {
   const classes = useStyles();
 
   const [state, setState] = useState({
@@ -87,6 +95,12 @@ function TabMain() {
     return newError;
   };
 
+  useEffect(() => {
+    getBanners().then(res => {
+      setDataBanners(res.data.data);
+    });
+  }, []);
+
   const submit = async e => {
     e.preventDefault();
 
@@ -97,6 +111,10 @@ function TabMain() {
     } else {
       console.log('Request Data Body :', form);
     }
+  };
+
+  const hapus = () => {
+    console.log('hapus');
   };
 
   const handleUploadFile = async e => {
@@ -152,10 +170,6 @@ function TabMain() {
     }
   };
 
-  const hapus = () => {
-    console.log('hapus');
-  };
-
   return (
     <div className={classes.wrapper}>
       <div>
@@ -193,35 +207,38 @@ function TabMain() {
                 </IconButton>
               </div>
             }>
-            {Array.from(new Array(10)).map((_, i) => (
-              <div key={i}>
-                <Card>
-                  <CardActionArea>
-                    <CardMedia
-                      component="img"
-                      alt="Contemplative Reptile"
-                      height="230"
-                      image="https://ecs7.tokopedia.net/img/blog/seller/2020/04/voucher-toko.jpg"
-                      title="Contemplative Reptile"
-                    />
-                  </CardActionArea>
-                  <CardActions className={classes.action}>
-                  <IconButton
-                      size="small"
-                      color="primary"
-                      onClick={() => setOpen({ ...open, form: true })}>
-                      <Edit />
-                    </IconButton>
-                    <IconButton
-                      size="small"
-                      color="primary"
-                      onClick={() => setOpen({ ...open, hapus: true })}>
-                      <Delete />
-                    </IconButton>
-                  </CardActions>
-                </Card>
-              </div>
-            ))}
+            {dataBanners &&
+              dataBanners.mainBanner &&
+              dataBanners.mainBanner.data &&
+              dataBanners.mainBanner.data.map(data => (
+                <div key={data}>
+                  <Card>
+                    <CardActionArea>
+                      <CardMedia
+                        component="img"
+                        alt="Contemplative Reptile"
+                        height="230"
+                        image="https://ecs7.tokopedia.net/img/blog/seller/2020/04/voucher-toko.jpg"
+                        title="Contemplative Reptile"
+                      />
+                    </CardActionArea>
+                    <CardActions className={classes.action}>
+                      <IconButton
+                        size="small"
+                        color="primary"
+                        onClick={() => setOpen({ ...open, form: true })}>
+                        <Edit />
+                      </IconButton>
+                      <IconButton
+                        size="small"
+                        color="primary"
+                        onClick={() => setOpen({ ...open, hapus: true })}>
+                        <Delete />
+                      </IconButton>
+                    </CardActions>
+                  </Card>
+                </div>
+              ))}
           </ItemsCarousel>
         </div>
         <br />
@@ -407,4 +424,17 @@ function TabMain() {
   );
 }
 
-export default TabMain;
+TabMain.propTypes = {
+  setDataBanners: propTypes.func,
+  dataBanners: propTypes.object
+};
+
+const mapStateToProps = state => ({
+  dataBanners: state.banner.banners
+});
+
+const mapDispatchToProps = dispatch => ({
+  setDataBanners: value => dispatch(setBanners(value))
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(TabMain);

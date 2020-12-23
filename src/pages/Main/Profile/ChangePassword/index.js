@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import useStyles from './styles';
 import propTypes from 'prop-types';
+import { Prompt } from 'react-router-dom';
 
 // validator (isEmail)
 import isEmail from 'validator/lib/isEmail';
@@ -13,6 +14,7 @@ import InputLabel from '@material-ui/core/InputLabel';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControl from '@material-ui/core/FormControl';
 import OutlinedInput from '@material-ui/core/OutlinedInput';
+import InputAdornment from '@material-ui/core/InputAdornment';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import Dialog from '@material-ui/core/Dialog';
@@ -21,11 +23,17 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
 // material-ui icons
-import CloseIcon from '@material-ui/icons/Close';
+import { Close, Visibility, VisibilityOff } from '@material-ui/icons';
 
-function ChangePassword({ open, close }) {
+// services
+import { changePasswordProfile } from 'services';
+
+function ChangePassword({ open, close, history }) {
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
+
+  const [showPassword, setShowPassword] = useState(false);
+  const [isSomethingChange, setIsSomethingChange] = useState(false);
 
   const [form, setForm] = useState({
     email: '',
@@ -94,15 +102,31 @@ function ChangePassword({ open, close }) {
     if (Object.values(findErrors).some(err => err !== '')) {
       setError(findErrors);
     } else {
-      setForm({
-        email: '',
-        old_password: '',
-        new_password: '',
-        confirm_password: ''
-      });
-      enqueueSnackbar('Berhasil memperbarui password anda', {
-        variant: 'success'
-      });
+      const result = await changePasswordProfile(form).catch(err => err);
+
+      if (result.success) {
+        if (result.data.code === 200) {
+          setForm({
+            email: '',
+            old_password: '',
+            new_password: '',
+            confirm_password: ''
+          });
+          close();
+          enqueueSnackbar(result.data.messagge, {
+            variant: 'success'
+          });
+          setIsSomethingChange(false);
+          history();
+        }
+      } else {
+        setIsSomethingChange(false);
+        if (result.data.response.data.code === 422) {
+          enqueueSnackbar(result.data.response.data.message, {
+            variant: 'error'
+          });
+        }
+      }
     }
   };
 
@@ -114,7 +138,7 @@ function ChangePassword({ open, close }) {
       aria-describedby="alert-dialog-description">
       <DialogActions>
         <IconButton onClick={close} color="primary">
-          <CloseIcon />
+          <Close />
         </IconButton>
       </DialogActions>
       <DialogTitle id="alert-dialog-title" className={classes.title}>
@@ -145,8 +169,9 @@ function ChangePassword({ open, close }) {
 
           <InputLabel
             htmlFor="old_password"
-            error={error.old_password ? true : false}>
-            Password Lama
+            error={error.old_password ? true : false}
+            className={classes.label}>
+            Password lama
           </InputLabel>
           <FormControl
             variant="outlined"
@@ -154,24 +179,42 @@ function ChangePassword({ open, close }) {
             margin="normal"
             fullWidth>
             <OutlinedInput
+              type={showPassword ? 'text' : 'password'}
               name="old_password"
               id="old_password"
-              color="primary"
               onChange={handleChange}
               value={form.old_password}
               error={error.old_password ? true : false}
+              endAdornment={
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-label="toggle password visibility"
+                    onClick={() => setShowPassword(!showPassword)}
+                    onMouseDown={e => e.preventDefault()}
+                    edge="end">
+                    {showPassword ? (
+                      <Visibility color="primary" />
+                    ) : (
+                      <VisibilityOff color="primary" />
+                    )}
+                  </IconButton>
+                </InputAdornment>
+              }
+              color="primary"
+              aria-describedby="outlined-helper-text"
             />
             <FormHelperText
               id="outlined-helper-text"
-              error={error.old_password}>
+              error={error.old_password ? true : false}>
               {error.old_password}
             </FormHelperText>
           </FormControl>
 
           <InputLabel
             htmlFor="new_password"
-            error={error.new_password ? true : false}>
-            Password Baru
+            error={error.new_password ? true : false}
+            className={classes.label}>
+            Password baru
           </InputLabel>
           <FormControl
             variant="outlined"
@@ -179,24 +222,42 @@ function ChangePassword({ open, close }) {
             margin="normal"
             fullWidth>
             <OutlinedInput
+              type={showPassword ? 'text' : 'password'}
               name="new_password"
               id="new_password"
-              color="primary"
               onChange={handleChange}
               value={form.new_password}
               error={error.new_password ? true : false}
+              endAdornment={
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-label="toggle password visibility"
+                    onClick={() => setShowPassword(!showPassword)}
+                    onMouseDown={e => e.preventDefault()}
+                    edge="end">
+                    {showPassword ? (
+                      <Visibility color="primary" />
+                    ) : (
+                      <VisibilityOff color="primary" />
+                    )}
+                  </IconButton>
+                </InputAdornment>
+              }
+              color="primary"
+              aria-describedby="outlined-helper-text"
             />
             <FormHelperText
               id="outlined-helper-text"
-              error={error.new_password}>
+              error={error.new_password ? true : false}>
               {error.new_password}
             </FormHelperText>
           </FormControl>
 
           <InputLabel
             htmlFor="confirm_password"
-            error={error.confirm_password ? true : false}>
-            Konfirmasi Password Baru
+            error={error.confirm_password ? true : false}
+            className={classes.label}>
+            Konfirmasi password baru
           </InputLabel>
           <FormControl
             variant="outlined"
@@ -204,19 +265,37 @@ function ChangePassword({ open, close }) {
             margin="normal"
             fullWidth>
             <OutlinedInput
+              type={showPassword ? 'text' : 'password'}
               name="confirm_password"
               id="confirm_password"
-              color="primary"
               onChange={handleChange}
               value={form.confirm_password}
               error={error.confirm_password ? true : false}
+              endAdornment={
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-label="toggle password visibility"
+                    onClick={() => setShowPassword(!showPassword)}
+                    onMouseDown={e => e.preventDefault()}
+                    edge="end">
+                    {showPassword ? (
+                      <Visibility color="primary" />
+                    ) : (
+                      <VisibilityOff color="primary" />
+                    )}
+                  </IconButton>
+                </InputAdornment>
+              }
+              color="primary"
+              aria-describedby="outlined-helper-text"
             />
             <FormHelperText
               id="outlined-helper-text"
-              error={error.confirm_password}>
+              error={error.confirm_password ? true : false}>
               {error.confirm_password}
             </FormHelperText>
           </FormControl>
+
           <Button
             variant="contained"
             color="primary"
@@ -234,6 +313,10 @@ function ChangePassword({ open, close }) {
           </Button>
         </div>
       </DialogContent>
+      <Prompt
+        when={isSomethingChange}
+        message="Terjadi perubahan yang belum disimpan! Yakin ingin membuangnya?"
+      />
     </Dialog>
   );
 }

@@ -1,9 +1,19 @@
 import actionTypes from '../actionTypes';
 
 /**
- * @name setCategory
+ * @name setCategories
  * @param {*} value
  * @description redux action untuk set data category
+ */
+export const setCategories = value => ({
+  type: actionTypes.category.SET_CATEGORIES,
+  value
+});
+
+/**
+ * @name setCategory
+ * @param {*} value
+ * @description redux action untuk set per data category
  */
 export const setCategory = value => ({
   type: actionTypes.category.SET_CATEGORY,
@@ -11,9 +21,9 @@ export const setCategory = value => ({
 });
 
 /**
- * @name clearCustomer
- * @description redux action untuk clear data customers
+ * @name clearCategories
+ * @description redux action untuk clear data Categories
  */
-export const clearCustomers = () => ({
-  type: actionTypes.customer.CLEAR_CUSTOMER
+export const clearCategories = () => ({
+  type: actionTypes.category.CLEAR_CATEGORIES
 });

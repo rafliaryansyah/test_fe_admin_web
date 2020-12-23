@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import useStyles from './styles';
+import propTypes from 'prop-types';
 
 // notistack
 import { useSnackbar } from 'notistack';
@@ -8,11 +9,14 @@ import { useSnackbar } from 'notistack';
 import {
   Button,
   IconButton,
+  TextField,
   InputLabel,
   FormLabel,
   FormControl,
   FormControlLabel,
   FormHelperText,
+  Select,
+  MenuItem,
   RadioGroup,
   Radio,
   OutlinedInput,
@@ -28,9 +32,25 @@ import {
 import { Search, Delete, Edit } from '@material-ui/icons';
 
 // components
-import { Paginasi, CompDialog, ConfirmDialog } from '../../../components';
+import { Paginasi, CompDialog, ConfirmDialog } from 'components';
 
-function Voucher({ history }) {
+// redux
+import { connect } from 'react-redux';
+import { setVoucher } from 'modules';
+
+// services
+import {
+  createVoucher,
+  readVoucher,
+  updateVoucher,
+  deleteVoucher,
+  getCategory
+} from 'services';
+
+// utils
+import { currency, dateConverterReq, dateConverterRes } from 'utils';
+
+function Voucher({ setDataVoucher, dataVoucher }) {
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
 
@@ -40,23 +60,39 @@ function Voucher({ history }) {
     hapus: false
   });
 
+  const [id, setID] = useState('');
+
+  const [isEdit, setIsEdit] = useState(false);
+
+  const [categoryID, setCategoryID] = useState([]);
+
+  const [dataDetail, setDataDetail] = useState({});
+
   const [form, setForm] = useState({
-    nama: '',
-    type: '',
-    berlaku_hingga: '',
-    minimum_transaksi: '',
-    potongan_harga: '',
-    deskripsi: '',
-    status: ''
+    type: '1',
+    status: '1',
+    category: '',
+    code: '',
+    min_amount: '',
+    amount: '',
+    quantity: '',
+    image: '',
+    description: '',
+    tac: '',
+    expired_at: ''
   });
   const [error, setError] = useState({
-    nama: '',
     type: '',
-    berlaku_hingga: '',
-    minimum_transaksi: '',
-    potongan_harga: '',
-    deskripsi: '',
-    status: ''
+    status: '',
+    category: '',
+    code: '',
+    min_amount: '',
+    amount: '',
+    quantity: '',
+    image: '',
+    description: '',
+    tac: '',
+    expired_at: ''
   });
 
   const handleChange = e => {
@@ -74,37 +110,61 @@ function Voucher({ history }) {
   const validate = () => {
     const newError = { ...error };
 
-    if (!form.nama) {
-      newError.nama = 'Field masih kosong';
-    }
-
     if (!form.type) {
       newError.type = 'Field masih kosong';
-    }
-
-    if (!form.berlaku_hingga) {
-      newError.berlaku_hingga = 'Field masih kosong';
-    }
-
-    if (!form.minimum_transaksi) {
-      newError.minimum_transaksi = 'Field masih kosong';
-    }
-
-    if (!form.potongan_harga) {
-      newError.potongan_harga = 'Field masih kosong';
-    }
-
-    if (!form.deskripsi) {
-      newError.deskripsi = 'Field masih kosong';
     }
 
     if (!form.status) {
       newError.status = 'Field masih kosong';
     }
 
+    if (!form.category) {
+      newError.category = 'Field masih kosong';
+    }
+
+    if (!form.code) {
+      newError.code = 'Field masih kosong';
+    }
+
+    if (!form.min_amount) {
+      newError.min_amount = 'Field masih kosong';
+    }
+
+    if (!form.amount) {
+      newError.amount = 'Field masih kosong';
+    }
+
+    if (!form.quantity) {
+      newError.quantity = 'Field masih kosong';
+    }
+
+    if (!form.image) {
+      newError.image = 'Field masih kosong';
+    }
+
+    if (!form.description) {
+      newError.description = 'Field masih kosong';
+    }
+
+    if (!form.tac) {
+      newError.tac = 'Field masih kosong';
+    }
+
+    if (!form.expired_at) {
+      newError.expired_at = 'Field masih kosong';
+    }
+
     return newError;
   };
 
+  // useEffect untuk merender agar data di read (list)
+  useEffect(() => {
+    readVoucher()
+      .then(res => setDataVoucher(res.data.data))
+      .catch(err => err);
+  }, []);
+
+  // submit untuk menambah atau mengedit data
   const submit = async e => {
     e.preventDefault();
 
@@ -113,30 +173,206 @@ function Voucher({ history }) {
     if (Object.values(findErrors).some(err => err !== '')) {
       setError(findErrors);
     } else {
-      setForm({
-        nama: '',
-        berlaku_hingga: '',
-        minimum_transaksi: '',
-        potongan_harga: '',
-        deskripsi: '',
-        status: ''
-      });
-      setOpen({ ...open, form: false });
-      enqueueSnackbar('Berhasil menambahkan voucher baru', {
+      if (isEdit) {
+        // edit data
+
+        // state
+        const {
+          type,
+          status,
+          category,
+          code,
+          min_amount,
+          amount,
+          quantity,
+          image,
+          description,
+          tac,
+          expired_at
+        } = form;
+
+        // form-data kosong
+        const formdata = new FormData();
+
+        // mengisi data menggunakan append
+        formdata.append('type', parseInt(type));
+        formdata.append('status', parseInt(status));
+        formdata.append('category', category);
+        formdata.append('code', code);
+        formdata.append('min_amount', min_amount);
+        formdata.append('amount', amount);
+        formdata.append('quantity', quantity);
+        formdata.append('image', image);
+        formdata.append('description', description);
+        formdata.append('tac', tac);
+        formdata.append('expired_at', dateConverterReq(expired_at));
+
+        // services
+        const result = await updateVoucher(id, formdata).catch(err => err);
+
+        if (result.success) {
+          setForm({
+            type: '1',
+            status: '1',
+            category: '',
+            code: '',
+            min_amount: '',
+            amount: '',
+            quantity: '',
+            image: '',
+            description: '',
+            tac: '',
+            expired_at: ''
+          });
+          setOpen({ ...open, form: false });
+          enqueueSnackbar('Berhasil memperbarui voucher', {
+            variant: 'success'
+          });
+
+          // read kembali data
+          setTimeout(() => {
+            readVoucher()
+              .then(res => setDataVoucher(res.data.data))
+              .catch(err => err);
+          }, 5000);
+        } else {
+          setForm({
+            type: '1',
+            status: '1',
+            category: '',
+            code: '',
+            min_amount: '',
+            amount: '',
+            quantity: '',
+            image: '',
+            description: '',
+            tac: '',
+            expired_at: ''
+          });
+          setOpen({ ...open, form: false });
+          enqueueSnackbar('Gagal memmperbarui voucher', {
+            variant: 'error'
+          });
+        }
+      } else {
+        // tambah data
+
+        // state
+        const {
+          type,
+          status,
+          category,
+          code,
+          min_amount,
+          amount,
+          quantity,
+          image,
+          description,
+          tac,
+          expired_at
+        } = form;
+
+        // form-data kosong
+        const formdata = new FormData();
+
+        // mengisi data menggunakan append
+        formdata.append('type', parseInt(type));
+        formdata.append('status', parseInt(status));
+        formdata.append('category', category);
+        formdata.append('code', code);
+        formdata.append('min_amount', min_amount);
+        formdata.append('amount', amount);
+        formdata.append('quantity', quantity);
+        formdata.append('image', image);
+        formdata.append('description', description);
+        formdata.append('tac', tac);
+        formdata.append('expired_at', dateConverterReq(expired_at));
+
+        // services
+        const result = await createVoucher(formdata).catch(err => err);
+
+        if (result.success) {
+          setForm({
+            type: '1',
+            status: '1',
+            category: '',
+            code: '',
+            min_amount: '',
+            amount: '',
+            quantity: '',
+            image: '',
+            description: '',
+            tac: '',
+            expired_at: ''
+          });
+          setOpen({ ...open, form: false });
+          enqueueSnackbar('Berhasil menambahkan voucher baru', {
+            variant: 'success'
+          });
+
+          // read kembali data
+          setTimeout(() => {
+            readVoucher()
+              .then(res => setDataVoucher(res.data.data))
+              .catch(err => err);
+          }, 5000);
+        } else {
+          setForm({
+            type: '1',
+            status: '1',
+            category: '',
+            code: '',
+            min_amount: '',
+            amount: '',
+            quantity: '',
+            image: '',
+            description: '',
+            tac: '',
+            expired_at: ''
+          });
+          setOpen({ ...open, form: false });
+          enqueueSnackbar('Gagal menambahkan voucher baru', {
+            variant: 'error'
+          });
+        }
+      }
+    }
+  };
+
+  // hapus data
+  const hapus = async () => {
+    const result = await deleteVoucher(id).catch(err => err);
+
+    if (result.success) {
+      setOpen({ ...open, hapus: false });
+      enqueueSnackbar('Berhasil menghapus voucher', {
         variant: 'success'
+      });
+
+      // read kembali data
+      setTimeout(() => {
+        readVoucher()
+          .then(res => setDataVoucher(res.data.data))
+          .catch(err => err);
+      }, 5000);
+    } else {
+      setOpen({ ...open, hapus: false });
+      enqueueSnackbar('Gagal menghapus voucher', {
+        variant: 'error'
       });
     }
   };
 
+  // upload image
   const handleUploadFile = async e => {
     const file = e.target.files[0];
 
-    if (!['image/png', 'image/jpeg'].includes(file.type)) {
+    if (!['image/png', 'image/jpeg'].includes(file && file.type)) {
       setError({
         ...error,
-        image: `Tipe file tidak didukung: ${file.type}`
+        image: `Tipe file tidak didukung: ${file && file.type}`
       });
-    } else if (file.size >= 512000) {
+    } else if (file && file.size >= 2097152) {
       setError({
         ...error,
         image: 'Ukuran file terlalu besar dari 500KB'
@@ -181,8 +417,6 @@ function Voucher({ history }) {
     }
   };
 
-  const handleHapus = () => {};
-
   return (
     <div className={classes.wrapper}>
       <div className={classes.pencarian}>
@@ -214,92 +448,62 @@ function Voucher({ history }) {
       </div>
 
       <div className={classes.main}>
-        <Card>
-          <CardActionArea onClick={() => setOpen({ ...open, detail: true })}>
-            <CardMedia
-              component="img"
-              alt="Contemplative Reptile"
-              height="200"
-              image="https://ecs7.tokopedia.net/img/blog/seller/2020/04/voucher-toko.jpg"
-              title="Contemplative Reptile"
-            />
-            <CardContent className={classes.content}>
-              <span>akhirtahun</span>
-            </CardContent>
-          </CardActionArea>
-          <CardActions className={classes.action}>
-            <IconButton
-              size="small"
-              color="primary"
-              onClick={() => setOpen({ ...open, form: true })}>
-              <Edit />
-            </IconButton>
-            <IconButton
-              size="small"
-              color="primary"
-              onClick={() => setOpen({ ...open, hapus: true })}>
-              <Delete />
-            </IconButton>
-          </CardActions>
-        </Card>
-
-        <Card>
-          <CardActionArea onClick={() => setOpen({ ...open, detail: true })}>
-            <CardMedia
-              component="img"
-              alt="Contemplative Reptile"
-              height="200"
-              image="https://ecs7.tokopedia.net/img/blog/seller/2020/04/voucher-toko.jpg"
-              title="Contemplative Reptile"
-            />
-            <CardContent className={classes.content}>
-              <span>akhirtahun</span>
-            </CardContent>
-          </CardActionArea>
-          <CardActions className={classes.action}>
-            <IconButton
-              size="small"
-              color="primary"
-              onClick={() => setOpen({ ...open, form: true })}>
-              <Edit />
-            </IconButton>
-            <IconButton
-              size="small"
-              color="primary"
-              onClick={() => setOpen({ ...open, hapus: true })}>
-              <Delete />
-            </IconButton>
-          </CardActions>
-        </Card>
-
-        <Card>
-          <CardActionArea onClick={() => setOpen({ ...open, detail: true })}>
-            <CardMedia
-              component="img"
-              alt="Contemplative Reptile"
-              height="200"
-              image="https://ecs7.tokopedia.net/img/blog/seller/2020/04/voucher-toko.jpg"
-              title="Contemplative Reptile"
-            />
-            <CardContent className={classes.content}>
-              <span>akhirtahun</span>
-            </CardContent>
-          </CardActionArea>
-          <CardActions className={classes.action}>
-            <IconButton
-              size="small"
-              color="primary"
-              onClick={() => setOpen({ ...open, form: true })}>
-              <Edit />
-            </IconButton>
-            <IconButton
-              size="small"
-              color="primary"
-              onClick={() => setOpen({ ...open, hapus: true })}>
-              <Delete />
-            </IconButton>
-          </CardActions>
-        </Card>
+        {dataVoucher &&
+          dataVoucher.map(data => (
+            <Card key={data.id}>
+              <CardActionArea
+                onClick={() => {
+                  setDataDetail(data);
+                  setOpen({ ...open, detail: true });
+                }}>
+                <CardMedia
+                  component="img"
+                  alt="Contemplative Reptile"
+                  height="200"
+                  image={data.image}
+                  title="Contemplative Reptile"
+                />
+                <CardContent className={classes.content}>
+                  <span>{data.code}</span>
+                </CardContent>
+              </CardActionArea>
+              <CardActions className={classes.action}>
+                <IconButton
+                  size="small"
+                  color="primary"
+                  onClick={() => {
+                    setID(data.id);
+                    setIsEdit(true);
+                    setForm({
+                      ...form,
+                      type: data.voucherType && data.voucherType.id.toString(),
+                      status: data.voucherStatus && data.voucherStatus.id,
+                      category: data.voucherCategory && data.voucherCategory.id,
+                      code: data.code,
+                      min_amount: data.minAmount,
+                      amount: data.amount,
+                      quantity: data.quantity,
+                      image: data.image,
+                      description: data.description,
+                      tac: data.termAndCondition,
+                      expired_at: dateConverterReq(data.expiredAt)
+                    });
+                    setOpen({ ...open, form: true });
+                  }}>
+                  <Edit />
+                </IconButton>
+                <IconButton
+                  size="small"
+                  color="primary"
+                  onClick={() => {
+                    setID(data.id);
+                    setOpen({ ...open, hapus: true });
+                  }}>
+                  <Delete />
+                </IconButton>
+              </CardActions>
+            </Card>
+          ))}
       </div>
 
       <Paginasi count={5} page={1} onClick={(e, value) => value} />
@@ -307,30 +511,28 @@ function Voucher({ history }) {
       <CompDialog
         open={open.detail}
         close={() => setOpen({ ...open, detail: false })}
-        title="AKHIRTAHUN">
-        <img
-          src="https://ecs7.tokopedia.net/img/blog/seller/2020/04/voucher-toko.jpg"
-          alt="avatar"
-          className={classes.img}
-        />
-        <p className={classes.nama}>
-          Potongan harga Rp50.000 untuk semua produk
-        </p>
+        title={dataDetail.code}>
+        <img src={dataDetail.image} alt="photo" className={classes.img} />
+        <p className={classes.nama}>{dataDetail.description}</p>
         <div className={classes.desk}>
           <span className={classes.teks}>Berlaku hingga</span>
-          <span className={classes.teks}>Jumat, 05/Feb/2021</span>
+          <span className={classes.teks}>
+            {dateConverterRes(dataDetail.expiredAt)}
+          </span>
         </div>
         <div className={classes.desk}>
           <span className={classes.teks}>Minimum transaksi</span>
-          <span className={classes.teks}>Rp10.000</span>
+          <span className={classes.teks}>{currency(dataDetail.minAmount)}</span>
         </div>
         <div className={classes.desk}>
           <span className={classes.teks}>Potongan Harga</span>
-          <span className={classes.teks}>Rp50.000</span>
+          <span className={classes.teks}>{currency(dataDetail.amount)}</span>
         </div>
         <div className={classes.desk}>
           <span className={classes.teks}>Status</span>
-          <span className={classes.teks}>Aktif</span>
+          <span className={classes.teks}>
+            {dataDetail.voucherStatus && dataDetail.voucherStatus.name}
+          </span>
         </div>
         <div className={classes.garis}></div>
         <label className={classes.label}>syarat & ketentuan</label>
@@ -354,29 +556,8 @@ function Voucher({ history }) {
         close={() => setOpen({ ...open, form: false })}
         title="Form Voucher">
         <div className={classes.form}>
-          <InputLabel htmlFor="nama" error={error.nama ? true : false}>
-            Nama
-          </InputLabel>
-          <FormControl
-            variant="outlined"
-            size="small"
-            margin="normal"
-            fullWidth>
-            <OutlinedInput
-              name="nama"
-              id="nama"
-              color="primary"
-              onChange={handleChange}
-              value={form.nama}
-              error={error.nama ? true : false}
-            />
-            <FormHelperText id="outlined-helper-text" error={error.nama}>
-              {error.nama}
-            </FormHelperText>
-          </FormControl>
-
-          <FormControl component="fieldset">
-            <FormLabel component="legend">Pilih Tipe</FormLabel>
+          <FormControl component="fieldset" style={{ marginBottom: 15 }}>
+            <FormLabel component="legend">Tipe</FormLabel>
             <RadioGroup
               row
               aria-label="type"
@@ -384,12 +565,12 @@ function Voucher({ history }) {
               value={form.type}
               onChange={handleChange}>
               <FormControlLabel
-                value="produk"
+                value="1"
                 control={<Radio color="primary" />}
                 label="Produk"
               />
               <FormControlLabel
-                value="jasa"
+                value="2"
                 control={<Radio color="primary" />}
                 label="Jasa"
               />
@@ -397,9 +578,59 @@ function Voucher({ history }) {
           </FormControl>
 
           <InputLabel
-            htmlFor="berlaku_hingga"
-            error={error.berlaku_hingga ? true : false}>
-            Berlaku Hingga
+            htmlFor="status"
+            error={error.status ? true : false}
+            style={{ marginBottom: 15 }}>
+            Status
+          </InputLabel>
+          <FormControl variant="outlined" style={{ marginBottom: 15 }}>
+            <Select
+              id="status"
+              name="status"
+              onChange={handleChange}
+              value={form.status}>
+              <MenuItem value={1}>Aktif</MenuItem>
+              <MenuItem value={2}>Tidak Aktif</MenuItem>
+            </Select>
+          </FormControl>
+
+          <InputLabel htmlFor="category" error={error.category ? true : false}>
+            Kategori ID
+          </InputLabel>
+          <FormControl variant="outlined" size="small" margin="normal">
+            <Select
+              name="category"
+              id="category"
+              value={form.category}
+              onChange={handleChange}>
+              <TextField
+                placeholder="Search"
+                name="search"
+                id="search"
+                fullWidth
+                onChange={e =>
+                  getCategory(e.target.value)
+                    .then(res => setCategoryID(res.data.data))
+                    .catch(err => err)
+                }
+                className={classes.input}
+              />
+              {categoryID &&
+                categoryID.map(data => (
+                  <MenuItem key={data.id} value={data.id}>
+                    {data.name}
+                  </MenuItem>
+                ))}
+            </Select>
+            <FormHelperText
+              id="outlined-helper-text"
+              error={error.category ? true : false}>
+              {error.category}
+            </FormHelperText>
+          </FormControl>
+
+          <InputLabel htmlFor="code" error={error.code ? true : false}>
+            Kode
           </InputLabel>
           <FormControl
             variant="outlined"
@@ -407,25 +638,22 @@ function Voucher({ history }) {
             margin="normal"
             fullWidth>
             <OutlinedInput
-              type="date"
-              name="berlaku_hingga"
-              id="berlaku_hingga"
+              name="code"
+              id="code"
               color="primary"
               onChange={handleChange}
-              value={form.berlaku_hingga}
-              error={error.berlaku_hingga ? true : false}
+              value={form.code}
+              error={error.code ? true : false}
             />
-            <FormHelperText
-              id="outlined-helper-text"
-              error={error.berlaku_hingga}>
-              {error.berlaku_hingga}
+            <FormHelperText id="outlined-helper-text" error={error.code}>
+              {error.code}
             </FormHelperText>
           </FormControl>
 
           <InputLabel
-            htmlFor="minimum_transaksi"
-            error={error.minimum_transaksi ? true : false}>
-            Minimum Transaksi
+            htmlFor="min_amount"
+            error={error.min_amount ? true : false}>
+            Minimal Jumlah
           </InputLabel>
           <FormControl
             variant="outlined"
@@ -433,24 +661,21 @@ function Voucher({ history }) {
             margin="normal"
             fullWidth>
             <OutlinedInput
-              name="minimum_transaksi"
-              id="minimum_transaksi"
+              type="number"
+              name="min_amount"
+              id="min_amount"
               color="primary"
               onChange={handleChange}
-              value={form.minimum_transaksi}
-              error={error.minimum_transaksi ? true : false}
+              value={form.min_amount}
+              error={error.min_amount ? true : false}
             />
-            <FormHelperText
-              id="outlined-helper-text"
-              error={error.minimum_transaksi}>
-              {error.minimum_transaksi}
+            <FormHelperText id="outlined-helper-text" error={error.min_amount}>
+              {error.min_amount}
             </FormHelperText>
           </FormControl>
 
-          <InputLabel
-            htmlFor="potongan_harga"
-            error={error.potongan_harga ? true : false}>
-            Potongan Harga
+          <InputLabel htmlFor="amount" error={error.amount ? true : false}>
+            Jumlah
           </InputLabel>
           <FormControl
             variant="outlined"
@@ -458,24 +683,21 @@ function Voucher({ history }) {
             margin="normal"
             fullWidth>
             <OutlinedInput
-              name="potongan_harga"
-              id="potongan_harga"
+              type="number"
+              name="amount"
+              id="amount"
               color="primary"
               onChange={handleChange}
-              value={form.potongan_harga}
-              error={error.potongan_harga ? true : false}
+              value={form.amount}
+              error={error.amount ? true : false}
             />
-            <FormHelperText
-              id="outlined-helper-text"
-              error={error.potongan_harga}>
-              {error.potongan_harga}
+            <FormHelperText id="outlined-helper-text" error={error.amount}>
+              {error.amount}
             </FormHelperText>
           </FormControl>
 
-          <InputLabel
-            htmlFor="deskripsi"
-            error={error.deskripsi ? true : false}>
-            Deskripsi
+          <InputLabel htmlFor="quantity" error={error.quantity ? true : false}>
+            Kuantitas
           </InputLabel>
           <FormControl
             variant="outlined"
@@ -483,53 +705,23 @@ function Voucher({ history }) {
             margin="normal"
             fullWidth>
             <OutlinedInput
-              name="deskripsi"
-              id="deskripsi"
+              type="number"
+              name="quantity"
+              id="quantity"
               color="primary"
               onChange={handleChange}
-              value={form.deskripsi}
-              error={error.deskripsi ? true : false}
-              multiline
+              value={form.quantity}
+              error={error.quantity ? true : false}
             />
-            <FormHelperText id="outlined-helper-text" error={error.deskripsi}>
-              {error.deskripsi}
-            </FormHelperText>
-          </FormControl>
-
-          <InputLabel
-            htmlFor="syarat_ketentuan"
-            error={error.syarat_ketentuan ? true : false}>
-            Syarat & Ketentuan
-          </InputLabel>
-          <FormControl
-            variant="outlined"
-            size="small"
-            margin="normal"
-            fullWidth>
-            <OutlinedInput
-              name="syarat_ketentuan"
-              id="syarat_ketentuan"
-              color="primary"
-              onChange={handleChange}
-              value={form.syarat_ketentuan}
-              error={error.syarat_ketentuan ? true : false}
-              multiline
-            />
-            <FormHelperText
-              id="outlined-helper-text"
-              error={error.syarat_ketentuan}>
-              {error.syarat_ketentuan}
+            <FormHelperText id="outlined-helper-text" error={error.quantity}>
+              {error.quantity}
             </FormHelperText>
           </FormControl>
 
           <div className={classes.inputFile}>
             <div className={classes.itemPreview}>
               {form.image ? (
-                <img
-                  src={URL.createObjectURL(form.image)}
-                  alt="Foto Banner"
-                  className={classes.preview}
-                />
+                <img src={form.image} alt="photo" className={classes.preview} />
               ) : (
                 'Image Preview'
               )}
@@ -552,6 +744,76 @@ function Voucher({ history }) {
             {error.image}
           </FormHelperText>
 
+          <InputLabel
+            htmlFor="description"
+            error={error.description ? true : false}>
+            Deskripsi
+          </InputLabel>
+          <FormControl
+            variant="outlined"
+            size="small"
+            margin="normal"
+            fullWidth>
+            <OutlinedInput
+              name="description"
+              id="description"
+              color="primary"
+              multiline
+              onChange={handleChange}
+              value={form.description}
+              error={error.description ? true : false}
+            />
+            <FormHelperText id="outlined-helper-text" error={error.description}>
+              {error.description}
+            </FormHelperText>
+          </FormControl>
+
+          <InputLabel htmlFor="tac" error={error.tac ? true : false}>
+            Tac
+          </InputLabel>
+          <FormControl
+            variant="outlined"
+            size="small"
+            margin="normal"
+            fullWidth>
+            <OutlinedInput
+              name="tac"
+              id="tac"
+              color="primary"
+              multiline
+              onChange={handleChange}
+              value={form.tac}
+              error={error.tac ? true : false}
+            />
+            <FormHelperText id="outlined-helper-text" error={error.tac}>
+              {error.tac}
+            </FormHelperText>
+          </FormControl>
+
+          <InputLabel
+            htmlFor="expired_at"
+            error={error.expired_at ? true : false}>
+            Tanggal Kedaluarsa
+          </InputLabel>
+          <FormControl
+            variant="outlined"
+            size="small"
+            margin="normal"
+            fullWidth>
+            <OutlinedInput
+              type="date"
+              name="expired_at"
+              id="expired_at"
+              color="primary"
+              onChange={handleChange}
+              value={form.expired_at}
+              error={error.expired_at ? true : false}
+            />
+            <FormHelperText id="outlined-helper-text" error={error.expired_at}>
+              {error.expired_at}
+            </FormHelperText>
+          </FormControl>
+
           <Button
             variant="contained"
             color="primary"
@@ -565,11 +827,24 @@ function Voucher({ history }) {
         open={open.hapus}
         title="Hapus Voucher"
         close={() => setOpen({ ...open, hapus: false })}
-        submit={handleHapus}>
+        submit={hapus}>
         Yakin ingin menghapus voucher ?
       </ConfirmDialog>
     </div>
   );
 }
 
-export default Voucher;
+Voucher.propTypes = {
+  setDataVoucher: propTypes.func,
+  dataVoucher: propTypes.array
+};
+
+const mapStateToProps = state => ({
+  dataVoucher: state.voucher.vouchers
+});
+
+const mapDispatchToProps = dispatch => ({
+  setDataVoucher: value => dispatch(setVoucher(value))
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Voucher);

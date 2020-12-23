@@ -20,6 +20,7 @@ numeral.register('locale', 'id', {
 
 numeral.locale('id');
 
+// format currency
 export const currency = number => {
   return numeral(number).format('$0,0');
 };

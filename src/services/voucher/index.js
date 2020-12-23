@@ -1,31 +1,16 @@
 import API from 'configs/api';
 
 /**
- * service category for get all data category
+ * service voucher for create data voucher
  */
-export const getCategory = () => {
-  return new Promise((resolve, reject) => {
-    API.category()
-      .then(res => {
-        resolve({ success: true, data: res.data });
-      })
-      .catch(err => {
-        reject({ success: false, data: err });
-      });
-  });
-};
-
-/**
- * service category for create data category
- */
-export const postCategory = formdata => {
+export const createVoucher = formdata => {
   return new Promise((resolve, reject) => {
     const data = {
       type: 'form-data',
       body: formdata
     };
 
-    API.createCategory(data)
+    API.createVoucher(data)
       .then(res => {
         resolve({ success: true, data: res.data });
       })
@@ -36,9 +21,24 @@ export const postCategory = formdata => {
 };
 
 /**
- * service category for update data category
+ * service voucher for get all data voucher
  */
-export const updateCategory = (id, formdata) => {
+export const readVoucher = () => {
+  return new Promise((resolve, reject) => {
+    API.readVoucher()
+      .then(res => {
+        resolve({ success: true, data: res.data });
+      })
+      .catch(err => {
+        reject({ success: false, data: err });
+      });
+  });
+};
+
+/**
+ * service voucher for update data voucher
+ */
+export const updateVoucher = (id, formdata) => {
   return new Promise((resolve, reject) => {
     const data = {
       type: 'form-data',
@@ -46,7 +46,7 @@ export const updateCategory = (id, formdata) => {
       path: `${id}`
     };
 
-    API.updateCategory(data)
+    API.updatevoucher(data)
       .then(res => {
         resolve({ success: true, data: res.data });
       })
@@ -57,15 +57,15 @@ export const updateCategory = (id, formdata) => {
 };
 
 /**
- * service category for delete data category
+ * service voucher for delete data voucher
  */
-export const deleteCategory = id => {
+export const deleteVoucher = id => {
   return new Promise((resolve, reject) => {
     const data = {
       path: `${id}/delete`
     };
 
-    API.deleteCategory(data)
+    API.deleteVoucher(data)
       .then(res => {
         resolve({ success: true, data: res.data });
       })
@@ -76,15 +76,15 @@ export const deleteCategory = id => {
 };
 
 /**
- * service category for restore data category
+ * service voucher for restore data voucher
  */
-export const restoreCategory = id => {
+export const restoreVoucher = id => {
   return new Promise((resolve, reject) => {
     const data = {
       path: `${id}/restore`
     };
 
-    API.restoreCategory(data)
+    API.restoreVoucher(data)
       .then(res => {
         resolve({ success: true, data: res.data });
       })

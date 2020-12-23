@@ -1,7 +1,8 @@
 import actionTypes from '../actionTypes';
 
 const initialState = {
-  category: []
+  categories: [],
+  category: {}
 };
 
 /**
@@ -10,13 +11,19 @@ const initialState = {
  */
 const category = (state = initialState, action) => {
   switch (action.type) {
+    case actionTypes.category.SET_CATEGORIES:
+      return {
+        ...state,
+        categories: action.value
+      };
+
     case actionTypes.category.SET_CATEGORY:
       return {
         ...state,
         category: action.value
       };
 
-    case actionTypes.global.CLEAR_GLOBAL:
+    case actionTypes.category.CLEAR_CATEGORIES:
       return initialState;
     default:
       return state;

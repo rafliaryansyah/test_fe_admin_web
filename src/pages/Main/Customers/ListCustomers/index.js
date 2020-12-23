@@ -27,7 +27,9 @@ function ListCustomers({ setDataCustomers, dataCustomers, history }) {
   const classes = useStyles();
 
   useEffect(() => {
-    // getCustomers().then(res => setDataCustomers(res.data));
+    getCustomers().then(res => {
+      setDataCustomers(res.data.data);
+    });
   }, []);
 
   return (
@@ -63,18 +65,20 @@ function ListCustomers({ setDataCustomers, dataCustomers, history }) {
       </div>
 
       <div className={classes.wrapperCard}>
-        {dataCustomers.map(user => (
-          <CardCustomers
-            key={user.id}
-            nama={user.name}
-            status={user.statusUser && user.statusUser.name}
-            jenisKelamin={user.gender && user.gender.name}
-            email={user.email}
-            noTelp={user.phone}
-            roles={user.roles}
-            handleDetail={() => history.push(`/customers/${user.id}`)}
-          />
-        ))}
+        {dataCustomers &&
+          dataCustomers.map(user => (
+            <CardCustomers
+              key={user.id}
+              srcImage="https://images.unsplash.com/photo-1549913772-820279f909b7?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=747&q=80"
+              nama={user.name}
+              status={user.statusUser && user.statusUser.name}
+              jenisKelamin={user.gender && user.gender.name}
+              email={user.email}
+              noTelp={user.phone}
+              roles={user.roles}
+              handleDetail={() => history.push(`/customers/${user.id}`)}
+            />
+          ))}
       </div>
 
       <Paginasi count={5} page={1} onClick={(e, value) => value} />

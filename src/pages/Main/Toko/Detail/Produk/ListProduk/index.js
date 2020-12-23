@@ -1,25 +1,30 @@
 import useStyles from './styles';
+import propTypes from 'prop-types';
 
 // components
 import { CardProduk, Paginasi } from 'components';
 
-function ListProduk({ history }) {
+// redux
+import { connect } from 'react-redux';
+
+function ListProduk({ dataProduks, history }) {
   const classes = useStyles();
   return (
     <div className={classes.wrapper}>
       <div className={classes.cardGrid}>
-        {Array.from(new Array(10)).map((_, i) => (
-          <CardProduk
-            key={i}
-            srcImage="https://ecs7-p.tokopedia.net/img/cache/200-square/VqbcmM/2020/11/3/e5856c28-7cd8-4e31-ac7f-716739847083.png.webp"
-            nama="Custom Kalender Meja 6 x 8 ( 15cm x 20cm )"
-            diskon="84%"
-            hargaNormal="Rp.240.000"
-            hargaDiskon="Rp.39.000"
-            rating=""
-            handleDetail={() => history.push('/toko/detail/produk/detail')}
-          />
-        ))}
+        {dataProduks &&
+          dataProduks.map(data => (
+            <CardProduk
+              key={data.id}
+              srcImage="https://ecs7-p.tokopedia.net/img/cache/200-square/VqbcmM/2020/11/3/e5856c28-7cd8-4e31-ac7f-716739847083.png.webp"
+              nama="Custom Kalender Meja 6 x 8 ( 15cm x 20cm )"
+              diskon="84%"
+              hargaNormal="Rp.240.000"
+              hargaDiskon="Rp.39.000"
+              rating=""
+              handleDetail={() => history.push('/toko/:id/produk/:id')}
+            />
+          ))}
       </div>
 
       <Paginasi count={5} page={1} onClick={(e, value) => value} />
@@ -27,4 +32,12 @@ function ListProduk({ history }) {
   );
 }
 
-export default ListProduk;
+ListProduk.propTypes = {
+  dataProduks: propTypes.array
+};
+
+const mapStateToProps = state => ({
+  dataProduks: state.stores.produks
+});
+
+export default connect(mapStateToProps, null)(ListProduk);

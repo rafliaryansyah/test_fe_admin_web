@@ -15,40 +15,46 @@ const useStyles = makeStyles(theme => ({
   },
 
   itemFotoDanRoles: {
-    // border: '1px solid'
-  },
-
-  wrapperImage: {
-    display: 'flex',
-    flexDirection: 'column',
+    display: 'grid',
     gridGap: 15
   },
 
-  img: {
-    objectFit: 'cover',
-    width: 300,
-    height: 300,
+  // avatar
+  wrapperImage: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    border: '1px solid #c4c4c4',
+    height: 50,
     borderRadius: 10,
+    padding: '150px 85px 180px 85px'
+  },
 
-    [theme.breakpoints.down('sm')]: {
-      width: '100%'
-    }
+  avatar: {
+    color: theme.palette.primary.main,
+    fontSize: 150
+  },
+
+  // photo
+  photo: {
+    objectFit: 'cover',
+    height: 300
   },
 
   upload: {
-    width: 269,
-    padding: 15,
-    backgroundColor: theme.palette.primary.main,
-    boxShadow: '0px 0px 3px rgba(0, 0, 0, 0.5)',
-    borderRadius: 10
-  },
-
-  textUpload: {
-    fontSize: 15,
+    border: `1px solid ${theme.palette.primary.main}`,
+    color: theme.palette.primary.main,
+    borderRadius: 10,
+    cursor: 'pointer',
+    padding: '10px 0px 10px 0px',
+    width: '100%',
+    textAlign: 'center',
     textTransform: 'capitalize',
-    letterSpacing: 1,
-    color: '#ffffff',
-    textAlign: 'center'
+
+    ['&:hover']: {
+      backgroundColor: theme.palette.primary.main,
+      color: '#ffffff'
+    }
   },
 
   roles: {

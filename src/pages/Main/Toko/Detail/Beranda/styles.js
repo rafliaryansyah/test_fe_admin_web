@@ -12,11 +12,21 @@ const useStyles = makeStyles(theme => ({
     }
   },
 
-  wrapperButton: {
+  // avatar
+  wrapperImage: {
     display: 'flex',
-    justifyContent: 'flex-end',
-    gridGap: 15,
-    marginTop: 15
+    justifyContent: 'center',
+    alignItems: 'center',
+    border: '1px solid #c4c4c4',
+    height: 50,
+    borderRadius: 10,
+    padding: '150px 85px 180px 85px',
+    marginBottom: 15
+  },
+
+  avatar: {
+    color: theme.palette.primary.main,
+    fontSize: 150
   }
 }));
 

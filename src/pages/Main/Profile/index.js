@@ -1,17 +1,13 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import useStyles from './styles';
-
-// validator (isEmail)
-import isEmail from 'validator/lib/isEmail';
+import propTypes from 'prop-types';
 
 // notistack
 import { useSnackbar } from 'notistack';
 
 // material-ui core
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
 import InputLabel from '@material-ui/core/InputLabel';
-import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControl from '@material-ui/core/FormControl';
 import OutlinedInput from '@material-ui/core/OutlinedInput';
 import Button from '@material-ui/core/Button';
@@ -22,35 +18,26 @@ import FormLabel from '@material-ui/core/FormLabel';
 // pages
 import ChangePassword from './ChangePassword';
 
-function Profile() {
+// services
+import { getProfile, editProfile } from 'services';
+
+// formatter
+import { dateConverterReq } from 'utils';
+
+function Profile({ history }) {
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
 
   const [isActiveForm, setIsActiveForm] = useState(false);
   const [open, setOpen] = useState(false);
 
-  const [roles, setRoles] = useState({
-    customer: true,
-    admin: true
-  });
-
   const [form, setForm] = useState({
-    src_avatar: '',
-    firts_name: '',
-    last_name: '',
-    date: '',
-    jenis_kelamin: 'pria',
+    name: '',
+    dob: '',
+    gender: '',
     email: '',
-    telepon: ''
-  });
-  const [error, setError] = useState({
-    src_avatar: '',
-    firts_name: '',
-    last_name: '',
-    date: '',
-    jenis_kelamin: '',
-    email: '',
-    telepon: ''
+    phone: '',
+    photo: ''
   });
 
   const handleChange = e => {
@@ -58,189 +45,167 @@ function Profile() {
       ...form,
       [e.target.name]: e.target.value
     });
-
-    setError({
-      ...error,
-      [e.target.name]: ''
-    });
   };
 
-  const validate = () => {
-    const newError = { ...error };
+  useEffect(() => {
+    getProfile()
+      .then(res => {
+        setForm({
+          ...form,
+          name: res.data.data.name,
+          dob: dateConverterReq(res.data.data.date_of_birth),
+          gender: res.data.data.gender && res.data.data.gender.id.toString(),
+          email: res.data.data.email,
+          phone: res.data.data.phone
+        });
+      })
+      .catch(err => {
+        console.log(err.data);
+      });
+  }, []);
 
-    if (!form.firts_name) {
-      newError.firts_name = 'Field masih kosong';
-    }
-
-    if (!form.last_name) {
-      newError.last_name = 'Field masih kosong';
-    }
-
-    if (!form.date) {
-      newError.date = 'Field masih kosong';
-    }
-
-    if (!form.email) {
-      newError.email = 'Field masih kosong';
-    } else if (!isEmail(form.email)) {
-      newError.email = 'Format email salah';
-    }
-
-    if (!form.telepon) {
-      newError.telepon = 'Field masih kosong';
-    }
-
-    return newError;
-  };
-
-  const submit = async e => {
+  const update = async e => {
     e.preventDefault();
 
-    const findErrors = validate();
+    const { name, dob, gender, email, phone, photo } = form;
 
-    if (Object.values(findErrors).some(err => err !== '')) {
-      setError(findErrors);
-    } else {
-      setForm({
-        src_avatar: '',
-        firts_name: '',
-        last_name: '',
-        date: '',
-        jenis_kelamin: '',
-        email: '',
-        telepon: ''
-      });
-      enqueueSnackbar('Berhasil memperbarui profile anda', {
+    console.log(form);
+
+    const result = await editProfile(
+      name,
+      dob,
+      parseInt(gender),
+      email,
+      phone,
+      photo
+    ).catch(err => err);
+
+    if (result.success) {
+      enqueueSnackbar(result.data.message, {
         variant: 'success'
       });
+    } else {
+      enqueueSnackbar(result.data.response.data.message, {
+        variant: 'error'
+      });
+    }
+  };
+
+  const handleUploadFile = async e => {
+    const file = e.target.files[0];
+
+    if (!['image/png', 'image/jpeg'].includes(file && file.type)) {
+      enqueueSnackbar(`Tipe file tidak didukung: ${file && file.type}`, {
+        variant: 'error'
+      });
+    } else if (file && file.size >= 2097152) {
+      enqueueSnackbar('Ukuran file terlalu besar dari 2 MB', {
+        variant: 'error'
+      });
+    } else {
+      const reader = new FileReader();
+
+      reader.onabort = () => {
+        enqueueSnackbar('Proses pembacaan file dibatalkan', {
+          variant: 'error'
+        });
+      };
+
+      reader.onerror = () => {
+        enqueueSnackbar('File tidak terbaca', {
+          variant: 'error'
+        });
+      };
+
+      reader.onload = async () => {
+        try {
+          setForm({
+            ...form,
+            photo: file
+          });
+        } catch (e) {
+          enqueueSnackbar(e.message, {
+            variant: 'error'
+          });
+        }
+      };
+
+      reader.readAsDataURL(file);
     }
   };
 
   return (
     <div className={classes.wrapper}>
       <div className={classes.itemFotoDanRoles}>
-        <div className={classes.wrapperImage}>
+        {form.photo ? (
           <img
-            src="https://images.unsplash.com/photo-1549913772-820279f909b7?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=747&q=80"
-            alt="foto"
-            className={classes.img}
+            src={URL.createObjectURL(form.photo)}
+            alt="photo"
+            className={classes.photo}
           />
-          <input type="file" id="upload" style={{ display: 'none' }} />
-          {isActiveForm && (
-            <label htmlFor="upload" className={classes.upload}>
-              <span className={classes.textUpload}>upload</span>
-            </label>
-          )}
-        </div>
-        <div className={classes.roles}>
-          <p className={classes.title}>roles :</p>
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={roles.customer}
-                onChange={e =>
-                  setRoles({ ...roles, [e.target.name]: e.target.checked })
-                }
-                name="customer"
-                color="primary"
-              />
-            }
-            label="Customer"
-          />
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={roles.admin}
-                onChange={e =>
-                  setRoles({ ...roles, [e.target.name]: e.target.checked })
-                }
-                name="admin"
-                color="primary"
-              />
-            }
-            label="Admin"
-          />
-        </div>
+        ) : (
+          <div className={classes.wrapperImage}>
+            <span className={classes.avatar}>
+              {form && form.name.split('')[0]}
+            </span>
+          </div>
+        )}
+        <input
+          type="file"
+          accept="image/png,image/jpeg"
+          onChange={handleUploadFile}
+          id="upload"
+          style={{ display: 'none' }}
+        />
+        {isActiveForm && (
+          <label htmlFor="upload" className={classes.upload}>
+            upload
+          </label>
+        )}
       </div>
 
       <div className={classes.wrapperInfo}>
-        <InputLabel
-          htmlFor="firts_name"
-          error={error.firts_name ? true : false}>
-          Firts Name
-        </InputLabel>
+        <InputLabel htmlFor="name">Full Name</InputLabel>
         <FormControl variant="outlined" size="small" margin="normal" fullWidth>
           <OutlinedInput
-            name="firts_name"
-            id="firts_name"
+            name="name"
+            id="name"
             color="primary"
             onChange={handleChange}
-            value={form.firts_name}
-            error={error.firts_name ? true : false}
+            value={form.name}
             disabled={isActiveForm ? false : true}
           />
-          <FormHelperText id="outlined-helper-text" error={error.firts_name}>
-            {error.firts_name}
-          </FormHelperText>
         </FormControl>
 
-        <InputLabel htmlFor="last_name" error={error.last_name ? true : false}>
-          Last Name
-        </InputLabel>
-        <FormControl variant="outlined" size="small" margin="normal" fullWidth>
-          <OutlinedInput
-            name="last_name"
-            id="last_name"
-            color="primary"
-            onChange={handleChange}
-            value={form.last_name}
-            error={error.last_name ? true : false}
-            disabled={isActiveForm ? false : true}
-          />
-          <FormHelperText id="outlined-helper-text" error={error.last_name}>
-            {error.last_name}
-          </FormHelperText>
-        </FormControl>
-
-        <InputLabel htmlFor="date" error={error.date ? true : false}>
-          Tangal Lahir
-        </InputLabel>
+        <InputLabel htmlFor="dob">Tangal Lahir</InputLabel>
         <FormControl variant="outlined" size="small" margin="normal" fullWidth>
           <OutlinedInput
             type="date"
-            name="date"
-            id="date"
+            name="dob"
+            id="dob"
             color="primary"
             onChange={handleChange}
-            value={form.date}
-            error={error.date ? true : false}
+            value={form.dob}
             disabled={isActiveForm ? false : true}
           />
-          <FormHelperText id="outlined-helper-text" error={error.date}>
-            {error.date}
-          </FormHelperText>
         </FormControl>
 
         <FormControl component="fieldset" className={classes.jenisKelamin}>
-          <FormLabel
-            component="legend"
-            error={error.jenis_kelamin ? true : false}>
-            Jenis Kelamin
-          </FormLabel>
+          <FormLabel component="legend">Jenis Kelamin</FormLabel>
           <RadioGroup
             row
-            aria-label="jenis_kelamin"
-            name="jenis_kelamin"
-            value={form.jenis_kelamin}
+            aria-label="gender"
+            name="gender"
+            value={form.gender}
             onChange={handleChange}>
             <FormControlLabel
-              value="pria"
+              value="1"
               control={<Radio color="primary" />}
               label="Pria"
               disabled={isActiveForm ? false : true}
             />
             <FormControlLabel
-              value="perempuan"
+              value="2"
               control={<Radio color="primary" />}
               label="Perempuan"
               disabled={isActiveForm ? false : true}
@@ -248,9 +213,7 @@ function Profile() {
           </RadioGroup>
         </FormControl>
 
-        <InputLabel htmlFor="email" error={error.email ? true : false}>
-          Email
-        </InputLabel>
+        <InputLabel htmlFor="email">Email</InputLabel>
         <FormControl variant="outlined" size="small" margin="normal" fullWidth>
           <OutlinedInput
             name="email"
@@ -258,30 +221,21 @@ function Profile() {
             color="primary"
             onChange={handleChange}
             value={form.email}
-            error={error.email ? true : false}
             disabled={isActiveForm ? false : true}
           />
-          <FormHelperText id="outlined-helper-text" error={error.email}>
-            {error.email}
-          </FormHelperText>
         </FormControl>
 
-        <InputLabel htmlFor="telepon" error={error.telepon ? true : false}>
-          Nomor Telepon
-        </InputLabel>
+        <InputLabel htmlFor="phone">Nomor Telepon</InputLabel>
         <FormControl variant="outlined" size="small" margin="normal" fullWidth>
           <OutlinedInput
-            name="telepon"
-            id="telepon"
+            type="number"
+            name="phone"
+            id="phone"
             color="primary"
             onChange={handleChange}
-            value={form.telepon}
-            error={error.telepon ? true : false}
+            value={form.phone}
             disabled={isActiveForm ? false : true}
           />
-          <FormHelperText id="outlined-helper-text" error={error.telepon}>
-            {error.telepon}
-          </FormHelperText>
         </FormControl>
 
         {isActiveForm ? (
@@ -290,7 +244,7 @@ function Profile() {
               variant="contained"
               color="primary"
               fullWidth
-              onClick={submit}>
+              onClick={update}>
               simpan
             </Button>
             <Button
@@ -298,24 +252,6 @@ function Profile() {
               color="primary"
               fullWidth
               onClick={() => {
-                setForm({
-                  src_avatar: '',
-                  firts_name: '',
-                  last_name: '',
-                  date: '',
-                  jenis_kelamin: '',
-                  email: '',
-                  telepon: ''
-                });
-                setError({
-                  src_avatar: '',
-                  firts_name: '',
-                  last_name: '',
-                  date: '',
-                  jenis_kelamin: '',
-                  email: '',
-                  telepon: ''
-                });
                 setIsActiveForm(false);
               }}>
               batal
@@ -340,9 +276,21 @@ function Profile() {
           </div>
         )}
       </div>
-      <ChangePassword open={open} close={() => setOpen(false)} />
+      <ChangePassword
+        open={open}
+        close={() => setOpen(false)}
+        history={() => {
+          localStorage.removeItem('token');
+          history.push('/login');
+        }}
+      />
     </div>
   );
 }
+
+Profile.propTypes = {
+  setDataProfile: propTypes.func,
+  dataProfile: propTypes.object
+};
 
 export default Profile;

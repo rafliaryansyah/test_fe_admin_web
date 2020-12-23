@@ -1,9 +1,46 @@
 /**
+ * promo action types
+ */
+const promo = {
+  SET_PROMOS: 'PROMOS/SET',
+  SET_PROMO: 'PROMO/SET',
+  CLEAR_PROMO: 'PROMO/CLEAR'
+};
+
+/**
+ * voucher action types
+ */
+const voucher = {
+  SET_VOUCHER: 'VOUCHER/SET',
+  CLEAR_VOUCHER: 'VOUCHER/CLEAR'
+};
+
+/**
+ * banner action types
+ */
+const banner = {
+  SET_BANNERS: 'BANNERS/SET',
+  CLEAR_BANNERS: 'BANNERS/CLEAR'
+};
+
+/**
+ * Category action types
+ */
+const stores = {
+  SET_STORES: 'STORES/SET',
+  SET_STORE: 'STORE/SET',
+  SET_PRODUKS: 'PRODUKS/SET',
+  SET_REPORTS: 'REPORTS/SET',
+  CLEAR_STORES: 'STORES/CLEAR'
+};
+
+/**
  * Category action types
  */
 const category = {
+  SET_CATEGORIES: 'CATEGORIES/SET',
   SET_CATEGORY: 'CATEGORY/SET',
-  CLEAR_CUSTOMER: 'CUSTOMER/CLEAR'
+  CLEAR_CATEGORIES: 'CATEGORIES/CLEAR'
 };
 
 /**
@@ -38,7 +75,11 @@ const actionTypes = {
   global,
   profile,
   customer,
-  category
+  category,
+  stores,
+  banner,
+  voucher,
+  promo
 };
 
 export default actionTypes;

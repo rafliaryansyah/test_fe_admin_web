@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import useStyles from './styles';
+import propTypes from 'prop-types';
 
 // react items carousel
 import ItemsCarousel from 'react-items-carousel';
@@ -34,7 +35,10 @@ import {
 // components
 import { CompDialog, ConfirmDialog } from 'components';
 
-function TabMini() {
+// redux
+import { connect } from 'react-redux';
+
+function TabMini({ dataBanners }) {
   const classes = useStyles();
 
   const [state, setState] = useState({
@@ -230,35 +234,36 @@ function TabMini() {
                 </IconButton>
               </div>
             }>
-            {Array.from(new Array(10)).map((_, i) => (
-              <div key={i}>
-                <Card>
-                  <CardActionArea>
-                    <CardMedia
-                      component="img"
-                      alt="Contemplative Reptile"
-                      height="230"
-                      image="https://ecs7.tokopedia.net/img/blog/seller/2020/04/voucher-toko.jpg"
-                      title="Contemplative Reptile"
-                    />
-                  </CardActionArea>
-                  <CardActions className={classes.action}>
-                    <IconButton
-                      size="small"
-                      color="primary"
-                      onClick={() => setOpen({ ...open, buat: true })}>
-                      <Edit />
-                    </IconButton>
-                    <IconButton
-                      size="small"
-                      color="primary"
-                      onClick={() => setOpen({ ...open, hapus: true })}>
-                      <Delete />
-                    </IconButton>
-                  </CardActions>
-                </Card>
-              </div>
-            ))}
+            {dataBanners.mainBanner.data &&
+              dataBanners.mainBanner.data.map(data => (
+                <div key={data[0]}>
+                  <Card>
+                    <CardActionArea>
+                      <CardMedia
+                        component="img"
+                        alt="Contemplative Reptile"
+                        height="230"
+                        image="https://ecs7.tokopedia.net/img/blog/seller/2020/04/voucher-toko.jpg"
+                        title="Contemplative Reptile"
+                      />
+                    </CardActionArea>
+                    <CardActions className={classes.action}>
+                      <IconButton
+                        size="small"
+                        color="primary"
+                        onClick={() => setOpen({ ...open, buat: true })}>
+                        <Edit />
+                      </IconButton>
+                      <IconButton
+                        size="small"
+                        color="primary"
+                        onClick={() => setOpen({ ...open, hapus: true })}>
+                        <Delete />
+                      </IconButton>
+                    </CardActions>
+                  </Card>
+                </div>
+              ))}
           </ItemsCarousel>
         </div>
         <br />
@@ -642,4 +647,12 @@ function TabMini() {
   );
 }
 
-export default TabMini;
+TabMini.propTypes = {
+  dataBanners: propTypes.object
+};
+
+const mapStateToProps = state => ({
+  dataBanners: state.banner.banners
+});
+
+export default connect(mapStateToProps, null)(TabMini);

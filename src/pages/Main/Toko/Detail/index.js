@@ -1,5 +1,5 @@
 import useStyles from './styles';
-import { Switch, Redirect } from 'react-router-dom';
+import { Switch, Redirect, useParams } from 'react-router-dom';
 
 // material-ui core
 import IconButton from '@material-ui/core/IconButton';
@@ -20,6 +20,8 @@ import Report from './Report';
 function Detail({ history, location }) {
   const classes = useStyles();
 
+  const { id } = useParams();
+
   return (
     <div className={classes.wrapper}>
       <div className={classes.wrapperTitlePage}>
@@ -36,16 +38,16 @@ function Detail({ history, location }) {
           value={location.pathname}
           onChange={(event, value) => history.push(value)}
           aria-label="disabled tabs example">
-          <Tab label="Beranda" value="/toko/detail" />
-          <Tab label="Produk / Jasa" value="/toko/detail/produk" />
-          <Tab label="Report" value="/toko/detail/report" />
+          <Tab label="Beranda" value={`/toko/${id}`} />
+          <Tab label="Produk / Jasa" value={`/toko/${id}/produk`} />
+          <Tab label="Report" value={`/toko/${id}/report`} />
         </Tabs>
         <div className={classes.tabsMain}>
           <Switch>
-            <PrivateRoute exact path="/toko/detail" component={Beranda} />
-            <PrivateRoute path="/toko/detail/produk" component={Produk} />
-            <PrivateRoute path="/toko/detail/report" component={Report} />
-            <Redirect to="/toko/detail" />
+            <PrivateRoute exact path="/toko/:id" component={Beranda} />
+            <PrivateRoute path="/toko/:id/produk" component={Produk} />
+            <PrivateRoute path="/toko/:id/report" component={Report} />
+            <Redirect to="/toko/:id" />
           </Switch>
         </div>
       </div>

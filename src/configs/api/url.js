@@ -6,6 +6,19 @@ const apiEndpoint = {
   login: `${appActiveConfig.api.baseurl}/admin/login`,
   register: `${appActiveConfig.api.baseurl}`,
 
+  // profile admin
+  profile: `${appActiveConfig.api.baseurl}/admin/profile`,
+  profileUpdate: `${appActiveConfig.api.baseurl}/admin/profile`,
+  profileChangePassword: `${appActiveConfig.api.baseurl}/admin/profile/change-password`,
+
+  // toko
+  stores: `${appActiveConfig.api.baseurl}/admin/stores`,
+  store: `${appActiveConfig.api.baseurl}/admin/stores`,
+  storeUpdateStatus: `${appActiveConfig.api.baseurl}/admin/stores`,
+  storeUpdateMode: `${appActiveConfig.api.baseurl}/admin/stores`,
+  storeProduk: `${appActiveConfig.api.baseurl}/admin/stores`,
+  storeUpdateStatusProduk: `${appActiveConfig.api.baseurl}/admin/stores`,
+
   // customers
   customers: `${appActiveConfig.api.baseurl}/admin/users`,
   customer: `${appActiveConfig.api.baseurl}/admin/users`,
@@ -19,7 +32,29 @@ const apiEndpoint = {
   createCategory: `${appActiveConfig.api.baseurl}/admin/categories`,
   updateCategory: `${appActiveConfig.api.baseurl}/admin/categories`,
   deleteCategory: `${appActiveConfig.api.baseurl}/admin/categories`,
-  restoreCategory: `${appActiveConfig.api.baseurl}/admin/categories`
+  restoreCategory: `${appActiveConfig.api.baseurl}/admin/categories`,
+
+  // voucher
+  createVoucher: `${appActiveConfig.api.baseurl}/admin/vouchers`,
+  readVoucher: `${appActiveConfig.api.baseurl}/admin/vouchers`,
+  updateVoucher: `${appActiveConfig.api.baseurl}/admin/vouchers`,
+  deleteVoucher: `${appActiveConfig.api.baseurl}/admin/vouchers`,
+  restoreVoucher: `${appActiveConfig.api.baseurl}/admin/vouchers`,
+
+  // banners
+  banners: `${appActiveConfig.api.baseurl}/admin/banners`,
+  createBannersMain: `${appActiveConfig.api.baseurl}/admin/banners`,
+  createBannersHighlight: `${appActiveConfig.api.baseurl}/admin/banners/highlight`,
+  createBannersMini: `${appActiveConfig.api.baseurl}/admin/banners/mini`,
+
+  // promo
+  createPromo: `${appActiveConfig.api.baseurl}/admin/promos`,
+  readPromo: `${appActiveConfig.api.baseurl}/admin/promos`,
+  detailPromo: `${appActiveConfig.api.baseurl}/admin/promos`,
+  updatePromo: `${appActiveConfig.api.baseurl}/admin/promos`,
+  updateStatusFiturPromo: `${appActiveConfig.api.baseurl}/admin/promos`,
+  deletePromo: `${appActiveConfig.api.baseurl}/admin/promos`,
+  restorePromo: `${appActiveConfig.api.baseurl}/admin/promos`
 };
 
 export { apiEndpoint };

@@ -1,311 +1,141 @@
-import { useState } from 'react';
+import { useEffect } from 'react';
 import useStyles from './styles';
+import { useParams } from 'react-router-dom';
+import propTypes from 'prop-types';
 
 // notistack
 import { useSnackbar } from 'notistack';
 
 // material-ui core
-import Button from '@material-ui/core/Button';
-import InputLabel from '@material-ui/core/InputLabel';
-import FormControl from '@material-ui/core/FormControl';
-import OutlinedInput from '@material-ui/core/OutlinedInput';
-import FormHelperText from '@material-ui/core/FormHelperText';
+import {
+  Button,
+  IconButton,
+  InputLabel,
+  FormControl,
+  OutlinedInput,
+  InputAdornment
+} from '@material-ui/core';
 
-function Beranda() {
+// material-ui icons
+import { FileCopy } from '@material-ui/icons';
+
+// redux
+import { connect } from 'react-redux';
+import { setStore, setProduks, setReports } from 'modules';
+
+// services
+import { getStore } from 'services';
+
+// utils
+import { dateConverterRes } from 'utils';
+
+function Beranda({ setDataStore, setDataProduks, setDataReports, dataStore }) {
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
+  const { id } = useParams();
 
-  const [isActiveForm, setIsActiveForm] = useState(false);
-
-  const [form, setForm] = useState({
-    nama_toko: '',
-    alamat: '',
-    buka_sejak: '',
-    nama_pemilik: ''
-  });
-
-  const [error, setError] = useState({
-    nama_toko: '',
-    alamat: '',
-    buka_sejak: '',
-    nama_pemilik: ''
-  });
-
-  const handleChange = e => {
-    setForm({
-      ...form,
-      [e.target.name]: e.target.value
+  useEffect(() => {
+    getStore(id).then(res => {
+      setDataStore(res.data.data.merchantDetail);
+      setDataProduks(res.data.data.merchantProducts);
+      setDataReports(res.data.data.merchantReports);
     });
-
-    setError({
-      ...error,
-      [e.target.name]: ''
-    });
-  };
-
-  const validate = () => {
-    const newError = { ...error };
-
-    if (!form.nama_toko) {
-      newError.nama_toko = 'Field masih kosong';
-    }
-
-    if (!form.alamat) {
-      newError.alamat = 'Field masih kosong';
-    }
-
-    if (!form.buka_sejak) {
-      newError.buka_sejak = 'Field masih kosong';
-    }
-
-    if (!form.nama_pemilik) {
-      newError.nama_pemilik = 'Field masih kosong';
-    }
-
-    return newError;
-  };
-
-  const submit = async e => {
-    e.preventDefault();
-
-    const findErrors = validate();
-
-    if (Object.values(findErrors).some(err => err !== '')) {
-      setError(findErrors);
-    } else {
-      console.log('Submit : ', form);
-    }
-  };
+  }, []);
 
   return (
     <div className={classes.wrapper}>
       <div>
-        <InputLabel
-          htmlFor="nama_toko"
-          error={error.nama_toko ? true : false}
-          className={classes.label}>
-          Nama Toko
+        {/* {dataStore.photo ? (
+          <img src="" alt="photo" className={classes.photo} />
+        ) : (
+          <div className={classes.wrapperImage}>
+            <span className={classes.avatar}>
+              {dataStore.name.split('')[0]}
+            </span>
+          </div>
+        )} */}
+        <div className={classes.wrapperImage}>
+          <span className={classes.avatar}>
+            {dataStore.name && dataStore.name.split('')[0]}
+          </span>
+        </div>
+        <Button variant="contained" color="primary">
+          nonaktifkan
+        </Button>
+      </div>
+      <div>
+        <InputLabel htmlFor="nama_toko" className={classes.label}>
+          Nama
+        </InputLabel>
+        <FormControl variant="outlined" size="small" margin="normal" fullWidth>
+          <OutlinedInput value={dataStore.name} disabled />
+        </FormControl>
+        <InputLabel htmlFor="nama_toko" className={classes.label}>
+          ID Toko
         </InputLabel>
         <FormControl variant="outlined" size="small" margin="normal" fullWidth>
           <OutlinedInput
-            name="nama_toko"
-            id="nama_toko"
-            color="primary"
-            onChange={handleChange}
-            value={form.nama_toko}
-            error={error.nama_toko ? true : false}
-            disabled={isActiveForm ? false : true}
+            value={dataStore.id}
+            disabled
+            endAdornment={
+              <InputAdornment position="end">
+                <IconButton
+                  onClick={() => {
+                    navigator.clipboard.writeText(dataStore.id);
+                    enqueueSnackbar('ID telah dicopy', { variant: 'success' });
+                  }}
+                  onMouseDown={e => e.preventDefault()}
+                  edge="end">
+                  <FileCopy />
+                </IconButton>
+              </InputAdornment>
+            }
           />
-          <FormHelperText
-            id="outlined-helper-text"
-            error={error.nama_toko ? true : false}>
-            {error.nama_toko}
-          </FormHelperText>
         </FormControl>
-
-        <InputLabel
-          htmlFor="alamat"
-          error={error.alamat ? true : false}
-          className={classes.label}>
+        <InputLabel htmlFor="nama_toko" className={classes.label}>
           Alamat
         </InputLabel>
         <FormControl variant="outlined" size="small" margin="normal" fullWidth>
-          <OutlinedInput
-            name="alamat"
-            id="alamat"
-            color="primary"
-            onChange={handleChange}
-            value={form.alamat}
-            error={error.alamat ? true : false}
-            disabled={isActiveForm ? false : true}
-          />
-          <FormHelperText
-            id="outlined-helper-text"
-            error={error.alamat ? true : false}>
-            {error.alamat}
-          </FormHelperText>
+          <OutlinedInput value={dataStore.address} disabled />
         </FormControl>
-
-        <InputLabel
-          htmlFor="buka_sejak"
-          error={error.buka_sejak ? true : false}
-          className={classes.label}>
+        <InputLabel htmlFor="nama_toko" className={classes.label}>
           Buka Sejak
         </InputLabel>
         <FormControl variant="outlined" size="small" margin="normal" fullWidth>
           <OutlinedInput
-            name="buka_sejak"
-            id="buka_sejak"
-            color="primary"
-            onChange={handleChange}
-            value={form.buka_sejak}
-            error={error.buka_sejak ? true : false}
-            disabled={isActiveForm ? false : true}
+            value={dateConverterRes(dataStore && dataStore.createdAt)}
+            disabled
           />
-          <FormHelperText
-            id="outlined-helper-text"
-            error={error.buka_sejak ? true : false}>
-            {error.buka_sejak}
-          </FormHelperText>
         </FormControl>
-
-        <InputLabel
-          htmlFor="nama_pemilik"
-          error={error.nama_pemilik ? true : false}
-          className={classes.label}>
+        <InputLabel htmlFor="nama_toko" className={classes.label}>
           Nama Pemilik
         </InputLabel>
         <FormControl variant="outlined" size="small" margin="normal" fullWidth>
           <OutlinedInput
-            name="nama_pemilik"
-            id="nama_pemilik"
-            color="primary"
-            onChange={handleChange}
-            value={form.nama_pemilik}
-            error={error.nama_pemilik ? true : false}
-            disabled={isActiveForm ? false : true}
+            value={dataStore.owner && dataStore.owner.name}
+            disabled
           />
-          <FormHelperText
-            id="outlined-helper-text"
-            error={error.nama_pemilik ? true : false}>
-            {error.nama_pemilik}
-          </FormHelperText>
         </FormControl>
-      </div>
-      <div>
-        <InputLabel
-          htmlFor="nama_toko"
-          error={error.nama_toko ? true : false}
-          className={classes.label}>
-          Data
-        </InputLabel>
-        <FormControl variant="outlined" size="small" margin="normal" fullWidth>
-          <OutlinedInput
-            name="nama_toko"
-            id="nama_toko"
-            color="primary"
-            onChange={handleChange}
-            value={form.nama_toko}
-            error={error.nama_toko ? true : false}
-            disabled={isActiveForm ? false : true}
-          />
-          <FormHelperText
-            id="outlined-helper-text"
-            error={error.nama_toko ? true : false}>
-            {error.nama_toko}
-          </FormHelperText>
-        </FormControl>
-
-        <InputLabel
-          htmlFor="alamat"
-          error={error.alamat ? true : false}
-          className={classes.label}>
-          Data
-        </InputLabel>
-        <FormControl variant="outlined" size="small" margin="normal" fullWidth>
-          <OutlinedInput
-            name="alamat"
-            id="alamat"
-            color="primary"
-            onChange={handleChange}
-            value={form.alamat}
-            error={error.alamat ? true : false}
-            disabled={isActiveForm ? false : true}
-          />
-          <FormHelperText
-            id="outlined-helper-text"
-            error={error.alamat ? true : false}>
-            {error.alamat}
-          </FormHelperText>
-        </FormControl>
-
-        <InputLabel
-          htmlFor="buka_sejak"
-          error={error.buka_sejak ? true : false}
-          className={classes.label}>
-          Data
-        </InputLabel>
-        <FormControl variant="outlined" size="small" margin="normal" fullWidth>
-          <OutlinedInput
-            name="buka_sejak"
-            id="buka_sejak"
-            color="primary"
-            onChange={handleChange}
-            value={form.buka_sejak}
-            error={error.buka_sejak ? true : false}
-            disabled={isActiveForm ? false : true}
-          />
-          <FormHelperText
-            id="outlined-helper-text"
-            error={error.buka_sejak ? true : false}>
-            {error.buka_sejak}
-          </FormHelperText>
-        </FormControl>
-
-        <InputLabel
-          htmlFor="nama_pemilik"
-          error={error.nama_pemilik ? true : false}
-          className={classes.label}>
-          Data
-        </InputLabel>
-        <FormControl variant="outlined" size="small" margin="normal" fullWidth>
-          <OutlinedInput
-            name="nama_pemilik"
-            id="nama_pemilik"
-            color="primary"
-            onChange={handleChange}
-            value={form.nama_pemilik}
-            error={error.nama_pemilik ? true : false}
-            disabled={isActiveForm ? false : true}
-          />
-          <FormHelperText
-            id="outlined-helper-text"
-            error={error.nama_pemilik ? true : false}>
-            {error.nama_pemilik}
-          </FormHelperText>
-        </FormControl>
-        {isActiveForm ? (
-          <div className={classes.wrapperButton}>
-            <Button variant="contained" color="primary" onClick={submit}>
-              simpan
-            </Button>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={() => {
-                setForm({
-                  nama_toko: '',
-                  alamat: '',
-                  buka_sejak: '',
-                  nama_pemilik: ''
-                });
-                setError({
-                  nama_toko: '',
-                  alamat: '',
-                  buka_sejak: '',
-                  nama_pemilik: ''
-                });
-                setIsActiveForm(false);
-              }}>
-              batal
-            </Button>
-          </div>
-        ) : (
-          <div className={classes.wrapperButton}>
-            <Button variant="contained" color="primary">
-              nonaktifkan
-            </Button>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={() => setIsActiveForm(true)}>
-              mode edit
-            </Button>
-          </div>
-        )}
       </div>
     </div>
   );
 }
 
-export default Beranda;
+Beranda.propTypes = {
+  dataStore: propTypes.object,
+  setDataStore: propTypes.func,
+  setDataProduks: propTypes.func,
+  setDataReports: propTypes.func
+};
+
+const mapStateToProps = state => ({
+  dataStore: state.stores.store
+});
+
+const mapDispatchToProps = dispatch => ({
+  setDataStore: value => dispatch(setStore(value)),
+  setDataProduks: value => dispatch(setProduks(value)),
+  setDataReports: value => dispatch(setReports(value))
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Beranda);

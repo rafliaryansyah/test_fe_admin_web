@@ -82,28 +82,28 @@ const appRoutes = [
   {
     id: 9,
     title: 'Report Toko',
-    path: '/toko/detail/report',
+    path: '/toko/:id/report',
     component: Main,
     exact: true
   },
   {
     id: 8,
     title: 'Produk Toko',
-    path: '/toko/detail/produk/detail',
+    path: '/toko/:id/produk/:id',
     component: Main,
     exact: true
   },
   {
     id: 7,
     title: 'Produk Toko',
-    path: '/toko/detail/produk',
+    path: '/toko/:id/produk',
     component: Main,
     exact: true
   },
   {
     id: 6,
     title: 'Detail Toko',
-    path: '/toko/detail',
+    path: '/toko/:id',
     component: Main,
     exact: true
   },

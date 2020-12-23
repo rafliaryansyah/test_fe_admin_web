@@ -34,23 +34,9 @@ function Detail({ setDataCustomer, dataCustomer, history }) {
 
   const [open, setOpen] = useState(false);
 
-  const [form, setForm] = useState({
-    roles: dataCustomer.roles
-  });
-
-  const handleChange = e => {
-    setForm();
-  };
-
-  const submit = e => {
-    e.preventDefault();
-  };
-
   useEffect(() => {
-    // getCustomer(id).then(res => setDataCustomer(res.data));
+    getCustomer(id).then(res => setDataCustomer(res.data.data));
   }, []);
-
-  console.log(dataCustomer);
 
   return (
     <div className={classes.wrapper}>
@@ -69,19 +55,21 @@ function Detail({ setDataCustomer, dataCustomer, history }) {
           />
           <div className={classes.roles}>
             <p className={classes.title}>roles :</p>
-            {dataCustomer.roles.map(role => (
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    // checked={roles.customer}
-                    onChange={handleChange}
-                    name={role}
-                    color="primary"
-                  />
-                }
-                label={role}
-              />
-            ))}
+            {dataCustomer.roles &&
+              dataCustomer.roles.map(role => (
+                <FormControlLabel
+                  key={role}
+                  control={
+                    <Checkbox
+                      // checked={roles.customer}
+                      // onChange={handleChange}
+                      name={role}
+                      color="primary"
+                    />
+                  }
+                  label={role}
+                />
+              ))}
           </div>
         </div>
 
@@ -89,10 +77,6 @@ function Detail({ setDataCustomer, dataCustomer, history }) {
           <div className={classes.input}>
             <label className={classes.label}>nama</label>
             <span className={classes.text}>{dataCustomer.name}</span>
-          </div>
-          <div className={classes.input}>
-            <label className={classes.label}>tanggal lahir</label>
-            <span className={classes.text}>{}</span>
           </div>
           <div className={classes.input}>
             <label className={classes.label}>jenis kelamin</label>
@@ -127,8 +111,8 @@ function Detail({ setDataCustomer, dataCustomer, history }) {
               row
               aria-label="tambah_roles"
               name="tambah_roles"
-              value={form.roles}
-              onChange={e => setForm({ ...form, roles: e.target.value })}
+              // value={form.roles}
+              // onChange={e => setForm({ ...form, roles: e.target.value })}
               defaultValue="top">
               <FormControlLabel
                 value="admin"
@@ -150,8 +134,8 @@ function Detail({ setDataCustomer, dataCustomer, history }) {
           <Button
             variant="contained"
             color="primary"
-            onClick={submit}
-            disabled={form.roles ? false : true}
+            // onClick={submit}
+            // disabled={form.roles ? false : true}
             fullWidth>
             simpan
           </Button>

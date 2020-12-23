@@ -17,6 +17,11 @@ const useStyles = makeStyles(theme => ({
     boxShadow: '0px 0px 1px rgba(0, 0, 0, 0.5)'
   },
 
+  form: {
+    display: 'grid',
+    padding: 15
+  },
+
   inputFile: {
     display: 'flex',
     justifyContent: 'space-between',

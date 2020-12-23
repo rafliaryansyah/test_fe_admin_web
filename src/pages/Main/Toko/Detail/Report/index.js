@@ -1,11 +1,15 @@
 import useStyles from './styles';
+import propTypes from 'prop-types';
 
 // material-ui core
 import FormControl from '@material-ui/core/FormControl';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
 
-function Report() {
+// redux
+import { connect } from 'react-redux';
+
+function Report({ dataReports }) {
   const classes = useStyles();
   return (
     <div className={classes.wrapper}>
@@ -71,4 +75,12 @@ function Report() {
   );
 }
 
-export default Report;
+Report.propTypes = {
+  dataReports: propTypes.object
+};
+
+const mapStateToProps = state => ({
+  dataReports: state.stores.reports
+});
+
+export default connect(mapStateToProps, null)(Report);

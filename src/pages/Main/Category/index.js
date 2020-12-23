@@ -1,6 +1,10 @@
 import { useState } from 'react';
 import useStyles from './styles';
+import propTypes from 'prop-types';
 import { Switch, Redirect } from 'react-router-dom';
+
+// notistack
+import { useSnackbar } from 'notistack';
 
 // material-ui core
 import Button from '@material-ui/core/Button';
@@ -26,13 +30,21 @@ import { CompDialog, PrivateRoute } from 'components';
 import TabProduk from './TabProduk';
 import TabJasa from './TabJasa';
 
-function Category({ location, history }) {
+// services
+import { postCategory, getCategory } from 'services';
+
+// redux
+import { connect } from 'react-redux';
+import { setCategories } from 'modules';
+
+function Category({ setDataCategories, location, history }) {
   const classes = useStyles();
+  const { enqueueSnackbar } = useSnackbar();
 
   const [open, setOpen] = useState(false);
 
   const [form, setForm] = useState({
-    type: 1,
+    type: '1',
     name: '',
     image: ''
   });
@@ -71,27 +83,72 @@ function Category({ location, history }) {
     return newError;
   };
 
+  // tambah
   const submit = async e => {
     e.preventDefault();
 
+    // validation
     const findErrors = validate();
 
     if (Object.values(findErrors).some(err => err !== '')) {
       setError(findErrors);
     } else {
-      console.log('Submit : ', form);
+      // state
+      const { type, name, image } = form;
+
+      // menggunakan form-data yang kosong
+      const formdata = new FormData();
+
+      // mengisi form-data dengan append
+      formdata.append('type', parseInt(type));
+      formdata.append('name', name);
+      formdata.append('image', image);
+
+      // services
+      const result = await postCategory(formdata).catch(err => err);
+
+      // cek sukses atau tidak
+      if (result.success) {
+        setForm({
+          type: '1',
+          name: '',
+          image: ''
+        });
+        setOpen(false);
+        enqueueSnackbar('berhasil membuat kategori baru', {
+          variant: 'success'
+        });
+
+        // read kembali data kategori baru
+        setTimeout(() => {
+          getCategory()
+            .then(res => {
+              setDataCategories(res.data.data);
+            })
+            .catch(err => err);
+        }, 5000);
+      } else {
+        setForm({
+          type: '1',
+          name: '',
+          image: ''
+        });
+        setOpen(false);
+        enqueueSnackbar('gagal membuat kategori baru', { variant: 'error' });
+      }
     }
   };
 
+  // upload image
   const handleUploadFile = async e => {
     const file = e.target.files[0];
 
-    if (!['image/png', 'image/jpeg'].includes(file.type)) {
+    if (!['image/png', 'image/jpeg'].includes(file && file.type)) {
       setError({
         ...error,
-        image: `Tipe file tidak didukung: ${file.type}`
+        image: `Tipe file tidak didukung: ${file && file.type}`
       });
-    } else if (file.size >= 512000) {
+    } else if (file && file.size >= 2097152) {
       setError({
         ...error,
         image: 'Ukuran file terlalu besar dari 500KB'
@@ -182,7 +239,7 @@ function Category({ location, history }) {
         open={open}
         close={() => setOpen(false)}
         title="Buat Kategori">
-        <div className={classes.wrapper}>
+        <div className={classes.form}>
           <FormControl component="fieldset">
             <FormLabel component="legend">Pilih Tipe</FormLabel>
             <RadioGroup
@@ -192,12 +249,12 @@ function Category({ location, history }) {
               value={form.type}
               onChange={handleChange}>
               <FormControlLabel
-                value="produk"
+                value="1"
                 control={<Radio color="primary" />}
                 label="Produk"
               />
               <FormControlLabel
-                value="jasa"
+                value="2"
                 control={<Radio color="primary" />}
                 label="Jasa"
               />
@@ -241,7 +298,7 @@ function Category({ location, history }) {
             <input
               type="file"
               id="upload"
-              accept="image/jpeg,image/png"
+              accept="image/png,image/jpg,image/jpeg"
               onChange={handleUploadFile}
               style={{ display: 'none' }}
             />
@@ -261,7 +318,7 @@ function Category({ location, history }) {
             color="primary"
             onClick={submit}
             className={classes.submit}
-            disabled={form.type && form.name && form.src_img ? false : true}>
+            disabled={form.type && form.name && form.image ? false : true}>
             simpan
           </Button>
         </div>
@@ -270,4 +327,12 @@ function Category({ location, history }) {
   );
 }
 
-export default Category;
+Category.propTypes = {
+  setDataCategories: propTypes.func
+};
+
+const mapDispatchToProps = dispatch => ({
+  setDataCategories: value => dispatch(setCategories(value))
+});
+
+export default connect(null, mapDispatchToProps)(Category);

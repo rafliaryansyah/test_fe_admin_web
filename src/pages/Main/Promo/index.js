@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import useStyles from './styles';
+import propTypes from 'prop-types';
 
 // notistack
 import { useSnackbar } from 'notistack';
@@ -16,12 +17,9 @@ import {
   InputAdornment,
   Radio,
   RadioGroup,
-  Select,
-  MenuItem,
   Card,
   CardActionArea,
   CardActions,
-  CardMedia,
   CardContent
 } from '@material-ui/core';
 
@@ -29,9 +27,19 @@ import {
 import { Search, Delete, Edit } from '@material-ui/icons';
 
 // components
-import { Paginasi, CompDialog, ConfirmDialog } from '../../../components';
+import { Paginasi, CompDialog, ConfirmDialog } from 'components';
 
-function Promo({ history }) {
+// services
+import { createPromo, readPromo, updatePromo, deletePromo } from 'services';
+
+// redux
+import { connect } from 'react-redux';
+import { setPromos } from 'modules';
+
+// utils
+import { currency, dateConverterReq, dateConverterRes } from 'utils';
+
+function Promo({ setDataPromos, dataPromos }) {
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
 
@@ -41,19 +49,30 @@ function Promo({ history }) {
     hapus: false
   });
 
+  const [id, setID] = useState('');
+
+  const [isEdit, setIsEdit] = useState(false);
+
+  const [dataDetail, setDataDetail] = useState({});
+
   const [form, setForm] = useState({
-    nama_promo: '',
-    periode_promo: '',
-    potongan_harga: '',
-    deskripsi: '',
-    syarat_ketentuan: ''
+    title: '',
+    started_at: '',
+    ended_at: '',
+    discount_type: 'percent',
+    discount: '',
+    description: '',
+    tac: ''
   });
+
   const [error, setError] = useState({
-    nama_promo: '',
-    periode_promo: '',
-    potongan_harga: '',
-    deskripsi: '',
-    syarat_ketentuan: ''
+    title: '',
+    started_at: '',
+    ended_at: '',
+    discount_type: '',
+    discount: '',
+    description: '',
+    tac: ''
   });
 
   const handleChange = e => {
@@ -71,29 +90,45 @@ function Promo({ history }) {
   const validate = () => {
     const newError = { ...error };
 
-    if (!form.nama_promo) {
-      newError.nama_promo = 'Field masih kosong';
+    if (!form.title) {
+      newError.title = 'Field masih kosong';
     }
 
-    if (!form.periode_promo) {
-      newError.periode_promo = 'Field masih kosong';
+    if (!form.started_at) {
+      newError.started_at = 'Field masih kosong';
     }
 
-    if (!form.potongan_harga) {
-      newError.potongan_harga = 'Field masih kosong';
+    if (!form.ended_at) {
+      newError.ended_at = 'Field masih kosong';
     }
 
-    if (!form.deskripsi) {
-      newError.deskripsi = 'Field masih kosong';
+    if (!form.discount_type) {
+      newError.discount_type = 'Field masih kosong';
     }
 
-    if (!form.syarat_ketentuan) {
-      newError.syarat_ketentuan = 'Field masih kosong';
+    if (!form.discount) {
+      newError.discount = 'Field masih kosong';
+    }
+
+    if (!form.description) {
+      newError.description = 'Field masih kosong';
+    }
+
+    if (!form.tac) {
+      newError.tac = 'Field masih kosong';
     }
 
     return newError;
   };
 
+  // proses merender untuk read data
+  useEffect(() => {
+    readPromo()
+      .then(res => setDataPromos(res.data.data))
+      .catch(err => err);
+  }, []);
+
+  // tambah atau edit data
   const submit = async e => {
     e.preventDefault();
 
@@ -102,21 +137,166 @@ function Promo({ history }) {
     if (Object.values(findErrors).some(err => err !== '')) {
       setError(findErrors);
     } else {
-      setForm({
-        nama_promo: '',
-        periode_promo: '',
-        potongan_harga: '',
-        deskripsi: '',
-        syarat_ketentuan: ''
-      });
-      setOpen({ ...open, form: false });
-      enqueueSnackbar('Berhasil menambahkan voucher baru', {
-        variant: 'success'
-      });
+      if (isEdit) {
+        // edit data
+        // state
+        const {
+          title,
+          started_at,
+          ended_at,
+          discount_type,
+          discount,
+          description,
+          tac
+        } = form;
+
+        // form-data
+        const formdata = new FormData(); // data kosong
+
+        // data terisi berdasarkan name dan value
+        formdata.append('title', title);
+        formdata.append('started_at', started_at);
+        formdata.append('ended_at', ended_at);
+        formdata.append('discount_type', discount_type);
+        formdata.append('discount', discount);
+        formdata.append('description', description);
+        formdata.append('tac', tac);
+
+        // services
+        const result = await updatePromo(id, formdata).catch(err => err);
+
+        // cek sukses atau tidak
+        if (result.success) {
+          setForm({
+            title: '',
+            started_at: '',
+            ended_at: '',
+            discount_type: 'percent',
+            discount: '',
+            description: '',
+            tac: ''
+          });
+          setOpen({ ...open, form: false });
+          enqueueSnackbar('Berhasil memperbarui promo', {
+            variant: 'success'
+          });
+
+          // read kembali data
+          setTimeout(() => {
+            readPromo()
+              .then(res => setDataPromos(res.data.data))
+              .catch(err => err);
+          }, 5000);
+        } else {
+          setForm({
+            title: '',
+            started_at: '',
+            ended_at: '',
+            discount_type: 'percent',
+            discount: '',
+            description: '',
+            tac: ''
+          });
+          setOpen({ ...open, form: false });
+          enqueueSnackbar('Gagal memperbarui promo', {
+            variant: 'error'
+          });
+        }
+      } else {
+        // tambah data
+
+        // state
+        const {
+          title,
+          started_at,
+          ended_at,
+          discount_type,
+          discount,
+          description,
+          tac
+        } = form;
+
+        // form-data
+        const formdata = new FormData(); // data kosong
+
+        // data terisi berdasarkan name dan value
+        formdata.append('title', title);
+        formdata.append('started_at', started_at);
+        formdata.append('ended_at', ended_at);
+        formdata.append('discount_type', discount_type);
+        formdata.append('discount', discount);
+        formdata.append('description', description);
+        formdata.append('tac', tac);
+
+        // services
+        const result = await createPromo(formdata).catch(err => err);
+
+        // cek sukses atau tidak
+        if (result.success) {
+          setForm({
+            title: '',
+            started_at: '',
+            ended_at: '',
+            discount_type: 'percent',
+            discount: '',
+            description: '',
+            tac: ''
+          });
+          setOpen({ ...open, form: false });
+          enqueueSnackbar('Berhasil menambahkan promo baru', {
+            variant: 'success'
+          });
+
+          // read kembali data
+          setTimeout(() => {
+            readPromo()
+              .then(res => setDataPromos(res.data.data))
+              .catch(err => err);
+          }, 5000);
+        } else {
+          setForm({
+            title: '',
+            started_at: '',
+            ended_at: '',
+            discount_type: 'percent',
+            discount: '',
+            description: '',
+            tac: ''
+          });
+          setOpen({ ...open, form: false });
+          enqueueSnackbar('Gagal menambahkan promo baru', {
+            variant: 'error'
+          });
+        }
+      }
     }
   };
 
-  const handleHapus = () => {};
+  // hapus data
+  const hapus = async () => {
+    // services
+    const result = await deletePromo(id).catch(err => err);
+
+    // cek sukses atau tidak
+    if (result.success) {
+      setOpen({ ...open, form: false });
+      enqueueSnackbar('Berhasil menghapus promo', {
+        variant: 'success'
+      });
+
+      // read kembali data
+      setTimeout(() => {
+        readPromo()
+          .then(res => setDataPromos(res.data.data))
+          .catch(err => err);
+      }, 5000);
+    } else {
+      setOpen({ ...open, form: false });
+      enqueueSnackbar('Gagal menghapus promo', {
+        variant: 'error'
+      });
+    }
+  };
 
   return (
     <div className={classes.wrapper}>
@@ -148,104 +328,77 @@ function Promo({ history }) {
       </div>
 
       <div className={classes.main}>
-        <Card>
-          <CardActionArea onClick={() => setOpen({ ...open, detail: true })}>
-            <CardContent>
-              <div className={classes.titlePromo}>
-                <span>akhirtahun</span>
-              </div>
-              <div className={classes.wrapperTeks}>
-                <span className={classes.teksPromo}>
-                  periode promo: Jumat, 05/Feb/2021
-                </span>
-                <span className={classes.teksPromo}>
-                  potongan harga: Rp10.000
-                </span>
-                <span className={classes.teksPromo}>produk terkait: 100</span>
-              </div>
-            </CardContent>
-          </CardActionArea>
-          <CardActions className={classes.action}>
-            <IconButton
-              size="small"
-              color="primary"
-              onClick={() => setOpen({ ...open, form: true })}>
-              <Edit />
-            </IconButton>
-            <IconButton
-              size="small"
-              color="primary"
-              onClick={() => setOpen({ ...open, hapus: true })}>
-              <Delete />
-            </IconButton>
-          </CardActions>
-        </Card>
-
-        <Card>
-          <CardActionArea onClick={() => setOpen({ ...open, detail: true })}>
-            <CardContent>
-              <div className={classes.titlePromo}>
-                <span>akhirtahun</span>
-              </div>
-              <div className={classes.wrapperTeks}>
-                <span className={classes.teksPromo}>
-                  periode promo: Jumat, 05/Feb/2021
-                </span>
-                <span className={classes.teksPromo}>
-                  potongan harga: Rp10.000
-                </span>
-                <span className={classes.teksPromo}>produk terkait: 100</span>
-              </div>
-            </CardContent>
-          </CardActionArea>
-          <CardActions className={classes.action}>
-            <IconButton
-              size="small"
-              color="primary"
-              onClick={() => setOpen({ ...open, form: true })}>
-              <Edit />
-            </IconButton>
-            <IconButton
-              size="small"
-              color="primary"
-              onClick={() => setOpen({ ...open, hapus: true })}>
-              <Delete />
-            </IconButton>
-          </CardActions>
-        </Card>
-
-        <Card>
-          <CardActionArea onClick={() => setOpen({ ...open, detail: true })}>
-            <CardContent>
-              <div className={classes.titlePromo}>
-                <span>akhirtahun</span>
-              </div>
-              <div className={classes.wrapperTeks}>
-                <span className={classes.teksPromo}>
-                  periode promo: Jumat, 05/Feb/2021
-                </span>
-                <span className={classes.teksPromo}>
-                  potongan harga: Rp10.000
-                </span>
-                <span className={classes.teksPromo}>produk terkait: 100</span>
-              </div>
-            </CardContent>
-          </CardActionArea>
-          <CardActions className={classes.action}>
-            <IconButton
-              size="small"
-              color="primary"
-              onClick={() => setOpen({ ...open, form: true })}>
-              <Edit />
-            </IconButton>
-            <IconButton
-              size="small"
-              color="primary"
-              onClick={() => setOpen({ ...open, hapus: true })}>
-              <Delete />
-            </IconButton>
-          </CardActions>
-        </Card>
+        {dataPromos &&
+          dataPromos.map(data => (
+            <Card key={data.id}>
+              <CardActionArea
+                onClick={() => {
+                  setDataDetail(data);
+                  setOpen({ ...open, detail: true });
+                }}>
+                <CardContent>
+                  <div className={classes.titlePromo}>
+                    <span>{data.title}</span>
+                  </div>
+                  <div className={classes.wrapperTeks}>
+                    <span className={classes.teksPromo}>
+                      periode promo:
+                      {`${dateConverterRes(
+                        data.startedAt
+                      )} - ${dateConverterRes(data.endedAt)}`}
+                    </span>
+                    {dataDetail.discountType &&
+                    dataDetail.discountType.slug === 'percent' ? (
+                      <span className={classes.teksPromo}>
+                        potongan harga:
+                        {`${dataDetail.discount}${dataDetail.discountType.name}`}
+                      </span>
+                    ) : (
+                      <span className={classes.teksPromo}>
+                        potongan harga:
+                        {currency(dataDetail.discount)}
+                      </span>
+                    )}
+                    <span className={classes.teksPromo}>
+                      produk terkait: {data.countRelatedProduct}
+                    </span>
+                  </div>
+                </CardContent>
+              </CardActionArea>
+              <CardActions className={classes.action}>
+                <IconButton
+                  size="small"
+                  color="primary"
+                  onClick={() => {
+                    setID(data.id);
+                    setIsEdit(true);
+                    setForm({
+                      ...form,
+                      title: data.title,
+                      started_at: dateConverterReq(data.startedAt),
+                      ended_at: dateConverterReq(data.endedAt),
+                      discount_type:
+                        data.discountType && data.discountType.slug,
+                      discount: data.discount,
+                      description: data.description,
+                      tac: data.termAndConditions
+                    });
+                    setOpen({ ...open, form: true });
+                  }}>
+                  <Edit />
+                </IconButton>
+                <IconButton
+                  size="small"
+                  color="primary"
+                  onClick={() => {
+                    setID(data.id);
+                    setOpen({ ...open, hapus: true });
+                  }}>
+                  <Delete />
+                </IconButton>
+              </CardActions>
+            </Card>
+          ))}
       </div>
 
       <Paginasi count={5} page={1} onClick={(e, value) => value} />
@@ -253,25 +406,33 @@ function Promo({ history }) {
       <CompDialog
         open={open.detail}
         close={() => setOpen({ ...open, detail: false })}
-        title="AKHIRTAHUN">
-        <p className={classes.nama}>
-          Potongan harga Rp50.000 untuk semua produk
-        </p>
+        title={dataDetail.title}>
+        <p className={classes.nama}>{dataDetail.description}</p>
         <div className={classes.desk}>
           <span className={classes.teks}>Periode Promo</span>
-          <span className={classes.teks}>Jumat, 05/Feb/2021</span>
+          <span className={classes.teks}>{`${dateConverterRes(
+            dataDetail.startedAt
+          )} - ${dateConverterRes(dataDetail.endedAt)}`}</span>
         </div>
-        <div className={classes.desk}>
-          <span className={classes.teks}>Potongan Harga</span>
-          <span className={classes.teks}>Rp10.000</span>
-        </div>
-        <div className={classes.desk}>
-          <span className={classes.teks}>Status</span>
-          <span className={classes.teks}>Aktif</span>
-        </div>
+        {dataDetail.discountType &&
+        dataDetail.discountType.slug === 'percent' ? (
+          <div className={classes.desk}>
+            <span className={classes.teks}>Potongan Harga</span>
+            <span className={classes.teks}>
+              {`${dataDetail.discount}${dataDetail.discountType.name}`}
+            </span>
+          </div>
+        ) : (
+          <div className={classes.desk}>
+            <span className={classes.teks}>Potongan Harga</span>
+            <span className={classes.teks}>
+              {currency(dataDetail.discount)}
+            </span>
+          </div>
+        )}
         <div className={classes.desk}>
           <span className={classes.teks}>Produk Terkait</span>
-          <span className={classes.teks}>100</span>
+          <span className={classes.teks}>{dataDetail.countRelatedProduct}</span>
         </div>
         <div className={classes.garis}></div>
         <label className={classes.label}>syarat & ketentuan</label>
@@ -295,10 +456,8 @@ function Promo({ history }) {
         close={() => setOpen({ ...open, form: false })}
         title="Form Voucher">
         <div className={classes.form}>
-          <InputLabel
-            htmlFor="nama_promo"
-            error={error.nama_promo ? true : false}>
-            Nama Promo
+          <InputLabel htmlFor="title" error={error.title ? true : false}>
+            Title
           </InputLabel>
           <FormControl
             variant="outlined"
@@ -306,22 +465,22 @@ function Promo({ history }) {
             margin="normal"
             fullWidth>
             <OutlinedInput
-              name="nama_promo"
-              id="nama_promo"
+              id="title"
+              name="title"
               color="primary"
               onChange={handleChange}
-              value={form.nama_promo}
-              error={error.nama_promo ? true : false}
+              value={form.title}
+              error={error.title ? true : false}
             />
-            <FormHelperText id="outlined-helper-text" error={error.nama_promo}>
-              {error.nama_promo}
+            <FormHelperText id="outlined-helper-text" error={error.title}>
+              {error.title}
             </FormHelperText>
           </FormControl>
 
           <InputLabel
-            htmlFor="periode_promo"
-            error={error.periode_promo ? true : false}>
-            Periode Promo
+            htmlFor="started_at"
+            error={error.started_at ? true : false}>
+            Tanggal Mulai
           </InputLabel>
           <FormControl
             variant="outlined"
@@ -330,42 +489,62 @@ function Promo({ history }) {
             fullWidth>
             <OutlinedInput
               type="date"
-              name="periode_promo"
-              id="periode_promo"
+              name="started_at"
+              id="started_at"
               color="primary"
               onChange={handleChange}
-              value={form.periode_promo}
-              error={error.periode_promo ? true : false}
+              value={form.started_at}
+              error={error.started_at ? true : false}
             />
-            <FormHelperText
-              id="outlined-helper-text"
-              error={error.periode_promo}>
-              {error.periode_promo}
+            <FormHelperText id="outlined-helper-text" error={error.started_at}>
+              {error.started_at}
+            </FormHelperText>
+          </FormControl>
+
+          <InputLabel htmlFor="ended_at" error={error.ended_at ? true : false}>
+            Tanggal Berakhir
+          </InputLabel>
+          <FormControl
+            variant="outlined"
+            size="small"
+            margin="normal"
+            fullWidth>
+            <OutlinedInput
+              type="date"
+              name="ended_at"
+              id="ended_at"
+              color="primary"
+              onChange={handleChange}
+              value={form.ended_at}
+              error={error.ended_at ? true : false}
+            />
+            <FormHelperText id="outlined-helper-text" error={error.ended_at}>
+              {error.ended_at}
             </FormHelperText>
           </FormControl>
 
           <InputLabel
-            htmlFor="potongan_harga"
-            error={error.potongan_harga ? true : false}>
-            Potongan Harga
+            htmlFor="discount_type"
+            error={error.discount_type ? true : false}>
+            Tipe Diskon
           </InputLabel>
 
-          <FormControl component="fieldset" className={classes.jenisKelamin}>
+          <FormControl component="fieldset" style={{ marginBottom: -15 }}>
             <RadioGroup
               row
-              aria-label="pilih_format"
-              name="pilih_format"
-              value={form.pilih_format}
+              aria-label="discount_type"
+              name="discount_type"
+              value={form.discount_type}
               onChange={handleChange}>
               <FormControlLabel
-                value="%"
+                value="percent"
                 control={<Radio color="primary" />}
                 label="%"
               />
               <FormControlLabel
-                value="rupiah"
+                value="amount"
                 control={<Radio color="primary" />}
-                label="Rupiah"
+                label="Rp."
               />
             </RadioGroup>
           </FormControl>
@@ -376,24 +555,23 @@ function Promo({ history }) {
             margin="normal"
             fullWidth>
             <OutlinedInput
-              name="potongan_harga"
-              id="potongan_harga"
+              type="number"
+              name="discount"
+              id="discount"
               color="primary"
               onChange={handleChange}
-              value={form.potongan_harga}
-              error={error.potongan_harga ? true : false}
+              value={form.discount}
+              error={error.discount ? true : false}
             />
-            <FormHelperText
-              id="outlined-helper-text"
-              error={error.potongan_harga}>
-              {error.potongan_harga}
+            <FormHelperText id="outlined-helper-text" error={error.discount}>
+              {error.discount}
             </FormHelperText>
           </FormControl>
 
           <InputLabel
-            htmlFor="deskripsi"
-            error={error.deskripsi ? true : false}>
-            Deskripsi
+            htmlFor="description"
+            error={error.description ? true : false}>
+            description
           </InputLabel>
           <FormControl
             variant="outlined"
@@ -401,23 +579,21 @@ function Promo({ history }) {
             margin="normal"
             fullWidth>
             <OutlinedInput
-              name="deskripsi"
-              id="deskripsi"
+              name="description"
+              id="description"
               color="primary"
               onChange={handleChange}
-              value={form.deskripsi}
-              error={error.deskripsi ? true : false}
+              value={form.description}
+              error={error.description ? true : false}
               multiline
             />
-            <FormHelperText id="outlined-helper-text" error={error.deskripsi}>
-              {error.deskripsi}
+            <FormHelperText id="outlined-helper-text" error={error.description}>
+              {error.description}
             </FormHelperText>
           </FormControl>
 
-          <InputLabel
-            htmlFor="syarat_ketentuan"
-            error={error.syarat_ketentuan ? true : false}>
-            Syarat Ketentuan
+          <InputLabel htmlFor="tac" error={error.tac ? true : false}>
+            Tac
           </InputLabel>
           <FormControl
             variant="outlined"
@@ -425,18 +601,16 @@ function Promo({ history }) {
             margin="normal"
             fullWidth>
             <OutlinedInput
-              name="syarat_ketentuan"
-              id="syarat_ketentuan"
+              name="tac"
+              id="tac"
               color="primary"
               onChange={handleChange}
-              value={form.syarat_ketentuan}
-              error={error.syarat_ketentuan ? true : false}
+              value={form.tac}
+              error={error.tac ? true : false}
               multiline
             />
-            <FormHelperText
-              id="outlined-helper-text"
-              error={error.syarat_ketentuan}>
-              {error.syarat_ketentuan}
+            <FormHelperText id="outlined-helper-text" error={error.tac}>
+              {error.tac}
             </FormHelperText>
           </FormControl>
 
@@ -453,11 +627,24 @@ function Promo({ history }) {
         open={open.hapus}
         title="Hapus Promo"
         close={() => setOpen({ ...open, hapus: false })}
-        submit={handleHapus}>
+        submit={hapus}>
         Yakin ingin menghapus promo ?
       </ConfirmDialog>
     </div>
   );
 }
 
-export default Promo;
+Promo.propTypes = {
+  setDataPromos: propTypes.func,
+  dataPromos: propTypes.array
+};
+
+const mapStateToProps = state => ({
+  dataPromos: state.promo.promos
+});
+
+const mapDispatchToProps = dispatch => ({
+  setDataPromos: value => dispatch(setPromos(value))
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Promo);

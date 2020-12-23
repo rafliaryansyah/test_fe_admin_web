@@ -1,31 +1,16 @@
 import API from 'configs/api';
 
 /**
- * service category for get all data category
+ * service promo for create data promo
  */
-export const getCategory = () => {
-  return new Promise((resolve, reject) => {
-    API.category()
-      .then(res => {
-        resolve({ success: true, data: res.data });
-      })
-      .catch(err => {
-        reject({ success: false, data: err });
-      });
-  });
-};
-
-/**
- * service category for create data category
- */
-export const postCategory = formdata => {
+export const createPromo = formdata => {
   return new Promise((resolve, reject) => {
     const data = {
       type: 'form-data',
       body: formdata
     };
 
-    API.createCategory(data)
+    API.createPromo(data)
       .then(res => {
         resolve({ success: true, data: res.data });
       })
@@ -36,9 +21,43 @@ export const postCategory = formdata => {
 };
 
 /**
- * service category for update data category
+ * service promo for get all data promo
  */
-export const updateCategory = (id, formdata) => {
+export const readPromo = () => {
+  return new Promise((resolve, reject) => {
+    API.readPromo()
+      .then(res => {
+        resolve({ success: true, data: res.data });
+      })
+      .catch(err => {
+        reject({ success: false, data: err });
+      });
+  });
+};
+
+/**
+ * service promo for get detail data promo
+ */
+export const detailPromo = id => {
+  return new Promise((resolve, reject) => {
+    const data = {
+      path: `${id}/detail`
+    };
+
+    API.detailPromo(data)
+      .then(res => {
+        resolve({ success: true, data: res.data });
+      })
+      .catch(err => {
+        reject({ success: false, data: err });
+      });
+  });
+};
+
+/**
+ * service promo for update data promo
+ */
+export const updatePromo = (id, formdata) => {
   return new Promise((resolve, reject) => {
     const data = {
       type: 'form-data',
@@ -46,7 +65,7 @@ export const updateCategory = (id, formdata) => {
       path: `${id}`
     };
 
-    API.updateCategory(data)
+    API.updatePromo(data)
       .then(res => {
         resolve({ success: true, data: res.data });
       })
@@ -57,15 +76,15 @@ export const updateCategory = (id, formdata) => {
 };
 
 /**
- * service category for delete data category
+ * service promo for delete data promo
  */
-export const deleteCategory = id => {
+export const deletePromo = id => {
   return new Promise((resolve, reject) => {
     const data = {
       path: `${id}/delete`
     };
 
-    API.deleteCategory(data)
+    API.deletePromo(data)
       .then(res => {
         resolve({ success: true, data: res.data });
       })
@@ -76,15 +95,15 @@ export const deleteCategory = id => {
 };
 
 /**
- * service category for restore data category
+ * service promo for restore data promo
  */
-export const restoreCategory = id => {
+export const restorePromo = id => {
   return new Promise((resolve, reject) => {
     const data = {
       path: `${id}/restore`
     };
 
-    API.restoreCategory(data)
+    API.restorePromo(data)
       .then(res => {
         resolve({ success: true, data: res.data });
       })

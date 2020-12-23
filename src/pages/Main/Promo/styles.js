@@ -108,18 +108,8 @@ const useStyles = makeStyles(theme => ({
 
   // form
   form: {
-    width: 534,
-
-    [theme.breakpoints.down('sm')]: {
-      width: 300
-    }
-  },
-
-  select: {
-    display: 'flex',
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-    gridGap: 15
+    display: 'grid',
+    padding: 15
   }
 }));
 

@@ -108,9 +108,11 @@ function Login({ requestLoadingApp, loadingApp }) {
         });
       } else {
         requestLoadingApp(false);
-        enqueueSnackbar(result.data.message, {
-          variant: 'error'
-        });
+        if (result.data.response.data.code === 400) {
+          enqueueSnackbar('Email atau Password anda salah', {
+            variant: 'error'
+          });
+        }
       }
     }
   };

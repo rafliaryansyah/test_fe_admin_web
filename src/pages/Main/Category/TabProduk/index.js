@@ -1,5 +1,9 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import useStyles from './styles';
+import propTypes from 'prop-types';
+
+// notistack
+import { useSnackbar } from 'notistack';
 
 // material-ui core
 import {
@@ -26,8 +30,22 @@ import { Delete, Edit } from '@material-ui/icons';
 // components
 import { CompDialog, ConfirmDialog, Paginasi } from 'components';
 
-function TabProduk() {
+// redux
+import { connect } from 'react-redux';
+import { setCategories, setCategory } from 'modules';
+
+// services
+import { getCategory, updateCategory, deleteCategory } from 'services';
+
+function TabProduk({
+  setDataCategories,
+  setDataCategory,
+  dataCategories,
+  dataCategory,
+  history
+}) {
   const classes = useStyles();
+  const { enqueueSnackbar } = useSnackbar();
 
   const [open, setOpen] = useState({
     detail: false,
@@ -35,8 +53,10 @@ function TabProduk() {
     hapus: false
   });
 
+  const [id, setID] = useState('');
+
   const [form, setForm] = useState({
-    type: 1,
+    type: '1',
     name: '',
     image: ''
   });
@@ -77,7 +97,17 @@ function TabProduk() {
     return newError;
   };
 
-  const submit = async e => {
+  // read
+  useEffect(() => {
+    getCategory()
+      .then(res => {
+        setDataCategories(res.data.data);
+      })
+      .catch(err => err);
+  }, []);
+
+  // update
+  const onUpdate = async e => {
     e.preventDefault();
 
     const findErrors = validate();
@@ -85,10 +115,96 @@ function TabProduk() {
     if (Object.values(findErrors).some(err => err !== '')) {
       setError(findErrors);
     } else {
-      console.log('Submit : ', form);
+      // state
+      const { type, name, image } = form;
+
+      // menggunakan form-data yang kosong
+      const formdata = new FormData();
+
+      // mengisi form-data dengan append
+      formdata.append('type', parseInt(type));
+      formdata.append('name', name);
+      formdata.append('image', image);
+
+      // services
+      const result = await updateCategory(id, formdata).catch(err => err);
+
+      // cek sukses atau tidak
+      if (result.success) {
+        setForm({
+          type: '1',
+          name: '',
+          image: ''
+        });
+        setOpen({ ...open, edit: false });
+        enqueueSnackbar(result.data.message, {
+          variant: 'success'
+        });
+
+        // read kembali data kategori baru
+        setTimeout(() => {
+          getCategory()
+            .then(res => {
+              setDataCategories(res.data.data);
+            })
+            .catch(err => err);
+        }, 5000);
+      } else {
+        // cek unauthentikasi
+        if (result.data.response.status === 401) {
+          setForm({
+            type: '1',
+            name: '',
+            image: ''
+          });
+          setOpen({ ...open, edit: false });
+          localStorage.removeItem('token');
+          history.push('/login');
+          enqueueSnackbar(result.data.response.data.message, {
+            variant: 'error'
+          });
+        }
+
+        setForm({
+          type: '1',
+          name: '',
+          image: ''
+        });
+        setOpen({ ...open, edit: false });
+        enqueueSnackbar(result.data.response.data.message, {
+          variant: 'error'
+        });
+      }
     }
   };
 
+  // delete
+  const onDelete = async () => {
+    const result = await deleteCategory(id).catch(err => err);
+
+    if (result.success) {
+      setOpen({ ...open, hapus: false });
+      enqueueSnackbar(result.data.message, {
+        variant: 'success'
+      });
+
+      // read kembali data kategori baru
+      setTimeout(() => {
+        getCategory()
+          .then(res => {
+            setDataCategories(res.data.data);
+          })
+          .catch(err => err);
+      }, 5000);
+    } else {
+      setOpen({ ...open, hapus: false });
+      enqueueSnackbar(result.data.response.data.message, {
+        variant: 'error'
+      });
+    }
+  };
+
+  // upload image
   const handleUploadFile = async e => {
     const file = e.target.files[0];
 
@@ -142,43 +258,59 @@ function TabProduk() {
     }
   };
 
-  const handleDelete = () => {
-    console.log('click');
-  };
-
   return (
     <div className={classes.wrapper}>
       <div className={classes.cardGrid}>
-        {Array.from(new Array(5)).map((_, i) => (
-          <Card key={i}>
-            <CardActionArea onClick={() => setOpen({ ...open, detail: true })}>
-              <CardMedia
-                component="img"
-                alt="Contemplative Reptile"
-                height="150"
-                image="https://images.unsplash.com/photo-1483721310020-03333e577078?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&auto=format&fit=crop&w=800&q=80"
-                title="Contemplative Reptile"
-              />
-              <CardContent className={classes.content}>
-                <span>akhirtahun</span>
-              </CardContent>
-            </CardActionArea>
-            <CardActions className={classes.action}>
-              <IconButton
-                size="small"
-                color="primary"
-                onClick={() => setOpen({ ...open, edit: true })}>
-                <Edit />
-              </IconButton>
-              <IconButton
-                size="small"
-                color="primary"
-                onClick={() => setOpen({ ...open, hapus: true })}>
-                <Delete />
-              </IconButton>
-            </CardActions>
-          </Card>
-        ))}
+        {dataCategories &&
+          dataCategories.map(data => (
+            <Card key={data.id}>
+              <CardActionArea
+                disabled={data.isDeleted}
+                onClick={() => {
+                  setDataCategory(data);
+                  setOpen({ ...open, detail: true });
+                }}>
+                <CardMedia
+                  component="img"
+                  alt="Contemplative Reptile"
+                  height="150"
+                  image={data.image}
+                  title={data.name}
+                />
+                <CardContent className={classes.content}>
+                  <span>{data.name}</span>
+                </CardContent>
+              </CardActionArea>
+              <CardActions className={classes.action}>
+                <IconButton
+                  size="small"
+                  color="primary"
+                  disabled={data.isDeleted}
+                  onClick={() => {
+                    setOpen({ ...open, edit: true });
+                    setID(data.id);
+                    setForm({
+                      ...form,
+                      type: data.type && data.type.id.toString(),
+                      name: data.name,
+                      image: data.image
+                    });
+                  }}>
+                  <Edit />
+                </IconButton>
+                <IconButton
+                  size="small"
+                  color="primary"
+                  disabled={data.isDeleted}
+                  onClick={() => {
+                    setOpen({ ...open, hapus: true });
+                    setID(data.id);
+                  }}>
+                  <Delete />
+                </IconButton>
+              </CardActions>
+            </Card>
+          ))}
       </div>
 
       <Paginasi count={5} page={1} onClick={(e, value) => value} />
@@ -186,26 +318,20 @@ function TabProduk() {
       <CompDialog
         open={open.detail}
         close={() => setOpen({ ...open, detail: false })}>
-        <img
-          src="https://images.unsplash.com/photo-1483721310020-03333e577078?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&auto=format&fit=crop&w=800&q=80"
-          alt="avatar"
-          className={classes.img}
-        />
+        <img src={dataCategory.image} alt="photo" className={classes.img} />
         <div className={classes.desk}>
           <span className={classes.teks}>nama kategori</span>
-          <span className={classes.teks}>olahraga</span>
+          <span className={classes.teks}>{dataCategory.name}</span>
         </div>
         <div className={classes.desk}>
           <span className={classes.teks}>tipe kategori</span>
-          <span className={classes.teks}>produk</span>
-        </div>
-        <div className={classes.desk}>
-          <span className={classes.teks}>status</span>
-          <span className={classes.teks}>aktif</span>
+          <span className={classes.teks}>
+            {dataCategory.type && dataCategory.type.name}
+          </span>
         </div>
         <div className={classes.desk}>
           <span className={classes.teks}>produk terkait</span>
-          <span className={classes.teks}>124</span>
+          <span className={classes.teks}>{dataCategory.relatedProduct}</span>
         </div>
       </CompDialog>
 
@@ -223,12 +349,12 @@ function TabProduk() {
               value={form.type}
               onChange={handleChange}>
               <FormControlLabel
-                value="produk"
+                value="1"
                 control={<Radio color="primary" />}
                 label="Produk"
               />
               <FormControlLabel
-                value="jasa"
+                value="2"
                 control={<Radio color="primary" />}
                 label="Jasa"
               />
@@ -261,7 +387,7 @@ function TabProduk() {
             <div className={classes.itemPreview}>
               {form.image ? (
                 <img
-                  src={URL.createObjectURL(form.image)}
+                  src={form.image}
                   alt="Foto Banner"
                   className={classes.preview}
                 />
@@ -290,9 +416,9 @@ function TabProduk() {
           <Button
             variant="contained"
             color="primary"
-            onClick={submit}
+            onClick={onUpdate}
             className={classes.submit}
-            disabled={form.type && form.name && form.src_img ? false : true}>
+            disabled={form.type && form.name && form.image ? false : true}>
             simpan
           </Button>
         </div>
@@ -301,7 +427,7 @@ function TabProduk() {
       <ConfirmDialog
         open={open.hapus}
         close={() => setOpen({ ...open, hapus: false })}
-        submit={handleDelete}
+        submit={onDelete}
         title="Hapus Kategori">
         Yakin ingin menghapus kategori ?
       </ConfirmDialog>
@@ -309,4 +435,21 @@ function TabProduk() {
   );
 }
 
-export default TabProduk;
+TabProduk.propTypes = {
+  setDataCategories: propTypes.func,
+  setDataCategory: propTypes.func,
+  dataCategories: propTypes.array,
+  dataCategory: propTypes.object
+};
+
+const mapStateToProps = state => ({
+  dataCategories: state.category.categories,
+  dataCategory: state.category.category
+});
+
+const mapDispatchToProps = dispatch => ({
+  setDataCategories: value => dispatch(setCategories(value)),
+  setDataCategory: value => dispatch(setCategory(value))
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(TabProduk);
