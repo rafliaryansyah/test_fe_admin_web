@@ -8,6 +8,14 @@ const promo = {
 };
 
 /**
+ * banner action types
+ */
+const banner = {
+  SET_BANNERS: 'BANNERS/SET',
+  CLEAR_BANNERS: 'BANNERS/CLEAR'
+};
+
+/**
  * voucher action types
  */
 const voucher = {
@@ -16,11 +24,12 @@ const voucher = {
 };
 
 /**
- * banner action types
+ * Category action types
  */
-const banner = {
-  SET_BANNERS: 'BANNERS/SET',
-  CLEAR_BANNERS: 'BANNERS/CLEAR'
+const category = {
+  SET_CATEGORIESPRODUK: 'CATEGORIESPRODUK/SET',
+  SET_CATEGORIESJASA: 'CATEGORIESJASA/SET',
+  CLEAR_CATEGORIES: 'CATEGORIES/CLEAR'
 };
 
 /**
@@ -35,15 +44,6 @@ const stores = {
 };
 
 /**
- * Category action types
- */
-const category = {
-  SET_CATEGORIES: 'CATEGORIES/SET',
-  SET_CATEGORY: 'CATEGORY/SET',
-  CLEAR_CATEGORIES: 'CATEGORIES/CLEAR'
-};
-
-/**
  * Customer action types
  */
 const customer = {
@@ -55,9 +55,9 @@ const customer = {
 /**
  * Global action types
  */
-const global = {
-  SET_LOADING_APP: 'LOADING_APP/SET',
-  CLEAR_GLOBAL: 'GLOBAL/CLEAR'
+const dashboard = {
+  SET_DASHBOARD: 'DASHBOARD/SET',
+  CLEAR_DASHBOARD: 'DASHBOARD/CLEAR'
 };
 
 /**
@@ -69,10 +69,19 @@ const profile = {
 };
 
 /**
+ * Global action types
+ */
+const global = {
+  SET_LOADING_APP: 'LOADING_APP/SET',
+  CLEAR_GLOBAL: 'GLOBAL/CLEAR'
+};
+
+/**
  * Action types
  */
 const actionTypes = {
   global,
+  dashboard,
   profile,
   customer,
   category,

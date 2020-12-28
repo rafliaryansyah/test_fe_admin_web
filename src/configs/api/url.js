@@ -6,6 +6,9 @@ const apiEndpoint = {
   login: `${appActiveConfig.api.baseurl}/admin/login`,
   register: `${appActiveConfig.api.baseurl}`,
 
+  // dashboard
+  dashboard: `${appActiveConfig.api.baseurl}/admin/dashboard`,
+
   // profile admin
   profile: `${appActiveConfig.api.baseurl}/admin/profile`,
   profileUpdate: `${appActiveConfig.api.baseurl}/admin/profile`,
@@ -43,9 +46,24 @@ const apiEndpoint = {
 
   // banners
   banners: `${appActiveConfig.api.baseurl}/admin/banners`,
+
+  // main
   createBannersMain: `${appActiveConfig.api.baseurl}/admin/banners`,
+  updateBannersMain: `${appActiveConfig.api.baseurl}/admin/banners`,
+  deleteBannersMain: `${appActiveConfig.api.baseurl}/admin/banners`,
+  restoreBannersMain: `${appActiveConfig.api.baseurl}/admin/banners`,
+
+  // highlight
   createBannersHighlight: `${appActiveConfig.api.baseurl}/admin/banners/highlight`,
+  updateBannersHighlight: `${appActiveConfig.api.baseurl}/admin/banners/highlight`,
+  deleteBannersHighlight: `${appActiveConfig.api.baseurl}/admin/banners/highlight`,
+  restoreBannersHighlight: `${appActiveConfig.api.baseurl}/admin/banners/highlight`,
+
+  // mini
   createBannersMini: `${appActiveConfig.api.baseurl}/admin/banners/mini`,
+  updateBannersMini: `${appActiveConfig.api.baseurl}/admin/banners/mini`,
+  deleteBannersMini: `${appActiveConfig.api.baseurl}/admin/banners/mini`,
+  restoreBannersMini: `${appActiveConfig.api.baseurl}/admin/banners/mini`,
 
   // promo
   createPromo: `${appActiveConfig.api.baseurl}/admin/promos`,

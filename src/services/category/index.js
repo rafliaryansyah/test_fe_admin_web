@@ -3,9 +3,15 @@ import API from 'configs/api';
 /**
  * service category for get all data category
  */
-export const getCategory = () => {
+export const getCategory = type => {
   return new Promise((resolve, reject) => {
-    API.category()
+    const data = {
+      params: {
+        type: type
+      }
+    };
+
+    API.category(data)
       .then(res => {
         resolve({ success: true, data: res.data });
       })

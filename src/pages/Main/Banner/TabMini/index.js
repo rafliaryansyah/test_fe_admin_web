@@ -37,8 +37,17 @@ import { CompDialog, ConfirmDialog } from 'components';
 
 // redux
 import { connect } from 'react-redux';
+import { setBanners } from 'modules';
 
-function TabMini({ dataBanners }) {
+// services
+import {
+  readBanners,
+  createMiniBanners,
+  updateMiniBanners,
+  deleteMiniBanners
+} from 'services';
+
+function TabMini({ setDataBanners, dataBanners }) {
   const classes = useStyles();
 
   const [state, setState] = useState({
@@ -51,6 +60,10 @@ function TabMini({ dataBanners }) {
     atur: false,
     hapus: false
   });
+
+  const [id, setID] = useState('');
+
+  const [isEdit, setIsEdit] = useState(false);
 
   // atur
   const [headline, setHeadline] = useState('');
@@ -115,6 +128,7 @@ function TabMini({ dataBanners }) {
     return newError;
   };
 
+  // atur
   const submitAtur = async e => {
     e.preventDefault();
 
@@ -127,6 +141,7 @@ function TabMini({ dataBanners }) {
     }
   };
 
+  // buat atau edit data
   const submitCreated = async e => {
     e.preventDefault();
 
@@ -135,11 +150,139 @@ function TabMini({ dataBanners }) {
     if (Object.values(findErrors).some(err => err !== '')) {
       setError(findErrors);
     } else {
-      console.log('Request Data Body :', form);
+      // cek apakah edit atau buat data baru
+      if (isEdit) {
+        // edit data
+        // state
+        const { type, relate, status, position, image, product } = form;
+
+        // form-data yang kosong
+        const formdata = new FormData();
+
+        // mengisi form-data menggunakan append
+        formdata.append('type', parseInt(type));
+        formdata.append('relate', parseInt(relate));
+        formdata.append('status', parseInt(status));
+        formdata.append('position', parseInt(position));
+        formdata.append('image', image);
+        formdata.append('product', product);
+
+        // services
+        const result = await updateMiniBanners(id, formdata).catch(err => err);
+
+        console.log('result : ', result);
+
+        // cek sukses atau tidak
+        if (result.success) {
+          setForm({
+            type: '1',
+            relate: '1',
+            status: '1',
+            position: '1',
+            image: '',
+            product: ''
+          });
+          setOpen({ ...open, form: false });
+
+          // read kembali data baru
+          setTimeout(() => {
+            readBanners()
+              .then(res => {
+                setDataBanners(res.data.data);
+              })
+              .catch(err => err);
+          }, 5000);
+        } else {
+          setForm({
+            type: '1',
+            relate: '1',
+            status: '1',
+            position: '1',
+            image: '',
+            product: ''
+          });
+          setOpen({ ...open, form: false });
+        }
+      } else {
+        // buat data
+        // state
+        const { type, relate, status, position, image, product } = form;
+
+        // form-data yang kosong
+        const formdata = new FormData();
+
+        // mengisi form-data menggunakan append
+        formdata.append('type', parseInt(type));
+        formdata.append('relate', parseInt(relate));
+        formdata.append('status', parseInt(status));
+        formdata.append('position', parseInt(position));
+        formdata.append('image', image);
+        formdata.append('product', product);
+
+        // services
+        const result = await createMiniBanners(formdata).catch(err => err);
+
+        console.log('result : ', result);
+
+        // cek sukses atau tidak
+        if (result.success) {
+          setForm({
+            type: '1',
+            relate: '1',
+            status: '1',
+            position: '1',
+            image: '',
+            product: ''
+          });
+          setOpen({ ...open, form: false });
+
+          // read kembali data baru
+          setTimeout(() => {
+            readBanners()
+              .then(res => {
+                setDataBanners(res.data.data);
+              })
+              .catch(err => err);
+          }, 5000);
+        } else {
+          setForm({
+            type: '1',
+            relate: '1',
+            status: '1',
+            position: '1',
+            image: '',
+            product: ''
+          });
+          setOpen({ ...open, form: false });
+        }
+      }
     }
   };
 
-  // upload image menggunakan objek FileReader
+  // hapus data
+  const hapus = async () => {
+    const result = await deleteMiniBanners(id).catch(err => err);
+
+    console.log('result : ', result);
+
+    // cek sukses atau tidak
+    if (result.success) {
+      setOpen({ ...open, hapus: false });
+
+      // read kembali data baru
+      setTimeout(() => {
+        readBanners()
+          .then(res => {
+            setDataBanners(res.data.data);
+          })
+          .catch(err => err);
+      }, 5000);
+    } else {
+      setOpen({ ...open, hapus: false });
+    }
+  };
+
+  // upload image
   const handleUploadFile = async e => {
     const file = e.target.files[0];
 
@@ -193,10 +336,6 @@ function TabMini({ dataBanners }) {
     }
   };
 
-  const hapus = () => {
-    console.log('hapus');
-  };
-
   return (
     <div className={classes.wrapper}>
       <div>
@@ -234,8 +373,10 @@ function TabMini({ dataBanners }) {
                 </IconButton>
               </div>
             }>
-            {dataBanners.mainBanner.data &&
-              dataBanners.mainBanner.data.map(data => (
+            {dataBanners &&
+              dataBanners.miniBanner &&
+              dataBanners.miniBanner.data &&
+              dataBanners.miniBanner.data.map(data => (
                 <div key={data[0]}>
                   <Card>
                     <CardActionArea>
@@ -251,13 +392,23 @@ function TabMini({ dataBanners }) {
                       <IconButton
                         size="small"
                         color="primary"
-                        onClick={() => setOpen({ ...open, buat: true })}>
+                        onClick={() => {
+                          setID();
+                          setIsEdit(true);
+                          setForm({
+                            ...form
+                          });
+                          setOpen({ ...open, buat: true });
+                        }}>
                         <Edit />
                       </IconButton>
                       <IconButton
                         size="small"
                         color="primary"
-                        onClick={() => setOpen({ ...open, hapus: true })}>
+                        onClick={() => {
+                          setID();
+                          setOpen({ ...open, hapus: true });
+                        }}>
                         <Delete />
                       </IconButton>
                     </CardActions>
@@ -648,6 +799,7 @@ function TabMini({ dataBanners }) {
 }
 
 TabMini.propTypes = {
+  setDataBanners: propTypes.func,
   dataBanners: propTypes.object
 };
 
@@ -655,4 +807,8 @@ const mapStateToProps = state => ({
   dataBanners: state.banner.banners
 });
 
-export default connect(mapStateToProps, null)(TabMini);
+const mapDispatchToProps = dispatch => ({
+  setDataBanners: value => dispatch(setBanners(value))
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(TabMini);

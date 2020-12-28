@@ -32,18 +32,12 @@ import { CompDialog, ConfirmDialog, Paginasi } from 'components';
 
 // redux
 import { connect } from 'react-redux';
-import { setCategories, setCategory } from 'modules';
+import { setCategoriesProduk } from 'modules';
 
 // services
 import { getCategory, updateCategory, deleteCategory } from 'services';
 
-function TabProduk({
-  setDataCategories,
-  setDataCategory,
-  dataCategories,
-  dataCategory,
-  history
-}) {
+function TabProduk({ setDataCategoriesProduk, dataCategoriesProduk, history }) {
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
 
@@ -54,6 +48,8 @@ function TabProduk({
   });
 
   const [id, setID] = useState('');
+
+  const [detailCategory, setDetailCategory] = useState({});
 
   const [form, setForm] = useState({
     type: '1',
@@ -99,9 +95,9 @@ function TabProduk({
 
   // read
   useEffect(() => {
-    getCategory()
+    getCategory('1')
       .then(res => {
-        setDataCategories(res.data.data);
+        setDataCategoriesProduk(res.data.data);
       })
       .catch(err => err);
   }, []);
@@ -145,7 +141,7 @@ function TabProduk({
         setTimeout(() => {
           getCategory()
             .then(res => {
-              setDataCategories(res.data.data);
+              setDataCategoriesProduk(res.data.data);
             })
             .catch(err => err);
         }, 5000);
@@ -192,7 +188,7 @@ function TabProduk({
       setTimeout(() => {
         getCategory()
           .then(res => {
-            setDataCategories(res.data.data);
+            setDataCategoriesProduk(res.data.data);
           })
           .catch(err => err);
       }, 5000);
@@ -261,13 +257,13 @@ function TabProduk({
   return (
     <div className={classes.wrapper}>
       <div className={classes.cardGrid}>
-        {dataCategories &&
-          dataCategories.map(data => (
+        {dataCategoriesProduk &&
+          dataCategoriesProduk.map(data => (
             <Card key={data.id}>
               <CardActionArea
                 disabled={data.isDeleted}
                 onClick={() => {
-                  setDataCategory(data);
+                  setDetailCategory(data);
                   setOpen({ ...open, detail: true });
                 }}>
                 <CardMedia
@@ -318,20 +314,20 @@ function TabProduk({
       <CompDialog
         open={open.detail}
         close={() => setOpen({ ...open, detail: false })}>
-        <img src={dataCategory.image} alt="photo" className={classes.img} />
+        <img src={detailCategory.image} alt="photo" className={classes.img} />
         <div className={classes.desk}>
           <span className={classes.teks}>nama kategori</span>
-          <span className={classes.teks}>{dataCategory.name}</span>
+          <span className={classes.teks}>{detailCategory.name}</span>
         </div>
         <div className={classes.desk}>
           <span className={classes.teks}>tipe kategori</span>
           <span className={classes.teks}>
-            {dataCategory.type && dataCategory.type.name}
+            {detailCategory.type && detailCategory.type.name}
           </span>
         </div>
         <div className={classes.desk}>
           <span className={classes.teks}>produk terkait</span>
-          <span className={classes.teks}>{dataCategory.relatedProduct}</span>
+          <span className={classes.teks}>{detailCategory.relatedProduct}</span>
         </div>
       </CompDialog>
 
@@ -436,20 +432,16 @@ function TabProduk({
 }
 
 TabProduk.propTypes = {
-  setDataCategories: propTypes.func,
-  setDataCategory: propTypes.func,
-  dataCategories: propTypes.array,
-  dataCategory: propTypes.object
+  setDataCategoriesProduk: propTypes.func,
+  dataCategoriesProduk: propTypes.array
 };
 
 const mapStateToProps = state => ({
-  dataCategories: state.category.categories,
-  dataCategory: state.category.category
+  dataCategoriesProduk: state.category.categoriesProduk
 });
 
 const mapDispatchToProps = dispatch => ({
-  setDataCategories: value => dispatch(setCategories(value)),
-  setDataCategory: value => dispatch(setCategory(value))
+  setDataCategoriesProduk: value => dispatch(setCategoriesProduk(value))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(TabProduk);

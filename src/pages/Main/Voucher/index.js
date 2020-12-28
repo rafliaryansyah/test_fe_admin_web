@@ -597,7 +597,25 @@ function Voucher({ setDataVoucher, dataVoucher }) {
           <InputLabel htmlFor="category" error={error.category ? true : false}>
             Kategori ID
           </InputLabel>
-          <FormControl variant="outlined" size="small" margin="normal">
+          <FormControl
+            variant="outlined"
+            size="small"
+            margin="normal"
+            fullWidth>
+            <OutlinedInput
+              name="category"
+              id="category"
+              color="primary"
+              onChange={handleChange}
+              value={form.category}
+              error={error.category ? true : false}
+            />
+            <FormHelperText id="outlined-helper-text" error={error.category}>
+              {error.category}
+            </FormHelperText>
+          </FormControl>
+
+          {/* <FormControl variant="outlined" size="small" margin="normal">
             <Select
               name="category"
               id="category"
@@ -627,7 +645,7 @@ function Voucher({ setDataVoucher, dataVoucher }) {
               error={error.category ? true : false}>
               {error.category}
             </FormHelperText>
-          </FormControl>
+          </FormControl> */}
 
           <InputLabel htmlFor="code" error={error.code ? true : false}>
             Kode

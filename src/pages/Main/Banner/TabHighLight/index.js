@@ -31,8 +31,17 @@ import { CompDialog, ConfirmDialog } from 'components';
 
 // redux
 import { connect } from 'react-redux';
+import { setBanners } from 'modules';
 
-function TabHighLight({ dataBanners }) {
+// services
+import {
+  readBanners,
+  createHighLightBanners,
+  updateHighLightBanners,
+  deleteHighLightBanners
+} from 'services';
+
+function TabHighLight({ setDataBanners, dataBanners }) {
   const classes = useStyles();
 
   const [state, setState] = useState({
@@ -46,6 +55,10 @@ function TabHighLight({ dataBanners }) {
     highlightJasa: false,
     hapusHighlightJasa: false
   });
+
+  const [id, setID] = useState('');
+
+  const [isEdit, setIsEdit] = useState(false);
 
   const [form, setForm] = useState({
     headline: '',
@@ -121,10 +134,141 @@ function TabHighLight({ dataBanners }) {
     if (Object.values(findErrors).some(err => err !== '')) {
       setError(findErrors);
     } else {
-      console.log('Request Data Body :', form);
+      // cek apakah edit atau buat data baru
+      if (isEdit) {
+        // edit data
+        // state
+        const { type, relate, status, position, image, product } = form;
+
+        // form-data yang kosong
+        const formdata = new FormData();
+
+        // mengisi form-data menggunakan append
+        formdata.append('type', parseInt(type));
+        formdata.append('relate', parseInt(relate));
+        formdata.append('status', parseInt(status));
+        formdata.append('position', parseInt(position));
+        formdata.append('image', image);
+        formdata.append('product', product);
+
+        // services
+        const result = await updateHighLightBanners(id, formdata).catch(
+          err => err
+        );
+
+        console.log('result : ', result);
+
+        // cek sukses atau tidak
+        if (result.success) {
+          setForm({
+            type: '1',
+            relate: '1',
+            status: '1',
+            position: '1',
+            image: '',
+            product: ''
+          });
+          setOpen({ ...open, form: false });
+
+          // read kembali data baru
+          setTimeout(() => {
+            readBanners()
+              .then(res => {
+                setDataBanners(res.data.data);
+              })
+              .catch(err => err);
+          }, 5000);
+        } else {
+          setForm({
+            type: '1',
+            relate: '1',
+            status: '1',
+            position: '1',
+            image: '',
+            product: ''
+          });
+          setOpen({ ...open, form: false });
+        }
+      } else {
+        // buat data
+        // state
+        const { type, relate, status, position, image, product } = form;
+
+        // form-data yang kosong
+        const formdata = new FormData();
+
+        // mengisi form-data menggunakan append
+        formdata.append('type', parseInt(type));
+        formdata.append('relate', parseInt(relate));
+        formdata.append('status', parseInt(status));
+        formdata.append('position', parseInt(position));
+        formdata.append('image', image);
+        formdata.append('product', product);
+
+        // services
+        const result = await createHighLightBanners(formdata).catch(err => err);
+
+        console.log('result : ', result);
+
+        // cek sukses atau tidak
+        if (result.success) {
+          setForm({
+            type: '1',
+            relate: '1',
+            status: '1',
+            position: '1',
+            image: '',
+            product: ''
+          });
+          setOpen({ ...open, form: false });
+
+          // read kembali data baru
+          setTimeout(() => {
+            readBanners()
+              .then(res => {
+                setDataBanners(res.data.data);
+              })
+              .catch(err => err);
+          }, 5000);
+        } else {
+          setForm({
+            type: '1',
+            relate: '1',
+            status: '1',
+            position: '1',
+            image: '',
+            product: ''
+          });
+          setOpen({ ...open, form: false });
+        }
+      }
     }
   };
 
+  // hapus data
+  const hapus = async () => {
+    const result = await deleteHighLightBanners(id).catch(err => err);
+
+    console.log('result : ', result);
+
+    // cek sukses atau tidak
+    if (result.success) {
+      setOpen({ ...open, hapus: false });
+
+      // read kembali data baru
+      setTimeout(() => {
+        readBanners()
+          .then(res => {
+            setDataBanners(res.data.data);
+          })
+          .catch(err => err);
+      }, 5000);
+    } else {
+      setOpen({ ...open, hapus: false });
+    }
+  };
+
+  // upload image
   const handleUploadFile = async e => {
     const file = e.target.files[0];
 
@@ -178,10 +322,6 @@ function TabHighLight({ dataBanners }) {
     }
   };
 
-  const hapus = () => {
-    console.log('hapus');
-  };
-
   return (
     <div className={classes.wrapper}>
       <div>
@@ -219,9 +359,11 @@ function TabHighLight({ dataBanners }) {
                 </IconButton>
               </div>
             }>
-            {dataBanners.highlightBanner.data &&
+            {dataBanners &&
+              dataBanners.highlightBanner &&
+              dataBanners.highlightBanner.data &&
               dataBanners.highlightBanner.data.map(data => (
-                <div key={data[0]}>
+                <div key={data}>
                   <Card>
                     <CardActionArea>
                       <CardMedia
@@ -236,17 +378,23 @@ function TabHighLight({ dataBanners }) {
                       <IconButton
                         size="small"
                         color="primary"
-                        onClick={() =>
-                          setOpen({ ...open, highlightProduk: true })
-                        }>
+                        onClick={() => {
+                          setID();
+                          setIsEdit(true);
+                          setForm({
+                            ...form
+                          });
+                          setOpen({ ...open, form: true });
+                        }}>
                         <Edit />
                       </IconButton>
                       <IconButton
                         size="small"
                         color="primary"
-                        onClick={() =>
-                          setOpen({ ...open, hapusHighlightProduk: true })
-                        }>
+                        onClick={() => {
+                          setID();
+                          setOpen({ ...open, hapus: true });
+                        }}>
                         <Delete />
                       </IconButton>
                     </CardActions>
@@ -794,6 +942,7 @@ function TabHighLight({ dataBanners }) {
 }
 
 TabHighLight.propTypes = {
+  setDataBanners: propTypes.func,
   dataBanners: propTypes.object
 };
 
@@ -801,4 +950,8 @@ const mapStateToProps = state => ({
   dataBanners: state.banner.banners
 });
 
-export default connect(mapStateToProps, null)(TabHighLight);
+const mapDispatchToProps = dispatch => ({
+  setDataBanners: value => dispatch(setBanners(value))
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(TabHighLight);

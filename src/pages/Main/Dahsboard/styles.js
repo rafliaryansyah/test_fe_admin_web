@@ -32,25 +32,16 @@ const useStyles = makeStyles(theme => ({
     padding: 30,
     display: 'grid',
     gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-end',
     gridGap: 30
-  },
-
-  itemCharts: {
-    display: 'grid',
-    gridGap: 15
-  },
-
-  itemCard: {
-    display: 'grid',
-    gridGap: 15
   },
 
   // card info
   card: {
     borderRadius: 10,
     backgroundColor: theme.palette.primary.main,
-    color: '#ffffff'
+    color: '#ffffff',
+    marginBottom: 30
   },
 
   content: {
@@ -69,7 +60,6 @@ const useStyles = makeStyles(theme => ({
     letterSpacing: 1,
     fontWeight: 'bold'
   }
-  // -----------------------------------------
 }));
 
 export default useStyles;

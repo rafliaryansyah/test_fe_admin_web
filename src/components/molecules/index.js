@@ -5,8 +5,8 @@ import Paginasi from './Paginasi';
 import CardCustomers from './CardCustomers';
 import CardToko from './CardToko';
 import CardProduk from './CardProduk';
-import SimpleBarChart from './SimpleBarChart';
-import SimpleAreaChart from './SimpleAreaChart';
+import BarApexChart from './BarApexChart';
+import AreaApexChart from './AreaApexChart';
 
 export {
   ConfirmDialog,
@@ -15,6 +15,6 @@ export {
   CardCustomers,
   CardToko,
   CardProduk,
-  SimpleBarChart,
-  SimpleAreaChart
+  BarApexChart,
+  AreaApexChart
 };

@@ -1,22 +1,22 @@
 import actionTypes from '../actionTypes';
 
 /**
- * @name setCategories
+ * @name setCategoriesProduk
  * @param {*} value
  * @description redux action untuk set data category
  */
-export const setCategories = value => ({
-  type: actionTypes.category.SET_CATEGORIES,
+export const setCategoriesProduk = value => ({
+  type: actionTypes.category.SET_CATEGORIESPRODUK,
   value
 });
 
 /**
- * @name setCategory
+ * @name setCategoriesJasa
  * @param {*} value
  * @description redux action untuk set per data category
  */
-export const setCategory = value => ({
-  type: actionTypes.category.SET_CATEGORY,
+export const setCategoriesJasa = value => ({
+  type: actionTypes.category.SET_CATEGORIESJASA,
   value
 });
 

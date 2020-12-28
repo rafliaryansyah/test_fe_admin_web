@@ -6,6 +6,7 @@ import actionTypes from './actionTypes';
  * import masing-masing reducer disini
  */
 import global from './global/reducer';
+import dashboard from './dashboard/reducer';
 import customer from './customer/reducer';
 import stores from './stores/reducer';
 import banner from './banner/reducer';
@@ -18,6 +19,7 @@ import promo from './promo/reducer';
  */
 const reducer = combineReducers({
   global,
+  dashboard,
   customer,
   stores,
   banner,
@@ -37,6 +39,7 @@ export { store, actionTypes };
  * export action reducer disini
  */
 export * from './global/action';
+export * from './dashboard/action';
 export * from './customer/action';
 export * from './stores/action';
 export * from './banner/action';

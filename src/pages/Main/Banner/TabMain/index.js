@@ -40,7 +40,12 @@ import { connect } from 'react-redux';
 import { setBanners } from 'modules';
 
 // services
-import { getBanners } from 'services';
+import {
+  readBanners,
+  createMainBanners,
+  updateMainBanners,
+  deleteMainBanners
+} from 'services';
 
 function TabMain({ setDataBanners, dataBanners }) {
   const classes = useStyles();
@@ -55,16 +60,26 @@ function TabMain({ setDataBanners, dataBanners }) {
     hapus: false
   });
 
+  const [id, setID] = useState('');
+
+  const [isEdit, setIsEdit] = useState(false);
+
   const [form, setForm] = useState({
-    ke: '',
-    id_product: '',
-    image: ''
+    type: '1',
+    relate: '1',
+    status: '1',
+    position: '1',
+    image: '',
+    product: ''
   });
 
   const [error, setError] = useState({
-    ke: '',
-    id_product: '',
-    image: ''
+    type: '',
+    relate: '',
+    status: '',
+    position: '',
+    image: '',
+    product: ''
   });
 
   const handleChange = e => {
@@ -82,23 +97,39 @@ function TabMain({ setDataBanners, dataBanners }) {
   const validate = () => {
     const newError = { ...error };
 
-    if (!form.ke) {
-      newError.ke = 'Field masih kosong';
+    if (!form.type) {
+      newError.type = 'Field masih kosong';
     }
-    if (!form.id_product) {
-      newError.id_product = 'Field masih kosong';
+
+    if (!form.relate) {
+      newError.relate = 'Field masih kosong';
     }
+
+    if (!form.status) {
+      newError.status = 'Field masih kosong';
+    }
+
+    if (!form.position) {
+      newError.position = 'Field masih kosong';
+    }
+
     if (!form.image) {
       newError.image = 'Field masih kosong';
+    }
+
+    if (!form.product) {
+      newError.product = 'Field masih kosong';
     }
 
     return newError;
   };
 
   useEffect(() => {
-    getBanners().then(res => {
-      setDataBanners(res.data.data);
-    });
+    readBanners()
+      .then(res => {
+        setDataBanners(res.data.data);
+      })
+      .catch(err => err);
   }, []);
 
   const submit = async e => {
@@ -109,14 +140,139 @@ function TabMain({ setDataBanners, dataBanners }) {
     if (Object.values(findErrors).some(err => err !== '')) {
       setError(findErrors);
     } else {
-      console.log('Request Data Body :', form);
+      // cek apakah edit atau buat data baru
+      if (isEdit) {
+        // edit data
+        // state
+        const { type, relate, status, position, image, product } = form;
+
+        // form-data yang kosong
+        const formdata = new FormData();
+
+        // mengisi form-data menggunakan append
+        formdata.append('type', parseInt(type));
+        formdata.append('relate', parseInt(relate));
+        formdata.append('status', parseInt(status));
+        formdata.append('position', parseInt(position));
+        formdata.append('image', image);
+        formdata.append('product', product);
+
+        // services
+        const result = await updateMainBanners(id, formdata).catch(err => err);
+
+        console.log('result : ', result);
+
+        // cek sukses atau tidak
+        if (result.success) {
+          setForm({
+            type: '1',
+            relate: '1',
+            status: '1',
+            position: '1',
+            image: '',
+            product: ''
+          });
+          setOpen({ ...open, form: false });
+
+          // read kembali data baru
+          setTimeout(() => {
+            readBanners()
+              .then(res => {
+                setDataBanners(res.data.data);
+              })
+              .catch(err => err);
+          }, 5000);
+        } else {
+          setForm({
+            type: '1',
+            relate: '1',
+            status: '1',
+            position: '1',
+            image: '',
+            product: ''
+          });
+          setOpen({ ...open, form: false });
+        }
+      } else {
+        // buat data
+        // state
+        const { type, relate, status, position, image, product } = form;
+
+        // form-data yang kosong
+        const formdata = new FormData();
+
+        // mengisi form-data menggunakan append
+        formdata.append('type', parseInt(type));
+        formdata.append('relate', parseInt(relate));
+        formdata.append('status', parseInt(status));
+        formdata.append('position', parseInt(position));
+        formdata.append('image', image);
+        formdata.append('product', product);
+
+        // services
+        const result = await createMainBanners(formdata).catch(err => err);
+
+        console.log('result : ', result);
+
+        // cek sukses atau tidak
+        if (result.success) {
+          setForm({
+            type: '1',
+            relate: '1',
+            status: '1',
+            position: '1',
+            image: '',
+            product: ''
+          });
+          setOpen({ ...open, form: false });
+
+          // read kembali data baru
+          setTimeout(() => {
+            readBanners()
+              .then(res => {
+                setDataBanners(res.data.data);
+              })
+              .catch(err => err);
+          }, 5000);
+        } else {
+          setForm({
+            type: '1',
+            relate: '1',
+            status: '1',
+            position: '1',
+            image: '',
+            product: ''
+          });
+          setOpen({ ...open, form: false });
+        }
+      }
     }
   };
 
-  const hapus = () => {
-    console.log('hapus');
+  // hapus data
+  const hapus = async () => {
+    const result = await deleteMainBanners(id).catch(err => err);
+
+    console.log('result : ', result);
+
+    // cek sukses atau tidak
+    if (result.success) {
+      setOpen({ ...open, hapus: false });
+
+      // read kembali data baru
+      setTimeout(() => {
+        readBanners()
+          .then(res => {
+            setDataBanners(res.data.data);
+          })
+          .catch(err => err);
+      }, 5000);
+    } else {
+      setOpen({ ...open, hapus: false });
+    }
   };
 
+  // upload image
   const handleUploadFile = async e => {
     const file = e.target.files[0];
 
@@ -226,13 +382,23 @@ function TabMain({ setDataBanners, dataBanners }) {
                       <IconButton
                         size="small"
                         color="primary"
-                        onClick={() => setOpen({ ...open, form: true })}>
+                        onClick={() => {
+                          setID();
+                          setIsEdit(true);
+                          setForm({
+                            ...form
+                          });
+                          setOpen({ ...open, form: true });
+                        }}>
                         <Edit />
                       </IconButton>
                       <IconButton
                         size="small"
                         color="primary"
-                        onClick={() => setOpen({ ...open, hapus: true })}>
+                        onClick={() => {
+                          setID();
+                          setOpen({ ...open, hapus: true });
+                        }}>
                         <Delete />
                       </IconButton>
                     </CardActions>
@@ -318,10 +484,11 @@ function TabMain({ setDataBanners, dataBanners }) {
           </Button>
         </div>
       </div>
+
       <CompDialog
         open={open.form}
         close={() => setOpen({ ...open, form: false })}
-        title="Buat Banner">
+        title="Form Banner">
         <div className={classes.form}>
           <FormControl component="fieldset">
             <FormLabel component="legend" error={error.ke ? true : false}>

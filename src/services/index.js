@@ -1,5 +1,6 @@
 export * from './auth';
 export * from './profile';
+export * from './dashboard';
 export * from './customer';
 export * from './category';
 export * from './stores';

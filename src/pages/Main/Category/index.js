@@ -35,9 +35,14 @@ import { postCategory, getCategory } from 'services';
 
 // redux
 import { connect } from 'react-redux';
-import { setCategories } from 'modules';
+import { setCategoriesProduk, setCategoriesJasa } from 'modules';
 
-function Category({ setDataCategories, location, history }) {
+function Category({
+  setDataCategoriesProduk,
+  setDataCategoriesJasa,
+  location,
+  history
+}) {
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
 
@@ -119,11 +124,20 @@ function Category({ setDataCategories, location, history }) {
           variant: 'success'
         });
 
-        // read kembali data kategori baru
+        // read kembali data kategori type produk baru
         setTimeout(() => {
-          getCategory()
+          getCategory('1')
             .then(res => {
-              setDataCategories(res.data.data);
+              setDataCategoriesProduk(res.data.data);
+            })
+            .catch(err => err);
+        }, 5000);
+
+        // read kembali data kategori type jasa baru
+        setTimeout(() => {
+          getCategory('2')
+            .then(res => {
+              setDataCategoriesJasa(res.data.data);
             })
             .catch(err => err);
         }, 5000);
@@ -328,11 +342,13 @@ function Category({ setDataCategories, location, history }) {
 }
 
 Category.propTypes = {
-  setDataCategories: propTypes.func
+  setDataCategoriesProduk: propTypes.func,
+  setDataCategoriesJasa: propTypes.func
 };
 
 const mapDispatchToProps = dispatch => ({
-  setDataCategories: value => dispatch(setCategories(value))
+  setDataCategoriesProduk: value => dispatch(setCategoriesProduk(value)),
+  setDataCategoriesJasa: value => dispatch(setCategoriesJasa(value))
 });
 
 export default connect(null, mapDispatchToProps)(Category);

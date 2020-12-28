@@ -347,16 +347,16 @@ function Promo({ setDataPromos, dataPromos }) {
                         data.startedAt
                       )} - ${dateConverterRes(data.endedAt)}`}
                     </span>
-                    {dataDetail.discountType &&
-                    dataDetail.discountType.slug === 'percent' ? (
+                    {data.discountType &&
+                    data.discountType.slug === 'percent' ? (
                       <span className={classes.teksPromo}>
                         potongan harga:
-                        {`${dataDetail.discount}${dataDetail.discountType.name}`}
+                        {`${data.discount}${data.discountType.name}`}
                       </span>
                     ) : (
                       <span className={classes.teksPromo}>
                         potongan harga:
-                        {currency(dataDetail.discount)}
+                        {currency(data.discount)}
                       </span>
                     )}
                     <span className={classes.teksPromo}>

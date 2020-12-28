@@ -1,8 +1,8 @@
 import actionTypes from '../actionTypes';
 
 const initialState = {
-  categories: [],
-  category: {}
+  categoriesProduk: [],
+  categoriesJasa: []
 };
 
 /**
@@ -11,16 +11,16 @@ const initialState = {
  */
 const category = (state = initialState, action) => {
   switch (action.type) {
-    case actionTypes.category.SET_CATEGORIES:
+    case actionTypes.category.SET_CATEGORIESPRODUK:
       return {
         ...state,
-        categories: action.value
+        categoriesProduk: action.value
       };
 
-    case actionTypes.category.SET_CATEGORY:
+    case actionTypes.category.SET_CATEGORIESJASA:
       return {
         ...state,
-        category: action.value
+        categoriesJasa: action.value
       };
 
     case actionTypes.category.CLEAR_CATEGORIES:

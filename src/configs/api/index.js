@@ -6,6 +6,9 @@ const API = {};
 API.login = apiRequest.post(apiEndpoint.login);
 API.register = apiRequest.post(apiEndpoint.register);
 
+// dashboard
+API.dashboard = apiRequest.get(apiEndpoint.dashboard, true);
+
 // profile admin
 API.profile = apiRequest.get(apiEndpoint.profile, true);
 API.profileUpdate = apiRequest.post(apiEndpoint.profileUpdate, true);
@@ -52,12 +55,36 @@ API.restoreVoucher = apiRequest.patch(apiEndpoint.restoreVoucher, true);
 
 // banners
 API.banners = apiRequest.get(apiEndpoint.banners, true);
+
+// main
 API.createBannersMain = apiRequest.post(apiEndpoint.createBannersMain, true);
+API.updateBannersMain = apiRequest.post(apiEndpoint.updateBannersMain, true);
+API.deleteBannersMain = apiRequest.delete(apiEndpoint.deleteBannersMain, true);
+API.restoreBannersMain = apiRequest.patch(apiEndpoint.restoreBannersMain, true);
+
+// highlight
 API.createBannersHighlight = apiRequest.post(
   apiEndpoint.createBannersHighlight,
   true
 );
+API.updateBannersHighlight = apiRequest.post(
+  apiEndpoint.updateBannersHighlight,
+  true
+);
+API.deleteBannersHighlight = apiRequest.delete(
+  apiEndpoint.deleteBannersHighlight,
+  true
+);
+API.restoreBannersHighlight = apiRequest.patch(
+  apiEndpoint.restoreBannersHighlight,
+  true
+);
+
+// mini
 API.createBannersMini = apiRequest.post(apiEndpoint.createBannersMini, true);
+API.updateBannersMini = apiRequest.post(apiEndpoint.updateBannersMini, true);
+API.deleteBannersMini = apiRequest.delete(apiEndpoint.deleteBannersMini, true);
+API.restoreBannersMini = apiRequest.patch(apiEndpoint.restoreBannersMini, true);
 
 // promo
 API.createPromo = apiRequest.post(apiEndpoint.createPromo, true);

@@ -1,26 +1,96 @@
+import { useEffect, useState } from 'react';
 import useStyles from './styles';
+import propTypes from 'prop-types';
 
 // material-ui core
 import {
-  Button,
   FormControl,
   InputLabel,
   Select,
   MenuItem,
   Card,
   CardActionArea,
-  CardContent,
-  CardActions
+  CardContent
 } from '@material-ui/core';
 
 // material-ui icons
 import { Money } from '@material-ui/icons';
 
 // components
-import { SimpleBarChart, SimpleAreaChart } from 'components';
+import { BarApexChart, AreaApexChart } from 'components';
 
-function Dashboard() {
+// redux
+import { connect } from 'react-redux';
+import { setDashboard } from 'modules';
+
+// services
+import { readDashboard } from 'services';
+
+function Dashboard({ setDataDashboard, dataDashboard }) {
   const classes = useStyles();
+
+  // bar chart
+  const [bar, setBar] = useState({
+    options: {
+      chart: {
+        id: 'basic-bar'
+      },
+      xaxis: {
+        categories: [
+          'Sanjaya Store',
+          'Pet Carez',
+          'Clean Freak',
+          'Chips Factory',
+          'Toy Haven'
+        ]
+      }
+    },
+    series: [
+      {
+        name: 'Top',
+        data: [30, 40, 45, 70, 91]
+      }
+    ]
+  });
+
+  // area chart
+  const [area, setArea] = useState({
+    options: {
+      chart: {
+        id: 'basic-area'
+      },
+      xaxis: {
+        categories: [
+          'Jan',
+          'Feb',
+          'Mar',
+          'Apr',
+          'May',
+          'Jun',
+          'Jul',
+          'Aug',
+          'Sep',
+          'Okt',
+          'Nov',
+          'Des'
+        ]
+      }
+    },
+    series: [
+      {
+        name: 'Nilai',
+        data: [10, 41, 35, 51, 49, 62, 69, 91, 148]
+      }
+    ]
+  });
+
+  useEffect(() => {
+    readDashboard()
+      .then(res => setDataDashboard(res.data.data))
+      .catch(err => err);
+  }, []);
+
+  console.log('data : ', dataDashboard);
 
   return (
     <div className={classes.wrapper}>
@@ -42,13 +112,10 @@ function Dashboard() {
       </div>
       <div className={classes.main}>
         <div className={classes.itemCharts}>
-          <div>
-            <SimpleBarChart />
-          </div>
-          <div>
-            <SimpleAreaChart />
-          </div>
+          <BarApexChart options={bar.options} series={bar.series} />
+          <AreaApexChart options={area.options} series={area.series} />
         </div>
+
         <div className={classes.itemCard}>
           <Card className={classes.card}>
             <CardActionArea>
@@ -89,4 +156,17 @@ function Dashboard() {
   );
 }
 
-export default Dashboard;
+Dashboard.propTypes = {
+  setDataDashboard: propTypes.func,
+  dataDashboard: propTypes.object
+};
+
+const mapStateToProps = state => ({
+  dataDashboard: state.dashboard.dashboard
+});
+
+const mapDispatchToProps = dispatch => ({
+  setDataDashboard: value => dispatch(setDashboard(value))
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Dashboard);
