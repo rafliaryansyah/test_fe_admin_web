@@ -3,15 +3,21 @@ import API from 'configs/api';
 /**
  * service customer for get all data customer
  */
-export const getCustomers = () => {
+export const getCustomers = (role, search, page) => {
   return new Promise((resolve, reject) => {
-    API.customers()
+    const data = {
+      params: {
+        role: role ? role : '',
+        search: search ? search : '',
+        page: page ? page : 1
+      }
+    };
+
+    API.customers(data)
       .then(res => {
         resolve({ success: true, data: res.data });
       })
       .catch(err => {
-        console.log(err);
-
         reject({ success: false, data: err });
       });
   });
@@ -31,8 +37,6 @@ export const getCustomer = id => {
         resolve({ success: true, data: res.data });
       })
       .catch(err => {
-        console.log(err);
-
         reject({ success: false, data: err });
       });
   });
@@ -52,8 +56,6 @@ export const updateRoleCustomer = id => {
         resolve({ success: true, data: res.data });
       })
       .catch(err => {
-        console.log(err);
-
         reject({ success: false, data: err });
       });
   });
@@ -73,8 +75,6 @@ export const accessAdminCustomer = id => {
         resolve({ success: true, data: res.data });
       })
       .catch(err => {
-        console.log(err);
-
         reject({ success: false, data: err });
       });
   });
@@ -94,8 +94,6 @@ export const deleteCustomer = id => {
         resolve({ success: true, data: res.data });
       })
       .catch(err => {
-        console.log(err);
-
         reject({ success: false, data: err });
       });
   });
@@ -115,8 +113,6 @@ export const restoreCustomer = id => {
         resolve({ success: true, data: res.data });
       })
       .catch(err => {
-        console.log(err);
-
         reject({ success: false, data: err });
       });
   });

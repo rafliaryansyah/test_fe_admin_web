@@ -47,6 +47,11 @@ function TabProduk({ setDataCategoriesProduk, dataCategoriesProduk, history }) {
     hapus: false
   });
 
+  const [pagination, setPagination] = useState({
+    current_page: 1,
+    last_page: ''
+  });
+
   const [id, setID] = useState('');
 
   const [detailCategory, setDetailCategory] = useState({});
@@ -98,6 +103,14 @@ function TabProduk({ setDataCategoriesProduk, dataCategoriesProduk, history }) {
     getCategory('1')
       .then(res => {
         setDataCategoriesProduk(res.data.data);
+        setPagination({
+          ...pagination,
+          current_page: res.data.meta.current_page
+        });
+        setPagination({
+          ...pagination,
+          last_page: res.data.meta.last_page
+        });
       })
       .catch(err => err);
   }, []);
@@ -139,9 +152,17 @@ function TabProduk({ setDataCategoriesProduk, dataCategoriesProduk, history }) {
 
         // read kembali data kategori baru
         setTimeout(() => {
-          getCategory()
+          getCategory('1')
             .then(res => {
               setDataCategoriesProduk(res.data.data);
+              setPagination({
+                ...pagination,
+                current_page: res.data.meta.current_page
+              });
+              setPagination({
+                ...pagination,
+                last_page: res.data.meta.last_page
+              });
             })
             .catch(err => err);
         }, 5000);
@@ -186,9 +207,17 @@ function TabProduk({ setDataCategoriesProduk, dataCategoriesProduk, history }) {
 
       // read kembali data kategori baru
       setTimeout(() => {
-        getCategory()
+        getCategory('1')
           .then(res => {
             setDataCategoriesProduk(res.data.data);
+            setPagination({
+              ...pagination,
+              current_page: res.data.meta.current_page
+            });
+            setPagination({
+              ...pagination,
+              last_page: res.data.meta.last_page
+            });
           })
           .catch(err => err);
       }, 5000);
@@ -283,7 +312,6 @@ function TabProduk({ setDataCategoriesProduk, dataCategoriesProduk, history }) {
                   color="primary"
                   disabled={data.isDeleted}
                   onClick={() => {
-                    setOpen({ ...open, edit: true });
                     setID(data.id);
                     setForm({
                       ...form,
@@ -291,6 +319,7 @@ function TabProduk({ setDataCategoriesProduk, dataCategoriesProduk, history }) {
                       name: data.name,
                       image: data.image
                     });
+                    setOpen({ ...open, edit: true });
                   }}>
                   <Edit />
                 </IconButton>
@@ -299,8 +328,8 @@ function TabProduk({ setDataCategoriesProduk, dataCategoriesProduk, history }) {
                   color="primary"
                   disabled={data.isDeleted}
                   onClick={() => {
-                    setOpen({ ...open, hapus: true });
                     setID(data.id);
+                    setOpen({ ...open, hapus: true });
                   }}>
                   <Delete />
                 </IconButton>
@@ -309,7 +338,19 @@ function TabProduk({ setDataCategoriesProduk, dataCategoriesProduk, history }) {
           ))}
       </div>
 
-      <Paginasi count={5} page={1} onClick={(e, value) => value} />
+      <Paginasi
+        count={pagination.last_page}
+        page={pagination.current_page}
+        onChange={(e, value) => {
+          getCategory('1', '', value).then(res => {
+            setDataCategoriesProduk(res.data.data);
+            setPagination({
+              ...pagination,
+              current_page: res.data.meta.current_page
+            });
+          });
+        }}
+      />
 
       <CompDialog
         open={open.detail}

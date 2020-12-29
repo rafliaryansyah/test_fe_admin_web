@@ -45,6 +45,11 @@ function TabJasa({ setDataCategoriesJasa, dataCategoriesJasa }) {
     hapus: false
   });
 
+  const [pagination, setPagination] = useState({
+    current_page: 1,
+    last_page: ''
+  });
+
   const [id, setID] = useState('');
 
   const [detailCategory, setDetailCategory] = useState({});
@@ -96,6 +101,14 @@ function TabJasa({ setDataCategoriesJasa, dataCategoriesJasa }) {
     getCategory('2')
       .then(res => {
         setDataCategoriesJasa(res.data.data);
+        setPagination({
+          ...pagination,
+          current_page: res.data.meta.current_page
+        });
+        setPagination({
+          ...pagination,
+          last_page: res.data.meta.last_page
+        });
       })
       .catch(err => err);
   }, []);
@@ -137,9 +150,17 @@ function TabJasa({ setDataCategoriesJasa, dataCategoriesJasa }) {
 
         // read kembali data kategori baru
         setTimeout(() => {
-          getCategory()
+          getCategory('2')
             .then(res => {
               setDataCategoriesJasa(res.data.data);
+              setPagination({
+                ...pagination,
+                current_page: res.data.meta.current_page
+              });
+              setPagination({
+                ...pagination,
+                last_page: res.data.meta.last_page
+              });
             })
             .catch(err => err);
         }, 5000);
@@ -184,9 +205,17 @@ function TabJasa({ setDataCategoriesJasa, dataCategoriesJasa }) {
 
       // read kembali data kategori baru
       setTimeout(() => {
-        getCategory()
+        getCategory('2')
           .then(res => {
             setDataCategoriesJasa(res.data.data);
+            setPagination({
+              ...pagination,
+              current_page: res.data.meta.current_page
+            });
+            setPagination({
+              ...pagination,
+              last_page: res.data.meta.last_page
+            });
           })
           .catch(err => err);
       }, 5000);
@@ -281,7 +310,6 @@ function TabJasa({ setDataCategoriesJasa, dataCategoriesJasa }) {
                   color="primary"
                   disabled={data.isDeleted}
                   onClick={() => {
-                    setOpen({ ...open, edit: true });
                     setID(data.id);
                     setForm({
                       ...form,
@@ -289,6 +317,7 @@ function TabJasa({ setDataCategoriesJasa, dataCategoriesJasa }) {
                       name: data.name,
                       image: data.image
                     });
+                    setOpen({ ...open, edit: true });
                   }}>
                   <Edit />
                 </IconButton>
@@ -297,8 +326,8 @@ function TabJasa({ setDataCategoriesJasa, dataCategoriesJasa }) {
                   color="primary"
                   disabled={data.isDeleted}
                   onClick={() => {
-                    setOpen({ ...open, hapus: true });
                     setID(data.id);
+                    setOpen({ ...open, hapus: true });
                   }}>
                   <Delete />
                 </IconButton>
@@ -307,7 +336,19 @@ function TabJasa({ setDataCategoriesJasa, dataCategoriesJasa }) {
           ))}
       </div>
 
-      <Paginasi count={5} page={1} onClick={(e, value) => value} />
+      <Paginasi
+        count={pagination.last_page}
+        page={pagination.current_page}
+        onChange={(e, value) =>
+          getCategory('2', '', value).then(res => {
+            setDataCategoriesJasa(res.data.data);
+            setPagination({
+              ...pagination,
+              current_page: res.data.meta.current_page
+            });
+          })
+        }
+      />
 
       <CompDialog
         open={open.detail}

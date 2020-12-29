@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import useStyles from './styles';
 import propTypes from 'prop-types';
 
@@ -29,9 +29,22 @@ import { dateConverterRes } from 'utils';
 const ListToko = ({ dataStores, setDataStores, history }) => {
   const classes = useStyles();
 
+  const [pagination, setPagination] = useState({
+    current_page: 1,
+    last_page: ''
+  });
+
   useEffect(() => {
     getStores().then(res => {
       setDataStores(res.data.data);
+      setPagination({
+        ...pagination,
+        current_page: res.data.meta.current_page
+      });
+      setPagination({
+        ...pagination,
+        last_page: res.data.meta.last_page
+      });
     });
   }, []);
 
@@ -45,11 +58,16 @@ const ListToko = ({ dataStores, setDataStores, history }) => {
           <InputLabel id="select-status">Semua Status</InputLabel>
           <Select
             labelId="select-status"
+            name="select-status"
             id="select-status"
-            value="User"
-            // onChange={handleChange}
+            onChange={e => {
+              getStores(parseInt(e.target.value)).then(res => {
+                setDataStores(res.data.data);
+              });
+            }}
             label="Semua Status">
-            <MenuItem value="User">Aktif</MenuItem>
+            <MenuItem value="1">Active</MenuItem>
+            <MenuItem value="2">Approved</MenuItem>
           </Select>
         </FormControl>
         <FormControl variant="outlined" size="small">
@@ -57,7 +75,12 @@ const ListToko = ({ dataStores, setDataStores, history }) => {
             name="email"
             id="email"
             color="primary"
-            placeholder="Search By Name"
+            placeholder="Cari"
+            onChange={e =>
+              getStores('', e.target.value).then(res => {
+                setDataStores(res.data.data);
+              })
+            }
             endAdornment={
               <InputAdornment position="start">
                 <SearchIcon />
@@ -82,7 +105,19 @@ const ListToko = ({ dataStores, setDataStores, history }) => {
           ))}
       </div>
 
-      <Paginasi count={5} page={1} onClick={(e, value) => value} />
+      <Paginasi
+        count={pagination.last_page}
+        page={pagination.current_page}
+        onChange={(e, value) =>
+          getStores('', '', value).then(res => {
+            setDataStores(res.data.data);
+            setPagination({
+              ...pagination,
+              current_page: res.data.meta.current_page
+            });
+          })
+        }
+      />
     </div>
   );
 };

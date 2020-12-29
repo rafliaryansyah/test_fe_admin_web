@@ -49,6 +49,11 @@ function Promo({ setDataPromos, dataPromos }) {
     hapus: false
   });
 
+  const [pagination, setPagination] = useState({
+    current_page: 1,
+    last_page: ''
+  });
+
   const [id, setID] = useState('');
 
   const [isEdit, setIsEdit] = useState(false);
@@ -124,7 +129,17 @@ function Promo({ setDataPromos, dataPromos }) {
   // proses merender untuk read data
   useEffect(() => {
     readPromo()
-      .then(res => setDataPromos(res.data.data))
+      .then(res => {
+        setDataPromos(res.data.data);
+        setPagination({
+          ...pagination,
+          current_page: res.data.meta.current_page
+        });
+        setPagination({
+          ...pagination,
+          last_page: res.data.meta.last_page
+        });
+      })
       .catch(err => err);
   }, []);
 
@@ -139,6 +154,7 @@ function Promo({ setDataPromos, dataPromos }) {
     } else {
       if (isEdit) {
         // edit data
+
         // state
         const {
           title,
@@ -184,7 +200,17 @@ function Promo({ setDataPromos, dataPromos }) {
           // read kembali data
           setTimeout(() => {
             readPromo()
-              .then(res => setDataPromos(res.data.data))
+              .then(res => {
+                setDataPromos(res.data.data);
+                setPagination({
+                  ...pagination,
+                  current_page: res.data.meta.current_page
+                });
+                setPagination({
+                  ...pagination,
+                  last_page: res.data.meta.last_page
+                });
+              })
               .catch(err => err);
           }, 5000);
         } else {
@@ -250,7 +276,17 @@ function Promo({ setDataPromos, dataPromos }) {
           // read kembali data
           setTimeout(() => {
             readPromo()
-              .then(res => setDataPromos(res.data.data))
+              .then(res => {
+                setDataPromos(res.data.data);
+                setPagination({
+                  ...pagination,
+                  current_page: res.data.meta.current_page
+                });
+                setPagination({
+                  ...pagination,
+                  last_page: res.data.meta.last_page
+                });
+              })
               .catch(err => err);
           }, 5000);
         } else {
@@ -287,7 +323,17 @@ function Promo({ setDataPromos, dataPromos }) {
       // read kembali data
       setTimeout(() => {
         readPromo()
-          .then(res => setDataPromos(res.data.data))
+          .then(res => {
+            setDataPromos(res.data.data);
+            setPagination({
+              ...pagination,
+              current_page: res.data.meta.current_page
+            });
+            setPagination({
+              ...pagination,
+              last_page: res.data.meta.last_page
+            });
+          })
           .catch(err => err);
       }, 5000);
     } else {
@@ -317,7 +363,12 @@ function Promo({ setDataPromos, dataPromos }) {
             name="email"
             id="email"
             color="primary"
-            placeholder="Search By Name"
+            placeholder="Cari"
+            onChange={e =>
+              readPromo(e.target.value).then(res => {
+                setDataPromos(res.data.data);
+              })
+            }
             endAdornment={
               <InputAdornment position="start">
                 <Search />
@@ -401,7 +452,19 @@ function Promo({ setDataPromos, dataPromos }) {
           ))}
       </div>
 
-      <Paginasi count={5} page={1} onClick={(e, value) => value} />
+      <Paginasi
+        count={pagination.last_page}
+        page={pagination.current_page}
+        onChange={(e, value) =>
+          readPromo('', value).then(res => {
+            setDataPromos(res.data.data);
+            setPagination({
+              ...pagination,
+              current_page: res.data.meta.current_page
+            });
+          })
+        }
+      />
 
       <CompDialog
         open={open.detail}
@@ -453,7 +516,10 @@ function Promo({ setDataPromos, dataPromos }) {
 
       <CompDialog
         open={open.form}
-        close={() => setOpen({ ...open, form: false })}
+        close={() => {
+          setIsEdit(false);
+          setOpen({ ...open, form: false });
+        }}
         title="Form Voucher">
         <div className={classes.form}>
           <InputLabel htmlFor="title" error={error.title ? true : false}>

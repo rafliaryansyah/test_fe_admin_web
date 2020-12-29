@@ -3,11 +3,13 @@ import API from 'configs/api';
 /**
  * service category for get all data category
  */
-export const getCategory = type => {
+export const getCategory = (type, search, page) => {
   return new Promise((resolve, reject) => {
     const data = {
       params: {
-        type: type
+        type: type,
+        search: search ? search : '',
+        page: page ? page : 1
       }
     };
 

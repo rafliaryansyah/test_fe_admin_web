@@ -23,9 +23,16 @@ export const createPromo = formdata => {
 /**
  * service promo for get all data promo
  */
-export const readPromo = () => {
+export const readPromo = (search, page) => {
   return new Promise((resolve, reject) => {
-    API.readPromo()
+    const data = {
+      params: {
+        search: search ? search : '',
+        page: page ? page : 1
+      }
+    };
+
+    API.readPromo(data)
       .then(res => {
         resolve({ success: true, data: res.data });
       })

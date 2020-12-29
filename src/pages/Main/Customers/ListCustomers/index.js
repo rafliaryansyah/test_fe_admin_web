@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import useStyles from './styles';
 import propTypes from 'prop-types';
 
@@ -16,19 +16,32 @@ import SearchIcon from '@material-ui/icons/Search';
 // components
 import { CardCustomers, Paginasi } from 'components';
 
-// services
-import { getCustomers } from 'services';
-
 // redux
 import { connect } from 'react-redux';
 import { setCustomers } from 'modules';
 
+// services
+import { getCustomers } from 'services';
+
 function ListCustomers({ setDataCustomers, dataCustomers, history }) {
   const classes = useStyles();
+
+  const [pagination, setPagination] = useState({
+    current_page: 1,
+    last_page: ''
+  });
 
   useEffect(() => {
     getCustomers().then(res => {
       setDataCustomers(res.data.data);
+      setPagination({
+        ...pagination,
+        current_page: res.data.meta.current_page
+      });
+      setPagination({
+        ...pagination,
+        last_page: res.data.meta.last_page
+      });
     });
   }, []);
 
@@ -42,11 +55,28 @@ function ListCustomers({ setDataCustomers, dataCustomers, history }) {
           <InputLabel id="select-role">Semua Role</InputLabel>
           <Select
             labelId="select-role"
+            name="select-role"
             id="select-role"
-            value="User"
-            // onChange={handleChange}
+            onChange={e =>
+              getCustomers(e.target.value).then(res => {
+                setDataCustomers(res.data.data);
+              })
+            }
             label="Semua Role">
-            <MenuItem value="User">User</MenuItem>
+            <MenuItem value="customer">Customer</MenuItem>
+            <MenuItem value="super-admin-merchant">
+              Super Admin Merchant
+            </MenuItem>
+            <MenuItem value="contributor-merchant">
+              Contributor Merchant
+            </MenuItem>
+            <MenuItem value="super-admin-ecommerce">
+              Super Admin Ecommerce
+            </MenuItem>
+            <MenuItem value="admin-ecommerce">Admin Ecommerce</MenuItem>
+            <MenuItem value="contributor-ecommerce">
+              Contributor Ecommerce
+            </MenuItem>
           </Select>
         </FormControl>
         <FormControl variant="outlined" size="small">
@@ -55,6 +85,11 @@ function ListCustomers({ setDataCustomers, dataCustomers, history }) {
             id="email"
             color="primary"
             placeholder="Cari"
+            onChange={e =>
+              getCustomers('', e.target.value).then(res => {
+                setDataCustomers(res.data.data);
+              })
+            }
             endAdornment={
               <InputAdornment position="start">
                 <SearchIcon />
@@ -81,7 +116,19 @@ function ListCustomers({ setDataCustomers, dataCustomers, history }) {
           ))}
       </div>
 
-      <Paginasi count={5} page={1} onClick={(e, value) => value} />
+      <Paginasi
+        count={pagination.last_page}
+        page={pagination.current_page}
+        onChange={(e, value) =>
+          getCustomers('', '', value).then(res => {
+            setDataCustomers(res.data.data);
+            setPagination({
+              ...pagination,
+              current_page: res.data.meta.current_page
+            });
+          })
+        }
+      />
     </div>
   );
 }

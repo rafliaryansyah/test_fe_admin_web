@@ -4,9 +4,17 @@ import API from 'configs/api';
 /**
  * service customer for get stores
  */
-export const getStores = () => {
+export const getStores = (status, search, page) => {
   return new Promise((resolve, reject) => {
-    API.stores()
+    const data = {
+      params: {
+        status: status ? status : '',
+        search: search ? search : '',
+        page: page ? page : 1
+      }
+    };
+
+    API.stores(data)
       .then(res => {
         resolve({ success: true, data: res.data });
       })

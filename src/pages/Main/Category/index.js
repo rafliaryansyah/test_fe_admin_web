@@ -30,12 +30,12 @@ import { CompDialog, PrivateRoute } from 'components';
 import TabProduk from './TabProduk';
 import TabJasa from './TabJasa';
 
-// services
-import { postCategory, getCategory } from 'services';
-
 // redux
 import { connect } from 'react-redux';
 import { setCategoriesProduk, setCategoriesJasa } from 'modules';
+
+// services
+import { postCategory, getCategory } from 'services';
 
 function Category({
   setDataCategoriesProduk,
@@ -222,6 +222,14 @@ function Category({
             id="email"
             color="primary"
             placeholder="Cari"
+            onChange={e => {
+              getCategory('1', e.target.value).then(res => {
+                setDataCategoriesProduk(res.data.data);
+              });
+              getCategory('2', e.target.value).then(res => {
+                setDataCategoriesJasa(res.data.data);
+              });
+            }}
             endAdornment={
               <InputAdornment position="start">
                 <SearchIcon />

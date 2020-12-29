@@ -3,25 +3,25 @@ import propTypes from 'prop-types';
 
 import Pagination from '@material-ui/lab/Pagination';
 
-function Paginasi({ count, page, onClick }) {
+function Paginasi({ count, page, onChange }) {
   const classes = useStyles();
   return (
     <div className={classes.wrapper}>
       <Pagination
-        count={count}
         variant="outlined"
         shape="rounded"
+        count={count}
         page={page}
-        onClick={onClick}
+        onChange={onChange}
       />
     </div>
   );
 }
 
 Paginasi.propTypes = {
-  count: propTypes.any,
-  page: propTypes.any,
-  onClick: propTypes.func.isRequired
-}
+  count: propTypes.number,
+  page: propTypes.number,
+  onChange: propTypes.func
+};
 
 export default Paginasi;

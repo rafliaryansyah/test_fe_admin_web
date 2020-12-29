@@ -9,7 +9,7 @@ import { useSnackbar } from 'notistack';
 import {
   Button,
   IconButton,
-  TextField,
+  // TextField,
   InputLabel,
   FormLabel,
   FormControl,
@@ -43,8 +43,8 @@ import {
   createVoucher,
   readVoucher,
   updateVoucher,
-  deleteVoucher,
-  getCategory
+  deleteVoucher
+  // getCategory
 } from 'services';
 
 // utils
@@ -58,6 +58,11 @@ function Voucher({ setDataVoucher, dataVoucher }) {
     detail: false,
     form: false,
     hapus: false
+  });
+
+  const [pagination, setPagination] = useState({
+    current_page: 1,
+    last_page: ''
   });
 
   const [id, setID] = useState('');
@@ -81,6 +86,7 @@ function Voucher({ setDataVoucher, dataVoucher }) {
     tac: '',
     expired_at: ''
   });
+
   const [error, setError] = useState({
     type: '',
     status: '',
@@ -138,10 +144,6 @@ function Voucher({ setDataVoucher, dataVoucher }) {
       newError.quantity = 'Field masih kosong';
     }
 
-    if (!form.image) {
-      newError.image = 'Field masih kosong';
-    }
-
     if (!form.description) {
       newError.description = 'Field masih kosong';
     }
@@ -160,7 +162,17 @@ function Voucher({ setDataVoucher, dataVoucher }) {
   // useEffect untuk merender agar data di read (list)
   useEffect(() => {
     readVoucher()
-      .then(res => setDataVoucher(res.data.data))
+      .then(res => {
+        setDataVoucher(res.data.data);
+        setPagination({
+          ...pagination,
+          current_page: res.data.meta.current_page
+        });
+        setPagination({
+          ...pagination,
+          last_page: res.data.meta.last_page
+        });
+      })
       .catch(err => err);
   }, []);
 
@@ -205,7 +217,7 @@ function Voucher({ setDataVoucher, dataVoucher }) {
         formdata.append('image', image);
         formdata.append('description', description);
         formdata.append('tac', tac);
-        formdata.append('expired_at', dateConverterReq(expired_at));
+        formdata.append('expired_at', expired_at);
 
         // services
         const result = await updateVoucher(id, formdata).catch(err => err);
@@ -232,7 +244,17 @@ function Voucher({ setDataVoucher, dataVoucher }) {
           // read kembali data
           setTimeout(() => {
             readVoucher()
-              .then(res => setDataVoucher(res.data.data))
+              .then(res => {
+                setDataVoucher(res.data.data);
+                setPagination({
+                  ...pagination,
+                  current_page: res.data.meta.current_page
+                });
+                setPagination({
+                  ...pagination,
+                  last_page: res.data.meta.last_page
+                });
+              })
               .catch(err => err);
           }, 5000);
         } else {
@@ -286,7 +308,7 @@ function Voucher({ setDataVoucher, dataVoucher }) {
         formdata.append('image', image);
         formdata.append('description', description);
         formdata.append('tac', tac);
-        formdata.append('expired_at', dateConverterReq(expired_at));
+        formdata.append('expired_at', expired_at);
 
         // services
         const result = await createVoucher(formdata).catch(err => err);
@@ -313,7 +335,17 @@ function Voucher({ setDataVoucher, dataVoucher }) {
           // read kembali data
           setTimeout(() => {
             readVoucher()
-              .then(res => setDataVoucher(res.data.data))
+              .then(res => {
+                setDataVoucher(res.data.data);
+                setPagination({
+                  ...pagination,
+                  current_page: res.data.meta.current_page
+                });
+                setPagination({
+                  ...pagination,
+                  last_page: res.data.meta.last_page
+                });
+              })
               .catch(err => err);
           }, 5000);
         } else {
@@ -352,7 +384,17 @@ function Voucher({ setDataVoucher, dataVoucher }) {
       // read kembali data
       setTimeout(() => {
         readVoucher()
-          .then(res => setDataVoucher(res.data.data))
+          .then(res => {
+            setDataVoucher(res.data.data);
+            setPagination({
+              ...pagination,
+              current_page: res.data.meta.current_page
+            });
+            setPagination({
+              ...pagination,
+              last_page: res.data.meta.last_page
+            });
+          })
           .catch(err => err);
       }, 5000);
     } else {
@@ -437,7 +479,12 @@ function Voucher({ setDataVoucher, dataVoucher }) {
             name="email"
             id="email"
             color="primary"
-            placeholder="Search By Name"
+            placeholder="Cari"
+            onChange={e =>
+              readVoucher(e.target.value).then(res =>
+                setDataVoucher(res.data.data)
+              )
+            }
             endAdornment={
               <InputAdornment position="start">
                 <Search />
@@ -506,7 +553,19 @@ function Voucher({ setDataVoucher, dataVoucher }) {
           ))}
       </div>
 
-      <Paginasi count={5} page={1} onClick={(e, value) => value} />
+      <Paginasi
+        count={pagination.last_page}
+        page={pagination.current_page}
+        onChange={(e, value) =>
+          readVoucher('', value).then(res => {
+            setDataVoucher(res.data.data);
+            setPagination({
+              ...pagination,
+              current_page: res.data.meta.current_page
+            });
+          })
+        }
+      />
 
       <CompDialog
         open={open.detail}
@@ -553,7 +612,10 @@ function Voucher({ setDataVoucher, dataVoucher }) {
 
       <CompDialog
         open={open.form}
-        close={() => setOpen({ ...open, form: false })}
+        close={() => {
+          setIsEdit(false);
+          setOpen({ ...open, form: false });
+        }}
         title="Form Voucher">
         <div className={classes.form}>
           <FormControl component="fieldset" style={{ marginBottom: 15 }}>

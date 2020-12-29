@@ -23,9 +23,16 @@ export const createVoucher = formdata => {
 /**
  * service voucher for get all data voucher
  */
-export const readVoucher = () => {
+export const readVoucher = (search, page) => {
   return new Promise((resolve, reject) => {
-    API.readVoucher()
+    const data = {
+      params: {
+        search: search ? search : '',
+        page: page ? page : 1
+      }
+    };
+
+    API.readVoucher(data)
       .then(res => {
         resolve({ success: true, data: res.data });
       })
