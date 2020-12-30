@@ -20,18 +20,8 @@ const useStyles = makeStyles(theme => ({
     marginBottom: 30
   },
 
-  buttonLeft: {
-    height: '100%',
-    backgroundColor: theme.palette.primary.light,
-    color: '#ffffff',
-    borderRadius: '5px 0px 0px 5px'
-  },
-
-  buttonRight: {
-    height: '100%',
-    backgroundColor: theme.palette.primary.light,
-    color: '#ffffff',
-    borderRadius: '0px 5px 5px 0px'
+  card: {
+    marginRight: 15
   },
 
   action: {

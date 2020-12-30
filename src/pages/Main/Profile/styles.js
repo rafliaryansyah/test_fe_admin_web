@@ -15,7 +15,8 @@ const useStyles = makeStyles(theme => ({
   },
 
   itemFotoDanRoles: {
-    display: 'grid',
+    display: 'flex',
+    flexDirection: 'column',
     gridGap: 15
   },
 

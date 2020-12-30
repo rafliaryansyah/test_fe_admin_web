@@ -18,13 +18,17 @@ import FormLabel from '@material-ui/core/FormLabel';
 // pages
 import ChangePassword from './ChangePassword';
 
+// redux
+import { connect } from 'react-redux';
+import { setUser } from 'modules';
+
 // services
 import { getProfile, editProfile } from 'services';
 
 // formatter
 import { dateConverterReq } from 'utils';
 
-function Profile({ history }) {
+function Profile({ setDataUser, history }) {
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
 
@@ -47,6 +51,7 @@ function Profile({ history }) {
     });
   };
 
+  // read
   useEffect(() => {
     getProfile()
       .then(res => {
@@ -56,20 +61,18 @@ function Profile({ history }) {
           dob: dateConverterReq(res.data.data.date_of_birth),
           gender: res.data.data.gender && res.data.data.gender.id.toString(),
           email: res.data.data.email,
-          phone: res.data.data.phone
+          phone: res.data.data.phone,
+          photo: res.data.data.image
         });
       })
-      .catch(err => {
-        console.log(err.data);
-      });
+      .catch(err => err);
   }, []);
 
+  // edit profile user
   const update = async e => {
     e.preventDefault();
 
     const { name, dob, gender, email, phone, photo } = form;
-
-    console.log(form);
 
     const result = await editProfile(
       name,
@@ -84,6 +87,22 @@ function Profile({ history }) {
       enqueueSnackbar(result.data.message, {
         variant: 'success'
       });
+
+      // read kembali data user profile
+      getProfile()
+        .then(res => {
+          setForm({
+            ...form,
+            name: res.data.data.name,
+            dob: dateConverterReq(res.data.data.date_of_birth),
+            gender: res.data.data.gender && res.data.data.gender.id.toString(),
+            email: res.data.data.email,
+            phone: res.data.data.phone,
+            photo: res.data.data.image
+          });
+          setDataUser(res.data.data);
+        })
+        .catch(err => err);
     } else {
       enqueueSnackbar(result.data.response.data.message, {
         variant: 'error'
@@ -91,6 +110,7 @@ function Profile({ history }) {
     }
   };
 
+  // upload image
   const handleUploadFile = async e => {
     const file = e.target.files[0];
 
@@ -121,7 +141,7 @@ function Profile({ history }) {
         try {
           setForm({
             ...form,
-            photo: file
+            photo: URL.createObjectURL(file)
           });
         } catch (e) {
           enqueueSnackbar(e.message, {
@@ -138,11 +158,7 @@ function Profile({ history }) {
     <div className={classes.wrapper}>
       <div className={classes.itemFotoDanRoles}>
         {form.photo ? (
-          <img
-            src={URL.createObjectURL(form.photo)}
-            alt="photo"
-            className={classes.photo}
-          />
+          <img src={form.photo} alt="photo" className={classes.photo} />
         ) : (
           <div className={classes.wrapperImage}>
             <span className={classes.avatar}>
@@ -177,7 +193,7 @@ function Profile({ history }) {
           />
         </FormControl>
 
-        <InputLabel htmlFor="dob">Tangal Lahir</InputLabel>
+        <InputLabel htmlFor="dob">Tanggal Lahir</InputLabel>
         <FormControl variant="outlined" size="small" margin="normal" fullWidth>
           <OutlinedInput
             type="date"
@@ -289,8 +305,11 @@ function Profile({ history }) {
 }
 
 Profile.propTypes = {
-  setDataProfile: propTypes.func,
-  dataProfile: propTypes.object
+  setDataUser: propTypes.func
 };
 
-export default Profile;
+const mapDispatchToProps = dispatch => ({
+  setDataUser: value => dispatch(setUser(value))
+});
+
+export default connect(null, mapDispatchToProps)(Profile);

@@ -73,6 +73,7 @@ const profile = {
  */
 const global = {
   SET_LOADING_APP: 'LOADING_APP/SET',
+  SET_USER: 'USER/SET',
   CLEAR_GLOBAL: 'GLOBAL/CLEAR'
 };
 

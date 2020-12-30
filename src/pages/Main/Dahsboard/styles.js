@@ -45,20 +45,30 @@ const useStyles = makeStyles(theme => ({
   },
 
   content: {
-    display: 'flex'
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center'
   },
 
   totalPendapatan: {
-    fontSize: 15,
+    fontSize: 18,
     textTransform: 'capitalize',
-    letterSpacing: 1
+    letterSpacing: 3,
+
+    [theme.breakpoints.down('sm')]: {
+      fontSize: 13
+    }
   },
 
   nilai: {
-    fontSize: 20,
+    fontSize: 25,
     textTransform: 'capitalize',
-    letterSpacing: 1,
-    fontWeight: 'bold'
+    letterSpacing: 3,
+    fontWeight: 'bold',
+
+    [theme.breakpoints.down('sm')]: {
+      fontSize: 18
+    }
   }
 }));
 

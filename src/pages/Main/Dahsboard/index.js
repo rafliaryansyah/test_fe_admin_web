@@ -13,8 +13,12 @@ import {
   CardContent
 } from '@material-ui/core';
 
-// material-ui icons
-import { Money } from '@material-ui/icons';
+// react icons
+import {
+  IoCashOutline,
+  IoCartOutline,
+  IoPersonCircleOutline
+} from 'react-icons/io5';
 
 // components
 import { BarApexChart, AreaApexChart } from 'components';
@@ -25,6 +29,9 @@ import { setDashboard } from 'modules';
 
 // services
 import { readDashboard } from 'services';
+
+// utils
+import { currency } from 'utils';
 
 function Dashboard({ setDataDashboard, dataDashboard }) {
   const classes = useStyles();
@@ -90,8 +97,6 @@ function Dashboard({ setDataDashboard, dataDashboard }) {
       .catch(err => err);
   }, []);
 
-  console.log('data : ', dataDashboard);
-
   return (
     <div className={classes.wrapper}>
       <div className={classes.pencarian}>
@@ -122,9 +127,9 @@ function Dashboard({ setDataDashboard, dataDashboard }) {
               <CardContent className={classes.content}>
                 <div>
                   <p className={classes.totalPendapatan}>total pendapatan</p>
-                  <p className={classes.nilai}>Rp.64.100.000</p>
+                  <p className={classes.nilai}>{currency(64100000)}</p>
                 </div>
-                <Money />
+                <IoCashOutline size={65} />
               </CardContent>
             </CardActionArea>
           </Card>
@@ -135,7 +140,7 @@ function Dashboard({ setDataDashboard, dataDashboard }) {
                   <p className={classes.totalPendapatan}>total order</p>
                   <p className={classes.nilai}>2575</p>
                 </div>
-                <Money />
+                <IoCartOutline size={65} />
               </CardContent>
             </CardActionArea>
           </Card>
@@ -146,7 +151,7 @@ function Dashboard({ setDataDashboard, dataDashboard }) {
                   <p className={classes.totalPendapatan}>total pengguna</p>
                   <p className={classes.nilai}>3743</p>
                 </div>
-                <Money />
+                <IoPersonCircleOutline size={65} />
               </CardContent>
             </CardActionArea>
           </Card>

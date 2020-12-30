@@ -5,10 +5,10 @@ import propTypes from 'prop-types';
 
 // react redux
 import { connect } from 'react-redux';
-import { setLoadingApp } from 'modules';
+import { setLoadingApp, setUser } from 'modules';
 
 // services
-import { login } from 'services';
+import { login, getProfile } from 'services';
 
 // notistack
 import { useSnackbar } from 'notistack';
@@ -17,21 +17,23 @@ import { useSnackbar } from 'notistack';
 import isEmail from 'validator/lib/isEmail';
 
 // material-ui core
-import FormControl from '@material-ui/core/FormControl';
-import InputLabel from '@material-ui/core/InputLabel';
-import OutlinedInput from '@material-ui/core/OutlinedInput';
-import FormHelperText from '@material-ui/core/FormHelperText';
-import InputAdornment from '@material-ui/core/InputAdornment';
-import IconButton from '@material-ui/core/IconButton';
-import Button from '@material-ui/core/Button';
+import {
+  FormControl,
+  InputLabel,
+  OutlinedInput,
+  FormHelperText,
+  InputAdornment,
+  IconButton,
+  Button
+} from '@material-ui/core';
 
-// material-ui icons
-import { Visibility, VisibilityOff } from '@material-ui/icons';
+// react icons
+import { AiOutlineEyeInvisible, AiOutlineEye } from 'react-icons/ai';
 
 // components
 import { LoadingApp } from 'components';
 
-function Login({ requestLoadingApp, loadingApp }) {
+function Login({ requestLoadingApp, setDataUser, loadingApp }) {
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
 
@@ -90,22 +92,33 @@ function Login({ requestLoadingApp, loadingApp }) {
     return <Redirect to={RedirectTo} />;
   }
 
+  // submit untuk login
   const submit = async e => {
     e.preventDefault();
 
     const findErrors = validate();
 
+    // cek validasi
     if (Object.values(findErrors).some(err => err !== '')) {
       setError(findErrors);
     } else {
+      // loading
       requestLoadingApp(true);
+
+      // service
       const result = await login(form).catch(err => err);
 
+      // cek sukses atau gagal
       if (result.success) {
         requestLoadingApp(false);
         enqueueSnackbar('Selamat datang di Grocery Admin App', {
           variant: 'success'
         });
+
+        // ambil data user untuk disimpan ke localStorage
+        getProfile()
+          .then(res => setDataUser(res.data.data))
+          .catch(err => err);
       } else {
         requestLoadingApp(false);
         if (result.data.response.data.code === 400) {
@@ -164,11 +177,7 @@ function Login({ requestLoadingApp, loadingApp }) {
                   onClick={() => setShowPassword(!showPassword)}
                   onMouseDown={e => e.preventDefault()}
                   edge="end">
-                  {showPassword ? (
-                    <Visibility color="primary" />
-                  ) : (
-                    <VisibilityOff color="primary" />
-                  )}
+                  {showPassword ? <AiOutlineEye /> : <AiOutlineEyeInvisible />}
                 </IconButton>
               </InputAdornment>
             }
@@ -197,6 +206,7 @@ function Login({ requestLoadingApp, loadingApp }) {
 
 Login.propTypes = {
   requestLoadingApp: propTypes.func,
+  setDataUser: propTypes.func,
   loadingApp: propTypes.bool
 };
 
@@ -205,7 +215,8 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  requestLoadingApp: value => dispatch(setLoadingApp(value))
+  requestLoadingApp: value => dispatch(setLoadingApp(value)),
+  setDataUser: value => dispatch(setUser(value))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Login);

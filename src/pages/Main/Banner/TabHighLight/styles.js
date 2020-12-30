@@ -20,6 +20,10 @@ const useStyles = makeStyles(theme => ({
     marginBottom: 30
   },
 
+  card: {
+    marginRight: 15
+  },
+
   action: {
     display: 'flex',
     justifyContent: 'flex-end'

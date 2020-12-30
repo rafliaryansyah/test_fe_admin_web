@@ -56,6 +56,8 @@ module.exports = {
         ignore: [
           'navigation',
           'screenProps',
+          'children',
+          'match',
           'history',
           'location',
           'component'

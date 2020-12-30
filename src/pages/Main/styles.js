@@ -1,6 +1,6 @@
 import { makeStyles } from '@material-ui/core/styles';
 
-const drawerWidth = 87;
+const drawerWidth = 50;
 
 const useStyles = makeStyles(theme => ({
   wrapper: {},
@@ -10,27 +10,22 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
-    gridGap: 15,
-    padding: '0px 15px 0px 15px',
-    boxShadow: '0px 0px 1px rgba(0, 0, 0, 0.5)',
+    boxShadow: '0px 0px 5px rgba(0, 0, 0, 0.3)',
     position: 'fixed',
-    zIndex: 10,
+    zIndex: 10009,
     width: '100%',
-    backgroundColor: '#ffffff',
-
-    [theme.breakpoints.down('sm')]: {
-      padding: 0
-    }
+    backgroundColor: '#ffffff'
   },
 
   buttonDanTitle: {
     display: 'flex',
-    alignItems: 'center'
+    alignItems: 'center',
+    gridGap: 15
   },
 
   // nama app
   title: {
-    fontSize: 20,
+    fontSize: 18,
     textTransform: 'capitalize',
     fontWeight: 'bold',
     color: theme.palette.primary.main,
@@ -46,10 +41,10 @@ const useStyles = makeStyles(theme => ({
     justifyContent: 'space-between',
     alignItems: 'center',
     gridGap: 5,
-    marginRight: 64,
+    marginRight: 15,
 
     [theme.breakpoints.down('sm')]: {
-      marginRight: 14
+      marginRight: 10
     }
   },
 
@@ -75,33 +70,38 @@ const useStyles = makeStyles(theme => ({
 
   // menu
   menu: {
-    width: 240,
+    width: 173,
     height: '100vh',
     position: 'fixed',
-    top: 65,
+    zIndex: 10000,
+    top: 64,
     backgroundColor: '#ffffff',
     boxShadow: '0px 0px 1px rgba(0, 0, 0, 0.5)',
     display: 'flex',
     flexDirection: 'column',
-    gridGap: 80
+    paddingTop: 18,
+    paddingBottom: 15
   },
 
   menuShift: {
     width: drawerWidth,
     height: '100vh',
     position: 'fixed',
-    top: 65,
+    zIndex: 10000,
+    top: 64,
     backgroundColor: '#ffffff',
     boxShadow: '0px 0px 1px rgba(0, 0, 0, 0.5)',
     display: 'flex',
     flexDirection: 'column',
-    gridGap: 126
+    paddingTop: 18,
+    paddingBottom: 15
   },
 
   wrapperList: {
     overflowY: 'auto',
-    padding: 15,
-    maxHeight: 400
+    maxHeight: 480,
+    overflowX: 'hidden',
+    flex: 1
   },
 
   labelAktif: {
@@ -116,32 +116,53 @@ const useStyles = makeStyles(theme => ({
   },
 
   keluar: {
-    margin: '0px 10px 0px 10px'
+    border: `1px solid ${theme.palette.secondary.main}`,
+    color: theme.palette.secondary.main,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+
+    '&:hover': {
+      backgroundColor: theme.palette.secondary.main,
+      color: '#ffffff'
+    }
   },
 
   // Content
   main: {
-    padding: theme.spacing(3),
+    padding: theme.spacing(1),
     backgroundColor: '#F2F2F2',
-    paddingTop: 86,
+    paddingTop: 73,
 
-    transition: theme.transitions.create('margin', {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen
-    }),
-    marginLeft: 240
+    [theme.breakpoints.up('sm')]: {
+      transition: theme.transitions.create('margin', {
+        easing: theme.transitions.easing.sharp,
+        duration: theme.transitions.duration.leavingScreen
+      }),
+      marginLeft: 173
+    },
+
+    [theme.breakpoints.down('sm')]: {
+      marginLeft: drawerWidth
+    }
   },
 
   mainShift: {
-    padding: theme.spacing(3),
+    padding: theme.spacing(1),
     backgroundColor: '#F2F2F2',
-    paddingTop: 86,
+    paddingTop: 73,
 
-    transition: theme.transitions.create('margin', {
-      easing: theme.transitions.easing.easeOut,
-      duration: theme.transitions.duration.enteringScreen
-    }),
-    marginLeft: drawerWidth
+    [theme.breakpoints.up('sm')]: {
+      transition: theme.transitions.create('margin', {
+        easing: theme.transitions.easing.easeOut,
+        duration: theme.transitions.duration.enteringScreen
+      }),
+      marginLeft: drawerWidth
+    },
+
+    [theme.breakpoints.down('sm')]: {
+      marginLeft: drawerWidth
+    }
   },
 
   // footer

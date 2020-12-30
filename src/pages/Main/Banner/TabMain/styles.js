@@ -9,7 +9,7 @@ const useStyles = makeStyles(theme => ({
   },
 
   wrapperCard: {
-    padding: '10px 50px 10px 50px'
+    // padding: '10px 50px 10px 50px'
   },
 
   title: {
@@ -18,6 +18,10 @@ const useStyles = makeStyles(theme => ({
     letterSpacing: 1,
     fontWeight: 'bold',
     marginBottom: 30
+  },
+
+  card: {
+    marginRight: 15
   },
 
   action: {
@@ -59,7 +63,7 @@ const useStyles = makeStyles(theme => ({
     width: '100%',
     height: 130
   },
-  
+
   itemUpload: {
     width: '15%',
     border: `1px solid ${theme.palette.primary.main}`,

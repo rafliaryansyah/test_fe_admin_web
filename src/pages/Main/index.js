@@ -1,19 +1,12 @@
+/* eslint-disable react/no-children-prop */
 import { useState } from 'react';
 import { Switch, Route } from 'react-router-dom';
 import useStyles from './styles';
-
-// useTheme
-import { useTheme } from '@material-ui/core/styles';
+import propTypes from 'prop-types';
 
 // material-ui core
 import {
-  AppBar,
-  Toolbar,
-  Button,
   IconButton,
-  Typography,
-  Drawer,
-  Divider,
   List,
   ListItem,
   ListItemIcon,
@@ -21,21 +14,19 @@ import {
   Avatar
 } from '@material-ui/core';
 
-// material-ui icons
+// react icons
 import {
-  Menu,
-  ChevronRight,
-  ChevronLeft,
-  Inbox,
-  Mail,
-  Dashboard,
-  Group,
-  Store,
-  BorderAll,
-  Style,
-  ShoppingBasket,
-  ExitToApp
-} from '@material-ui/icons';
+  IoMenuOutline,
+  IoHomeOutline,
+  IoPersonCircleOutline,
+  IoStorefrontOutline,
+  IoGridOutline,
+  IoTicketOutline,
+  IoListOutline,
+  IoImagesOutline,
+  IoPricetagOutline,
+  IoExitOutline
+} from 'react-icons/io5';
 
 // Pages
 import DashboardPage from './Dahsboard';
@@ -49,27 +40,32 @@ import Promo from './Promo';
 import Profile from './Profile';
 
 // components
-import { PrivateRoute, ConfirmDialog, NavLink } from 'components';
+import { PrivateRoute, ConfirmDialog } from 'components';
 
-function Main({ history }) {
+// redux
+import { connect } from 'react-redux';
+import { clearGlobal } from 'modules';
+
+function Main({ clearUser, user, history }) {
   const classes = useStyles();
-  const theme = useTheme();
 
   const [drawerNav, setDrawerNav] = useState(false);
   const [open, setOpen] = useState(false);
 
+  // keluar dari app
   const logout = () => {
     setOpen(false);
     localStorage.removeItem('token');
+    clearUser();
     history.push('/login');
-  }
+  };
 
   return (
     <div className={classes.wrapper}>
       <div className={classes.appBar}>
         <div className={classes.buttonDanTitle}>
           <IconButton onClick={() => setDrawerNav(!drawerNav)} color="primary">
-            <Menu />
+            <IoMenuOutline />
           </IconButton>
           <label className={classes.title}>Grocery App</label>
         </div>
@@ -77,11 +73,13 @@ function Main({ history }) {
           <IconButton
             onClick={() => history.push('/profile')}
             className={classes.avatar}>
-            <Avatar alt="Remy Sharp" src="" />
+            <Avatar alt={user.name} src={user.image} />
           </IconButton>
           <div className={classes.teks}>
-            <span className={classes.nama}>budiman</span>
-            <span className={classes.akses}>admin</span>
+            <span className={classes.nama}>{user.name}</span>
+            <span className={classes.akses}>
+              {user.roles && user.roles[0].name}
+            </span>
           </div>
         </div>
       </div>
@@ -102,16 +100,14 @@ function Main({ history }) {
                       history.push('/');
                     }}>
                     <ListItemIcon>
-                      <Dashboard
-                        className={match ? classes.labelAktif : null}
-                      />
+                      <IoHomeOutline className={match && classes.labelAktif} />
                     </ListItemIcon>
-                    {drawerNav ? (
+                    {drawerNav && (
                       <ListItemText
                         primary="Dashboard"
-                        className={match ? classes.labelAktif : null}
+                        className={match && classes.labelAktif}
                       />
-                    ) : null}
+                    )}
                   </ListItem>
                 );
               }}
@@ -129,14 +125,16 @@ function Main({ history }) {
                       history.push('/customers');
                     }}>
                     <ListItemIcon>
-                      <Group className={match ? classes.labelAktif : null} />
+                      <IoPersonCircleOutline
+                        className={match && classes.labelAktif}
+                      />
                     </ListItemIcon>
-                    {drawerNav ? (
+                    {drawerNav && (
                       <ListItemText
                         primary="Customers"
-                        className={match ? classes.labelAktif : null}
+                        className={match && classes.labelAktif}
                       />
-                    ) : null}
+                    )}
                   </ListItem>
                 );
               }}
@@ -154,14 +152,16 @@ function Main({ history }) {
                       history.push('/toko');
                     }}>
                     <ListItemIcon>
-                      <Store className={match ? classes.labelAktif : null} />
+                      <IoStorefrontOutline
+                        className={match && classes.labelAktif}
+                      />
                     </ListItemIcon>
-                    {drawerNav ? (
+                    {drawerNav && (
                       <ListItemText
                         primary="Toko"
-                        className={match ? classes.labelAktif : null}
+                        className={match && classes.labelAktif}
                       />
-                    ) : null}
+                    )}
                   </ListItem>
                 );
               }}
@@ -179,16 +179,14 @@ function Main({ history }) {
                       history.push('/category');
                     }}>
                     <ListItemIcon>
-                      <BorderAll
-                        className={match ? classes.labelAktif : null}
-                      />
+                      <IoGridOutline className={match && classes.labelAktif} />
                     </ListItemIcon>
-                    {drawerNav ? (
+                    {drawerNav && (
                       <ListItemText
                         primary="Category"
-                        className={match ? classes.labelAktif : null}
+                        className={match && classes.labelAktif}
                       />
-                    ) : null}
+                    )}
                   </ListItem>
                 );
               }}
@@ -206,14 +204,16 @@ function Main({ history }) {
                       history.push('/voucher');
                     }}>
                     <ListItemIcon>
-                      <Style className={match ? classes.labelAktif : null} />
+                      <IoTicketOutline
+                        className={match && classes.labelAktif}
+                      />
                     </ListItemIcon>
-                    {drawerNav ? (
+                    {drawerNav && (
                       <ListItemText
                         primary="Voucher"
-                        className={match ? classes.labelAktif : null}
+                        className={match && classes.labelAktif}
                       />
-                    ) : null}
+                    )}
                   </ListItem>
                 );
               }}
@@ -231,16 +231,14 @@ function Main({ history }) {
                       history.push('/user-logs');
                     }}>
                     <ListItemIcon>
-                      <ShoppingBasket
-                        className={match ? classes.labelAktif : null}
-                      />
+                      <IoListOutline className={match && classes.labelAktif} />
                     </ListItemIcon>
-                    {drawerNav ? (
+                    {drawerNav && (
                       <ListItemText
                         primary="User Logs"
-                        className={match ? classes.labelAktif : null}
+                        className={match && classes.labelAktif}
                       />
-                    ) : null}
+                    )}
                   </ListItem>
                 );
               }}
@@ -258,16 +256,16 @@ function Main({ history }) {
                       history.push('/banner/main');
                     }}>
                     <ListItemIcon>
-                      <ShoppingBasket
-                        className={match ? classes.labelAktif : null}
+                      <IoImagesOutline
+                        className={match && classes.labelAktif}
                       />
                     </ListItemIcon>
-                    {drawerNav ? (
+                    {drawerNav && (
                       <ListItemText
                         primary="Banner"
-                        className={match ? classes.labelAktif : null}
+                        className={match && classes.labelAktif}
                       />
-                    ) : null}
+                    )}
                   </ListItem>
                 );
               }}
@@ -285,16 +283,16 @@ function Main({ history }) {
                       history.push('/promo');
                     }}>
                     <ListItemIcon>
-                      <ShoppingBasket
-                        className={match ? classes.labelAktif : null}
+                      <IoPricetagOutline
+                        className={match && classes.labelAktif}
                       />
                     </ListItemIcon>
-                    {drawerNav ? (
+                    {drawerNav && (
                       <ListItemText
                         primary="Promo"
-                        className={match ? classes.labelAktif : null}
+                        className={match && classes.labelAktif}
                       />
-                    ) : null}
+                    )}
                   </ListItem>
                 );
               }}
@@ -302,17 +300,18 @@ function Main({ history }) {
           </List>
         </div>
 
-        <div className={classes.keluar}>
-          <Button
-            variant="contained"
-            color="secondary"
-            fullWidth
-            onClick={() => {
-              setDrawerNav(false);
-              setOpen(true);
-            }}>
-            {drawerNav ? 'keluar' : <ExitToApp />}
-          </Button>
+        <div>
+          <List component="nav">
+            <ListItem
+              button
+              className={classes.keluar}
+              onClick={() => {
+                setDrawerNav(false);
+                setOpen(true);
+              }}>
+              {drawerNav ? 'KELUAR' : <IoExitOutline />}
+            </ListItem>
+          </List>
         </div>
       </div>
 
@@ -330,7 +329,7 @@ function Main({ history }) {
         </Switch>
         <div className={classes.footer}>
           <span className={classes.copyRight}>
-            © {new Date().getFullYear()} || Kabayan Coding
+            Copyright © 2020 - {new Date().getFullYear()} Grocery Web Admin All Right Reserved
           </span>
         </div>
       </div>
@@ -346,4 +345,17 @@ function Main({ history }) {
   );
 }
 
-export default Main;
+Main.propTypes = {
+  clearUser: propTypes.func,
+  user: propTypes.object
+};
+
+const mapStateToProps = state => ({
+  user: state.global.user
+});
+
+const mapDispatchToProps = dispatch => ({
+  clearUser: () => dispatch(clearGlobal())
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Main);

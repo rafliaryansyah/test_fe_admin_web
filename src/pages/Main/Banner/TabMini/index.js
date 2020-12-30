@@ -2,8 +2,47 @@ import { useState } from 'react';
 import useStyles from './styles';
 import propTypes from 'prop-types';
 
-// react items carousel
-import ItemsCarousel from 'react-items-carousel';
+// responsive carousel
+const responsive = {
+  desktop: {
+    breakpoint: { max: 3000, min: 1024 },
+    items: 3,
+    paritialVisibilityGutter: 60
+  },
+  tablet: {
+    breakpoint: { max: 1024, min: 464 },
+    items: 2,
+    paritialVisibilityGutter: 50
+  },
+  mobile: {
+    breakpoint: { max: 464, min: 0 },
+    items: 1,
+    paritialVisibilityGutter: 30
+  }
+};
+
+// responsive carousel
+const responsiveHistory = {
+  desktop: {
+    breakpoint: { max: 3000, min: 1024 },
+    items: 6,
+    paritialVisibilityGutter: 0
+  },
+  tablet: {
+    breakpoint: { max: 1024, min: 464 },
+    items: 3,
+    paritialVisibilityGutter: 60
+  },
+  mobile: {
+    breakpoint: { max: 464, min: 0 },
+    items: 1,
+    paritialVisibilityGutter: 30
+  }
+};
+
+// react multi carousel
+import Carousel from 'react-multi-carousel';
+import 'react-multi-carousel/lib/styles.css';
 
 // material-ui core
 import {
@@ -23,14 +62,12 @@ import {
   FormHelperText
 } from '@material-ui/core';
 
-// material-ui icons
+// react icons
 import {
-  Edit,
-  Delete,
-  ChevronLeft,
-  ChevronRight,
-  CloudUpload
-} from '@material-ui/icons';
+  IoPencilOutline,
+  IoTrashOutline,
+  IoCloudDownloadOutline
+} from 'react-icons/io5';
 
 // components
 import { CompDialog, ConfirmDialog } from 'components';
@@ -343,41 +380,16 @@ function TabMini({ setDataBanners, dataBanners }) {
           <label className={classes.title}>mini banner produk aktif</label>
           <br />
           <br />
-          <ItemsCarousel
-            infiniteLoop={false}
-            gutter={12}
-            activePosition={'center'}
-            chevronWidth={60}
-            disableSwipe={false}
-            alwaysShowChevrons={false}
-            numberOfCards={3}
-            slidesToScroll={1}
-            outsideChevron={true}
-            showSlither={false}
-            firstAndLastGutter={false}
-            activeItemIndex={state.active}
-            requestToChangeActive={value =>
-              setState({ ...state, active: value })
-            }
-            leftChevron={
-              <div>
-                <IconButton color="primary">
-                  <ChevronLeft />
-                </IconButton>
-              </div>
-            }
-            rightChevron={
-              <div>
-                <IconButton color="primary">
-                  <ChevronRight />
-                </IconButton>
-              </div>
-            }>
-            {dataBanners &&
-              dataBanners.miniBanner &&
-              dataBanners.miniBanner.data &&
-              dataBanners.miniBanner.data.map(data => (
-                <div key={data[0]}>
+          <Carousel
+            ssr
+            partialVisbile
+            itemClass="image-item"
+            responsive={responsive}>
+            {/* {dataBanners &&
+              dataBanners.mainBanner &&
+              dataBanners.mainBanner.data &&
+              dataBanners.mainBanner.data.map(data => (
+                <div key={data}>
                   <Card>
                     <CardActionArea>
                       <CardMedia
@@ -398,9 +410,9 @@ function TabMini({ setDataBanners, dataBanners }) {
                           setForm({
                             ...form
                           });
-                          setOpen({ ...open, buat: true });
+                          setOpen({ ...open, form: true });
                         }}>
-                        <Edit />
+                        <IoPencilOutline />
                       </IconButton>
                       <IconButton
                         size="small"
@@ -409,54 +421,15 @@ function TabMini({ setDataBanners, dataBanners }) {
                           setID();
                           setOpen({ ...open, hapus: true });
                         }}>
-                        <Delete />
+                        <IoTrashOutline />
                       </IconButton>
                     </CardActions>
                   </Card>
                 </div>
-              ))}
-          </ItemsCarousel>
-        </div>
-        <br />
-        <br />
-        <br />
-        <div className={classes.wrapperCard}>
-          <label className={classes.title}>mini banner produk history</label>
-          <br />
-          <br />
-          <ItemsCarousel
-            infiniteLoop={false}
-            gutter={12}
-            activePosition={'center'}
-            chevronWidth={60}
-            disableSwipe={false}
-            alwaysShowChevrons={false}
-            numberOfCards={5}
-            slidesToScroll={1}
-            outsideChevron={true}
-            showSlither={false}
-            firstAndLastGutter={false}
-            activeItemIndex={state.history}
-            requestToChangeActive={value =>
-              setState({ ...state, history: value })
-            }
-            leftChevron={
-              <div>
-                <IconButton color="primary">
-                  <ChevronLeft />
-                </IconButton>
-              </div>
-            }
-            rightChevron={
-              <div>
-                <IconButton color="primary">
-                  <ChevronRight />
-                </IconButton>
-              </div>
-            }>
+              ))} */}
             {Array.from(new Array(10)).map((_, i) => (
               <div key={i}>
-                <Card>
+                <Card className={classes.card}>
                   <CardActionArea>
                     <CardMedia
                       component="img"
@@ -471,19 +444,62 @@ function TabMini({ setDataBanners, dataBanners }) {
                       size="small"
                       color="primary"
                       onClick={() => setOpen({ ...open, buat: true })}>
-                      <Edit />
+                      <IoPencilOutline />
                     </IconButton>
                     <IconButton
                       size="small"
                       color="primary"
                       onClick={() => setOpen({ ...open, hapus: true })}>
-                      <Delete />
+                      <IoTrashOutline />
                     </IconButton>
                   </CardActions>
                 </Card>
               </div>
             ))}
-          </ItemsCarousel>
+          </Carousel>
+        </div>
+        <br />
+        <br />
+        <br />
+        <div className={classes.wrapperCard}>
+          <label className={classes.title}>mini banner produk history</label>
+          <br />
+          <br />
+          <Carousel
+            ssr
+            partialVisbile
+            itemClass="image-item"
+            responsive={responsiveHistory}>
+            {Array.from(new Array(10)).map((_, i) => (
+              <div key={i}>
+                <Card className={classes.card}>
+                  <CardActionArea>
+                    <CardMedia
+                      component="img"
+                      alt="Contemplative Reptile"
+                      height="130"
+                      image="https://ecs7.tokopedia.net/img/blog/seller/2020/04/voucher-toko.jpg"
+                      title="Contemplative Reptile"
+                    />
+                  </CardActionArea>
+                  <CardActions className={classes.action}>
+                    <IconButton
+                      size="small"
+                      color="primary"
+                      onClick={() => setOpen({ ...open, buat: true })}>
+                      <IoPencilOutline />
+                    </IconButton>
+                    <IconButton
+                      size="small"
+                      color="primary"
+                      onClick={() => setOpen({ ...open, hapus: true })}>
+                      <IoTrashOutline />
+                    </IconButton>
+                  </CardActions>
+                </Card>
+              </div>
+            ))}
+          </Carousel>
         </div>
         <div className={classes.wrapperButton}>
           <Button
@@ -508,107 +524,56 @@ function TabMini({ setDataBanners, dataBanners }) {
           <label className={classes.title}>mini banner jasa aktif</label>
           <br />
           <br />
-          <ItemsCarousel
-            infiniteLoop={false}
-            gutter={12}
-            activePosition={'center'}
-            chevronWidth={60}
-            disableSwipe={false}
-            alwaysShowChevrons={false}
-            numberOfCards={3}
-            slidesToScroll={1}
-            outsideChevron={true}
-            showSlither={false}
-            firstAndLastGutter={false}
-            activeItemIndex={state.active}
-            requestToChangeActive={value =>
-              setState({ ...state, active: value })
-            }
-            leftChevron={
-              <div>
-                <IconButton color="primary">
-                  <ChevronLeft />
-                </IconButton>
-              </div>
-            }
-            rightChevron={
-              <div>
-                <IconButton color="primary">
-                  <ChevronRight />
-                </IconButton>
-              </div>
-            }>
+          <Carousel
+            ssr
+            partialVisbile
+            itemClass="image-item"
+            responsive={responsive}>
+            {/* {dataBanners &&
+              dataBanners.mainBanner &&
+              dataBanners.mainBanner.data &&
+              dataBanners.mainBanner.data.map(data => (
+                <div key={data}>
+                  <Card>
+                    <CardActionArea>
+                      <CardMedia
+                        component="img"
+                        alt="Contemplative Reptile"
+                        height="230"
+                        image="https://ecs7.tokopedia.net/img/blog/seller/2020/04/voucher-toko.jpg"
+                        title="Contemplative Reptile"
+                      />
+                    </CardActionArea>
+                    <CardActions className={classes.action}>
+                      <IconButton
+                        size="small"
+                        color="primary"
+                        onClick={() => {
+                          setID();
+                          setIsEdit(true);
+                          setForm({
+                            ...form
+                          });
+                          setOpen({ ...open, form: true });
+                        }}>
+                        <IoPencilOutline />
+                      </IconButton>
+                      <IconButton
+                        size="small"
+                        color="primary"
+                        onClick={() => {
+                          setID();
+                          setOpen({ ...open, hapus: true });
+                        }}>
+                        <IoTrashOutline />
+                      </IconButton>
+                    </CardActions>
+                  </Card>
+                </div>
+              ))} */}
             {Array.from(new Array(10)).map((_, i) => (
               <div key={i}>
-                <Card>
-                  <CardActionArea>
-                    <CardMedia
-                      component="img"
-                      alt="Contemplative Reptile"
-                      height="230"
-                      image="https://ecs7.tokopedia.net/img/blog/seller/2020/04/voucher-toko.jpg"
-                      title="Contemplative Reptile"
-                    />
-                  </CardActionArea>
-                  <CardActions className={classes.action}>
-                    <IconButton
-                      size="small"
-                      color="primary"
-                      onClick={() => setOpen({ ...open, buat: true })}>
-                      <Edit />
-                    </IconButton>
-                    <IconButton
-                      size="small"
-                      color="primary"
-                      onClick={() => setOpen({ ...open, hapus: true })}>
-                      <Delete />
-                    </IconButton>
-                  </CardActions>
-                </Card>
-              </div>
-            ))}
-          </ItemsCarousel>
-        </div>
-        <br />
-        <br />
-        <br />
-        <div className={classes.wrapperCard}>
-          <label className={classes.title}>mini banner jasa history</label>
-          <br />
-          <br />
-          <ItemsCarousel
-            infiniteLoop={false}
-            gutter={12}
-            activePosition={'center'}
-            chevronWidth={60}
-            disableSwipe={false}
-            alwaysShowChevrons={false}
-            numberOfCards={5}
-            slidesToScroll={1}
-            outsideChevron={true}
-            showSlither={false}
-            firstAndLastGutter={false}
-            activeItemIndex={state.history}
-            requestToChangeActive={value =>
-              setState({ ...state, history: value })
-            }
-            leftChevron={
-              <div>
-                <IconButton color="primary">
-                  <ChevronLeft />
-                </IconButton>
-              </div>
-            }
-            rightChevron={
-              <div>
-                <IconButton color="primary">
-                  <ChevronRight />
-                </IconButton>
-              </div>
-            }>
-            {Array.from(new Array(10)).map((_, i) => (
-              <div key={i}>
-                <Card>
+                <Card className={classes.card}>
                   <CardActionArea>
                     <CardMedia
                       component="img"
@@ -623,19 +588,62 @@ function TabMini({ setDataBanners, dataBanners }) {
                       size="small"
                       color="primary"
                       onClick={() => setOpen({ ...open, buat: true })}>
-                      <Edit />
+                      <IoPencilOutline />
                     </IconButton>
                     <IconButton
                       size="small"
                       color="primary"
                       onClick={() => setOpen({ ...open, hapus: true })}>
-                      <Delete />
+                      <IoTrashOutline />
                     </IconButton>
                   </CardActions>
                 </Card>
               </div>
             ))}
-          </ItemsCarousel>
+          </Carousel>
+        </div>
+        <br />
+        <br />
+        <br />
+        <div className={classes.wrapperCard}>
+          <label className={classes.title}>mini banner jasa history</label>
+          <br />
+          <br />
+          <Carousel
+            ssr
+            partialVisbile
+            itemClass="image-item"
+            responsive={responsiveHistory}>
+            {Array.from(new Array(10)).map((_, i) => (
+              <div key={i}>
+                <Card className={classes.card}>
+                  <CardActionArea>
+                    <CardMedia
+                      component="img"
+                      alt="Contemplative Reptile"
+                      height="130"
+                      image="https://ecs7.tokopedia.net/img/blog/seller/2020/04/voucher-toko.jpg"
+                      title="Contemplative Reptile"
+                    />
+                  </CardActionArea>
+                  <CardActions className={classes.action}>
+                    <IconButton
+                      size="small"
+                      color="primary"
+                      onClick={() => setOpen({ ...open, buat: true })}>
+                      <IoPencilOutline />
+                    </IconButton>
+                    <IconButton
+                      size="small"
+                      color="primary"
+                      onClick={() => setOpen({ ...open, hapus: true })}>
+                      <IoTrashOutline />
+                    </IconButton>
+                  </CardActions>
+                </Card>
+              </div>
+            ))}
+          </Carousel>
         </div>
         <div className={classes.wrapperButton}>
           <Button
@@ -727,7 +735,7 @@ function TabMini({ setDataBanners, dataBanners }) {
               style={{ display: 'none' }}
             />
             <label htmlFor="upload" className={classes.itemUpload}>
-              <CloudUpload color="primary" />
+              <IoCloudDownloadOutline />
             </label>
           </div>
           <br />
