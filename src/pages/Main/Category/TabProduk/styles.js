@@ -1,10 +1,14 @@
 import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles(theme => ({
+  wrapper: {
+    paddingTop: 15
+  },
+
   cardGrid: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-    gridGap: 30,
+    gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+    gridGap: 15,
     margin: '30px 0px 30px 0px'
   },
 

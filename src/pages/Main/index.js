@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { Switch, Route } from 'react-router-dom';
 import useStyles from './styles';
-import propTypes from 'prop-types';
+// import propTypes from 'prop-types';
 
 // material-ui core
 import {
@@ -42,21 +42,19 @@ import Profile from './Profile';
 // components
 import { PrivateRoute, ConfirmDialog } from 'components';
 
-// redux
-import { connect } from 'react-redux';
-import { clearGlobal } from 'modules';
-
-function Main({ clearUser, user, history }) {
+function Main({ history }) {
   const classes = useStyles();
 
   const [drawerNav, setDrawerNav] = useState(false);
   const [open, setOpen] = useState(false);
 
+  // data profile admin form localstorage
+  const user = JSON.parse(localStorage.getItem('user'));
+
   // keluar dari app
   const logout = () => {
     setOpen(false);
-    localStorage.removeItem('token');
-    clearUser();
+    localStorage.clear();
     history.push('/login');
   };
 
@@ -73,13 +71,11 @@ function Main({ clearUser, user, history }) {
           <IconButton
             onClick={() => history.push('/profile')}
             className={classes.avatar}>
-            <Avatar alt={user.name} src={user.image} />
+            <Avatar alt={user?.name} src={user?.image} />
           </IconButton>
           <div className={classes.teks}>
-            <span className={classes.nama}>{user.name}</span>
-            <span className={classes.akses}>
-              {user.roles && user.roles[0].name}
-            </span>
+            <span className={classes.nama}>{user?.name}</span>
+            <span className={classes.akses}>{user?.role}</span>
           </div>
         </div>
       </div>
@@ -329,7 +325,8 @@ function Main({ clearUser, user, history }) {
         </Switch>
         <div className={classes.footer}>
           <span className={classes.copyRight}>
-            Copyright © 2020 - {new Date().getFullYear()} Grocery Web Admin All Right Reserved
+            Copyright © 2020 - {new Date().getFullYear()} Grocery Web Admin All
+            Right Reserved
           </span>
         </div>
       </div>
@@ -345,17 +342,6 @@ function Main({ clearUser, user, history }) {
   );
 }
 
-Main.propTypes = {
-  clearUser: propTypes.func,
-  user: propTypes.object
-};
+// Main.propTypes = {};
 
-const mapStateToProps = state => ({
-  user: state.global.user
-});
-
-const mapDispatchToProps = dispatch => ({
-  clearUser: () => dispatch(clearGlobal())
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(Main);
+export default Main;

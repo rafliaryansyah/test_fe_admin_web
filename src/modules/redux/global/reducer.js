@@ -1,8 +1,7 @@
 import actionTypes from '../actionTypes';
 
 const initialState = {
-  loadingApp: false,
-  user: {}
+  loadingApp: false
 };
 
 /**
@@ -15,12 +14,6 @@ const global = (state = initialState, action) => {
       return {
         ...state,
         loadingApp: action.value
-      };
-
-    case actionTypes.global.SET_USER:
-      return {
-        ...state,
-        user: action.value
       };
 
     case actionTypes.global.CLEAR_GLOBAL:

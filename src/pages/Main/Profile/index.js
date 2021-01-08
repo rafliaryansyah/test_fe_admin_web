@@ -1,26 +1,24 @@
 import { useEffect, useState } from 'react';
 import useStyles from './styles';
-import propTypes from 'prop-types';
 
 // notistack
 import { useSnackbar } from 'notistack';
 
 // material-ui core
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import InputLabel from '@material-ui/core/InputLabel';
-import FormControl from '@material-ui/core/FormControl';
-import OutlinedInput from '@material-ui/core/OutlinedInput';
-import Button from '@material-ui/core/Button';
-import Radio from '@material-ui/core/Radio';
-import RadioGroup from '@material-ui/core/RadioGroup';
-import FormLabel from '@material-ui/core/FormLabel';
+import {
+  Avatar,
+  FormControlLabel,
+  InputLabel,
+  FormControl,
+  OutlinedInput,
+  Button,
+  Radio,
+  RadioGroup,
+  FormLabel
+} from '@material-ui/core';
 
 // pages
 import ChangePassword from './ChangePassword';
-
-// redux
-import { connect } from 'react-redux';
-import { setUser } from 'modules';
 
 // services
 import { getProfile, editProfile } from 'services';
@@ -28,13 +26,17 @@ import { getProfile, editProfile } from 'services';
 // formatter
 import { dateConverterReq } from 'utils';
 
-function Profile({ setDataUser, history }) {
+function Profile({ history }) {
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
 
+  // data aktif update
   const [isActiveForm, setIsActiveForm] = useState(false);
+
+  // data dialog change password
   const [open, setOpen] = useState(false);
 
+  // data form
   const [form, setForm] = useState({
     name: '',
     dob: '',
@@ -44,6 +46,7 @@ function Profile({ setDataUser, history }) {
     photo: ''
   });
 
+  // change input form
   const handleChange = e => {
     setForm({
       ...form,
@@ -51,7 +54,7 @@ function Profile({ setDataUser, history }) {
     });
   };
 
-  // read
+  // read data
   useEffect(() => {
     getProfile()
       .then(res => {
@@ -72,21 +75,33 @@ function Profile({ setDataUser, history }) {
   const update = async e => {
     e.preventDefault();
 
+    // state
     const { name, dob, gender, email, phone, photo } = form;
 
-    const result = await editProfile(
-      name,
-      dob,
-      parseInt(gender),
-      email,
-      phone,
-      photo
-    ).catch(err => err);
+    // form-data yang kosong
+    const formdata = new FormData();
 
+    // mengisi form-data menggunakan append
+    formdata.append('name', name);
+    formdata.append('dob', dob);
+    formdata.append('gender', parseInt(gender));
+    formdata.append('email', email);
+    formdata.append('phone', phone);
+
+    // cek image baru atau tetap yang lama
+    if (photo.name) {
+      formdata.append('photo', photo);
+    }
+
+    // services
+    const result = await editProfile(formdata).catch(err => err);
+
+    // cek sukses atau gagal update
     if (result.success) {
       enqueueSnackbar(result.data.message, {
         variant: 'success'
       });
+      setIsActiveForm(false);
 
       // read kembali data user profile
       getProfile()
@@ -100,13 +115,19 @@ function Profile({ setDataUser, history }) {
             phone: res.data.data.phone,
             photo: res.data.data.image
           });
-          setDataUser(res.data.data);
+          const user = JSON.stringify({
+            name: res.data.data.name,
+            image: res.data.data.image,
+            role: res.data.data.roles[0].name
+          });
+          localStorage.setItem('user', user);
         })
         .catch(err => err);
     } else {
       enqueueSnackbar(result.data.response.data.message, {
         variant: 'error'
       });
+      setIsActiveForm(false);
     }
   };
 
@@ -141,7 +162,7 @@ function Profile({ setDataUser, history }) {
         try {
           setForm({
             ...form,
-            photo: URL.createObjectURL(file)
+            photo: file
           });
         } catch (e) {
           enqueueSnackbar(e.message, {
@@ -157,15 +178,12 @@ function Profile({ setDataUser, history }) {
   return (
     <div className={classes.wrapper}>
       <div className={classes.itemFotoDanRoles}>
-        {form.photo ? (
-          <img src={form.photo} alt="photo" className={classes.photo} />
-        ) : (
-          <div className={classes.wrapperImage}>
-            <span className={classes.avatar}>
-              {form && form.name.split('')[0]}
-            </span>
-          </div>
-        )}
+        <Avatar
+          alt={form.name}
+          src={form.photo.name ? URL.createObjectURL(form.photo) : form.photo}
+          variant="rounded"
+          className={classes.avatar}
+        />
         <input
           type="file"
           accept="image/png,image/jpeg"
@@ -296,7 +314,7 @@ function Profile({ setDataUser, history }) {
         open={open}
         close={() => setOpen(false)}
         history={() => {
-          localStorage.removeItem('token');
+          localStorage.clear();
           history.push('/login');
         }}
       />
@@ -304,12 +322,4 @@ function Profile({ setDataUser, history }) {
   );
 }
 
-Profile.propTypes = {
-  setDataUser: propTypes.func
-};
-
-const mapDispatchToProps = dispatch => ({
-  setDataUser: value => dispatch(setUser(value))
-});
-
-export default connect(null, mapDispatchToProps)(Profile);
+export default Profile;

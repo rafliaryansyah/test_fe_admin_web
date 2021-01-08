@@ -1,23 +1,18 @@
 // date converter sebagai request
 export const dateConverterReq = timestamp => {
   const date = new Date(timestamp * 1000);
-  const arrayBulan = [
-    '1',
-    '2',
-    '3',
-    '4',
-    '5',
-    '6',
-    '7',
-    '8',
-    '9',
-    '10',
-    '11',
-    '12'
-  ];
+
   const tahun = date.getFullYear();
-  const bulan = arrayBulan[date.getMonth()];
-  const tanggal = date.getDate();
+  let bulan = date.getMonth() + 1;
+  let tanggal = date.getDate();
+
+  if (bulan < 10) {
+    bulan = `0${bulan}`;
+  }
+
+  if (tanggal < 10) {
+    tanggal = `0${tanggal}`;
+  }
 
   const format = `${tahun}-${bulan}-${tanggal}`;
 
@@ -28,18 +23,18 @@ export const dateConverterReq = timestamp => {
 export const dateConverterRes = timestamp => {
   const date = new Date(timestamp * 1000);
   const arrayBulan = [
-    'Januari',
-    'Februari',
-    'Maret',
-    'April',
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
     'Mei',
-    'Juni',
-    'Juli',
-    'Agustus',
-    'September',
-    'Oktober',
-    'November',
-    'Desember'
+    'Jun',
+    'Jul',
+    'Agu',
+    'Sep',
+    'Okt',
+    'Nov',
+    'Des'
   ];
   const arrayHari = [
     'Minggu',

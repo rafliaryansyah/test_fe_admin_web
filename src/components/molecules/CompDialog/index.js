@@ -8,8 +8,8 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
-// material-ui icons
-import CloseIcon from '@material-ui/icons/Close';
+// react icons
+import { IoCloseOutline } from 'react-icons/io5';
 
 function CompDialog({ open, close, title, children }) {
   const classes = useStyles();
@@ -17,7 +17,7 @@ function CompDialog({ open, close, title, children }) {
     <Dialog open={open} onClose={close}>
       <DialogActions>
         <IconButton onClick={close} color="primary">
-          <CloseIcon />
+          <IoCloseOutline />
         </IconButton>
       </DialogActions>
       <DialogTitle id="alert-dialog-title" className={classes.title}>

@@ -23,8 +23,12 @@ import {
   CardContent
 } from '@material-ui/core';
 
-// material-ui icons
-import { Search, Delete, Edit } from '@material-ui/icons';
+// react icons
+import {
+  IoSearchOutline,
+  IoPencilOutline,
+  IoTrashOutline
+} from 'react-icons/io5';
 
 // components
 import { Paginasi, CompDialog, ConfirmDialog } from 'components';
@@ -43,23 +47,29 @@ function Promo({ setDataPromos, dataPromos }) {
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
 
+  // data open dialog
   const [open, setOpen] = useState({
     detail: false,
     form: false,
     hapus: false
   });
 
+  // data paginasi
   const [pagination, setPagination] = useState({
     current_page: 1,
     last_page: ''
   });
 
+  // data id
   const [id, setID] = useState('');
 
+  // data cek untuk update
   const [isEdit, setIsEdit] = useState(false);
 
+  // data detail
   const [dataDetail, setDataDetail] = useState({});
 
+  // data form
   const [form, setForm] = useState({
     title: '',
     started_at: '',
@@ -70,6 +80,7 @@ function Promo({ setDataPromos, dataPromos }) {
     tac: ''
   });
 
+  // data errors form
   const [error, setError] = useState({
     title: '',
     started_at: '',
@@ -80,6 +91,7 @@ function Promo({ setDataPromos, dataPromos }) {
     tac: ''
   });
 
+  // change input form
   const handleChange = e => {
     setForm({
       ...form,
@@ -92,6 +104,7 @@ function Promo({ setDataPromos, dataPromos }) {
     });
   };
 
+  // validasi
   const validate = () => {
     const newError = { ...error };
 
@@ -315,7 +328,7 @@ function Promo({ setDataPromos, dataPromos }) {
 
     // cek sukses atau tidak
     if (result.success) {
-      setOpen({ ...open, form: false });
+      setOpen({ ...open, hapus: false });
       enqueueSnackbar('Berhasil menghapus promo', {
         variant: 'success'
       });
@@ -337,7 +350,7 @@ function Promo({ setDataPromos, dataPromos }) {
           .catch(err => err);
       }, 5000);
     } else {
-      setOpen({ ...open, form: false });
+      setOpen({ ...open, hapus: false });
       enqueueSnackbar('Gagal menghapus promo', {
         variant: 'error'
       });
@@ -355,10 +368,14 @@ function Promo({ setDataPromos, dataPromos }) {
               ...open,
               form: true
             })
-          }>
+          }
+          className={classes.formControl}>
           buat promo
         </Button>
-        <FormControl variant="outlined" size="small">
+        <FormControl
+          variant="outlined"
+          size="small"
+          className={classes.formControl}>
           <OutlinedInput
             name="email"
             id="email"
@@ -371,7 +388,7 @@ function Promo({ setDataPromos, dataPromos }) {
             }
             endAdornment={
               <InputAdornment position="start">
-                <Search />
+                <IoSearchOutline />
               </InputAdornment>
             }
           />
@@ -383,6 +400,7 @@ function Promo({ setDataPromos, dataPromos }) {
           dataPromos.map(data => (
             <Card key={data.id}>
               <CardActionArea
+                disabled={data.isDeleted}
                 onClick={() => {
                   setDataDetail(data);
                   setOpen({ ...open, detail: true });
@@ -418,6 +436,7 @@ function Promo({ setDataPromos, dataPromos }) {
               </CardActionArea>
               <CardActions className={classes.action}>
                 <IconButton
+                  disabled={data.isDeleted}
                   size="small"
                   color="primary"
                   onClick={() => {
@@ -436,16 +455,17 @@ function Promo({ setDataPromos, dataPromos }) {
                     });
                     setOpen({ ...open, form: true });
                   }}>
-                  <Edit />
+                  <IoPencilOutline />
                 </IconButton>
                 <IconButton
+                  disabled={data.isDeleted}
                   size="small"
                   color="primary"
                   onClick={() => {
                     setID(data.id);
                     setOpen({ ...open, hapus: true });
                   }}>
-                  <Delete />
+                  <IoTrashOutline />
                 </IconButton>
               </CardActions>
             </Card>
@@ -500,17 +520,7 @@ function Promo({ setDataPromos, dataPromos }) {
         <div className={classes.garis}></div>
         <label className={classes.label}>syarat & ketentuan</label>
         <p className={classes.teksSyaratDanKetentuan}>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lacus gravida
-          dui duis dolor mattis. Turpis ac eu vitae, a non porta egestas
-          facilisi. Dignissim interdum senectus tempus mus nunc. Sit venenatis
-          habitant volutpat erat vel. Eu nunc eros id consequat venenatis
-          viverra ut. Amet, enim massa diam vulputate pellentesque leo tellus
-          massa eget. Fringilla volutpat fermentum, malesuada nunc, et rhoncus.
-          Luctus vitae, magna in dictumst etiam. Enim, tincidunt sed a quam
-          viverra ultricies ante eget. Gravida semper condimentum ac viverra
-          ultricies vulputate commodo. Turpis nunc, at a tortor risus arcu. Eget
-          rhoncus non sit morbi eu lorem. Quisque nunc nibh adipiscing ultrices
-          iaculis vitae orci purus. Fermentum facilisi tortor elit a.
+          {dataDetail.termAndConditions}
         </p>
       </CompDialog>
 
@@ -520,10 +530,10 @@ function Promo({ setDataPromos, dataPromos }) {
           setIsEdit(false);
           setOpen({ ...open, form: false });
         }}
-        title="Form Voucher">
+        title="Form Promo">
         <div className={classes.form}>
           <InputLabel htmlFor="title" error={error.title ? true : false}>
-            Title
+            Nama Promo
           </InputLabel>
           <FormControl
             variant="outlined"
@@ -592,7 +602,7 @@ function Promo({ setDataPromos, dataPromos }) {
           <InputLabel
             htmlFor="discount_type"
             error={error.discount_type ? true : false}>
-            Tipe Diskon
+            Potongan Harga
           </InputLabel>
 
           <FormControl component="fieldset" style={{ marginBottom: -15 }}>
@@ -637,7 +647,7 @@ function Promo({ setDataPromos, dataPromos }) {
           <InputLabel
             htmlFor="description"
             error={error.description ? true : false}>
-            description
+            Deskripsi
           </InputLabel>
           <FormControl
             variant="outlined"
@@ -659,7 +669,7 @@ function Promo({ setDataPromos, dataPromos }) {
           </FormControl>
 
           <InputLabel htmlFor="tac" error={error.tac ? true : false}>
-            Tac
+            Syarat & Ketentuan
           </InputLabel>
           <FormControl
             variant="outlined"

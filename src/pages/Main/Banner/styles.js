@@ -1,18 +1,17 @@
 import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles(theme => ({
-  wrapper: {
-    // border: "1px solid",
-    backgroundColor: '#ffffff',
-    boxShadow: '0px 0px 3px rgba(0, 0, 0, 0.1)',
-    padding: 30
-  },
+  wrapper: {},
 
   titleGrid: {
     fontSize: 18,
     textTransform: 'capitalize',
     letterSpacing: 1,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
+
+    [theme.breakpoints.down('sm')]: {
+      fontSize: 13
+    }
   },
 
   section: {

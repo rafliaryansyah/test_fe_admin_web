@@ -19,11 +19,16 @@ import {
   Radio,
   InputLabel,
   OutlinedInput,
-  FormHelperText
+  FormHelperText,
+  InputAdornment
 } from '@material-ui/core';
 
-// material-ui icons
-import { Delete, Edit } from '@material-ui/icons';
+// react icons
+import {
+  IoSearchOutline,
+  IoPencilOutline,
+  IoTrashOutline
+} from 'react-icons/io5';
 
 // components
 import { CompDialog, ConfirmDialog, Paginasi } from 'components';
@@ -131,7 +136,11 @@ function TabJasa({ setDataCategoriesJasa, dataCategoriesJasa }) {
       // mengisi form-data dengan append
       formdata.append('type', parseInt(type));
       formdata.append('name', name);
-      formdata.append('image', image);
+
+      // cek image baru atau tetal yang lama
+      if (image.name) {
+        formdata.append('image', image);
+      }
 
       // services
       const result = await updateCategory(id, formdata).catch(err => err);
@@ -195,8 +204,10 @@ function TabJasa({ setDataCategoriesJasa, dataCategoriesJasa }) {
 
   // delete
   const onDelete = async () => {
+    // services
     const result = await deleteCategory(id).catch(err => err);
 
+    // cek sukses atau gagal
     if (result.success) {
       setOpen({ ...open, hapus: false });
       enqueueSnackbar(result.data.message, {
@@ -283,6 +294,22 @@ function TabJasa({ setDataCategoriesJasa, dataCategoriesJasa }) {
 
   return (
     <div className={classes.wrapper}>
+      <FormControl variant="outlined" size="small" fullWidth>
+        <OutlinedInput
+          color="primary"
+          placeholder="Cari"
+          onChange={e => {
+            getCategory('2', e.target.value).then(res => {
+              setDataCategoriesJasa(res.data.data);
+            });
+          }}
+          endAdornment={
+            <InputAdornment position="start">
+              <IoSearchOutline />
+            </InputAdornment>
+          }
+        />
+      </FormControl>
       <div className={classes.cardGrid}>
         {dataCategoriesJasa &&
           dataCategoriesJasa.map(data => (
@@ -319,7 +346,7 @@ function TabJasa({ setDataCategoriesJasa, dataCategoriesJasa }) {
                     });
                     setOpen({ ...open, edit: true });
                   }}>
-                  <Edit />
+                  <IoPencilOutline />
                 </IconButton>
                 <IconButton
                   size="small"
@@ -329,7 +356,7 @@ function TabJasa({ setDataCategoriesJasa, dataCategoriesJasa }) {
                     setID(data.id);
                     setOpen({ ...open, hapus: true });
                   }}>
-                  <Delete />
+                  <IoTrashOutline />
                 </IconButton>
               </CardActions>
             </Card>
@@ -422,7 +449,11 @@ function TabJasa({ setDataCategoriesJasa, dataCategoriesJasa }) {
             <div className={classes.itemPreview}>
               {form.image ? (
                 <img
-                  src={form.image}
+                  src={
+                    form.image.name
+                      ? URL.createObjectURL(form.image)
+                      : form.image
+                  }
                   alt="Foto Banner"
                   className={classes.preview}
                 />

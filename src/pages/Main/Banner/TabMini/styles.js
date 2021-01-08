@@ -2,14 +2,10 @@ import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles(theme => ({
   wrapper: {
-    padding: '30px 0px 30px 0px',
+    padding: '15px 0px 15px 0px',
     display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))',
-    gridGap: 30
-  },
-
-  wrapperCard: {
-    padding: '10px 50px 10px 50px'
+    gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+    gridGap: 15
   },
 
   title: {
@@ -17,7 +13,11 @@ const useStyles = makeStyles(theme => ({
     textTransform: 'capitalize',
     letterSpacing: 1,
     fontWeight: 'bold',
-    marginBottom: 30
+    marginBottom: 30,
+
+    [theme.breakpoints.down('sm')]: {
+      fontSize: 15
+    }
   },
 
   card: {
@@ -45,17 +45,8 @@ const useStyles = makeStyles(theme => ({
   inputFile: {
     display: 'flex',
     justifyContent: 'space-between',
+    flexDirection: 'column',
     gridGap: 10
-  },
-
-  itemPreview: {
-    width: '100%',
-    border: `2px solid ${theme.palette.primary.main}`,
-    borderStyle: 'dashed',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 15
   },
 
   preview: {
@@ -65,13 +56,14 @@ const useStyles = makeStyles(theme => ({
   },
 
   itemUpload: {
-    width: '15%',
+    width: '100%',
     border: `1px solid ${theme.palette.primary.main}`,
     borderRadius: 10,
-    padding: 50,
+    padding: '15px 0px',
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
+    gridGap: 5,
     cursor: 'pointer'
   },
 

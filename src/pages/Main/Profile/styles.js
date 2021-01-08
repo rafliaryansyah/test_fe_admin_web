@@ -4,13 +4,13 @@ const useStyles = makeStyles(theme => ({
   wrapper: {
     backgroundColor: '#ffffff',
     display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
     gridGap: 300,
-    padding: 30,
+    padding: 15,
     borderRadius: 10,
 
     [theme.breakpoints.down('sm')]: {
-      gridGap: 30
+      gridGap: 15
     }
   },
 
@@ -20,32 +20,22 @@ const useStyles = makeStyles(theme => ({
     gridGap: 15
   },
 
-  // avatar
-  wrapperImage: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    border: '1px solid #c4c4c4',
-    height: 50,
-    borderRadius: 10,
-    padding: '150px 85px 180px 85px'
-  },
-
-  avatar: {
-    color: theme.palette.primary.main,
-    fontSize: 150
-  },
-
   // photo
   photo: {
     objectFit: 'cover',
     height: 300
   },
 
+  // avatar
+  avatar: {
+    width: '100%',
+    height: 350
+  },
+
   upload: {
     border: `1px solid ${theme.palette.primary.main}`,
     color: theme.palette.primary.main,
-    borderRadius: 10,
+    borderRadius: 5,
     cursor: 'pointer',
     padding: '10px 0px 10px 0px',
     width: '100%',

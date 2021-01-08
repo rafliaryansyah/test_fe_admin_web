@@ -10,12 +10,14 @@ const useStyles = makeStyles(theme => ({
     padding: 15,
     display: 'flex',
     justifyContent: 'flex-end',
+    alignItems: 'center',
     gridGap: 15,
-    marginBottom: 30,
+    marginBottom: 15,
     boxShadow: '0px 0px 1px rgba(0, 0, 0, 0.5)',
 
     [theme.breakpoints.down('sm')]: {
-      flexDirection: 'column'
+      flexDirection: 'column',
+      alignItems: 'stretch'
     }
   },
 
@@ -32,13 +34,13 @@ const useStyles = makeStyles(theme => ({
     display: 'grid',
     gridTemplateColumns: 'repeat(auto-fit, minmax(599px, 1fr))',
     justifyContent: 'space-between',
-    gridGap: 30,
-    padding: 30,
+    gridGap: 15,
+    padding: 15,
     backgroundColor: '#ffffff',
     boxShadow: '0px 0px 1px rgba(0, 0, 0, 0.5)',
 
     [theme.breakpoints.down('sm')]: {
-      gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))'
+      gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))'
     }
   }
 }));

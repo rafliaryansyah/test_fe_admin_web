@@ -17,7 +17,7 @@ const responsive = {
   mobile: {
     breakpoint: { max: 464, min: 0 },
     items: 1,
-    paritialVisibilityGutter: 30
+    paritialVisibilityGutter: -15
   }
 };
 
@@ -36,7 +36,7 @@ const responsiveHistory = {
   mobile: {
     breakpoint: { max: 464, min: 0 },
     items: 1,
-    paritialVisibilityGutter: 30
+    paritialVisibilityGutter: -15
   }
 };
 
@@ -46,6 +46,7 @@ import 'react-multi-carousel/lib/styles.css';
 
 // material-ui core
 import {
+  Avatar,
   Button,
   IconButton,
   Card,
@@ -551,17 +552,14 @@ function TabMain({ setDataBanners, dataBanners }) {
           </FormControl>
 
           <div className={classes.inputFile}>
-            <div className={classes.itemPreview}>
-              {form.image ? (
-                <img
-                  src={URL.createObjectURL(form.image)}
-                  alt="Foto Banner"
-                  className={classes.preview}
-                />
-              ) : (
-                'Image Preview'
-              )}
-            </div>
+            <Avatar
+              alt="photo"
+              src={
+                form.image.name ? URL.createObjectURL(form.image) : form.image
+              }
+              variant="rounded"
+              className={classes.preview}
+            />
             <input
               type="file"
               id="upload"
@@ -571,6 +569,7 @@ function TabMain({ setDataBanners, dataBanners }) {
             />
             <label htmlFor="upload" className={classes.itemUpload}>
               <IoCloudDownloadOutline />
+              Upload
             </label>
           </div>
           <br />

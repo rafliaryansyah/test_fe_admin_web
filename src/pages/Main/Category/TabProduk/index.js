@@ -21,11 +21,16 @@ import {
   Radio,
   InputLabel,
   OutlinedInput,
-  FormHelperText
+  FormHelperText,
+  InputAdornment
 } from '@material-ui/core';
 
-// material-ui icons
-import { Delete, Edit } from '@material-ui/icons';
+// react icons
+import {
+  IoSearchOutline,
+  IoPencilOutline,
+  IoTrashOutline
+} from 'react-icons/io5';
 
 // components
 import { CompDialog, ConfirmDialog, Paginasi } from 'components';
@@ -41,21 +46,26 @@ function TabProduk({ setDataCategoriesProduk, dataCategoriesProduk, history }) {
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
 
+  // open dialog
   const [open, setOpen] = useState({
     detail: false,
     edit: false,
     hapus: false
   });
 
+  // pagination
   const [pagination, setPagination] = useState({
     current_page: 1,
     last_page: ''
   });
 
+  // data id
   const [id, setID] = useState('');
 
+  // data detail
   const [detailCategory, setDetailCategory] = useState({});
 
+  // data form kategori
   const [form, setForm] = useState({
     type: '1',
     name: '',
@@ -68,6 +78,7 @@ function TabProduk({ setDataCategoriesProduk, dataCategoriesProduk, history }) {
     image: ''
   });
 
+  // change input
   const handleChange = e => {
     setForm({
       ...form,
@@ -80,6 +91,7 @@ function TabProduk({ setDataCategoriesProduk, dataCategoriesProduk, history }) {
     });
   };
 
+  // validasi input
   const validate = () => {
     const newError = { ...error };
 
@@ -98,7 +110,7 @@ function TabProduk({ setDataCategoriesProduk, dataCategoriesProduk, history }) {
     return newError;
   };
 
-  // read
+  // read data kategori tipe 1 (produk)
   useEffect(() => {
     getCategory('1')
       .then(res => {
@@ -115,7 +127,9 @@ function TabProduk({ setDataCategoriesProduk, dataCategoriesProduk, history }) {
       .catch(err => err);
   }, []);
 
-  // update
+  console.log('Image : ', form.image);
+
+  // update data kategori tipe 1 (produk)
   const onUpdate = async e => {
     e.preventDefault();
 
@@ -133,7 +147,11 @@ function TabProduk({ setDataCategoriesProduk, dataCategoriesProduk, history }) {
       // mengisi form-data dengan append
       formdata.append('type', parseInt(type));
       formdata.append('name', name);
-      formdata.append('image', image);
+
+      // cek image baru atau tetap yang lama
+      if (image.name) {
+        formdata.append('image', image);
+      }
 
       // services
       const result = await updateCategory(id, formdata).catch(err => err);
@@ -197,8 +215,10 @@ function TabProduk({ setDataCategoriesProduk, dataCategoriesProduk, history }) {
 
   // delete
   const onDelete = async () => {
+    // services
     const result = await deleteCategory(id).catch(err => err);
 
+    // cek sukses atau gagal
     if (result.success) {
       setOpen({ ...open, hapus: false });
       enqueueSnackbar(result.data.message, {
@@ -285,6 +305,22 @@ function TabProduk({ setDataCategoriesProduk, dataCategoriesProduk, history }) {
 
   return (
     <div className={classes.wrapper}>
+      <FormControl variant="outlined" size="small" fullWidth>
+        <OutlinedInput
+          color="primary"
+          placeholder="Cari"
+          onChange={e => {
+            getCategory('1', e.target.value).then(res => {
+              setDataCategoriesProduk(res.data.data);
+            });
+          }}
+          endAdornment={
+            <InputAdornment position="start">
+              <IoSearchOutline />
+            </InputAdornment>
+          }
+        />
+      </FormControl>
       <div className={classes.cardGrid}>
         {dataCategoriesProduk &&
           dataCategoriesProduk.map(data => (
@@ -321,7 +357,7 @@ function TabProduk({ setDataCategoriesProduk, dataCategoriesProduk, history }) {
                     });
                     setOpen({ ...open, edit: true });
                   }}>
-                  <Edit />
+                  <IoPencilOutline />
                 </IconButton>
                 <IconButton
                   size="small"
@@ -331,7 +367,7 @@ function TabProduk({ setDataCategoriesProduk, dataCategoriesProduk, history }) {
                     setID(data.id);
                     setOpen({ ...open, hapus: true });
                   }}>
-                  <Delete />
+                  <IoTrashOutline />
                 </IconButton>
               </CardActions>
             </Card>
@@ -424,7 +460,11 @@ function TabProduk({ setDataCategoriesProduk, dataCategoriesProduk, history }) {
             <div className={classes.itemPreview}>
               {form.image ? (
                 <img
-                  src={form.image}
+                  src={
+                    form.image.name
+                      ? URL.createObjectURL(form.image)
+                      : form.image
+                  }
                   alt="Foto Banner"
                   className={classes.preview}
                 />

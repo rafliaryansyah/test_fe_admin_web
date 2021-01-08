@@ -2,7 +2,6 @@ import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles(theme => ({
   wrapper: {
-    // border: "1px solid",
     display: 'grid'
   },
 
@@ -13,7 +12,7 @@ const useStyles = makeStyles(theme => ({
     justifyContent: 'flex-end',
     alignItems: 'center',
     gridGap: 15,
-    marginBottom: 30,
+    marginBottom: 15,
     boxShadow: '0px 0px 1px rgba(0, 0, 0, 0.5)'
   },
 

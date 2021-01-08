@@ -3,15 +3,18 @@ import useStyles from './styles';
 import propTypes from 'prop-types';
 
 // material-ui core
-import FormControl from '@material-ui/core/FormControl';
-import OutlinedInput from '@material-ui/core/OutlinedInput';
-import InputAdornment from '@material-ui/core/InputAdornment';
-import InputLabel from '@material-ui/core/InputLabel';
-import MenuItem from '@material-ui/core/MenuItem';
-import Select from '@material-ui/core/Select';
+import {
+  FormControl,
+  OutlinedInput,
+  InputAdornment,
+  InputLabel,
+  MenuItem,
+  Select,
+  Chip
+} from '@material-ui/core';
 
-// material-ui icons
-import SearchIcon from '@material-ui/icons/Search';
+// react icons
+import { IoSearchOutline } from 'react-icons/io5';
 
 // components
 import { CardCustomers, Paginasi } from 'components';
@@ -31,6 +34,8 @@ function ListCustomers({ setDataCustomers, dataCustomers, history }) {
     last_page: ''
   });
 
+  const [count, setCount] = useState(0);
+
   useEffect(() => {
     getCustomers().then(res => {
       setDataCustomers(res.data.data);
@@ -48,6 +53,10 @@ function ListCustomers({ setDataCustomers, dataCustomers, history }) {
   return (
     <div className={classes.wrapper}>
       <div className={classes.pencarian}>
+        <Chip
+          label={`Hasil Pencarian : ${count ? count : 0}`}
+          variant="outlined"
+        />
         <FormControl
           variant="outlined"
           size="small"
@@ -63,6 +72,7 @@ function ListCustomers({ setDataCustomers, dataCustomers, history }) {
               })
             }
             label="Semua Role">
+            <MenuItem value="">Semua Role</MenuItem>
             <MenuItem value="customer">Customer</MenuItem>
             <MenuItem value="super-admin-merchant">
               Super Admin Merchant
@@ -88,11 +98,12 @@ function ListCustomers({ setDataCustomers, dataCustomers, history }) {
             onChange={e =>
               getCustomers('', e.target.value).then(res => {
                 setDataCustomers(res.data.data);
+                setCount(res.data.count);
               })
             }
             endAdornment={
               <InputAdornment position="start">
-                <SearchIcon />
+                <IoSearchOutline />
               </InputAdornment>
             }
           />

@@ -5,21 +5,52 @@ import API from 'configs/api';
  */
 export const getCustomers = (role, search, page) => {
   return new Promise((resolve, reject) => {
-    const data = {
-      params: {
-        role: role ? role : '',
-        search: search ? search : '',
-        page: page ? page : 1
-      }
-    };
+    if (role) {
+      const data = {
+        params: {
+          role: role ? role : null,
+          page: page ? page : 1
+        }
+      };
 
-    API.customers(data)
-      .then(res => {
-        resolve({ success: true, data: res.data });
-      })
-      .catch(err => {
-        reject({ success: false, data: err });
-      });
+      API.customers(data)
+        .then(res => {
+          resolve({ success: true, data: res.data });
+        })
+        .catch(err => {
+          reject({ success: false, data: err });
+        });
+    } else if (search) {
+      const data = {
+        params: {
+          role: role ? role : null,
+          search: search ? search : '',
+          page: page ? page : 1
+        }
+      };
+
+      API.customers(data)
+        .then(res => {
+          resolve({ success: true, data: res.data });
+        })
+        .catch(err => {
+          reject({ success: false, data: err });
+        });
+    } else {
+      const data = {
+        params: {
+          page: page ? page : 1
+        }
+      };
+
+      API.customers(data)
+        .then(res => {
+          resolve({ success: true, data: res.data });
+        })
+        .catch(err => {
+          reject({ success: false, data: err });
+        });
+    }
   });
 };
 
@@ -45,9 +76,12 @@ export const getCustomer = id => {
 /**
  * service customer for update role per data customer
  */
-export const updateRoleCustomer = id => {
+export const updateRoleCustomer = (id, name) => {
   return new Promise((resolve, reject) => {
     const data = {
+      body: {
+        name: name
+      },
       path: `${id}/update-role`
     };
 
@@ -64,9 +98,12 @@ export const updateRoleCustomer = id => {
 /**
  * service customer for update access admin per data customer
  */
-export const accessAdminCustomer = id => {
+export const accessAdminCustomer = (id, name) => {
   return new Promise((resolve, reject) => {
     const data = {
+      body: {
+        name: [name]
+      },
       path: `${id}/access-admin`
     };
 

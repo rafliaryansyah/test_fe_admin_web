@@ -88,6 +88,7 @@ const useStyles = makeStyles(theme => ({
     padding: 10,
     backgroundColor: '#41337A',
     borderRadius: 10,
+    color: '#ffffff',
 
     [theme.breakpoints.down('sm')]: {
       fontSize: 10

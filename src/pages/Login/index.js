@@ -5,7 +5,7 @@ import propTypes from 'prop-types';
 
 // react redux
 import { connect } from 'react-redux';
-import { setLoadingApp, setUser } from 'modules';
+import { setLoadingApp } from 'modules';
 
 // services
 import { login, getProfile } from 'services';
@@ -28,12 +28,12 @@ import {
 } from '@material-ui/core';
 
 // react icons
-import { AiOutlineEyeInvisible, AiOutlineEye } from 'react-icons/ai';
+import { IoEyeOffOutline, IoEyeOutline } from 'react-icons/io5';
 
 // components
 import { LoadingApp } from 'components';
 
-function Login({ requestLoadingApp, setDataUser, loadingApp }) {
+function Login({ requestLoadingApp, loadingApp }) {
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
 
@@ -117,7 +117,14 @@ function Login({ requestLoadingApp, setDataUser, loadingApp }) {
 
         // ambil data user untuk disimpan ke localStorage
         getProfile()
-          .then(res => setDataUser(res.data.data))
+          .then(res => {
+            const user = JSON.stringify({
+              name: res.data.data.name,
+              image: res.data.data.image,
+              role: res.data.data.roles[0].name
+            });
+            localStorage.setItem('user', user);
+          })
           .catch(err => err);
       } else {
         requestLoadingApp(false);
@@ -177,7 +184,7 @@ function Login({ requestLoadingApp, setDataUser, loadingApp }) {
                   onClick={() => setShowPassword(!showPassword)}
                   onMouseDown={e => e.preventDefault()}
                   edge="end">
-                  {showPassword ? <AiOutlineEye /> : <AiOutlineEyeInvisible />}
+                  {showPassword ? <IoEyeOutline /> : <IoEyeOffOutline />}
                 </IconButton>
               </InputAdornment>
             }
@@ -206,7 +213,6 @@ function Login({ requestLoadingApp, setDataUser, loadingApp }) {
 
 Login.propTypes = {
   requestLoadingApp: propTypes.func,
-  setDataUser: propTypes.func,
   loadingApp: propTypes.bool
 };
 
@@ -215,8 +221,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  requestLoadingApp: value => dispatch(setLoadingApp(value)),
-  setDataUser: value => dispatch(setUser(value))
+  requestLoadingApp: value => dispatch(setLoadingApp(value))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Login);

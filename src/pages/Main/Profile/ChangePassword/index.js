@@ -22,8 +22,8 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
-// material-ui icons
-import { Close, Visibility, VisibilityOff } from '@material-ui/icons';
+// react icons
+import { IoCloseOutline, IoEyeOffOutline, IoEyeOutline } from 'react-icons/io5';
 
 // services
 import { changePasswordProfile } from 'services';
@@ -32,15 +32,19 @@ function ChangePassword({ open, close, history }) {
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
 
+  // data tampilkan teks password
   const [showPassword, setShowPassword] = useState(false);
+
   const [isSomethingChange, setIsSomethingChange] = useState(false);
 
+  // data form
   const [form, setForm] = useState({
     email: '',
     old_password: '',
     new_password: '',
     confirm_password: ''
   });
+
   const [error, setError] = useState({
     email: '',
     old_password: '',
@@ -48,6 +52,7 @@ function ChangePassword({ open, close, history }) {
     confirm_password: ''
   });
 
+  // change input form
   const handleChange = e => {
     setForm({
       ...form,
@@ -60,6 +65,7 @@ function ChangePassword({ open, close, history }) {
     });
   };
 
+  // validasi form
   const validate = () => {
     const newError = { ...error };
 
@@ -102,8 +108,10 @@ function ChangePassword({ open, close, history }) {
     if (Object.values(findErrors).some(err => err !== '')) {
       setError(findErrors);
     } else {
+      // services
       const result = await changePasswordProfile(form).catch(err => err);
 
+      // cek sukses atau gagal
       if (result.success) {
         if (result.data.code === 200) {
           setForm({
@@ -113,7 +121,7 @@ function ChangePassword({ open, close, history }) {
             confirm_password: ''
           });
           close();
-          enqueueSnackbar(result.data.messagge, {
+          enqueueSnackbar('Berhasil memperbarui password', {
             variant: 'success'
           });
           setIsSomethingChange(false);
@@ -121,8 +129,10 @@ function ChangePassword({ open, close, history }) {
         }
       } else {
         setIsSomethingChange(false);
+
+        // cek validasi dari api
         if (result.data.response.data.code === 422) {
-          enqueueSnackbar(result.data.response.data.message, {
+          enqueueSnackbar('Email anda salah', {
             variant: 'error'
           });
         }
@@ -138,7 +148,7 @@ function ChangePassword({ open, close, history }) {
       aria-describedby="alert-dialog-description">
       <DialogActions>
         <IconButton onClick={close} color="primary">
-          <Close />
+          <IoCloseOutline />
         </IconButton>
       </DialogActions>
       <DialogTitle id="alert-dialog-title" className={classes.title}>
@@ -193,9 +203,9 @@ function ChangePassword({ open, close, history }) {
                     onMouseDown={e => e.preventDefault()}
                     edge="end">
                     {showPassword ? (
-                      <Visibility color="primary" />
+                      <IoEyeOutline color="primary" />
                     ) : (
-                      <VisibilityOff color="primary" />
+                      <IoEyeOffOutline color="primary" />
                     )}
                   </IconButton>
                 </InputAdornment>
@@ -236,9 +246,9 @@ function ChangePassword({ open, close, history }) {
                     onMouseDown={e => e.preventDefault()}
                     edge="end">
                     {showPassword ? (
-                      <Visibility color="primary" />
+                      <IoEyeOutline color="primary" />
                     ) : (
-                      <VisibilityOff color="primary" />
+                      <IoEyeOffOutline color="primary" />
                     )}
                   </IconButton>
                 </InputAdornment>
@@ -279,9 +289,9 @@ function ChangePassword({ open, close, history }) {
                     onMouseDown={e => e.preventDefault()}
                     edge="end">
                     {showPassword ? (
-                      <Visibility color="primary" />
+                      <IoEyeOutline color="primary" />
                     ) : (
-                      <VisibilityOff color="primary" />
+                      <IoEyeOutline color="primary" />
                     )}
                   </IconButton>
                 </InputAdornment>

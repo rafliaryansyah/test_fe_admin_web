@@ -19,18 +19,11 @@ export const getProfile = () => {
 /**
  * service customer for edit data profile
  */
-export const editProfile = (name, dob, gender, email, phone, photo) => {
+export const editProfile = formdata => {
   return new Promise((resolve, reject) => {
     const data = {
       type: 'form-data',
-      body: {
-        name: name,
-        dob: dob,
-        gender: gender,
-        email: email,
-        phone: phone,
-        photo: photo
-      }
+      body: formdata
     };
 
     API.profileUpdate(data)

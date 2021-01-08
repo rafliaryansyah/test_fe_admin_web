@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
-import useStyles from './styles';
 import { useParams } from 'react-router-dom';
+import useStyles from './styles';
 import propTypes from 'prop-types';
 
 // notistack
@@ -17,7 +17,7 @@ import {
 } from '@material-ui/core';
 
 // material-ui icons
-import { FileCopy } from '@material-ui/icons';
+import { IoCopyOutline } from 'react-icons/io5';
 
 // redux
 import { connect } from 'react-redux';
@@ -36,11 +36,13 @@ function Beranda({ setDataStore, setDataProduks, setDataReports, dataStore }) {
 
   useEffect(() => {
     getStore(id).then(res => {
+      console.log(res.data.data.merchantDetail);
       setDataStore(res.data.data.merchantDetail);
-      setDataProduks(res.data.data.merchantProducts);
+      setDataProduks(res.data.data.merchantProductsAndService);
       setDataReports(res.data.data.merchantReports);
     });
   }, []);
+
 
   return (
     <div className={classes.wrapper}>
@@ -86,7 +88,7 @@ function Beranda({ setDataStore, setDataProduks, setDataReports, dataStore }) {
                   }}
                   onMouseDown={e => e.preventDefault()}
                   edge="end">
-                  <FileCopy />
+                  <IoCopyOutline />
                 </IconButton>
               </InputAdornment>
             }

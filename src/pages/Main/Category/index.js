@@ -6,22 +6,26 @@ import { Switch, Redirect } from 'react-router-dom';
 // notistack
 import { useSnackbar } from 'notistack';
 
-// material-ui core
-import Button from '@material-ui/core/Button';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
-import FormControl from '@material-ui/core/FormControl';
-import OutlinedInput from '@material-ui/core/OutlinedInput';
-import InputAdornment from '@material-ui/core/InputAdornment';
-import InputLabel from '@material-ui/core/InputLabel';
-import FormHelperText from '@material-ui/core/FormHelperText';
-import Radio from '@material-ui/core/Radio';
-import RadioGroup from '@material-ui/core/RadioGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import FormLabel from '@material-ui/core/FormLabel';
+// Swipe
+import SwipeableViews from 'react-swipeable-views';
 
-// material-ui icons
-import SearchIcon from '@material-ui/icons/Search';
+// material-ui core
+import {
+  Button,
+  AppBar,
+  Tabs,
+  Tab,
+  FormControl,
+  OutlinedInput,
+  InputLabel,
+  FormHelperText,
+  Radio,
+  RadioGroup,
+  FormControlLabel,
+  FormLabel
+} from '@material-ui/core';
+
+import { useTheme } from '@material-ui/core/styles';
 
 // components
 import { CompDialog, PrivateRoute } from 'components';
@@ -45,6 +49,7 @@ function Category({
 }) {
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
+  const theme = useTheme();
 
   const [open, setOpen] = useState(false);
 
@@ -216,31 +221,11 @@ function Category({
           onClick={() => setOpen(true)}>
           buat kategori
         </Button>
-        <FormControl variant="outlined" size="small">
-          <OutlinedInput
-            name="email"
-            id="email"
-            color="primary"
-            placeholder="Cari"
-            onChange={e => {
-              getCategory('1', e.target.value).then(res => {
-                setDataCategoriesProduk(res.data.data);
-              });
-              getCategory('2', e.target.value).then(res => {
-                setDataCategoriesJasa(res.data.data);
-              });
-            }}
-            endAdornment={
-              <InputAdornment position="start">
-                <SearchIcon />
-              </InputAdornment>
-            }
-          />
-        </FormControl>
       </div>
-      <div className={classes.menuTabToko}>
+      <AppBar position="static" color="default">
         <Tabs
           variant="fullWidth"
+          bac
           indicatorColor="primary"
           textColor="primary"
           value={location.pathname}
@@ -249,13 +234,20 @@ function Category({
           <Tab label="Produk" value="/category/produk" />
           <Tab label="Jasa" value="/category/jasa" />
         </Tabs>
-        <div className={classes.tabsMain}>
+      </AppBar>
+      <div style={{ backgroundColor: '#ffffff', padding: 15 }}>
+        <SwipeableViews
+          axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
+          index={location.pathname}
+          onChangeIndex={index => {
+            history.push(index);
+          }}>
           <Switch>
             <PrivateRoute exact path="/category/produk" component={TabProduk} />
             <PrivateRoute path="/category/jasa" component={TabJasa} />
             <Redirect to="/category/produk" />
           </Switch>
-        </div>
+        </SwipeableViews>
       </div>
       <CompDialog
         open={open}
@@ -309,7 +301,11 @@ function Category({
             <div className={classes.itemPreview}>
               {form.image ? (
                 <img
-                  src={URL.createObjectURL(form.image)}
+                  src={
+                    form.image.name
+                      ? URL.createObjectURL(form.image)
+                      : form.image
+                  }
                   alt="Foto Banner"
                   className={classes.preview}
                 />

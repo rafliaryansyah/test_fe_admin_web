@@ -6,21 +6,52 @@ import API from 'configs/api';
  */
 export const getStores = (status, search, page) => {
   return new Promise((resolve, reject) => {
-    const data = {
-      params: {
-        status: status ? status : '',
-        search: search ? search : '',
-        page: page ? page : 1
-      }
-    };
+    if (status) {
+      const data = {
+        params: {
+          status: status ? status : null,
+          page: page ? page : 1
+        }
+      };
 
-    API.stores(data)
-      .then(res => {
-        resolve({ success: true, data: res.data });
-      })
-      .catch(err => {
-        reject({ success: false, data: err });
-      });
+      API.stores(data)
+        .then(res => {
+          resolve({ success: true, data: res.data });
+        })
+        .catch(err => {
+          reject({ success: false, data: err });
+        });
+    } else if (search) {
+      const data = {
+        params: {
+          status: status ? status : '',
+          search: search ? search : '',
+          page: page ? page : 1
+        }
+      };
+
+      API.stores(data)
+        .then(res => {
+          resolve({ success: true, data: res.data });
+        })
+        .catch(err => {
+          reject({ success: false, data: err });
+        });
+    } else {
+      const data = {
+        params: {
+          page: page ? page : 1
+        }
+      };
+
+      API.stores(data)
+        .then(res => {
+          resolve({ success: true, data: res.data });
+        })
+        .catch(err => {
+          reject({ success: false, data: err });
+        });
+    }
   });
 };
 

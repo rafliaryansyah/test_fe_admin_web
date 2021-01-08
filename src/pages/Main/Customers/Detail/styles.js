@@ -19,7 +19,7 @@ const useStyles = makeStyles(theme => ({
     gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
     justifyContent: 'space-between',
     gridGap: 15,
-    padding: 30,
+    padding: 15,
     backgroundColor: '#ffffff'
   },
 
@@ -72,9 +72,15 @@ const useStyles = makeStyles(theme => ({
 
   text: {
     fontSize: 18,
-    textTransform: 'capitalize',
     letterSpacing: 1,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+
+    [theme.breakpoints.down('sm')]: {
+      fontSize: 10
+    }
   },
 
   wrapperButton: {

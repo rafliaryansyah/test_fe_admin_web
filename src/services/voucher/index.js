@@ -53,7 +53,7 @@ export const updateVoucher = (id, formdata) => {
       path: `${id}`
     };
 
-    API.updatevoucher(data)
+    API.updateVoucher(data)
       .then(res => {
         resolve({ success: true, data: res.data });
       })

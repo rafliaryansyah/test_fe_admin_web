@@ -2,6 +2,7 @@ import useStyles from './styles';
 
 // material-ui core
 import {
+  InputLabel,
   FormControl,
   OutlinedInput,
   InputAdornment,
@@ -11,8 +12,8 @@ import {
   ListItem
 } from '@material-ui/core';
 
-// material-ui icons
-import { Search } from '@material-ui/icons';
+// react icons
+import { IoSearchOutline } from 'react-icons/io5';
 
 // components
 import { Paginasi } from '../../../components';
@@ -26,10 +27,20 @@ function UserLogs() {
         <FormControl
           variant="outlined"
           size="small"
-          margin="normal"
-          className={classes.select}>
-          <Select name="filter" id="filter" value="semua tanggal">
-            <MenuItem value="semua tanggal">Semua Tanggal</MenuItem>
+          className={classes.formControl}>
+          <InputLabel id="select-status">Semua Status</InputLabel>
+          <Select
+            labelId="select-status"
+            name="select-status"
+            id="select-status"
+            // onChange={e => {
+            //
+            // }}
+            label="Semua Status">
+            <MenuItem value="">Semua Status</MenuItem>
+            <MenuItem value="1">Waiting</MenuItem>
+            <MenuItem value="2">Approved</MenuItem>
+            <MenuItem value="3">Rejected</MenuItem>
           </Select>
         </FormControl>
         <FormControl variant="outlined" size="small">
@@ -37,10 +48,13 @@ function UserLogs() {
             name="email"
             id="email"
             color="primary"
-            placeholder="Search By Name"
+            placeholder="Cari"
+            // onChange={e =>
+            //
+            // }
             endAdornment={
               <InputAdornment position="start">
-                <Search />
+                <IoSearchOutline />
               </InputAdornment>
             }
           />

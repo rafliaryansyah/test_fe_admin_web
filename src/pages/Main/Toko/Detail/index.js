@@ -6,8 +6,8 @@ import IconButton from '@material-ui/core/IconButton';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 
-// material-ui icons
-import { ArrowBack } from '@material-ui/icons';
+// react icons
+import { IoArrowBackOutline } from 'react-icons/io5';
 
 // components
 import { PrivateRoute } from '../../../../components';
@@ -26,7 +26,7 @@ function Detail({ history, location }) {
     <div className={classes.wrapper}>
       <div className={classes.wrapperTitlePage}>
         <IconButton onClick={() => history.push('/toko')}>
-          <ArrowBack />
+          <IoArrowBackOutline />
         </IconButton>
       </div>
 

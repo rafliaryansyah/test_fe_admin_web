@@ -17,7 +17,7 @@ const responsive = {
   mobile: {
     breakpoint: { max: 464, min: 0 },
     items: 1,
-    paritialVisibilityGutter: 30
+    paritialVisibilityGutter: -15
   }
 };
 
@@ -36,7 +36,7 @@ const responsiveHistory = {
   mobile: {
     breakpoint: { max: 464, min: 0 },
     items: 1,
-    paritialVisibilityGutter: 30
+    paritialVisibilityGutter: -15
   }
 };
 
@@ -46,6 +46,7 @@ import 'react-multi-carousel/lib/styles.css';
 
 // material-ui core
 import {
+  Avatar,
   Button,
   IconButton,
   Card,
@@ -59,7 +60,9 @@ import {
   Radio,
   InputLabel,
   OutlinedInput,
-  FormHelperText
+  FormHelperText,
+  Select,
+  MenuItem
 } from '@material-ui/core';
 
 // react icons
@@ -120,14 +123,20 @@ function TabMini({ setDataBanners, dataBanners }) {
 
   // buat
   const [form, setForm] = useState({
-    ke: '',
-    id_product: '',
+    type: '1',
+    relate: '1',
+    status: '1',
+    position: '1',
+    product: '',
     image: ''
   });
 
   const [error, setError] = useState({
-    ke: '',
-    id_product: '',
+    type: '',
+    relate: '',
+    status: '',
+    position: '',
+    product: '',
     image: ''
   });
 
@@ -146,20 +155,24 @@ function TabMini({ setDataBanners, dataBanners }) {
   const validateBuat = () => {
     const newError = { ...error };
 
-    if (!form.ke) {
-      newError.ke = 'Field masih kosong';
+    if (!form.type) {
+      newError.type = 'Field masih kosong';
     }
 
-    if (!form.id_product) {
-      newError.id_product = 'Field masih kosong';
+    if (!form.relate) {
+      newError.relate = 'Field masih kosong';
     }
 
-    if (!form.image) {
-      newError.image = 'Field masih kosong';
+    if (!form.status) {
+      newError.status = 'Field masih kosong';
     }
 
-    if (!headline) {
-      newError.headline = 'Field masih kosong';
+    if (!form.position) {
+      newError.position = 'Field masih kosong';
+    }
+
+    if (!form.product) {
+      newError.product = 'Field masih kosong';
     }
 
     return newError;
@@ -179,7 +192,7 @@ function TabMini({ setDataBanners, dataBanners }) {
   };
 
   // buat atau edit data
-  const submitCreated = async e => {
+  const submitBuat = async e => {
     e.preventDefault();
 
     const findErrors = validateBuat();
@@ -253,8 +266,8 @@ function TabMini({ setDataBanners, dataBanners }) {
         formdata.append('relate', parseInt(relate));
         formdata.append('status', parseInt(status));
         formdata.append('position', parseInt(position));
-        formdata.append('image', image);
         formdata.append('product', product);
+        formdata.append('image', image);
 
         // services
         const result = await createMiniBanners(formdata).catch(err => err);
@@ -359,7 +372,7 @@ function TabMini({ setDataBanners, dataBanners }) {
         try {
           setForm({
             ...form,
-            image: file
+            image: URL.createObjectURL(file)
           });
         } catch (e) {
           setError({
@@ -667,13 +680,41 @@ function TabMini({ setDataBanners, dataBanners }) {
         <div className={classes.form}>
           <FormControl component="fieldset">
             <FormLabel component="legend" error={error.ke ? true : false}>
+              Tipe
+            </FormLabel>
+            <RadioGroup
+              row
+              aria-label="type"
+              name="type"
+              value={form.type}
+              onChange={handleChange}>
+              <FormControlLabel
+                value="1"
+                control={<Radio color="primary" />}
+                label="Produk"
+              />
+              <FormControlLabel
+                value="2"
+                control={<Radio color="primary" />}
+                label="Jasa"
+              />
+            </RadioGroup>
+            <FormHelperText
+              id="outlined-helper-text"
+              error={error.type ? true : false}>
+              {error.type}
+            </FormHelperText>
+          </FormControl>
+
+          <FormControl component="fieldset">
+            <FormLabel component="legend" error={error.relate ? true : false}>
               Arahkan ke
             </FormLabel>
             <RadioGroup
               row
-              aria-label="ke"
-              name="ke"
-              value={form.ke}
+              aria-label="relate"
+              name="relate"
+              value={form.relate}
               onChange={handleChange}>
               <FormControlLabel
                 value="1"
@@ -688,45 +729,79 @@ function TabMini({ setDataBanners, dataBanners }) {
             </RadioGroup>
             <FormHelperText
               id="outlined-helper-text"
-              error={error.ke ? true : false}>
-              {error.ke}
+              error={error.relate ? true : false}>
+              {error.relate}
             </FormHelperText>
           </FormControl>
 
+          <InputLabel id="select-status">Status</InputLabel>
+          <br />
+          <FormControl
+            variant="outlined"
+            size="small"
+            style={{ marginBottom: 10 }}>
+            <Select
+              name="status"
+              id="status"
+              value={form.status}
+              onChange={handleChange}>
+              <MenuItem value="1">Aktif</MenuItem>
+              <MenuItem value="2">Tidak Aktif</MenuItem>
+            </Select>
+          </FormControl>
+
+          <InputLabel id="select-status">Posisi</InputLabel>
+          <br />
+          <FormControl
+            variant="outlined"
+            size="small"
+            style={{ marginBottom: 15 }}>
+            <Select
+              name="position"
+              id="position"
+              value={form.position}
+              onChange={handleChange}>
+              <MenuItem value="1">1</MenuItem>
+              <MenuItem value="2">2</MenuItem>
+              <MenuItem value="3">3</MenuItem>
+              <MenuItem value="4">4</MenuItem>
+              <MenuItem value="5">5</MenuItem>
+              <MenuItem value="6">6</MenuItem>
+              <MenuItem value="7">7</MenuItem>
+            </Select>
+          </FormControl>
+
           <InputLabel
-            htmlFor="id_product"
-            error={error.id_product ? true : false}
+            htmlFor="product"
+            error={error.product ? true : false}
             className={classes.label}>
             ID Produk
           </InputLabel>
           <FormControl variant="outlined" size="small" margin="normal">
             <OutlinedInput
-              name="id_product"
-              id="id_product"
+              name="product"
+              id="product"
               color="primary"
               onChange={handleChange}
-              value={form.id_product}
-              error={error.id_product ? true : false}
+              value={form.product}
+              error={error.product ? true : false}
             />
             <FormHelperText
               id="outlined-helper-text"
-              error={error.id_product ? true : false}>
-              {error.id_product}
+              error={error.product ? true : false}>
+              {error.product}
             </FormHelperText>
           </FormControl>
 
           <div className={classes.inputFile}>
-            <div className={classes.itemPreview}>
-              {form.image ? (
-                <img
-                  src={URL.createObjectURL(form.image)}
-                  alt="Foto Banner"
-                  className={classes.preview}
-                />
-              ) : (
-                'Image Preview'
-              )}
-            </div>
+            <Avatar
+              alt="photo"
+              src={
+                form.image.name ? URL.createObjectURL(form.image) : form.image
+              }
+              variant="rounded"
+              className={classes.preview}
+            />
             <input
               type="file"
               id="upload"
@@ -748,9 +823,17 @@ function TabMini({ setDataBanners, dataBanners }) {
           <Button
             variant="contained"
             color="primary"
-            onClick={submitCreated}
+            onClick={submitBuat}
             className={classes.submit}
-            disabled={form.ke && form.id_product && form.image ? false : true}>
+            disabled={
+              form.type &&
+              form.relate &&
+              form.status &&
+              form.position &&
+              form.product
+                ? false
+                : true
+            }>
             simpan
           </Button>
         </div>

@@ -10,8 +10,8 @@ import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
 
-// material-ui icons
-import SearchIcon from '@material-ui/icons/Search';
+// react icons
+import { IoSearchOutline } from 'react-icons/io5';
 
 // components
 import { CardToko, Paginasi } from 'components';
@@ -66,8 +66,10 @@ const ListToko = ({ dataStores, setDataStores, history }) => {
               });
             }}
             label="Semua Status">
-            <MenuItem value="1">Active</MenuItem>
+            <MenuItem value="">Semua Status</MenuItem>
+            <MenuItem value="1">Waiting</MenuItem>
             <MenuItem value="2">Approved</MenuItem>
+            <MenuItem value="3">Rejected</MenuItem>
           </Select>
         </FormControl>
         <FormControl variant="outlined" size="small">
@@ -83,7 +85,7 @@ const ListToko = ({ dataStores, setDataStores, history }) => {
             }
             endAdornment={
               <InputAdornment position="start">
-                <SearchIcon />
+                <IoSearchOutline />
               </InputAdornment>
             }
           />
