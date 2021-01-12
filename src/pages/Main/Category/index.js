@@ -11,6 +11,7 @@ import SwipeableViews from 'react-swipeable-views';
 
 // material-ui core
 import {
+  Avatar,
   Button,
   AppBar,
   Tabs,
@@ -32,7 +33,9 @@ import { CompDialog, PrivateRoute } from 'components';
 
 // pages
 import TabProduk from './TabProduk';
+import CekProduks from './TabProduk/CekProduks';
 import TabJasa from './TabJasa';
+import CekJasa from './TabJasa/CekJasa';
 
 // redux
 import { connect } from 'react-redux';
@@ -83,9 +86,13 @@ function Category({
     if (!form.type) {
       newError.type = 'Field masih kosong';
     }
+
     if (!form.name) {
       newError.name = 'Field masih kosong';
+    } else if (form.name.length < 3) {
+      newError.name = 'Field minimal 3 karakter';
     }
+
     if (!form.image) {
       newError.image = 'Field masih kosong';
     }
@@ -244,7 +251,12 @@ function Category({
           }}>
           <Switch>
             <PrivateRoute exact path="/category/produk" component={TabProduk} />
-            <PrivateRoute path="/category/jasa" component={TabJasa} />
+            <PrivateRoute exact path="/category/jasa" component={TabJasa} />
+            <PrivateRoute
+              path="/category/produk/terkait"
+              component={CekProduks}
+            />
+            <PrivateRoute path="/category/jasa/terkait" component={CekJasa} />
             <Redirect to="/category/produk" />
           </Switch>
         </SwipeableViews>
@@ -298,21 +310,14 @@ function Category({
           </FormControl>
 
           <div className={classes.inputFile}>
-            <div className={classes.itemPreview}>
-              {form.image ? (
-                <img
-                  src={
-                    form.image.name
-                      ? URL.createObjectURL(form.image)
-                      : form.image
-                  }
-                  alt="Foto Banner"
-                  className={classes.preview}
-                />
-              ) : (
-                'Image Preview'
-              )}
-            </div>
+            <Avatar
+              alt="photo"
+              src={
+                form.image.name ? URL.createObjectURL(form.image) : form.image
+              }
+              variant="rounded"
+              className={classes.preview}
+            />
             <input
               type="file"
               id="upload"

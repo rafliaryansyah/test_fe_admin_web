@@ -5,6 +5,7 @@ import { useSnackbar } from 'notistack';
 
 // material-ui core
 import {
+  Avatar,
   Button,
   IconButton,
   Card,
@@ -40,7 +41,7 @@ import { setCategoriesJasa } from 'modules';
 // services
 import { getCategory, updateCategory, deleteCategory } from 'services';
 
-function TabJasa({ setDataCategoriesJasa, dataCategoriesJasa }) {
+function TabJasa({ setDataCategoriesJasa, dataCategoriesJasa, history }) {
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
 
@@ -393,7 +394,14 @@ function TabJasa({ setDataCategoriesJasa, dataCategoriesJasa }) {
         </div>
         <div className={classes.desk}>
           <span className={classes.teks}>produk terkait</span>
-          <span className={classes.teks}>{detailCategory.relatedProduct}</span>
+          <span className={classes.teks}>
+            {detailCategory.relatedProduct} |
+            <span
+              className={classes.cekTerkait}
+              onClick={() => history.replace('/category/jasa/terkait')}>
+              cek
+            </span>
+          </span>
         </div>
       </CompDialog>
 
@@ -446,21 +454,14 @@ function TabJasa({ setDataCategoriesJasa, dataCategoriesJasa }) {
           </FormControl>
 
           <div className={classes.inputFile}>
-            <div className={classes.itemPreview}>
-              {form.image ? (
-                <img
-                  src={
-                    form.image.name
-                      ? URL.createObjectURL(form.image)
-                      : form.image
-                  }
-                  alt="Foto Banner"
-                  className={classes.preview}
-                />
-              ) : (
-                'Image Preview'
-              )}
-            </div>
+            <Avatar
+              alt="photo"
+              src={
+                form.image.name ? URL.createObjectURL(form.image) : form.image
+              }
+              variant="rounded"
+              className={classes.preview}
+            />
             <input
               type="file"
               id="upload"

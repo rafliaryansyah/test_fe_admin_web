@@ -7,6 +7,7 @@ import { useSnackbar } from 'notistack';
 
 // material-ui core
 import {
+  Avatar,
   Button,
   IconButton,
   Card,
@@ -29,7 +30,8 @@ import {
 import {
   IoSearchOutline,
   IoPencilOutline,
-  IoTrashOutline
+  IoTrashOutline,
+  IoArrowBack
 } from 'react-icons/io5';
 
 // components
@@ -126,8 +128,6 @@ function TabProduk({ setDataCategoriesProduk, dataCategoriesProduk, history }) {
       })
       .catch(err => err);
   }, []);
-
-  console.log('Image : ', form.image);
 
   // update data kategori tipe 1 (produk)
   const onUpdate = async e => {
@@ -404,7 +404,14 @@ function TabProduk({ setDataCategoriesProduk, dataCategoriesProduk, history }) {
         </div>
         <div className={classes.desk}>
           <span className={classes.teks}>produk terkait</span>
-          <span className={classes.teks}>{detailCategory.relatedProduct}</span>
+          <span className={classes.teks}>
+            {detailCategory.relatedProduct} |
+            <span
+              className={classes.cekTerkait}
+              onClick={() => history.replace('/category/produk/terkait')}>
+              cek
+            </span>
+          </span>
         </div>
       </CompDialog>
 
@@ -457,21 +464,14 @@ function TabProduk({ setDataCategoriesProduk, dataCategoriesProduk, history }) {
           </FormControl>
 
           <div className={classes.inputFile}>
-            <div className={classes.itemPreview}>
-              {form.image ? (
-                <img
-                  src={
-                    form.image.name
-                      ? URL.createObjectURL(form.image)
-                      : form.image
-                  }
-                  alt="Foto Banner"
-                  className={classes.preview}
-                />
-              ) : (
-                'Image Preview'
-              )}
-            </div>
+            <Avatar
+              alt="photo"
+              src={
+                form.image.name ? URL.createObjectURL(form.image) : form.image
+              }
+              variant="rounded"
+              className={classes.preview}
+            />
             <input
               type="file"
               id="upload"

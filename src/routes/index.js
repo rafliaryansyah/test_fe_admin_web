@@ -3,65 +3,79 @@ import { Login, Main, NotFound } from 'pages';
 // main routes here
 const appRoutes = [
   {
-    id: 20,
+    id: 22,
     title: 'Login',
     path: '/login',
     component: Login,
     exact: true
   },
   {
-    id: 19,
+    id: 21,
     title: 'Profile',
     path: '/profile',
     component: Main,
     exact: true
   },
   {
-    id: 18,
+    id: 20,
     title: 'Promo',
     path: '/promo',
     component: Main,
     exact: true
   },
   {
-    id: 17,
+    id: 19,
     title: 'Banner',
     path: '/banner/mini',
     component: Main,
     exact: true
   },
   {
-    id: 16,
+    id: 18,
     title: 'Banner',
     path: '/banner/highlight',
     component: Main,
     exact: true
   },
   {
-    id: 15,
+    id: 17,
     title: 'Banner',
     path: '/banner/main',
     component: Main,
     exact: true
   },
   {
-    id: 14,
+    id: 16,
     title: 'User Logs',
     path: '/user-logs',
     component: Main,
     exact: true
   },
   {
-    id: 13,
+    id: 15,
     title: 'Voucher',
     path: '/voucher',
     component: Main,
     exact: true
   },
   {
-    id: 12,
+    id: 14,
+    title: 'Cek',
+    path: '/category/jasa/terkait',
+    component: Main,
+    exact: true
+  },
+  {
+    id: 13,
     title: 'Category',
     path: '/category/jasa',
+    component: Main,
+    exact: true
+  },
+  {
+    id: 12,
+    title: 'Cek',
+    path: '/category/produk/terkait',
     component: Main,
     exact: true
   },

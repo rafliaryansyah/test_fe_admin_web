@@ -36,13 +36,14 @@ function Beranda({ setDataStore, setDataProduks, setDataReports, dataStore }) {
 
   useEffect(() => {
     getStore(id).then(res => {
-      console.log(res.data.data.merchantDetail);
       setDataStore(res.data.data.merchantDetail);
-      setDataProduks(res.data.data.merchantProductsAndService);
+      const data = res.data.data.merchantProductsAndService.products.data.concat(
+        res.data.data.merchantProductsAndService.services.data
+      );
+      setDataProduks(data);
       setDataReports(res.data.data.merchantReports);
     });
   }, []);
-
 
   return (
     <div className={classes.wrapper}>

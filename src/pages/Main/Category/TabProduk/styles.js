@@ -54,21 +54,19 @@ const useStyles = makeStyles(theme => ({
     color: '#c4c4c4'
   },
 
+  cekTerkait: {
+    textTransform: 'capitalize',
+    color: theme.palette.primary.main,
+    marginLeft: 4,
+    cursor: 'pointer'
+  },
+
   // form handle upload image
   inputFile: {
     display: 'flex',
     justifyContent: 'space-between',
+    flexDirection: 'column',
     gridGap: 10
-  },
-
-  itemPreview: {
-    width: '100%',
-    border: `2px solid ${theme.palette.primary.main}`,
-    borderStyle: 'dashed',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 15
   },
 
   preview: {
@@ -78,10 +76,10 @@ const useStyles = makeStyles(theme => ({
   },
 
   itemUpload: {
-    width: '15%',
+    width: '100%',
     border: `1px solid ${theme.palette.primary.main}`,
     borderRadius: 10,
-    padding: 50,
+    padding: '15px 0px',
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
