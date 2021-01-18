@@ -8,12 +8,12 @@ import ListProduk from './ListProduk';
 import Detail from './Detail';
 
 function Produk() {
-    return (
-        <Switch>
-            <PrivateRoute path="/toko/detail/produk/detail" component={Detail} />
-            <PrivateRoute exact component={ListProduk} />
-        </Switch>
-    );
+  return (
+    <Switch>
+      <PrivateRoute path="/toko/:id/produk/:id" component={Detail} />
+      <PrivateRoute exact component={ListProduk} />
+    </Switch>
+  );
 }
 
 export default Produk;

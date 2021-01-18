@@ -20,7 +20,7 @@ API.profileChangePassword = apiRequest.patch(
 // toko
 API.stores = apiRequest.get(apiEndpoint.stores, true);
 API.store = apiRequest.get(apiEndpoint.store, true);
-API.storeUpdateStatus = apiRequest.patch(apiEndpoint.storeUpdateStatus, true);
+API.storeUpdateStatus = apiRequest.put(apiEndpoint.storeUpdateStatus, true);
 API.storeUpdateMode = apiRequest.patch(apiEndpoint.storeUpdateMode, true);
 API.storeProduk = apiRequest.get(apiEndpoint.storeProduk, true);
 API.storeUpdateStatusProduk = apiRequest.patch(

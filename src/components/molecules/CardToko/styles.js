@@ -17,10 +17,10 @@ const useStyles = makeStyles(theme => ({
     }
   },
 
-  img: {
+  avatar: {
     objectFit: 'cover',
-    width: 100,
-    height: 100,
+    width: 150,
+    height: 150,
     borderRadius: 10,
 
     [theme.breakpoints.down('sm')]: {

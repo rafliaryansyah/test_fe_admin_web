@@ -93,18 +93,17 @@ const ListToko = ({ dataStores, setDataStores, history }) => {
       </div>
 
       <div className={classes.wrapperCard}>
-        {dataStores &&
-          dataStores.map(data => (
-            <CardToko
-              key={data.id}
-              srcImage="https://images.unsplash.com/photo-1549913772-820279f909b7?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=747&q=80"
-              nama={data.name}
-              status={data.status && data.status.name}
-              alamat={data.address}
-              bukaSejak={dateConverterRes(data.joinedAt)}
-              handleDetail={() => history.push(`/toko/${data.id}`)}
-            />
-          ))}
+        {dataStores?.map(data => (
+          <CardToko
+            key={data.id}
+            srcImage=""
+            nama={data.name}
+            status={data.status && data.status.name}
+            alamat={data.address}
+            bukaSejak={dateConverterRes(data.joinedAt)}
+            handleDetail={() => history.push(`/toko/${data.id}`)}
+          />
+        ))}
       </div>
 
       <Paginasi

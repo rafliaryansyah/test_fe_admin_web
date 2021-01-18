@@ -21,7 +21,7 @@ const useStyles = makeStyles(theme => ({
   },
 
   card: {
-    marginRight: 15
+    padding: 5
   },
 
   action: {

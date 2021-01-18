@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import useStyles from './styles';
 import propTypes from 'prop-types';
@@ -8,6 +8,7 @@ import { useSnackbar } from 'notistack';
 
 // material-ui core
 import {
+  Avatar,
   Button,
   IconButton,
   InputLabel,
@@ -24,16 +25,26 @@ import { connect } from 'react-redux';
 import { setStore, setProduks, setReports } from 'modules';
 
 // services
-import { getStore } from 'services';
+import { getStore, updateStatusStore, updateModeStore } from 'services';
 
 // utils
 import { dateConverterRes } from 'utils';
 
+// components
+import { ConfirmDialog } from 'components';
+
 function Beranda({ setDataStore, setDataProduks, setDataReports, dataStore }) {
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
+
+  // id toko
   const { id } = useParams();
 
+  // open
+  const [open, setOpen] = useState(false);
+  const [status, setStatus] = useState(true);
+
+  // read data detail toko
   useEffect(() => {
     getStore(id).then(res => {
       setDataStore(res.data.data.merchantDetail);
@@ -45,26 +56,60 @@ function Beranda({ setDataStore, setDataProduks, setDataReports, dataStore }) {
     });
   }, []);
 
+  // update status toko
+  const updateStatus = async () => {
+    // services
+    const result = await updateStatusStore(id).catch(err => err);
+
+    // cek sukses atau gagal
+    if (result.success) {
+      setOpen(false);
+      console.log('sukses');
+    } else {
+      setOpen(false);
+      console.log('gagal');
+    }
+  };
+
+  // update mode toko
+  const updateMode = async () => {
+    // services
+    const result = await updateModeStore(id).catch(err => err);
+
+    // cek sukses atau gagal
+    if (result.success) {
+      console.log('sukses');
+    } else {
+      console.log('gagal');
+    }
+  };
+
   return (
     <div className={classes.wrapper}>
       <div>
-        {/* {dataStore.photo ? (
-          <img src="" alt="photo" className={classes.photo} />
+        <Avatar
+          alt={dataStore.name}
+          src=""
+          variant="rounded"
+          className={classes.avatar}
+        />
+        {status ? (
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => setOpen(true)}
+            className={classes.btnNonaktifkan}>
+            aktif
+          </Button>
         ) : (
-          <div className={classes.wrapperImage}>
-            <span className={classes.avatar}>
-              {dataStore.name.split('')[0]}
-            </span>
-          </div>
-        )} */}
-        <div className={classes.wrapperImage}>
-          <span className={classes.avatar}>
-            {dataStore.name && dataStore.name.split('')[0]}
-          </span>
-        </div>
-        <Button variant="contained" color="primary">
-          nonaktifkan
-        </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => setOpen(true)}
+            className={classes.btnNonaktifkan}>
+            nonaktifkan
+          </Button>
+        )}
       </div>
       <div>
         <InputLabel htmlFor="nama_toko" className={classes.label}>
@@ -106,7 +151,7 @@ function Beranda({ setDataStore, setDataProduks, setDataReports, dataStore }) {
         </InputLabel>
         <FormControl variant="outlined" size="small" margin="normal" fullWidth>
           <OutlinedInput
-            value={dateConverterRes(dataStore && dataStore.createdAt)}
+            value={dateConverterRes(dataStore?.createdAt)}
             disabled
           />
         </FormControl>
@@ -114,12 +159,16 @@ function Beranda({ setDataStore, setDataProduks, setDataReports, dataStore }) {
           Nama Pemilik
         </InputLabel>
         <FormControl variant="outlined" size="small" margin="normal" fullWidth>
-          <OutlinedInput
-            value={dataStore.owner && dataStore.owner.name}
-            disabled
-          />
+          <OutlinedInput value={dataStore?.owner?.name} disabled />
         </FormControl>
       </div>
+      <ConfirmDialog
+        open={open}
+        close={() => setOpen(false)}
+        title="Ubah Status"
+        submit={updateStatus}>
+        Apakah yakin ingin mengubah status?
+      </ConfirmDialog>
     </div>
   );
 }

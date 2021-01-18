@@ -1,13 +1,21 @@
 import useStyles from './styles';
 import propTypes from 'prop-types';
 
+// material-ui core
+import { Avatar } from '@material-ui/core';
+
 function CardToko({ srcImage, nama, status, alamat, bukaSejak, handleDetail }) {
   const classes = useStyles();
 
   return (
     <div className={classes.card} onClick={handleDetail}>
       <div className={classes.info}>
-        <img src={srcImage} alt="foto" className={classes.img} />
+        <Avatar
+          alt={name}
+          src={srcImage}
+          variant="rounded"
+          className={classes.avatar}
+        />
         <div className={classes.text}>
           <div className={classes.labelText}>
             <div className={classes.label}>

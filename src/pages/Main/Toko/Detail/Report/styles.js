@@ -4,7 +4,7 @@ const useStyles = makeStyles(theme => ({
   wrapper: {
     display: 'grid',
     gridGap: 15,
-    padding: '30px 0px 30px 0px'
+    padding: '15px 0px 15px 0px'
   },
 
   filter: {
@@ -15,12 +15,8 @@ const useStyles = makeStyles(theme => ({
 
   report: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-    gridGap: 100,
-
-    [theme.breakpoints.down('sm')]: {
-      gridGap: 15
-    }
+    gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+    gridGap: 15
   },
 
   cardReport: {
@@ -37,30 +33,33 @@ const useStyles = makeStyles(theme => ({
     letterSpacing: 1
   },
 
-  wrapperCardProduk: {
-    display: 'grid',
-    gridGap: 10,
-    margin: '15px 0px 15px 0px'
-  },
-
   card: {
+    width: '100%',
     display: 'flex',
     gridGap: 15,
     borderBottom: '1px solid #c4c4c4',
-    padding: '15px 0px 15px 0px'
+    padding: '15px 0px 15px 0px',
+    marginBottom: 15,
+
+    [theme.breakpoints.down('sm')]: {
+      flexDirection: 'column'
+    }
   },
 
-  img: {
+  avatar: {
     objectFit: 'cover',
-    width: 80,
-    height: 80,
-    boxShadow: '0px 0px 3px rgba(0, 0, 0, 0.5)',
-    borderRadius: 10
+    width: 100,
+    height: 100,
+    borderRadius: 10,
+
+    [theme.breakpoints.down('sm')]: {
+      width: '100%',
+      height: 150
+    }
   },
 
   descCard: {
     display: 'grid',
-    gridGap: 10,
     width: '100%'
   },
 

@@ -3,24 +3,20 @@ import { makeStyles } from '@material-ui/core/styles';
 const useStyles = makeStyles(theme => ({
   wrapper: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-    padding: '30px 0px 30px 0px',
-    gridGap: 300,
-
-    [theme.breakpoints.down('sm')]: {
-      gridGap: 30
-    }
+    gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+    padding: '15px 0px 15px 0px',
+    gridGap: 15
   },
 
-  img: {
+  avatar: {
     objectFit: 'cover',
-    width: 300,
-    height: 300,
-    boxShadow: '0px 0px 3px rgba(0, 0, 0, 0.5)',
+    width: 250,
+    height: 250,
     borderRadius: 10,
 
     [theme.breakpoints.down('sm')]: {
-      width: '100%'
+      width: '100%',
+      height: 250
     }
   },
 
@@ -50,7 +46,7 @@ const useStyles = makeStyles(theme => ({
     fontWeight: 'bold'
   },
 
-  button: {
+  btnNonaktif: {
     marginTop: 15
   }
 }));

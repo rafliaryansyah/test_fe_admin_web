@@ -2,22 +2,39 @@ import { useEffect, useState } from 'react';
 import useStyles from './styles';
 import propTypes from 'prop-types';
 
+// react multi carousel
+import Carousel from 'react-multi-carousel';
+import 'react-multi-carousel/lib/styles.css';
+
+const names = [
+  'Oliver Hansen',
+  'Van Henry',
+  'April Tucker',
+  'Ralph Hubbard',
+  'Omar Alexander',
+  'Carlos Abbott',
+  'Miriam Wagner',
+  'Bradley Wilkerson',
+  'Virginia Andrews',
+  'Kelly Snyder'
+];
+
 // responsive carousel
 const responsive = {
   desktop: {
     breakpoint: { max: 3000, min: 1024 },
     items: 3,
-    paritialVisibilityGutter: 60
+    paritialVisibilityGutter: 74
   },
   tablet: {
     breakpoint: { max: 1024, min: 464 },
     items: 2,
-    paritialVisibilityGutter: 50
+    paritialVisibilityGutter: 115
   },
   mobile: {
     breakpoint: { max: 464, min: 0 },
     items: 1,
-    paritialVisibilityGutter: -15
+    paritialVisibilityGutter: 0
   }
 };
 
@@ -40,9 +57,8 @@ const responsiveHistory = {
   }
 };
 
-// react multi carousel
-import Carousel from 'react-multi-carousel';
-import 'react-multi-carousel/lib/styles.css';
+// notistack
+import { useSnackbar } from 'notistack';
 
 // material-ui core
 import {
@@ -60,14 +76,22 @@ import {
   Radio,
   InputLabel,
   OutlinedInput,
-  FormHelperText
+  FormHelperText,
+  Select,
+  MenuItem,
+  Input,
+  InputAdornment
 } from '@material-ui/core';
+
+// useTheme
+import { useTheme } from '@material-ui/core/styles';
 
 // react icons
 import {
   IoPencilOutline,
   IoTrashOutline,
-  IoCloudDownloadOutline
+  IoCloudDownloadOutline,
+  IoCopyOutline
 } from 'react-icons/io5';
 
 // components
@@ -85,83 +109,150 @@ import {
   deleteMainBanners
 } from 'services';
 
+// MenuProps
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+  PaperProps: {
+    style: {
+      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+      width: 250
+    }
+  }
+};
+
+// tanda kalau di pilih
+function getStyles(name, promos, theme) {
+  return {
+    fontWeight:
+      promos.indexOf(name) === -1
+        ? theme.typography.fontWeightRegular
+        : theme.typography.fontWeightMedium
+  };
+}
+
 function TabMain({ setDataBanners, dataBanners }) {
   const classes = useStyles();
-
-  const [state, setState] = useState({
-    active: 0,
-    history: 0
-  });
+  const { enqueueSnackbar } = useSnackbar();
+  const theme = useTheme();
 
   const [open, setOpen] = useState({
+    detail: false,
     form: false,
     hapus: false
   });
 
-  const [id, setID] = useState('');
+  // data detail
+  const [dataDetail, setDataDetail] = useState({});
 
+  // tambah atau edit data
   const [isEdit, setIsEdit] = useState(false);
 
-  const [form, setForm] = useState({
-    type: '1',
-    relate: '1',
-    status: '1',
-    position: '1',
-    image: '',
-    product: ''
+  // id item image
+  const [id, setID] = useState('');
+
+  // 1. Detail Produk atau 2. List Produk
+  const [relate, setRelate] = useState('1');
+
+  // form data tipe detail produk
+  const [formDetailProduk, setFormDetailProduk] = useState({
+    status: 1,
+    position: 1,
+    product: '',
+    image: ''
   });
 
-  const [error, setError] = useState({
-    type: '',
-    relate: '',
+  // form data tipe list produk
+  const [formListProduk, setFormListProduk] = useState({
+    type: '1',
+    status: 1,
+    position: 1,
+    promos: [],
+    categories: [],
+    image: ''
+  });
+
+  // error data
+  const [errorDetailProduk, setErrorDetailProduk] = useState({
     status: '',
     position: '',
-    image: '',
-    product: ''
+    product: '',
+    image: ''
   });
 
-  const handleChange = e => {
-    setForm({
-      ...form,
+  // error data
+  const [errorListProduk, setErrorListProduk] = useState({
+    type: '',
+    status: '',
+    position: '',
+    image: ''
+  });
+
+  // change tipe detail produk
+  const onChangeDetailProduk = e => {
+    setFormDetailProduk({
+      ...formDetailProduk,
       [e.target.name]: e.target.value
     });
 
-    setError({
-      ...error,
+    setErrorDetailProduk({
+      ...errorDetailProduk,
       [e.target.name]: ''
     });
   };
 
-  const validate = () => {
-    const newError = { ...error };
+  // change tipe list produk
+  const onChangeListProduk = e => {
+    setFormListProduk({
+      ...formListProduk,
+      [e.target.name]: e.target.value
+    });
 
-    if (!form.type) {
-      newError.type = 'Field masih kosong';
+    setErrorListProduk({
+      ...errorListProduk,
+      [e.target.name]: ''
+    });
+  };
+
+  // validasi tipe detail produk
+  const validateDetailProduk = () => {
+    const newError = { ...errorDetailProduk };
+
+    if (!formDetailProduk.position) {
+      newError.position = 'Field kosong';
     }
 
-    if (!form.relate) {
-      newError.relate = 'Field masih kosong';
+    if (!formDetailProduk.product) {
+      newError.product = 'Field kosong';
     }
 
-    if (!form.status) {
-      newError.status = 'Field masih kosong';
-    }
-
-    if (!form.position) {
-      newError.position = 'Field masih kosong';
-    }
-
-    if (!form.image) {
-      newError.image = 'Field masih kosong';
-    }
-
-    if (!form.product) {
-      newError.product = 'Field masih kosong';
+    if (!formDetailProduk.status) {
+      newError.status = 'Field kosong';
     }
 
     return newError;
   };
 
+  // validasi tipe list produk
+  const validateListProduk = () => {
+    const newError = { ...errorListProduk };
+
+    if (!formListProduk.type) {
+      newError.type = 'Field kosong';
+    }
+
+    if (!formListProduk.status) {
+      newError.status = 'Field kosong';
+    }
+
+    if (!formListProduk.position) {
+      newError.position = 'Field kosong';
+    }
+
+    return newError;
+  };
+
+  // read data banner
   useEffect(() => {
     readBanners()
       .then(res => {
@@ -170,121 +261,252 @@ function TabMain({ setDataBanners, dataBanners }) {
       .catch(err => err);
   }, []);
 
-  const submit = async e => {
+  // tambah data
+  const onCreate = async e => {
     e.preventDefault();
 
-    const findErrors = validate();
+    // cek relate ke 1 atau 2
+    if (relate === '1') {
+      const findErrors = validateDetailProduk();
 
-    if (Object.values(findErrors).some(err => err !== '')) {
-      setError(findErrors);
-    } else {
-      // cek apakah edit atau buat data baru
-      if (isEdit) {
-        // edit data
-        // state
-        const { type, relate, status, position, image, product } = form;
-
-        // form-data yang kosong
-        const formdata = new FormData();
-
-        // mengisi form-data menggunakan append
-        formdata.append('type', parseInt(type));
-        formdata.append('relate', parseInt(relate));
-        formdata.append('status', parseInt(status));
-        formdata.append('position', parseInt(position));
-        formdata.append('image', image);
-        formdata.append('product', product);
-
-        // services
-        const result = await updateMainBanners(id, formdata).catch(err => err);
-
-        // cek sukses atau tidak
-        if (result.success) {
-          setForm({
-            type: '1',
-            relate: '1',
-            status: '1',
-            position: '1',
-            image: '',
-            product: ''
-          });
-          setOpen({ ...open, form: false });
-
-          // read kembali data baru
-          setTimeout(() => {
-            readBanners()
-              .then(res => {
-                setDataBanners(res.data.data);
-              })
-              .catch(err => err);
-          }, 5000);
-        } else {
-          setForm({
-            type: '1',
-            relate: '1',
-            status: '1',
-            position: '1',
-            image: '',
-            product: ''
-          });
-          setOpen({ ...open, form: false });
-        }
+      if (Object.values(findErrors).some(err => err !== '')) {
+        setErrorDetailProduk(findErrors);
       } else {
-        // buat data
-        // state
-        const { type, relate, status, position, image, product } = form;
+        if (isEdit) {
+          // state untuk tipe detail produk
+          const { position, product, status, image } = formDetailProduk;
 
-        // form-data yang kosong
-        const formdata = new FormData();
+          // form-data untuk detail produk yang kosong
+          const formDataForDetailProduk = new FormData();
 
-        // mengisi form-data menggunakan append
-        formdata.append('type', parseInt(type));
-        formdata.append('relate', parseInt(relate));
-        formdata.append('status', parseInt(status));
-        formdata.append('position', parseInt(position));
-        formdata.append('image', image);
-        formdata.append('product', product);
+          // mengisi form-data menggunakan append
+          formDataForDetailProduk.append('relate', parseInt(relate));
+          formDataForDetailProduk.append('status', status);
+          formDataForDetailProduk.append('position', position);
+          formDataForDetailProduk.append('product', product);
 
-        // services
-        const result = await createMainBanners(formdata).catch(err => err);
+          // cek gambar baru atau tetap yang lama
+          if (image.name) {
+            formDataForDetailProduk.append('image', image);
+          }
 
-        // cek sukses atau tidak
-        if (result.success) {
-          setForm({
-            type: '1',
-            relate: '1',
-            status: '1',
-            position: '1',
-            image: '',
-            product: ''
-          });
-          setOpen({ ...open, form: false });
+          // services
+          const result = await updateMainBanners(
+            id,
+            formDataForDetailProduk
+          ).catch(err => err);
 
-          // read kembali data baru
-          setTimeout(() => {
+          // cek sukses atau gagal
+          if (result.success) {
+            setFormDetailProduk({
+              status: 1,
+              position: 1,
+              product: '',
+              image: ''
+            });
+            setOpen({ ...open, form: false });
+
+            // read kembali data baru
             readBanners()
               .then(res => {
                 setDataBanners(res.data.data);
               })
               .catch(err => err);
-          }, 5000);
+          } else {
+            setFormDetailProduk({
+              status: 1,
+              position: 1,
+              product: '',
+              image: ''
+            });
+            setOpen({ ...open, form: false });
+          }
         } else {
-          setForm({
-            type: '1',
-            relate: '1',
-            status: '1',
-            position: '1',
-            image: '',
-            product: ''
-          });
-          setOpen({ ...open, form: false });
+          // state untuk tipe detail produk
+          const { position, product, status, image } = formDetailProduk;
+
+          // form-data untuk detail produk yang kosong
+          const formDataForDetailProduk = new FormData();
+
+          // mengisi form-data menggunakan append
+          formDataForDetailProduk.append('relate', parseInt(relate));
+          formDataForDetailProduk.append('status', status);
+          formDataForDetailProduk.append('position', position);
+          formDataForDetailProduk.append('product', product);
+
+          // cek gambar baru atau tetap yang lama
+          if (image.name) {
+            formDataForDetailProduk.append('image', image);
+          }
+
+          // services
+          const result = await createMainBanners(formDataForDetailProduk).catch(
+            err => err
+          );
+
+          // cek sukses atau gagal
+          if (result.success) {
+            setFormDetailProduk({
+              status: 1,
+              position: 1,
+              product: '',
+              image: ''
+            });
+            setOpen({ ...open, form: false });
+
+            // read kembali data baru
+            readBanners()
+              .then(res => {
+                setDataBanners(res.data.data);
+              })
+              .catch(err => err);
+          } else {
+            setFormDetailProduk({
+              status: 1,
+              position: 1,
+              product: '',
+              image: ''
+            });
+            setOpen({ ...open, form: false });
+          }
+        }
+      }
+    } else {
+      const findErrors = validateListProduk();
+
+      if (Object.values(findErrors).some(err => err !== '')) {
+        setErrorListProduk(findErrors);
+      } else {
+        if (isEdit) {
+          // state untuk tipe list produk
+          const {
+            position,
+            type,
+            status,
+            promos,
+            categories,
+            image
+          } = formListProduk;
+
+          // form-data untuk list produk yang kosong
+          const formDataForListProduk = new FormData();
+
+          // mengisi form-data menggunakan append
+          formDataForListProduk.append('relate', parseInt(relate));
+          formDataForListProduk.append('position', position);
+          formDataForListProduk.append('type', parseInt(type));
+          formDataForListProduk.append('status', status);
+          formDataForListProduk.append('promos', promos);
+          formDataForListProduk.append('categories', categories);
+
+          // cek gambar baru atau tetap yang lama
+          if (image.name) {
+            formDataForListProduk.append('image', image);
+          }
+
+          // services
+          const result = await updateMainBanners(
+            id,
+            formDataForListProduk
+          ).catch(err => err);
+
+          // cek sukses atau gagal
+          if (result.success) {
+            setFormListProduk({
+              type: '1',
+              status: 1,
+              position: 1,
+              promos: [],
+              categories: [],
+              image: ''
+            });
+            setOpen({ ...open, form: false });
+
+            // read kembali data baru
+            readBanners()
+              .then(res => {
+                setDataBanners(res.data.data);
+              })
+              .catch(err => err);
+          } else {
+            setFormListProduk({
+              type: '1',
+              status: 1,
+              position: 1,
+              promos: [],
+              categories: [],
+              image: ''
+            });
+            setOpen({ ...open, form: false });
+          }
+        } else {
+          // state untuk tipe list produk
+          const {
+            position,
+            type,
+            status,
+            promos,
+            categories,
+            image
+          } = formListProduk;
+
+          // form-data untuk list produk yang kosong
+          const formDataForListProduk = new FormData();
+
+          // mengisi form-data menggunakan append
+          formDataForListProduk.append('relate', parseInt(relate));
+          formDataForListProduk.append('position', position);
+          formDataForListProduk.append('type', parseInt(type));
+          formDataForListProduk.append('status', status);
+          formDataForListProduk.append('promos', promos);
+          formDataForListProduk.append('categories', categories);
+
+          // cek gambar baru atau tetap yang lama
+          if (image.name) {
+            formDataForListProduk.append('image', image);
+          }
+
+          // services
+          const result = await createMainBanners(formDataForListProduk).catch(
+            err => err
+          );
+
+          // cek sukses atau gagal
+          if (result.success) {
+            setFormListProduk({
+              type: '1',
+              status: 1,
+              position: 1,
+              promos: [],
+              categories: [],
+              image: ''
+            });
+            setOpen({ ...open, form: false });
+
+            // read kembali data baru
+            readBanners()
+              .then(res => {
+                setDataBanners(res.data.data);
+              })
+              .catch(err => err);
+          } else {
+            setFormListProduk({
+              type: '1',
+              status: 1,
+              position: 1,
+              promos: [],
+              categories: [],
+              image: ''
+            });
+            setOpen({ ...open, form: false });
+          }
         }
       }
     }
   };
 
   // hapus data
-  const hapus = async () => {
+  const onDelete = async () => {
     const result = await deleteMainBanners(id).catch(err => err);
 
     // cek sukses atau tidak
@@ -292,63 +514,115 @@ function TabMain({ setDataBanners, dataBanners }) {
       setOpen({ ...open, hapus: false });
 
       // read kembali data baru
-      setTimeout(() => {
-        readBanners()
-          .then(res => {
-            setDataBanners(res.data.data);
-          })
-          .catch(err => err);
-      }, 5000);
+      readBanners()
+        .then(res => {
+          setDataBanners(res.data.data);
+        })
+        .catch(err => err);
     } else {
       setOpen({ ...open, hapus: false });
     }
   };
 
-  // upload image
-  const handleUploadFile = async e => {
+  // upload image form tipe detail produk
+  const onSelectedImgForDetailProduk = async e => {
     const file = e.target.files[0];
 
     if (!['image/png', 'image/jpeg'].includes(file.type)) {
-      setError({
-        ...error,
+      setErrorDetailProduk({
+        ...errorDetailProduk,
         image: `Tipe file tidak didukung: ${file.type}`
       });
     } else if (file.size >= 512000) {
-      setError({
-        ...error,
+      setErrorDetailProduk({
+        ...errorDetailProduk,
         image: 'Ukuran file terlalu besar dari 500KB'
       });
     } else {
       const reader = new FileReader();
 
       reader.onabort = () => {
-        setError({
-          ...error,
+        setErrorDetailProduk({
+          ...errorDetailProduk,
           image: 'Proses pembacaan file dibatalkan'
         });
       };
 
       reader.onerror = () => {
-        setError({
-          ...error,
+        setErrorDetailProduk({
+          ...errorDetailProduk,
           image: 'File tidak terbaca'
         });
       };
 
       reader.onload = async () => {
-        setError({
-          ...error,
+        setErrorDetailProduk({
+          ...errorDetailProduk,
           image: ''
         });
 
         try {
-          setForm({
-            ...form,
+          setFormDetailProduk({
+            ...formDetailProduk,
             image: file
           });
         } catch (e) {
-          setError({
-            ...error,
+          setErrorDetailProduk({
+            ...errorDetailProduk,
+            image: e.message
+          });
+        }
+      };
+
+      reader.readAsDataURL(file);
+    }
+  };
+
+  // upload image form tipe list produk
+  const onSelectedImgForListProduk = async e => {
+    const file = e.target.files[0];
+
+    if (!['image/png', 'image/jpeg'].includes(file.type)) {
+      setErrorListProduk({
+        ...errorListProduk,
+        image: `Tipe file tidak didukung: ${file.type}`
+      });
+    } else if (file.size >= 512000) {
+      setErrorListProduk({
+        ...errorListProduk,
+        image: 'Ukuran file terlalu besar dari 500KB'
+      });
+    } else {
+      const reader = new FileReader();
+
+      reader.onabort = () => {
+        setErrorListProduk({
+          ...errorListProduk,
+          image: 'Proses pembacaan file dibatalkan'
+        });
+      };
+
+      reader.onerror = () => {
+        setErrorListProduk({
+          ...errorListProduk,
+          image: 'File tidak terbaca'
+        });
+      };
+
+      reader.onload = async () => {
+        setErrorListProduk({
+          ...errorListProduk,
+          image: ''
+        });
+
+        try {
+          setFormListProduk({
+            ...formListProduk,
+            image: file
+          });
+        } catch (e) {
+          setErrorListProduk({
+            ...errorListProduk,
             image: e.message
           });
         }
@@ -367,21 +641,26 @@ function TabMain({ setDataBanners, dataBanners }) {
           <br />
           <Carousel
             ssr
-            partialVisbile
-            itemClass="image-item"
+            partialVisible
+            itemClass={classes.card}
             responsive={responsive}>
-            {/* {dataBanners &&
-              dataBanners.mainBanner &&
-              dataBanners.mainBanner.data &&
-              dataBanners.mainBanner.data.map(data => (
-                <div key={data}>
-                  <Card>
-                    <CardActionArea>
+            {dataBanners.mainBanner ? (
+              dataBanners.mainBanner.data.map(item =>
+                item.relatedTo === 'Product Detail' ? (
+                  <Card key={item.id}>
+                    <CardActionArea
+                      onClick={() => {
+                        setDataDetail(item);
+                        setRelate(
+                          item.relatedTo === 'Product Detail' ? '1' : '2'
+                        );
+                        setOpen({ ...open, detail: true });
+                      }}>
                       <CardMedia
                         component="img"
                         alt="Contemplative Reptile"
                         height="230"
-                        image="https://ecs7.tokopedia.net/img/blog/seller/2020/04/voucher-toko.jpg"
+                        image={item.image}
                         title="Contemplative Reptile"
                       />
                     </CardActionArea>
@@ -390,10 +669,17 @@ function TabMain({ setDataBanners, dataBanners }) {
                         size="small"
                         color="primary"
                         onClick={() => {
-                          setID();
+                          setID(item.id);
                           setIsEdit(true);
-                          setForm({
-                            ...form
+                          setRelate(
+                            item.relatedTo === 'Product Detail' ? '1' : '2'
+                          );
+                          setFormDetailProduk({
+                            ...formDetailProduk,
+                            status: item.status?.id,
+                            position: item.position,
+                            product: item.detail,
+                            image: item.image
                           });
                           setOpen({ ...open, form: true });
                         }}>
@@ -403,44 +689,70 @@ function TabMain({ setDataBanners, dataBanners }) {
                         size="small"
                         color="primary"
                         onClick={() => {
-                          setID();
+                          setID(item.id);
                           setOpen({ ...open, hapus: true });
                         }}>
                         <IoTrashOutline />
                       </IconButton>
                     </CardActions>
                   </Card>
-                </div>
-              ))} */}
-            {Array.from(new Array(10)).map((_, i) => (
-              <div key={i}>
-                <Card className={classes.card}>
-                  <CardActionArea>
-                    <CardMedia
-                      component="img"
-                      alt="Contemplative Reptile"
-                      height="130"
-                      image="https://ecs7.tokopedia.net/img/blog/seller/2020/04/voucher-toko.jpg"
-                      title="Contemplative Reptile"
-                    />
-                  </CardActionArea>
-                  <CardActions className={classes.action}>
-                    <IconButton
-                      size="small"
-                      color="primary"
-                      onClick={() => setOpen({ ...open, form: true })}>
-                      <IoPencilOutline />
-                    </IconButton>
-                    <IconButton
-                      size="small"
-                      color="primary"
-                      onClick={() => setOpen({ ...open, hapus: true })}>
-                      <IoTrashOutline />
-                    </IconButton>
-                  </CardActions>
-                </Card>
-              </div>
-            ))}
+                ) : (
+                  <Card key={item.id}>
+                    <CardActionArea
+                      onClick={() => {
+                        setDataDetail(item);
+                        setRelate(
+                          item.relatedTo === 'Product Detail' ? '1' : '2'
+                        );
+                        setOpen({ ...open, detail: true });
+                      }}>
+                      <CardMedia
+                        component="img"
+                        alt="Contemplative Reptile"
+                        height="230"
+                        image={item.image}
+                        title="Contemplative Reptile"
+                      />
+                    </CardActionArea>
+                    <CardActions className={classes.action}>
+                      <IconButton
+                        size="small"
+                        color="primary"
+                        onClick={() => {
+                          setID(item.id);
+                          setIsEdit(true);
+                          setRelate(
+                            item.relatedTo === 'Product Detail' ? '1' : '2'
+                          );
+                          setFormListProduk({
+                            ...formListProduk,
+                            type: item.detail?.type === 'Product' ? '1' : '2',
+                            status: item.status?.id,
+                            position: item.position,
+                            promos: item.detail?.promos,
+                            categories: item.detail?.categories,
+                            image: item.image
+                          });
+                          setOpen({ ...open, form: true });
+                        }}>
+                        <IoPencilOutline />
+                      </IconButton>
+                      <IconButton
+                        size="small"
+                        color="primary"
+                        onClick={() => {
+                          setID(item.id);
+                          setOpen({ ...open, hapus: true });
+                        }}>
+                        <IoTrashOutline />
+                      </IconButton>
+                    </CardActions>
+                  </Card>
+                )
+              )
+            ) : (
+              <div>item image kosong</div>
+            )}
           </Carousel>
         </div>
         <br />
@@ -450,41 +762,9 @@ function TabMain({ setDataBanners, dataBanners }) {
           <label className={classes.title}>main banner history</label>
           <br />
           <br />
-          <Carousel
-            ssr
-            partialVisbile
-            itemClass="image-item"
-            responsive={responsiveHistory}>
-            {Array.from(new Array(10)).map((_, i) => (
-              <div key={i}>
-                <Card className={classes.card}>
-                  <CardActionArea>
-                    <CardMedia
-                      component="img"
-                      alt="Contemplative Reptile"
-                      height="130"
-                      image="https://ecs7.tokopedia.net/img/blog/seller/2020/04/voucher-toko.jpg"
-                      title="Contemplative Reptile"
-                    />
-                  </CardActionArea>
-                  <CardActions className={classes.action}>
-                    <IconButton
-                      size="small"
-                      color="primary"
-                      onClick={() => setOpen({ ...open, form: true })}>
-                      <IoPencilOutline />
-                    </IconButton>
-                    <IconButton
-                      size="small"
-                      color="primary"
-                      onClick={() => setOpen({ ...open, hapus: true })}>
-                      <IoTrashOutline />
-                    </IconButton>
-                  </CardActions>
-                </Card>
-              </div>
-            ))}
-          </Carousel>
+          {/* <Carousel
+            itemClass={classes.card}
+            responsive={responsiveHistory}></Carousel> */}
         </div>
         <div className={classes.wrapperButton}>
           <Button
@@ -498,19 +778,34 @@ function TabMain({ setDataBanners, dataBanners }) {
 
       <CompDialog
         open={open.form}
-        close={() => setOpen({ ...open, form: false })}
+        close={() => {
+          setIsEdit(false);
+          setFormDetailProduk({
+            status: 1,
+            position: 1,
+            product: '',
+            image: ''
+          });
+          setFormListProduk({
+            type: '1',
+            status: 1,
+            position: 1,
+            promos: [],
+            categories: [],
+            image: ''
+          });
+          setOpen({ ...open, form: false });
+        }}
         title="Form Banner">
         <div className={classes.form}>
           <FormControl component="fieldset">
-            <FormLabel component="legend" error={error.ke ? true : false}>
-              Arahkan ke
-            </FormLabel>
+            <FormLabel component="legend">Arahkan ke</FormLabel>
             <RadioGroup
               row
-              aria-label="ke"
-              name="ke"
-              value={form.ke}
-              onChange={handleChange}>
+              aria-label="relate"
+              name="relate"
+              value={relate}
+              onChange={e => setRelate(e.target.value)}>
               <FormControlLabel
                 value="1"
                 control={<Radio color="primary" />}
@@ -522,77 +817,346 @@ function TabMain({ setDataBanners, dataBanners }) {
                 label="List Produk"
               />
             </RadioGroup>
-            <FormHelperText
-              id="outlined-helper-text"
-              error={error.ke ? true : false}>
-              {error.ke}
-            </FormHelperText>
           </FormControl>
 
-          <InputLabel
-            htmlFor="id_product"
-            error={error.id_product ? true : false}
-            className={classes.label}>
-            ID Produk
-          </InputLabel>
-          <FormControl variant="outlined" size="small" margin="normal">
-            <OutlinedInput
-              name="id_product"
-              id="id_product"
-              color="primary"
-              onChange={handleChange}
-              value={form.id_product}
-              error={error.id_product ? true : false}
-            />
-            <FormHelperText
-              id="outlined-helper-text"
-              error={error.id_product ? true : false}>
-              {error.id_product}
-            </FormHelperText>
-          </FormControl>
+          {relate === '1' ? (
+            <div style={{ marginTop: 10 }}>
+              <FormControl
+                variant="outlined"
+                size="small"
+                fullWidth
+                style={{ marginBottom: 15 }}>
+                <InputLabel id="status">status</InputLabel>
+                <Select
+                  labelId="status"
+                  id="status"
+                  name="status"
+                  value={formDetailProduk.status}
+                  onChange={onChangeDetailProduk}
+                  label="Status">
+                  <MenuItem value={1}>Aktif</MenuItem>
+                  <MenuItem value={2}>Tidak Aktif</MenuItem>
+                </Select>
+              </FormControl>
 
-          <div className={classes.inputFile}>
-            <Avatar
-              alt="photo"
-              src={
-                form.image.name ? URL.createObjectURL(form.image) : form.image
-              }
-              variant="rounded"
-              className={classes.preview}
-            />
-            <input
-              type="file"
-              id="upload"
-              accept="image/jpeg,image/png"
-              onChange={handleUploadFile}
-              style={{ display: 'none' }}
-            />
-            <label htmlFor="upload" className={classes.itemUpload}>
-              <IoCloudDownloadOutline />
-              Upload
-            </label>
-          </div>
-          <br />
-          <FormHelperText
-            id="outlined-helper-text"
-            error={error.image ? true : false}>
-            {error.image}
-          </FormHelperText>
+              <FormControl
+                variant="outlined"
+                size="small"
+                fullWidth
+                style={{ marginBottom: 15 }}>
+                <InputLabel id="position">Posisi</InputLabel>
+                <Select
+                  labelId="position"
+                  id="position"
+                  name="position"
+                  value={formDetailProduk.position}
+                  onChange={onChangeDetailProduk}
+                  label="Posisi">
+                  <MenuItem value={1}>1</MenuItem>
+                  <MenuItem value={2}>2</MenuItem>
+                  <MenuItem value={3}>3</MenuItem>
+                  <MenuItem value={4}>4</MenuItem>
+                  <MenuItem value={5}>5</MenuItem>
+                  <MenuItem value={6}>6</MenuItem>
+                  <MenuItem value={7}>7</MenuItem>
+                </Select>
+              </FormControl>
+
+              <InputLabel
+                htmlFor="product"
+                error={errorDetailProduk.product ? true : false}
+                className={classes.label}>
+                ID Produk
+              </InputLabel>
+              <FormControl
+                variant="outlined"
+                size="small"
+                margin="normal"
+                fullWidth>
+                <OutlinedInput
+                  name="product"
+                  id="product"
+                  color="primary"
+                  onChange={onChangeDetailProduk}
+                  value={formDetailProduk.product}
+                  error={errorDetailProduk.product ? true : false}
+                />
+                <FormHelperText
+                  id="outlined-helper-text"
+                  error={errorDetailProduk.product ? true : false}>
+                  {errorDetailProduk.product}
+                </FormHelperText>
+              </FormControl>
+
+              <div className={classes.inputFile}>
+                <Avatar
+                  alt="photo"
+                  src={
+                    formDetailProduk.image.name
+                      ? URL.createObjectURL(formDetailProduk.image)
+                      : formDetailProduk.image
+                  }
+                  variant="rounded"
+                  className={classes.preview}
+                />
+                <input
+                  type="file"
+                  id="upload"
+                  accept="image/jpeg,image/png"
+                  onChange={onSelectedImgForDetailProduk}
+                  style={{ display: 'none' }}
+                />
+                <label htmlFor="upload" className={classes.itemUpload}>
+                  <IoCloudDownloadOutline />
+                  Upload
+                </label>
+              </div>
+              <br />
+              <FormHelperText
+                id="outlined-helper-text"
+                error={errorDetailProduk.image ? true : false}>
+                {errorDetailProduk.image}
+              </FormHelperText>
+            </div>
+          ) : (
+            <div style={{ marginTop: 10 }}>
+              <FormControl component="fieldset" style={{ marginBottom: 15 }}>
+                <FormLabel component="legend">Tipe</FormLabel>
+                <RadioGroup
+                  row
+                  aria-label="type"
+                  name="type"
+                  value={formListProduk.type}
+                  onChange={onChangeListProduk}>
+                  <FormControlLabel
+                    value="1"
+                    control={<Radio color="primary" />}
+                    label="Produk"
+                  />
+                  <FormControlLabel
+                    value="2"
+                    control={<Radio color="primary" />}
+                    label="Jasa"
+                  />
+                </RadioGroup>
+              </FormControl>
+
+              <FormControl
+                variant="outlined"
+                size="small"
+                fullWidth
+                style={{ marginBottom: 15 }}>
+                <InputLabel id="status">status</InputLabel>
+                <Select
+                  labelId="status"
+                  id="status"
+                  name="status"
+                  value={formListProduk.status}
+                  onChange={onChangeListProduk}
+                  label="Status">
+                  <MenuItem value={1}>Aktif</MenuItem>
+                  <MenuItem value={2}>Tidak Aktif</MenuItem>
+                </Select>
+              </FormControl>
+
+              <FormControl
+                variant="outlined"
+                size="small"
+                fullWidth
+                style={{ marginBottom: 15 }}>
+                <InputLabel id="position">Posisi</InputLabel>
+                <Select
+                  labelId="position"
+                  id="position"
+                  name="position"
+                  value={formListProduk.position}
+                  onChange={onChangeListProduk}
+                  label="Posisi">
+                  <MenuItem value={1}>1</MenuItem>
+                  <MenuItem value={2}>2</MenuItem>
+                  <MenuItem value={3}>3</MenuItem>
+                  <MenuItem value={4}>4</MenuItem>
+                  <MenuItem value={5}>5</MenuItem>
+                  <MenuItem value={6}>6</MenuItem>
+                  <MenuItem value={7}>7</MenuItem>
+                </Select>
+              </FormControl>
+
+              <FormControl
+                variant="outlined"
+                size="small"
+                fullWidth
+                style={{ marginBottom: 15 }}>
+                <InputLabel id="promos">Promo</InputLabel>
+                <Select
+                  labelId="promos"
+                  id="promos"
+                  name="promos"
+                  multiple
+                  value={formListProduk.promos}
+                  onChange={onChangeListProduk}
+                  input={<Input />}
+                  label="Promo"
+                  MenuProps={MenuProps}>
+                  {names?.map(name => (
+                    <MenuItem
+                      key={name}
+                      value={name}
+                      style={getStyles(name, formListProduk.promos, theme)}>
+                      {name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+
+              <FormControl
+                variant="outlined"
+                size="small"
+                fullWidth
+                style={{ marginBottom: 15 }}>
+                <InputLabel id="categories">Kategori</InputLabel>
+                <Select
+                  labelId="categories"
+                  id="categories"
+                  name="categories"
+                  multiple
+                  value={formListProduk.categories}
+                  onChange={onChangeListProduk}
+                  input={<Input />}
+                  label="Kategori"
+                  MenuProps={MenuProps}>
+                  {names?.map(name => (
+                    <MenuItem
+                      key={name}
+                      value={name}
+                      style={getStyles(name, formListProduk.categories, theme)}>
+                      {name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+
+              <div className={classes.inputFile}>
+                <Avatar
+                  alt="photo"
+                  src={
+                    formListProduk.image.name
+                      ? URL.createObjectURL(formListProduk.image)
+                      : formListProduk.image
+                  }
+                  variant="rounded"
+                  className={classes.preview}
+                />
+                <input
+                  type="file"
+                  id="upload"
+                  accept="image/jpeg,image/png"
+                  onChange={onSelectedImgForListProduk}
+                  style={{ display: 'none' }}
+                />
+                <label htmlFor="upload" className={classes.itemUpload}>
+                  <IoCloudDownloadOutline />
+                  Upload
+                </label>
+              </div>
+              <br />
+              <FormHelperText
+                id="outlined-helper-text"
+                error={errorListProduk.image ? true : false}>
+                {errorListProduk.image}
+              </FormHelperText>
+            </div>
+          )}
 
           <Button
             variant="contained"
             color="primary"
-            onClick={submit}
-            className={classes.submit}
-            disabled={form.ke && form.id_product && form.image ? false : true}>
+            onClick={onCreate}
+            className={classes.submit}>
             simpan
           </Button>
         </div>
       </CompDialog>
+
+      {relate === '1' ? (
+        <CompDialog
+          open={open.detail}
+          close={() => setOpen({ ...open, detail: false })}>
+          <Avatar
+            alt="photo"
+            src={dataDetail.image}
+            variant="rounded"
+            style={{ width: '100%', height: 250 }}
+          />
+
+          <InputLabel htmlFor="nama_toko" style={{ marginTop: 15 }}>
+            Arahkan Ke
+          </InputLabel>
+          <FormControl
+            variant="outlined"
+            size="small"
+            margin="normal"
+            fullWidth>
+            <OutlinedInput value={dataDetail.relatedTo} disabled />
+          </FormControl>
+
+          <InputLabel htmlFor="nama_toko" style={{ marginTop: 15 }}>
+            ID Produk
+          </InputLabel>
+          <FormControl
+            variant="outlined"
+            size="small"
+            margin="normal"
+            fullWidth>
+            <OutlinedInput
+              value={dataDetail.detail}
+              disabled
+              endAdornment={
+                <InputAdornment position="end">
+                  <IconButton
+                    onClick={() => {
+                      navigator.clipboard.writeText(dataDetail.detail);
+                      enqueueSnackbar('ID telah dicopy', {
+                        variant: 'success'
+                      });
+                    }}
+                    onMouseDown={e => e.preventDefault()}
+                    edge="end">
+                    <IoCopyOutline />
+                  </IconButton>
+                </InputAdornment>
+              }
+            />
+          </FormControl>
+        </CompDialog>
+      ) : (
+        <CompDialog
+          open={open.detail}
+          close={() => setOpen({ ...open, detail: false })}>
+          <Avatar
+            alt="photo"
+            src={dataDetail.image}
+            variant="rounded"
+            style={{ width: '100%', height: 250 }}
+          />
+
+          <InputLabel htmlFor="nama_toko" style={{ marginTop: 15 }}>
+            Arahkan Ke
+          </InputLabel>
+          <FormControl
+            variant="outlined"
+            size="small"
+            margin="normal"
+            fullWidth>
+            <OutlinedInput value={dataDetail.relatedTo} disabled />
+          </FormControl>
+        </CompDialog>
+      )}
+
       <ConfirmDialog
         open={open.hapus}
         close={() => setOpen({ ...open, hapus: false })}
-        submit={hapus}
+        submit={onDelete}
         title="Hapus Banner">
         Apakah yakin ingin hapus ?
       </ConfirmDialog>

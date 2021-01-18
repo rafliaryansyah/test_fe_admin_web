@@ -2,15 +2,14 @@ import useStyles from './styles';
 import propTypes from 'prop-types';
 
 // material-ui core
-import FormControl from '@material-ui/core/FormControl';
-import MenuItem from '@material-ui/core/MenuItem';
-import Select from '@material-ui/core/Select';
+import { Avatar, FormControl, MenuItem, Select } from '@material-ui/core';
 
 // redux
 import { connect } from 'react-redux';
 
 function Report({ dataReports }) {
   const classes = useStyles();
+
   return (
     <div className={classes.wrapper}>
       <div className={classes.filter}>
@@ -26,22 +25,21 @@ function Report({ dataReports }) {
       <div className={classes.report}>
         <div className={classes.cardReport}>
           <label className={classes.date}>30 Januari 2020</label>
-          <div className={classes.wrapperCardProduk}>
-            <div className={classes.card}>
-              <img
-                src="https://ecs7-p.tokopedia.net/img/cache/200-square/VqbcmM/2020/11/3/e5856c28-7cd8-4e31-ac7f-716739847083.png.webp"
-                alt=""
-                className={classes.img}
-              />
-              <div className={classes.descCard}>
-                <span className={classes.nama}>
-                  Custom Kalender Meja 6 x 8 ( 15cm x 20cm )
-                </span>
-                <span className={classes.harga}>Rp.39.000</span>
-                <div className={classes.wrapperTerjual}>
-                  <span className={classes.labelTerjual}>terjual: 1</span>
-                  <span className={classes.total}>total: Rp.39.000</span>
-                </div>
+          <div className={classes.card}>
+            <Avatar
+              alt=""
+              src=""
+              variant="rounded"
+              className={classes.avatar}
+            />
+            <div className={classes.descCard}>
+              <span className={classes.nama}>
+                Custom Kalender Meja 6 x 8 ( 15cm x 20cm )
+              </span>
+              <span className={classes.harga}>Rp.39.000</span>
+              <div className={classes.wrapperTerjual}>
+                <span className={classes.labelTerjual}>terjual: 1</span>
+                <span className={classes.total}>total: Rp.39.000</span>
               </div>
             </div>
           </div>

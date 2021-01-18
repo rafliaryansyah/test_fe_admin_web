@@ -6,48 +6,86 @@ const useStyles = makeStyles(theme => ({
     borderRadius: 15
   },
 
-  gambar: {
+  avatar: {
     objectFit: 'cover',
     width: '100%',
-    height: '100%',
+    height: 250,
     margin: 'auto'
   },
 
   desk: {
     padding: 10,
     display: 'grid',
+    gridGap: 15
+  },
+
+  ketProduk: {
+    display: 'flex',
+    flexDirection: 'column',
     gridGap: 5
   },
 
   nama: {
     fontSize: 13,
+    fontWeight: 'bold',
+    letterSpacing: 1,
     color: '#424242'
   },
 
-  wrapperDiskonHarga: {
+  harga: {
+    fontSize: 15,
+    fontWeight: '500',
+    color: '#424242'
+  },
+
+  type: {
+    fontSize: 13,
+    textTransform: 'capitalize',
+    color: '#424242'
+  },
+
+  stok: {
+    fontSize: 13,
+    textTransform: 'capitalize',
+    color: '#424242'
+  },
+
+  ketStatusProdukToko: {
     display: 'flex',
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-    gridGap: 15
+    justifyContent: 'space-between',
+    alignItems: 'center'
   },
 
-  diskon: {
-    fontSize: 10,
-    padding: 3,
-    borderRadius: 3,
-    backgroundColor: '#ec585830',
-    color: '#ec5858'
+  status: {
+    backgroundColor: theme.palette.primary.main,
+    color: '#ffffff',
+    borderRadius: 5,
+    fontSize: 13,
+    padding: '5px 20px',
+    textTransform: 'capitalize'
   },
 
-  hargaNormal: {
-    fontSize: 10,
-    color: '#c4c4c4',
-    textDecoration: 'line-through'
+  ketToko: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'flex-end'
   },
 
-  hargaDiskon: {
-    fontSize: 14,
+  toko: {
+    fontSize: 13,
+    textTransform: 'capitalize',
     fontWeight: 'bold',
+    letterSpacing: 1,
+    color: '#424242'
+  },
+
+  ketAlamatToko: {
+    display: 'flex',
+    justifyContent: 'flex-end'
+  },
+
+  alamatToko: {
+    fontSize: 10,
     color: '#424242'
   }
 }));

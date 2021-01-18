@@ -1,6 +1,13 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import useStyles from './styles';
 import propTypes from 'prop-types';
+
+// react multi carousel
+import Carousel from 'react-multi-carousel';
+import 'react-multi-carousel/lib/styles.css';
+
+// notistack
+import { useSnackbar } from 'notistack';
 
 // responsive carousel
 const responsive = {
@@ -40,10 +47,6 @@ const responsiveHistory = {
   }
 };
 
-// react multi carousel
-import Carousel from 'react-multi-carousel';
-import 'react-multi-carousel/lib/styles.css';
-
 // material-ui core
 import {
   Avatar,
@@ -60,7 +63,11 @@ import {
   TextField,
   List,
   MenuItem,
-  FormHelperText
+  FormHelperText,
+  FormLabel,
+  RadioGroup,
+  FormControlLabel,
+  Radio
 } from '@material-ui/core';
 
 // react icons
@@ -82,11 +89,13 @@ import {
   readBanners,
   createHighLightBanners,
   updateHighLightBanners,
-  deleteHighLightBanners
+  deleteHighLightBanners,
+  getStores
 } from 'services';
 
 function TabHighLight({ setDataBanners, dataBanners }) {
   const classes = useStyles();
+  const { enqueueSnackbar } = useSnackbar();
 
   const [state, setState] = useState({
     active: 0,
@@ -94,199 +103,176 @@ function TabHighLight({ setDataBanners, dataBanners }) {
   });
 
   const [open, setOpen] = useState({
-    highlightProduk: false,
-    hapusHighlightProduk: false,
-    highlightJasa: false,
-    hapusHighlightJasa: false
+    form: false,
+    hapus: false
   });
+
+  const [stores, setStores] = useState([]);
 
   const [id, setID] = useState('');
 
   const [isEdit, setIsEdit] = useState(false);
 
-  const [form, setForm] = useState({
+  // tipe form
+  const [type, setType] = useState('1');
+
+  // form untuk tipe produk
+  const [formProduk, setFormProduk] = useState({
     headline: '',
-    id_product1: '',
-    id_product2: '',
-    id_product3: '',
-    id_product4: '',
-    id_product5: '',
+    status: '',
+    product: [],
     image: ''
   });
 
-  const [error, setError] = useState({
+  // form untuk tipe services
+  const [formServices, setFormServices] = useState({
     headline: '',
-    id_product1: '',
-    id_product2: '',
-    id_product3: '',
-    id_product4: '',
-    id_product5: '',
+    status: '',
+    services: [],
     image: ''
   });
 
-  const handleChange = e => {
-    setForm({
-      ...form,
+  // error form untuk tipe produk
+  const [errorProduk, setErrorProduk] = useState({
+    headline: '',
+    status: '',
+    product: '',
+    image: ''
+  });
+
+  // error form untuk tipe services
+  const [errorServices, setErrorServices] = useState({
+    headline: '',
+    status: '',
+    services: '',
+    image: ''
+  });
+
+  // change untuk tipe produk
+  const onChangeProduk = e => {
+    setFormProduk({
+      ...formProduk,
       [e.target.name]: e.target.value
     });
 
-    setError({
-      ...error,
+    setErrorProduk({
+      ...errorProduk,
       [e.target.name]: ''
     });
   };
 
-  const validate = () => {
-    const newError = { ...error };
+  // change untuk tipe services
+  const onChangeServices = e => {
+    setFormServices({
+      ...formServices,
+      [e.target.name]: e.target.value
+    });
 
-    if (!form.headline) {
+    setErrorServices({
+      ...errorServices,
+      [e.target.name]: ''
+    });
+  };
+
+  // validasi form
+  const validateProduk = () => {
+    const newError = { ...errorProduk };
+
+    if (!formProduk.status) {
+      newError.status = 'Field masih kosong';
+    }
+
+    if (!formProduk.headline) {
       newError.headline = 'Field masih kosong';
-    }
-
-    if (!form.id_product1) {
-      newError.id_product1 = 'Field masih kosong';
-    }
-
-    if (!form.id_product2) {
-      newError.id_product2 = 'Field masih kosong';
-    }
-
-    if (!form.id_product3) {
-      newError.id_product3 = 'Field masih kosong';
-    }
-
-    if (!form.id_product4) {
-      newError.id_product4 = 'Field masih kosong';
-    }
-
-    if (!form.id_product5) {
-      newError.id_product5 = 'Field masih kosong';
-    }
-
-    if (!form.image) {
-      newError.image = 'Field masih kosong';
     }
 
     return newError;
   };
 
-  const submit = async e => {
+  // validasi form
+  const validateServices = () => {
+    const newError = { ...errorServices };
+
+    if (!formServices.status) {
+      newError.status = 'Field masih kosong';
+    }
+
+    if (!formServices.headline) {
+      newError.headline = 'Field masih kosong';
+    }
+
+    return newError;
+  };
+
+  useEffect(() => {
+    getStores('', '')
+      .then(res => {
+        setStores(res.data.data);
+      })
+      .catch(err => err);
+  }, []);
+
+  const onSubmitProduk = async e => {
     e.preventDefault();
 
-    const findErrors = validate();
+    const findErrors = validateProduk();
 
     if (Object.values(findErrors).some(err => err !== '')) {
-      setError(findErrors);
+      setErrorProduk(findErrors);
     } else {
-      // cek apakah edit atau buat data baru
-      if (isEdit) {
-        // edit data
-        // state
-        const { type, relate, status, position, image, product } = form;
+      // state form produk
+      const { type, status, headline, product, image } = formProduk;
 
-        // form-data yang kosong
-        const formdata = new FormData();
+      // form-data yang kosong
+      const formdata = new FormData();
 
-        // mengisi form-data menggunakan append
-        formdata.append('type', parseInt(type));
-        formdata.append('relate', parseInt(relate));
-        formdata.append('status', parseInt(status));
-        formdata.append('position', parseInt(position));
-        formdata.append('image', image);
-        formdata.append('product', product);
+      // mengisi form-data menggunakan append
+      formdata.append('type', parseInt(type));
+      formdata.append('status', status);
+      formdata.append('headline', headline);
+      formdata.append('product', product);
+      formdata.append('image', image);
 
-        // services
-        const result = await updateHighLightBanners(id, formdata).catch(
-          err => err
-        );
+      // services
+      const result = await createHighLightBanners(formdata).catch(err => err);
 
-        // cek sukses atau tidak
-        if (result.success) {
-          setForm({
-            type: '1',
-            relate: '1',
-            status: '1',
-            position: '1',
-            image: '',
-            product: ''
-          });
-          setOpen({ ...open, form: false });
+      // cek sukses atau tidak
+      if (result.success) {
+        setFormProduk({
+          type: '1',
+          headline: '',
+          status: '',
+          product: [],
+          image: ''
+        });
+        setOpen({ ...open, form: false });
 
-          // read kembali data baru
-          setTimeout(() => {
-            readBanners()
-              .then(res => {
-                setDataBanners(res.data.data);
-              })
-              .catch(err => err);
-          }, 5000);
-        } else {
-          setForm({
-            type: '1',
-            relate: '1',
-            status: '1',
-            position: '1',
-            image: '',
-            product: ''
-          });
-          setOpen({ ...open, form: false });
-        }
+        // read kembali data baru
+        setTimeout(() => {
+          readBanners()
+            .then(res => {
+              setDataBanners(res.data.data);
+            })
+            .catch(err => err);
+        }, 3000);
+        enqueueSnackbar('Berhasil menambah data baru', { variant: 'success' });
       } else {
-        // buat data
-        // state
-        const { type, relate, status, position, image, product } = form;
-
-        // form-data yang kosong
-        const formdata = new FormData();
-
-        // mengisi form-data menggunakan append
-        formdata.append('type', parseInt(type));
-        formdata.append('relate', parseInt(relate));
-        formdata.append('status', parseInt(status));
-        formdata.append('position', parseInt(position));
-        formdata.append('image', image);
-        formdata.append('product', product);
-
-        // services
-        const result = await createHighLightBanners(formdata).catch(err => err);
-
-        // cek sukses atau tidak
-        if (result.success) {
-          setForm({
-            type: '1',
-            relate: '1',
-            status: '1',
-            position: '1',
-            image: '',
-            product: ''
-          });
-          setOpen({ ...open, form: false });
-
-          // read kembali data baru
-          setTimeout(() => {
-            readBanners()
-              .then(res => {
-                setDataBanners(res.data.data);
-              })
-              .catch(err => err);
-          }, 5000);
-        } else {
-          setForm({
-            type: '1',
-            relate: '1',
-            status: '1',
-            position: '1',
-            image: '',
-            product: ''
-          });
-          setOpen({ ...open, form: false });
-        }
+        setFormProduk({
+          type: '1',
+          headline: '',
+          status: '',
+          product: [],
+          image: ''
+        });
+        setOpen({ ...open, form: false });
+        enqueueSnackbar('Gagal menambah data baru', { variant: 'error' });
       }
     }
   };
 
   // hapus data
-  const hapus = async () => {
+  const onDelete = async () => {
+    // services
     const result = await deleteHighLightBanners(id).catch(err => err);
 
     // cek sukses atau tidak
@@ -300,57 +286,113 @@ function TabHighLight({ setDataBanners, dataBanners }) {
             setDataBanners(res.data.data);
           })
           .catch(err => err);
-      }, 5000);
+      }, 3000);
+      enqueueSnackbar('Berhasil menghapus data', { variant: 'success' });
     } else {
       setOpen({ ...open, hapus: false });
+      enqueueSnackbar('Gagal menghapus data', { variant: 'success' });
     }
   };
 
-  // upload image
-  const handleUploadFile = async e => {
+  // upload image produk
+  const onSelectedForProduk = async e => {
     const file = e.target.files[0];
 
-    if (!['image/png', 'image/jpeg'].includes(file.type)) {
-      setError({
-        ...error,
-        image: `Tipe file tidak didukung: ${file.type}`
+    if (!['image/png', 'image/jpeg'].includes(file?.type)) {
+      setErrorProduk({
+        ...errorProduk,
+        image: `Tipe file tidak didukung: ${file?.type}`
       });
-    } else if (file.size >= 512000) {
-      setError({
-        ...error,
+    } else if (file?.size >= 512000) {
+      setErrorProduk({
+        ...errorProduk,
         image: 'Ukuran file terlalu besar dari 500KB'
       });
     } else {
       const reader = new FileReader();
 
       reader.onabort = () => {
-        setError({
-          ...error,
+        setErrorProduk({
+          ...errorProduk,
           image: 'Proses pembacaan file dibatalkan'
         });
       };
 
       reader.onerror = () => {
-        setError({
-          ...error,
+        setErrorProduk({
+          ...errorProduk,
           image: 'File tidak terbaca'
         });
       };
 
       reader.onload = async () => {
-        setError({
-          ...error,
+        setErrorProduk({
+          ...errorProduk,
           image: ''
         });
 
         try {
-          setForm({
-            ...form,
+          setFormProduk({
+            ...formProduk,
             image: file
           });
         } catch (e) {
-          setError({
-            ...error,
+          setErrorProduk({
+            ...errorProduk,
+            image: e.message
+          });
+        }
+      };
+
+      reader.readAsDataURL(file);
+    }
+  };
+
+  // upload image produk
+  const onSelectedForServices = async e => {
+    const file = e.target.files[0];
+
+    if (!['image/png', 'image/jpeg'].includes(file?.type)) {
+      setErrorServices({
+        ...errorServices,
+        image: `Tipe file tidak didukung: ${file?.type}`
+      });
+    } else if (file?.size >= 512000) {
+      setErrorServices({
+        ...errorServices,
+        image: 'Ukuran file terlalu besar dari 500KB'
+      });
+    } else {
+      const reader = new FileReader();
+
+      reader.onabort = () => {
+        setErrorServices({
+          ...errorServices,
+          image: 'Proses pembacaan file dibatalkan'
+        });
+      };
+
+      reader.onerror = () => {
+        setErrorServices({
+          ...errorServices,
+          image: 'File tidak terbaca'
+        });
+      };
+
+      reader.onload = async () => {
+        setErrorServices({
+          ...errorServices,
+          image: ''
+        });
+
+        try {
+          setFormServices({
+            ...formServices,
+            image: file
+          });
+        } catch (e) {
+          setErrorServices({
+            ...errorServices,
             image: e.message
           });
         }
@@ -370,58 +412,16 @@ function TabHighLight({ setDataBanners, dataBanners }) {
           <Carousel
             ssr
             partialVisbile
-            itemClass="image-item"
+            itemClass={classes.card}
             responsive={responsive}>
-            {/* {dataBanners &&
-              dataBanners.mainBanner &&
-              dataBanners.mainBanner.data &&
-              dataBanners.mainBanner.data.map(data => (
-                <div key={data}>
-                  <Card>
-                    <CardActionArea>
-                      <CardMedia
-                        component="img"
-                        alt="Contemplative Reptile"
-                        height="230"
-                        image="https://ecs7.tokopedia.net/img/blog/seller/2020/04/voucher-toko.jpg"
-                        title="Contemplative Reptile"
-                      />
-                    </CardActionArea>
-                    <CardActions className={classes.action}>
-                      <IconButton
-                        size="small"
-                        color="primary"
-                        onClick={() => {
-                          setID();
-                          setIsEdit(true);
-                          setForm({
-                            ...form
-                          });
-                          setOpen({ ...open, form: true });
-                        }}>
-                        <IoPencilOutline />
-                      </IconButton>
-                      <IconButton
-                        size="small"
-                        color="primary"
-                        onClick={() => {
-                          setID();
-                          setOpen({ ...open, hapus: true });
-                        }}>
-                        <IoTrashOutline />
-                      </IconButton>
-                    </CardActions>
-                  </Card>
-                </div>
-              ))} */}
-            {Array.from(new Array(10)).map((_, i) => (
-              <div key={i}>
-                <Card className={classes.card}>
+            {dataBanners.highlightBanner ? (
+              dataBanners.highlightBanner.data.map(item => (
+                <Card key={item}>
                   <CardActionArea>
                     <CardMedia
                       component="img"
                       alt="Contemplative Reptile"
-                      height="130"
+                      height="230"
                       image="https://ecs7.tokopedia.net/img/blog/seller/2020/04/voucher-toko.jpg"
                       title="Contemplative Reptile"
                     />
@@ -430,23 +430,32 @@ function TabHighLight({ setDataBanners, dataBanners }) {
                     <IconButton
                       size="small"
                       color="primary"
-                      onClick={() =>
-                        setOpen({ ...open, highlightProduk: true })
-                      }>
+                      onClick={() => {
+                        setID('');
+                        setIsEdit(true);
+                        setType('1');
+                        setFormProduk({
+                          ...formProduk
+                        });
+                        setOpen({ ...open, form: true });
+                      }}>
                       <IoPencilOutline />
                     </IconButton>
                     <IconButton
                       size="small"
                       color="primary"
-                      onClick={() =>
-                        setOpen({ ...open, hapusHighlightProduk: true })
-                      }>
+                      onClick={() => {
+                        setID('');
+                        setOpen({ ...open, hapus: true });
+                      }}>
                       <IoTrashOutline />
                     </IconButton>
                   </CardActions>
                 </Card>
-              </div>
-            ))}
+              ))
+            ) : (
+              <div>item image kosong</div>
+            )}
           </Carousel>
         </div>
         <br />
@@ -456,51 +465,12 @@ function TabHighLight({ setDataBanners, dataBanners }) {
           <label className={classes.title}>highlight produk history</label>
           <br />
           <br />
-          <Carousel
-            ssr
-            partialVisbile
-            itemClass="image-item"
-            responsive={responsiveHistory}>
-            {Array.from(new Array(10)).map((_, i) => (
-              <div key={i}>
-                <Card className={classes.card}>
-                  <CardActionArea>
-                    <CardMedia
-                      component="img"
-                      alt="Contemplative Reptile"
-                      height="130"
-                      image="https://ecs7.tokopedia.net/img/blog/seller/2020/04/voucher-toko.jpg"
-                      title="Contemplative Reptile"
-                    />
-                  </CardActionArea>
-                  <CardActions className={classes.action}>
-                    <IconButton
-                      size="small"
-                      color="primary"
-                      onClick={() =>
-                        setOpen({ ...open, highlightProduk: true })
-                      }>
-                      <IoPencilOutline />
-                    </IconButton>
-                    <IconButton
-                      size="small"
-                      color="primary"
-                      onClick={() =>
-                        setOpen({ ...open, hapusHighlightProduk: true })
-                      }>
-                      <IoTrashOutline />
-                    </IconButton>
-                  </CardActions>
-                </Card>
-              </div>
-            ))}
-          </Carousel>
         </div>
         <div className={classes.wrapperButton}>
           <Button
             variant="contained"
             color="primary"
-            onClick={() => setOpen({ ...open, highlightProduk: true })}>
+            onClick={() => setOpen({ ...open, form: true })}>
             buat highlight produk
           </Button>
         </div>
@@ -513,85 +483,6 @@ function TabHighLight({ setDataBanners, dataBanners }) {
           <label className={classes.title}>highlight jasa aktif</label>
           <br />
           <br />
-          <Carousel
-            ssr
-            partialVisbile
-            itemClass="image-item"
-            responsive={responsive}>
-            {/* {dataBanners &&
-              dataBanners.mainBanner &&
-              dataBanners.mainBanner.data &&
-              dataBanners.mainBanner.data.map(data => (
-                <div key={data}>
-                  <Card>
-                    <CardActionArea>
-                      <CardMedia
-                        component="img"
-                        alt="Contemplative Reptile"
-                        height="230"
-                        image="https://ecs7.tokopedia.net/img/blog/seller/2020/04/voucher-toko.jpg"
-                        title="Contemplative Reptile"
-                      />
-                    </CardActionArea>
-                    <CardActions className={classes.action}>
-                      <IconButton
-                        size="small"
-                        color="primary"
-                        onClick={() => {
-                          setID();
-                          setIsEdit(true);
-                          setForm({
-                            ...form
-                          });
-                          setOpen({ ...open, form: true });
-                        }}>
-                        <IoPencilOutline />
-                      </IconButton>
-                      <IconButton
-                        size="small"
-                        color="primary"
-                        onClick={() => {
-                          setID();
-                          setOpen({ ...open, hapus: true });
-                        }}>
-                        <IoTrashOutline />
-                      </IconButton>
-                    </CardActions>
-                  </Card>
-                </div>
-              ))} */}
-            {Array.from(new Array(10)).map((_, i) => (
-              <div key={i}>
-                <Card className={classes.card}>
-                  <CardActionArea>
-                    <CardMedia
-                      component="img"
-                      alt="Contemplative Reptile"
-                      height="130"
-                      image="https://ecs7.tokopedia.net/img/blog/seller/2020/04/voucher-toko.jpg"
-                      title="Contemplative Reptile"
-                    />
-                  </CardActionArea>
-                  <CardActions className={classes.action}>
-                    <IconButton
-                      size="small"
-                      color="primary"
-                      onClick={() => setOpen({ ...open, highlightJasa: true })}>
-                      <IoPencilOutline />
-                    </IconButton>
-                    <IconButton
-                      size="small"
-                      color="primary"
-                      onClick={() =>
-                        setOpen({ ...open, hapusHighlightJasa: true })
-                      }>
-                      <IoTrashOutline />
-                    </IconButton>
-                  </CardActions>
-                </Card>
-              </div>
-            ))}
-          </Carousel>
         </div>
         <br />
         <br />
@@ -600,43 +491,6 @@ function TabHighLight({ setDataBanners, dataBanners }) {
           <label className={classes.title}>highlight jasa history</label>
           <br />
           <br />
-          <Carousel
-            ssr
-            partialVisbile
-            itemClass="image-item"
-            responsive={responsiveHistory}>
-            {Array.from(new Array(10)).map((_, i) => (
-              <div key={i}>
-                <Card className={classes.card}>
-                  <CardActionArea>
-                    <CardMedia
-                      component="img"
-                      alt="Contemplative Reptile"
-                      height="130"
-                      image="https://ecs7.tokopedia.net/img/blog/seller/2020/04/voucher-toko.jpg"
-                      title="Contemplative Reptile"
-                    />
-                  </CardActionArea>
-                  <CardActions className={classes.action}>
-                    <IconButton
-                      size="small"
-                      color="primary"
-                      onClick={() => setOpen({ ...open, highlightJasa: true })}>
-                      <IoPencilOutline />
-                    </IconButton>
-                    <IconButton
-                      size="small"
-                      color="primary"
-                      onClick={() =>
-                        setOpen({ ...open, hapusHighlightJasa: true })
-                      }>
-                      <IoTrashOutline />
-                    </IconButton>
-                  </CardActions>
-                </Card>
-              </div>
-            ))}
-          </Carousel>
         </div>
         <div className={classes.wrapperButton}>
           <Button
@@ -647,297 +501,50 @@ function TabHighLight({ setDataBanners, dataBanners }) {
           </Button>
         </div>
       </div>
+
       <CompDialog
-        open={open.highlightProduk}
-        close={() => setOpen({ ...open, highlightProduk: false })}
-        title="Buat HighLight Produk">
+        open={open.form}
+        close={() => setOpen({ ...open, form: false })}
+        title={type === '1' ? 'Form HighLight Produk' : 'Form HighLight Jasa'}>
         <div className={classes.form}>
-          <InputLabel
-            htmlFor="headline"
-            error={error.headline ? true : false}
-            className={classes.label}>
-            Headline
-          </InputLabel>
-          <FormControl variant="outlined" size="small" margin="normal">
-            <OutlinedInput
-              name="headline"
-              id="headline"
-              color="primary"
-              onChange={handleChange}
-              value={form.headline}
-              error={error.headline ? true : false}
-            />
-            <FormHelperText
-              id="outlined-helper-text"
-              error={error.headline ? true : false}>
-              {error.headline}
-            </FormHelperText>
-          </FormControl>
-
-          <div className={classes.inputFile}>
-            <Avatar
-              alt="photo"
-              src={
-                form.image.name ? URL.createObjectURL(form.image) : form.image
-              }
-              variant="rounded"
-              className={classes.preview}
-            />
-            <input
-              type="file"
-              id="upload"
-              accept="image/jpeg,image/png"
-              onChange={handleUploadFile}
-              style={{ display: 'none' }}
-            />
-            <label htmlFor="upload" className={classes.itemUpload}>
-              <IoCloudDownloadOutline />
-            </label>
-          </div>
-          <br />
-          <FormHelperText
-            id="outlined-helper-text"
-            error={error.image ? true : false}>
-            {error.image}
-          </FormHelperText>
-
-          <InputLabel
-            htmlFor="id_product1"
-            error={error.id_product1 ? true : false}
-            className={classes.label}>
-            Pilih Produk (max 5)
-          </InputLabel>
-          <FormControl variant="outlined" size="small" margin="normal">
-            <Select
-              id="id_product1"
-              value={form.id_product1}
-              onChange={handleChange}>
-              <TextField
-                className={classes.input}
-                placeholder="Search"
-                fullWidth
-                onChange={e => console.log(e.target.value)}
+          <FormControl component="fieldset" style={{ marginBottom: 15 }}>
+            <FormLabel component="legend">Tipe</FormLabel>
+            <RadioGroup
+              row
+              aria-label="type"
+              name="type"
+              value={type}
+              onChange={e => setType(e.target.value)}>
+              <FormControlLabel
+                value="1"
+                control={<Radio color="primary" />}
+                label="Produk"
               />
-              <List>
-                <MenuItem value={1}>Satu</MenuItem>
-              </List>
-            </Select>
-            <FormHelperText
-              id="outlined-helper-text"
-              error={error.id_product1 ? true : false}>
-              {error.id_product1}
-            </FormHelperText>
+              <FormControlLabel
+                value="2"
+                control={<Radio color="primary" />}
+                label="Jasa"
+              />
+            </RadioGroup>
           </FormControl>
+
+          {type === '1' ? <div>Produk</div> : <div>Jasa</div>}
 
           <Button
             variant="contained"
             color="primary"
-            onClick={submit}
-            className={classes.submit}
-            disabled={
-              form.headline &&
-              form.id_product1 &&
-              form.id_product2 &&
-              form.id_product3 &&
-              form.id_product4 &&
-              form.id_product5 &&
-              form.image
-                ? false
-                : true
-            }>
+            onClick={e => (type === '1' ? onSubmitProduk(e) : null)}
+            className={classes.submit}>
             simpan
           </Button>
         </div>
       </CompDialog>
-      <CompDialog
-        open={open.highlightJasa}
-        close={() => setOpen({ ...open, highlightJasa: false })}
-        title="Buat HighLight Jasa">
-        <div className={classes.form}>
-          <InputLabel
-            htmlFor="headline"
-            error={error.headline ? true : false}
-            className={classes.label}>
-            Headline
-          </InputLabel>
-          <FormControl variant="outlined" size="small" margin="normal">
-            <OutlinedInput
-              name="headline"
-              id="headline"
-              color="primary"
-              onChange={handleChange}
-              value={form.headline}
-              error={error.headline ? true : false}
-            />
-            <FormHelperText
-              id="outlined-helper-text"
-              error={error.headline ? true : false}>
-              {error.headline}
-            </FormHelperText>
-          </FormControl>
 
-          <InputLabel
-            htmlFor="id_product1"
-            error={error.id_product1 ? true : false}
-            className={classes.label}>
-            ID Produk 1
-          </InputLabel>
-          <FormControl variant="outlined" size="small" margin="normal">
-            <OutlinedInput
-              name="id_product1"
-              id="id_product1"
-              color="primary"
-              onChange={handleChange}
-              value={form.id_product1}
-              error={error.id_product1 ? true : false}
-            />
-            <FormHelperText
-              id="outlined-helper-text"
-              error={error.id_product1 ? true : false}>
-              {error.id_product1}
-            </FormHelperText>
-          </FormControl>
-
-          <InputLabel
-            htmlFor="id_product2"
-            error={error.id_product2 ? true : false}
-            className={classes.label}>
-            ID Produk 2
-          </InputLabel>
-          <FormControl variant="outlined" size="small" margin="normal">
-            <OutlinedInput
-              name="id_product2"
-              id="id_product2"
-              color="primary"
-              onChange={handleChange}
-              value={form.id_product2}
-              error={error.id_product2 ? true : false}
-            />
-            <FormHelperText
-              id="outlined-helper-text"
-              error={error.id_product2 ? true : false}>
-              {error.id_product2}
-            </FormHelperText>
-          </FormControl>
-
-          <InputLabel
-            htmlFor="id_product3"
-            error={error.id_product3 ? true : false}
-            className={classes.label}>
-            ID Produk 3
-          </InputLabel>
-          <FormControl variant="outlined" size="small" margin="normal">
-            <OutlinedInput
-              name="id_product3"
-              id="id_product3"
-              color="primary"
-              onChange={handleChange}
-              value={form.id_product3}
-              error={error.id_product3 ? true : false}
-            />
-            <FormHelperText
-              id="outlined-helper-text"
-              error={error.id_product3 ? true : false}>
-              {error.id_product3}
-            </FormHelperText>
-          </FormControl>
-
-          <InputLabel
-            htmlFor="id_product4"
-            error={error.id_product4 ? true : false}
-            className={classes.label}>
-            ID Produk 4
-          </InputLabel>
-          <FormControl variant="outlined" size="small" margin="normal">
-            <OutlinedInput
-              name="id_product4"
-              id="id_product4"
-              color="primary"
-              onChange={handleChange}
-              value={form.id_product4}
-              error={error.id_product4 ? true : false}
-            />
-            <FormHelperText
-              id="outlined-helper-text"
-              error={error.id_product4 ? true : false}>
-              {error.id_product4}
-            </FormHelperText>
-          </FormControl>
-
-          <InputLabel
-            htmlFor="id_product5"
-            error={error.id_product5 ? true : false}
-            className={classes.label}>
-            ID Produk 5
-          </InputLabel>
-          <FormControl variant="outlined" size="small" margin="normal">
-            <OutlinedInput
-              name="id_product5"
-              id="id_product5"
-              color="primary"
-              onChange={handleChange}
-              value={form.id_product5}
-              error={error.id_product5 ? true : false}
-            />
-            <FormHelperText
-              id="outlined-helper-text"
-              error={error.id_product5 ? true : false}>
-              {error.id_product5}
-            </FormHelperText>
-          </FormControl>
-
-          <div className={classes.inputFile}>
-            <Avatar
-              alt="photo"
-              src={
-                form.image.name ? URL.createObjectURL(form.image) : form.image
-              }
-              variant="rounded"
-              className={classes.preview}
-            />
-            <input
-              type="file"
-              id="upload"
-              accept="image/jpeg,image/png"
-              onChange={handleUploadFile}
-              style={{ display: 'none' }}
-            />
-            <label htmlFor="upload" className={classes.itemUpload}>
-              Upload Foto
-            </label>
-          </div>
-          <br />
-          <FormHelperText
-            id="outlined-helper-text"
-            error={error.image ? true : false}>
-            {error.image}
-          </FormHelperText>
-
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={submit}
-            className={classes.submit}
-            disabled={
-              form.headline &&
-              form.id_product1 &&
-              form.id_product2 &&
-              form.id_product3 &&
-              form.id_product4 &&
-              form.id_product5 &&
-              form.image
-                ? false
-                : true
-            }>
-            simpan
-          </Button>
-        </div>
-      </CompDialog>
       <ConfirmDialog
-        open={open.hapusHighlightProduk}
-        close={() => setOpen({ ...open, hapusHighlightProduk: false })}
-        submit={hapus}
-        title="Hapus Banner">
+        open={open.hapus}
+        close={() => setOpen({ ...open, hapus: false })}
+        submit={onDelete}
+        title="Hapus Highlight">
         Apakah yakin ingin hapus ?
       </ConfirmDialog>
     </div>
