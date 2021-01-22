@@ -100,11 +100,12 @@ export const restoreMainBanners = id => {
 /**
  * service customer for read banners
  */
-export const readBannersHighlight = type => {
+export const readBannersHighlight = (type, isDeleted) => {
   return new Promise((resolve, reject) => {
     const data = {
       params: {
-        type: type ? type : ''
+        type: type ? type : '',
+        isDeleted: isDeleted
       }
     };
 

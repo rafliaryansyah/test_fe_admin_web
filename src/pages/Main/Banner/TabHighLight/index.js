@@ -138,8 +138,9 @@ function TabHighLight() {
   const [produkToko, setProdukToko] = useState([]);
   const [serviceToko, setServiceToko] = useState([]);
 
-  // data id highlight
+  // data id dan type highlight
   const [id, setID] = useState('');
+  const [type, setType] = useState(0);
 
   // cek update atau create
   const [isEdit, setIsEdit] = useState(false);
@@ -264,7 +265,7 @@ function TabHighLight() {
 
   // read data banner type product dan service
   useEffect(() => {
-    readBannersHighlight('product')
+    readBannersHighlight('product', false)
       .then(res => {
         setHighlightProduks(res.data.data);
       })
@@ -272,7 +273,7 @@ function TabHighLight() {
   }, []);
 
   useEffect(() => {
-    readBannersHighlight('service')
+    readBannersHighlight('service', false)
       .then(res => {
         setHighlightServices(res.data.data);
       })
@@ -335,7 +336,7 @@ function TabHighLight() {
           setOpenHP(false);
 
           // read kembali data baru
-          readBannersHighlight('product')
+          readBannersHighlight('product', false)
             .then(res => {
               setHighlightProduks(res.data.data);
             })
@@ -392,7 +393,7 @@ function TabHighLight() {
           setOpenHP(false);
 
           // read kembali data baru
-          readBannersHighlight('product')
+          readBannersHighlight('product', false)
             .then(res => {
               setHighlightProduks(res.data.data);
             })
@@ -465,7 +466,7 @@ function TabHighLight() {
           setOpenHS(false);
 
           // read kembali data baru
-          readBannersHighlight('service')
+          readBannersHighlight('service', false)
             .then(res => {
               setHighlightServices(res.data.data);
             })
@@ -522,7 +523,7 @@ function TabHighLight() {
           setOpenHS(false);
 
           // read kembali data baru
-          readBannersHighlight('service')
+          readBannersHighlight('service', false)
             .then(res => {
               setHighlightServices(res.data.data);
             })
@@ -557,18 +558,20 @@ function TabHighLight() {
     if (result.success) {
       setOpenHapus(false);
 
-      // read kembali data baru
-      readBannersHighlight('product')
-        .then(res => {
-          setHighlightProduks(res.data.data);
-        })
-        .catch(err => err);
-
-      readBannersHighlight('service')
-        .then(res => {
-          setHighlightServices(res.data.data);
-        })
-        .catch(err => err);
+      // cek tipe untuk read kembali data baru
+      if (type === 1) {
+        readBannersHighlight('product', false)
+          .then(res => {
+            setHighlightProduks(res.data.data);
+          })
+          .catch(err => err);
+      } else {
+        readBannersHighlight('service', false)
+          .then(res => {
+            setHighlightServices(res.data.data);
+          })
+          .catch(err => err);
+      }
 
       enqueueSnackbar('Berhasil menghapus data', { variant: 'success' });
     } else {
@@ -725,6 +728,7 @@ function TabHighLight() {
                         <IconButton
                           size="small"
                           color="primary"
+                          disabled={item.isDeleted}
                           onClick={() => {
                             setID(item.id);
                             setIsEdit(true);
@@ -742,8 +746,10 @@ function TabHighLight() {
                         <IconButton
                           size="small"
                           color="primary"
+                          disabled={item.isDeleted}
                           onClick={() => {
                             setID(item.id);
+                            setType(item.bannerType?.id);
                             setOpenHapus(true);
                           }}>
                           <IoTrashOutline />
@@ -794,6 +800,7 @@ function TabHighLight() {
                         <IconButton
                           size="small"
                           color="primary"
+                          disabled={item.isDeleted}
                           onClick={() => {
                             setID(item.id);
                             setIsEdit(true);
@@ -811,8 +818,10 @@ function TabHighLight() {
                         <IconButton
                           size="small"
                           color="primary"
+                          disabled={item.isDeleted}
                           onClick={() => {
                             setID(item.id);
+                            setType(item.bannerType?.id);
                             setOpenHapus(true);
                           }}>
                           <IoTrashOutline />
@@ -873,6 +882,7 @@ function TabHighLight() {
                         <IconButton
                           size="small"
                           color="primary"
+                          disabled={item.isDeleted}
                           onClick={() => {
                             setID(item.id);
                             setIsEdit(true);
@@ -890,8 +900,10 @@ function TabHighLight() {
                         <IconButton
                           size="small"
                           color="primary"
+                          disabled={item.isDeleted}
                           onClick={() => {
                             setID(item.id);
+                            setType(item.bannerType?.id);
                             setOpenHapus(true);
                           }}>
                           <IoTrashOutline />
@@ -915,7 +927,7 @@ function TabHighLight() {
               ssr
               partialVisbile
               itemClass={classes.card}
-              responsive={responsive}>
+              responsive={responsiveHistory}>
               {highlightServices.map(
                 item =>
                   item.bannerStatus?.id !== 1 && (
@@ -942,6 +954,7 @@ function TabHighLight() {
                         <IconButton
                           size="small"
                           color="primary"
+                          disabled={item.isDeleted}
                           onClick={() => {
                             setID(item.id);
                             setIsEdit(true);
@@ -959,8 +972,10 @@ function TabHighLight() {
                         <IconButton
                           size="small"
                           color="primary"
+                          disabled={item.isDeleted}
                           onClick={() => {
                             setID(item.id);
+                            setType(item.bannerType?.id);
                             setOpenHapus(true);
                           }}>
                           <IoTrashOutline />
