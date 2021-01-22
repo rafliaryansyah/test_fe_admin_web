@@ -2,6 +2,9 @@ import { useEffect, useState } from 'react';
 import useStyles from './styles';
 import propTypes from 'prop-types';
 
+// debounce
+import { debounce } from 'debounce';
+
 // notistack
 import { useSnackbar } from 'notistack';
 
@@ -23,7 +26,10 @@ import {
   CardActionArea,
   CardActions,
   CardMedia,
-  CardContent
+  CardContent,
+  Select,
+  MenuItem,
+  TextField
 } from '@material-ui/core';
 
 // react icons
@@ -45,7 +51,8 @@ import {
   createVoucher,
   readVoucher,
   updateVoucher,
-  deleteVoucher
+  deleteVoucher,
+  getCategory
 } from 'services';
 
 // utils
@@ -77,13 +84,19 @@ function Voucher({ setDataVoucher, dataVoucher }) {
   // data detail
   const [dataDetail, setDataDetail] = useState({});
 
+  // data kategori
+  const [category, setCategory] = useState([]);
+
   // data form
   const [form, setForm] = useState({
     code: '',
     type: '1',
+    status: '1',
+    category: '',
     expired_at: '',
     min_amount: '',
     amount: '',
+    quantity: '',
     description: '',
     tac: '',
     image: ''
@@ -92,27 +105,34 @@ function Voucher({ setDataVoucher, dataVoucher }) {
   // data errors form
   const [error, setError] = useState({
     code: '',
-    type: '1',
+    type: '',
+    status: '',
+    category: '',
     expired_at: '',
     min_amount: '',
     amount: '',
+    quantity: '',
     description: '',
     tac: '',
     image: ''
   });
 
   // change input field pada form
-  const handleChange = e => {
-    setForm({
-      ...form,
-      [e.target.name]: e.target.value
-    });
+  const handleChange = debounce(
+    e => {
+      setForm({
+        ...form,
+        [e.target.name]: e.target.value
+      });
 
-    setError({
-      ...error,
-      [e.target.name]: ''
-    });
-  };
+      setError({
+        ...error,
+        [e.target.name]: ''
+      });
+    },
+    3000,
+    true
+  );
 
   // validation form
   const validate = () => {
@@ -126,6 +146,14 @@ function Voucher({ setDataVoucher, dataVoucher }) {
       newError.type = 'Field masih kosong';
     }
 
+    if (!form.status) {
+      newError.status = 'Field masih kosong';
+    }
+
+    if (!form.category) {
+      newError.category = 'Field masih kosong';
+    }
+
     if (!form.expired_at) {
       newError.expired_at = 'Field masih kosong';
     }
@@ -136,6 +164,10 @@ function Voucher({ setDataVoucher, dataVoucher }) {
 
     if (!form.amount) {
       newError.amount = 'Field masih kosong';
+    }
+
+    if (!form.quantity) {
+      newError.quantity = 'Field masih kosong';
     }
 
     if (!form.description) {
@@ -182,41 +214,50 @@ function Voucher({ setDataVoucher, dataVoucher }) {
         const {
           code,
           type,
+          status,
+          category,
           expired_at,
           min_amount,
           amount,
+          quantity,
           description,
           tac,
           image
         } = form;
 
         // form-data kosong
-        const formdata = new FormData();
+        const dataUpdate = new FormData();
 
         // mengisi data menggunakan append
-        formdata.append('code', code);
-        formdata.append('type', parseInt(type));
-        formdata.append('expired_at', expired_at);
-        formdata.append('min_amount', min_amount);
-        formdata.append('amount', amount);
-        formdata.append('description', description);
-        formdata.append('tac', tac);
+        dataUpdate.append('code', code);
+        dataUpdate.append('type', parseInt(type));
+        dataUpdate.append('status', status);
+        dataUpdate.append('category', category);
+        dataUpdate.append('expired_at', expired_at);
+        dataUpdate.append('min_amount', min_amount);
+        dataUpdate.append('amount', amount);
+        dataUpdate.append('quantity', quantity);
+        dataUpdate.append('description', description);
+        dataUpdate.append('tac', tac);
 
         // cek image yang baru atau tetap yang lama
         if (image.name) {
-          formdata.append('image', image);
+          dataUpdate.append('image', image);
         }
 
         // services
-        const result = await updateVoucher(id, formdata).catch(err => err);
+        const result = await updateVoucher(id, dataUpdate).catch(err => err);
 
         if (result.success) {
           setForm({
             code: '',
             type: '1',
+            status: 1,
+            category: '',
             expired_at: '',
             min_amount: '',
             amount: '',
+            quantity: '',
             description: '',
             tac: '',
             image: ''
@@ -241,14 +282,17 @@ function Voucher({ setDataVoucher, dataVoucher }) {
                 });
               })
               .catch(err => err);
-          }, 5000);
+          }, 3000);
         } else {
           setForm({
             code: '',
             type: '1',
+            status: 1,
+            category: '',
             expired_at: '',
             min_amount: '',
             amount: '',
+            quantity: '',
             description: '',
             tac: '',
             image: ''
@@ -256,11 +300,11 @@ function Voucher({ setDataVoucher, dataVoucher }) {
           setOpen({ ...open, form: false });
 
           // cek error validation dari api
-          if (result.data.response.data.errors) {
-            enqueueSnackbar('Beberapa data yang diberikan tidak valid', {
-              variant: 'error'
-            });
-          }
+          // if (result.data.response.data.errors) {
+          //   enqueueSnackbar('Beberapa data yang diberikan tidak valid', {
+          //     variant: 'error'
+          //   });
+          // }
         }
       } else {
         // tambah data
@@ -269,37 +313,50 @@ function Voucher({ setDataVoucher, dataVoucher }) {
         const {
           code,
           type,
+          status,
+          category,
           expired_at,
           min_amount,
           amount,
+          quantity,
           description,
           tac,
           image
         } = form;
 
         // form-data kosong
-        const formdata = new FormData();
+        const dataCreate = new FormData();
 
         // mengisi data menggunakan append
-        formdata.append('code', code);
-        formdata.append('type', parseInt(type));
-        formdata.append('expired_at', expired_at);
-        formdata.append('min_amount', min_amount);
-        formdata.append('amount', amount);
-        formdata.append('description', description);
-        formdata.append('tac', tac);
-        formdata.append('image', image);
+        dataCreate.append('code', code);
+        dataCreate.append('type', parseInt(type));
+        dataCreate.append('status', status);
+        dataCreate.append('category', category);
+        dataCreate.append('expired_at', expired_at);
+        dataCreate.append('min_amount', min_amount);
+        dataCreate.append('amount', amount);
+        dataCreate.append('quantity', quantity);
+        dataCreate.append('description', description);
+        dataCreate.append('tac', tac);
+
+        // cek image baru atau tetap yang lama
+        if (image.name) {
+          dataCreate.append('image', image);
+        }
 
         // services
-        const result = await createVoucher(formdata).catch(err => err);
+        const result = await createVoucher(dataCreate).catch(err => err);
 
         if (result.success) {
           setForm({
             code: '',
             type: '1',
+            status: 1,
+            category: '',
             expired_at: '',
             min_amount: '',
             amount: '',
+            quantity: '',
             description: '',
             tac: '',
             image: ''
@@ -324,14 +381,17 @@ function Voucher({ setDataVoucher, dataVoucher }) {
                 });
               })
               .catch(err => err);
-          }, 5000);
+          }, 3000);
         } else {
           setForm({
             code: '',
             type: '1',
+            status: 1,
+            category: '',
             expired_at: '',
             min_amount: '',
             amount: '',
+            quantity: '',
             description: '',
             tac: '',
             image: ''
@@ -339,11 +399,11 @@ function Voucher({ setDataVoucher, dataVoucher }) {
           setOpen({ ...open, form: false });
 
           // cek error validation dari api
-          if (result.data.response.data.errors) {
-            enqueueSnackbar('Beberapa data yang diberikan tidak valid', {
-              variant: 'error'
-            });
-          }
+          // if (result.data.response.data.errors) {
+          //   enqueueSnackbar('Beberapa data yang diberikan tidak valid', {
+          //     variant: 'error'
+          //   });
+          // }
         }
       }
     }
@@ -376,7 +436,7 @@ function Voucher({ setDataVoucher, dataVoucher }) {
             });
           })
           .catch(err => err);
-      }, 5000);
+      }, 3000);
     } else {
       setOpen({ ...open, hapus: false });
       enqueueSnackbar('Gagal menghapus voucher', {
@@ -479,62 +539,64 @@ function Voucher({ setDataVoucher, dataVoucher }) {
       </div>
 
       <div className={classes.main}>
-        {dataVoucher &&
-          dataVoucher.map(data => (
-            <Card key={data.id}>
-              <CardActionArea
+        {dataVoucher?.map(data => (
+          <Card key={data.id}>
+            <CardActionArea
+              disabled={data.isDeleted}
+              onClick={() => {
+                setDataDetail(data);
+                setOpen({ ...open, detail: true });
+              }}>
+              <CardMedia
+                component="img"
+                alt="Contemplative Reptile"
+                height="200"
+                image={data.image}
+                title="Contemplative Reptile"
+              />
+              <CardContent className={classes.content}>
+                <span>{data.code}</span>
+              </CardContent>
+            </CardActionArea>
+            <CardActions className={classes.action}>
+              <IconButton
                 disabled={data.isDeleted}
+                size="small"
+                color="primary"
                 onClick={() => {
-                  setDataDetail(data);
-                  setOpen({ ...open, detail: true });
+                  setID(data.id);
+                  setIsEdit(true);
+                  setForm({
+                    ...form,
+                    code: data.code,
+                    type: data.voucherType?.id.toString(),
+                    status: data.voucherStatus?.id,
+                    category: data.voucherCategory?.id,
+                    expired_at: dateConverterReq(data.expiredAt),
+                    min_amount: data.minAmount,
+                    amount: data.amount,
+                    quantity: data.quantity,
+                    description: data.description,
+                    tac: data.termAndCondition,
+                    image: data.image
+                  });
+                  setOpen({ ...open, form: true });
                 }}>
-                <CardMedia
-                  component="img"
-                  alt="Contemplative Reptile"
-                  height="200"
-                  image={data.image}
-                  title="Contemplative Reptile"
-                />
-                <CardContent className={classes.content}>
-                  <span>{data.code}</span>
-                </CardContent>
-              </CardActionArea>
-              <CardActions className={classes.action}>
-                <IconButton
-                  disabled={data.isDeleted}
-                  size="small"
-                  color="primary"
-                  onClick={() => {
-                    setID(data.id);
-                    setIsEdit(true);
-                    setForm({
-                      ...form,
-                      code: data.code,
-                      type: data.voucherType && data.voucherType.id.toString(),
-                      expired_at: dateConverterReq(data.expiredAt),
-                      min_amount: data.minAmount,
-                      amount: data.amount,
-                      description: data.description,
-                      tac: data.termAndCondition,
-                      image: data.image
-                    });
-                    setOpen({ ...open, form: true });
-                  }}>
-                  <IoPencilOutline />
-                </IconButton>
-                <IconButton
-                  disabled={data.isDeleted}
-                  size="small"
-                  color="primary"
-                  onClick={() => {
-                    setID(data.id);
-                    setOpen({ ...open, hapus: true });
-                  }}>
-                  <IoTrashOutline />
-                </IconButton>
-              </CardActions>
-            </Card>
-          ))}
+                <IoPencilOutline />
+              </IconButton>
+              <IconButton
+                disabled={data.isDeleted}
+                size="small"
+                color="primary"
+                onClick={() => {
+                  setID(data.id);
+                  setOpen({ ...open, hapus: true });
+                }}>
+                <IoTrashOutline />
+              </IconButton>
+            </CardActions>
+          </Card>
+        ))}
       </div>
 
       <Paginasi
@@ -588,6 +650,19 @@ function Voucher({ setDataVoucher, dataVoucher }) {
         open={open.form}
         close={() => {
           setIsEdit(false);
+          setForm({
+            code: '',
+            type: '1',
+            status: 1,
+            category: '',
+            expired_at: '',
+            min_amount: '',
+            amount: '',
+            quantity: '',
+            description: '',
+            tac: '',
+            image: ''
+          });
           setOpen({ ...open, form: false });
         }}
         title="Form Voucher">
@@ -632,6 +707,64 @@ function Voucher({ setDataVoucher, dataVoucher }) {
                 label="Jasa"
               />
             </RadioGroup>
+          </FormControl>
+
+          <FormControl
+            variant="outlined"
+            size="small"
+            fullWidth
+            style={{ marginBottom: 15 }}>
+            <InputLabel id="status">Status</InputLabel>
+            <Select
+              labelId="status"
+              id="status"
+              name="status"
+              value={form.status}
+              onChange={handleChange}
+              label="Status">
+              <MenuItem value={1}>Aktif</MenuItem>
+              <MenuItem value={2}>Tidak Aktif</MenuItem>
+            </Select>
+          </FormControl>
+
+          <FormControl
+            variant="outlined"
+            size="small"
+            fullWidth
+            style={{ marginBottom: 15 }}>
+            <InputLabel id="category">Kategori</InputLabel>
+            <Select
+              labelId="category"
+              id="category"
+              name="category"
+              value={form.category}
+              onChange={handleChange}
+              label="Kategori">
+              <TextField
+                id="search"
+                name="search"
+                value={category}
+                onChange={e => {
+                  getCategory('1', e.target.value)
+                    .then(res => {
+                      setCategory(res.data.data);
+                    })
+                    .catch(err => err);
+                  getCategory('2', e.target.value)
+                    .then(res => {
+                      setCategory(res.data.data);
+                    })
+                    .catch(err => err);
+                }}
+                placeholder="search"
+                fullWidth
+              />
+              {category.map(item => (
+                <MenuItem key={item.id} value={item.id}>
+                  {item.name}
+                </MenuItem>
+              ))}
+            </Select>
           </FormControl>
 
           <InputLabel
@@ -701,6 +834,28 @@ function Voucher({ setDataVoucher, dataVoucher }) {
             />
             <FormHelperText id="outlined-helper-text" error={error.amount}>
               {error.amount}
+            </FormHelperText>
+          </FormControl>
+
+          <InputLabel htmlFor="quantity" error={error.quantity ? true : false}>
+            Kuantitas
+          </InputLabel>
+          <FormControl
+            variant="outlined"
+            size="small"
+            margin="normal"
+            fullWidth>
+            <OutlinedInput
+              type="number"
+              name="quantity"
+              id="quantity"
+              color="primary"
+              onChange={handleChange}
+              value={form.quantity}
+              error={error.quantity ? true : false}
+            />
+            <FormHelperText id="outlined-helper-text" error={error.quantity}>
+              {error.quantity}
             </FormHelperText>
           </FormControl>
 
@@ -786,6 +941,7 @@ function Voucher({ setDataVoucher, dataVoucher }) {
           </Button>
         </div>
       </CompDialog>
+
       <ConfirmDialog
         open={open.hapus}
         title="Hapus Voucher"

@@ -33,8 +33,8 @@ function Detail({ dataStore }) {
 
   // read data detail toko
   useEffect(() => {
-    getProduk(dataStore.id, id)
-      .then(res => setProduk(res.data))
+    getProduk(dataStore.username, id)
+      .then(res => setProduk(res.data.data))
       .catch(err => err);
   }, []);
 
@@ -57,31 +57,39 @@ function Detail({ dataStore }) {
 
   return (
     <div className={classes.wrapper}>
-      <Avatar alt="" src="" variant="rounded" className={classes.avatar} />
+      <Avatar
+        alt={produk.name}
+        // src={produk.images.map(item => item.image)}
+        variant="rounded"
+        className={classes.avatar}
+      />
       <div className={classes.itemLabel}>
         <div className={classes.input}>
           <label className={classes.label}>nama</label>
-          <span className={classes.text}>{}</span>
+          <span className={classes.text}>{produk.name}</span>
         </div>
         <div className={classes.input}>
           <label className={classes.label}>berat</label>
-          <span className={classes.text}>{}</span>
+          <span
+            className={
+              classes.text
+            }>{`${produk.heavy?.totalHeavy} ${produk.heavy?.type}`}</span>
         </div>
         <div className={classes.input}>
           <label className={classes.label}>tipe</label>
-          <span className={classes.text}>{}</span>
+          <span className={classes.text}>{produk.type}</span>
         </div>
         <div className={classes.input}>
           <label className={classes.label}>harga</label>
-          <span className={classes.text}>{currency()}</span>
+          <span className={classes.text}>{currency(produk.price)}</span>
         </div>
         <div className={classes.input}>
           <label className={classes.label}>status</label>
-          <span className={classes.text}>{}</span>
+          <span className={classes.text}>{produk.status}</span>
         </div>
         <div className={classes.input}>
           <label className={classes.label}>stock</label>
-          <span className={classes.text}>{}</span>
+          <span className={classes.text}>{produk.stock}</span>
         </div>
         {status ? (
           <Button

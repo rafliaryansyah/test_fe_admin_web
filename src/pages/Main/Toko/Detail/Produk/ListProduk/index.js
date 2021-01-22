@@ -8,6 +8,9 @@ import { CardProduk, Paginasi } from 'components';
 // redux
 import { connect } from 'react-redux';
 
+// utils
+import { currency } from 'utils';
+
 function ListProduk({ dataProduks, history }) {
   const classes = useStyles();
 
@@ -20,12 +23,12 @@ function ListProduk({ dataProduks, history }) {
         {dataProduks?.map(data => (
           <CardProduk
             key={data.id}
-            srcImage=""
+            srcImage={data.images[0].image}
             nama={data.name}
-            harga="Rp.20.000"
-            type="produk"
-            stok="50"
-            status="aktif"
+            harga={currency(data.price)}
+            type={data.images[0].type}
+            stok={data.stock}
+            status={data.status}
             toko="toko dummy"
             alamatToko="Jl. Keberkahan"
             handleDetail={() => {

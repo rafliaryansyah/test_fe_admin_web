@@ -14,7 +14,9 @@ import {
   InputLabel,
   FormControl,
   OutlinedInput,
-  InputAdornment
+  InputAdornment,
+  FormControlLabel,
+  Checkbox
 } from '@material-ui/core';
 
 // material-ui icons
@@ -25,7 +27,7 @@ import { connect } from 'react-redux';
 import { setStore, setProduks, setReports } from 'modules';
 
 // services
-import { getStore, updateStatusStore, updateModeStore } from 'services';
+import { getStore, updateStatusStore } from 'services';
 
 // utils
 import { dateConverterRes } from 'utils';
@@ -42,7 +44,6 @@ function Beranda({ setDataStore, setDataProduks, setDataReports, dataStore }) {
 
   // open
   const [open, setOpen] = useState(false);
-  const [status, setStatus] = useState(true);
 
   // read data detail toko
   useEffect(() => {
@@ -71,19 +72,6 @@ function Beranda({ setDataStore, setDataProduks, setDataReports, dataStore }) {
     }
   };
 
-  // update mode toko
-  const updateMode = async () => {
-    // services
-    const result = await updateModeStore(id).catch(err => err);
-
-    // cek sukses atau gagal
-    if (result.success) {
-      console.log('sukses');
-    } else {
-      console.log('gagal');
-    }
-  };
-
   return (
     <div className={classes.wrapper}>
       <div>
@@ -93,7 +81,7 @@ function Beranda({ setDataStore, setDataProduks, setDataReports, dataStore }) {
           variant="rounded"
           className={classes.avatar}
         />
-        {status ? (
+        {dataStore.status?.name === 'Approved' ? (
           <Button
             variant="contained"
             color="primary"
@@ -110,6 +98,17 @@ function Beranda({ setDataStore, setDataProduks, setDataReports, dataStore }) {
             nonaktifkan
           </Button>
         )}
+        <br />
+        <FormControlLabel
+          control={
+            <Checkbox
+              checked={dataStore.isOfficialStore?.status}
+              // onChange={handleChange}
+              name="isOfficialStore"
+            />
+          }
+          label="Official Store"
+        />
       </div>
       <div>
         <InputLabel htmlFor="nama_toko" className={classes.label}>
@@ -159,7 +158,7 @@ function Beranda({ setDataStore, setDataProduks, setDataReports, dataStore }) {
           Nama Pemilik
         </InputLabel>
         <FormControl variant="outlined" size="small" margin="normal" fullWidth>
-          <OutlinedInput value={dataStore?.owner?.name} disabled />
+          <OutlinedInput value={dataStore?.owners?.name} disabled />
         </FormControl>
       </div>
       <ConfirmDialog

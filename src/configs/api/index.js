@@ -54,15 +54,23 @@ API.deleteVoucher = apiRequest.delete(apiEndpoint.deleteVoucher, true);
 API.restoreVoucher = apiRequest.patch(apiEndpoint.restoreVoucher, true);
 
 // banners
-API.banners = apiRequest.get(apiEndpoint.banners, true);
 
 // main
+API.readBannersMain = apiRequest.get(apiEndpoint.readBannersMain, true);
 API.createBannersMain = apiRequest.post(apiEndpoint.createBannersMain, true);
 API.updateBannersMain = apiRequest.post(apiEndpoint.updateBannersMain, true);
 API.deleteBannersMain = apiRequest.delete(apiEndpoint.deleteBannersMain, true);
 API.restoreBannersMain = apiRequest.patch(apiEndpoint.restoreBannersMain, true);
 
 // highlight
+API.readBannersHighlight = apiRequest.get(
+  apiEndpoint.readBannersHighlight,
+  true
+);
+API.readDetailBannersHighlight = apiRequest.get(
+  apiEndpoint.readDetailBannersHighlight,
+  true
+);
 API.createBannersHighlight = apiRequest.post(
   apiEndpoint.createBannersHighlight,
   true
@@ -81,6 +89,7 @@ API.restoreBannersHighlight = apiRequest.patch(
 );
 
 // mini
+API.readBannersMini = apiRequest.get(apiEndpoint.readBannersMini, true);
 API.createBannersMini = apiRequest.post(apiEndpoint.createBannersMini, true);
 API.updateBannersMini = apiRequest.post(apiEndpoint.updateBannersMini, true);
 API.deleteBannersMini = apiRequest.delete(apiEndpoint.deleteBannersMini, true);

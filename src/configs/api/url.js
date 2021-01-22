@@ -45,21 +45,24 @@ const apiEndpoint = {
   restoreVoucher: `${appActiveConfig.api.baseurl}/admin/vouchers`,
 
   // banners
-  banners: `${appActiveConfig.api.baseurl}/admin/banners`,
 
   // main
+  readBannersMain: `${appActiveConfig.api.baseurl}/admin/banners/main`,
   createBannersMain: `${appActiveConfig.api.baseurl}/admin/banners/main`,
   updateBannersMain: `${appActiveConfig.api.baseurl}/admin/banners/main`,
   deleteBannersMain: `${appActiveConfig.api.baseurl}/admin/banners`,
   restoreBannersMain: `${appActiveConfig.api.baseurl}/admin/banners`,
 
   // highlight
+  readBannersHighlight: `${appActiveConfig.api.baseurl}/admin/banners/highlight`,
+  readDetailBannersHighlight: `${appActiveConfig.api.baseurl}/admin/banners`,
   createBannersHighlight: `${appActiveConfig.api.baseurl}/admin/banners/highlight`,
   updateBannersHighlight: `${appActiveConfig.api.baseurl}/admin/banners/highlight`,
   deleteBannersHighlight: `${appActiveConfig.api.baseurl}/admin/banners/highlight`,
   restoreBannersHighlight: `${appActiveConfig.api.baseurl}/admin/banners/highlight`,
 
   // mini
+  readBannersMini: `${appActiveConfig.api.baseurl}/admin/banners/mini`,
   createBannersMini: `${appActiveConfig.api.baseurl}/admin/banners/mini`,
   updateBannersMini: `${appActiveConfig.api.baseurl}/admin/banners/mini`,
   deleteBannersMini: `${appActiveConfig.api.baseurl}/admin/banners/mini`,

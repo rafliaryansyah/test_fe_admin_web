@@ -5,9 +5,9 @@ import API from 'configs/api';
 /**
  * service customer for read banners
  */
-export const readBanners = () => {
+export const readBannersMain = () => {
   return new Promise((resolve, reject) => {
-    API.banners()
+    API.readBannersMain()
       .then(res => {
         resolve({ success: true, data: res.data });
       })
@@ -98,6 +98,46 @@ export const restoreMainBanners = id => {
 
 // highlight
 /**
+ * service customer for read banners
+ */
+export const readBannersHighlight = type => {
+  return new Promise((resolve, reject) => {
+    const data = {
+      params: {
+        type: type ? type : ''
+      }
+    };
+
+    API.readBannersHighlight(data)
+      .then(res => {
+        resolve({ success: true, data: res.data });
+      })
+      .catch(err => {
+        reject({ success: false, data: err });
+      });
+  });
+};
+
+/**
+ * service customer for read banners
+ */
+export const readDetailBannersHighlight = id => {
+  return new Promise((resolve, reject) => {
+    const data = {
+      path: `${id}/highlight`
+    };
+
+    API.readDetailBannersHighlight(data)
+      .then(res => {
+        resolve({ success: true, data: res.data });
+      })
+      .catch(err => {
+        reject({ success: false, data: err });
+      });
+  });
+};
+
+/**
  * service customer for create banners
  */
 export const createHighLightBanners = formdata => {
@@ -177,6 +217,28 @@ export const restoreHighLightBanners = id => {
 };
 
 // mini
+/**
+ * service customer for read banners
+ */
+export const readBannersMini = (type, isDeleted) => {
+  return new Promise((resolve, reject) => {
+    const data = {
+      params: {
+        type: type ? type : '',
+        isDeleted: isDeleted
+      }
+    };
+
+    API.readBannersMini(data)
+      .then(res => {
+        resolve({ success: true, data: res.data });
+      })
+      .catch(err => {
+        reject({ success: false, data: err });
+      });
+  });
+};
+
 /**
  * service customer for create banners
  */

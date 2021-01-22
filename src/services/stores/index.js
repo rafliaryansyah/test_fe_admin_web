@@ -115,10 +115,10 @@ export const updateModeStore = id => {
 /**
  * service customer for get detail produk store
  */
-export const getProduk = (idToko, idProduk) => {
+export const getProduk = (username, idProduk) => {
   return new Promise((resolve, reject) => {
     const data = {
-      path: `${idToko}/${idProduk}`
+      path: `${username}/${idProduk}`
     };
 
     API.storeProduk(data)
