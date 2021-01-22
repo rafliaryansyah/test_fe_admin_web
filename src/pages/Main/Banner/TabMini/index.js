@@ -76,9 +76,6 @@ import {
   Checkbox
 } from '@material-ui/core';
 
-// useTheme
-import { useTheme } from '@material-ui/core/styles';
-
 // react icons
 import {
   IoPencilOutline,
@@ -119,7 +116,6 @@ const MenuProps = {
 function TabMini() {
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
-  // const theme = useTheme();
 
   // data open
   const [openFP, setOpenFP] = useState(false);
@@ -141,6 +137,7 @@ function TabMini() {
 
   // id item image
   const [id, setID] = useState('');
+  const [type, setType] = useState(0);
 
   // relate ke 1. Detail Produk atau 2. List Produk
   const [relate, setRelate] = useState('1');
@@ -190,7 +187,7 @@ function TabMini() {
     setCategories(newChecked);
   };
 
-  // read data banner
+  // read data mini
   useEffect(() => {
     readBannersMini('product', false)
       .then(res => {
@@ -675,17 +672,19 @@ function TabMini() {
       setOpenHapus(false);
 
       // read kembali data baru
-      readBannersMini('product', false)
-        .then(res => {
-          setMiniProduk(res.data.data);
-        })
-        .catch(err => err);
-
-      readBannersMini('service', false)
-        .then(res => {
-          setMiniService(res.data.data);
-        })
-        .catch(err => err);
+      if (type === 'Product') {
+        readBannersMini('product', false)
+          .then(res => {
+            setMiniProduk(res.data.data);
+          })
+          .catch(err => err);
+      } else {
+        readBannersMini('service', false)
+          .then(res => {
+            setMiniService(res.data.data);
+          })
+          .catch(err => err);
+      }
 
       enqueueSnackbar('Berhasil menghapus data', { variant: 'success' });
     } else {
@@ -812,6 +811,7 @@ function TabMini() {
                         disabled={item.isDeleted}
                         onClick={() => {
                           setID(item.id);
+                          setType(item.type);
                           setOpenHapus(true);
                         }}>
                         <IoTrashOutline />
@@ -863,6 +863,7 @@ function TabMini() {
                         disabled={item.isDeleted}
                         onClick={() => {
                           setID(item.id);
+                          setType(item.type);
                           setOpenHapus(true);
                         }}>
                         <IoTrashOutline />
@@ -945,6 +946,7 @@ function TabMini() {
                         disabled={item.isDeleted}
                         onClick={() => {
                           setID(item.id);
+                          setType(item.type);
                           setOpenHapus(true);
                         }}>
                         <IoTrashOutline />
@@ -996,6 +998,7 @@ function TabMini() {
                         disabled={item.isDeleted}
                         onClick={() => {
                           setID(item.id);
+                          setType(item.type);
                           setOpenHapus(true);
                         }}>
                         <IoTrashOutline />
