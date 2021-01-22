@@ -11,6 +11,26 @@ export const setCategoriesProduk = value => ({
 });
 
 /**
+ * @name setDetailCategoryProducts
+ * @param {*} value
+ * @description redux action untuk set data detail category
+ */
+export const setDetailCategoryProducts = value => ({
+  type: actionTypes.category.SET_DETAILCATEGORYPRODUCTS,
+  value
+});
+
+/**
+ * @name setDetailCategoryServices
+ * @param {*} value
+ * @description redux action untuk set data detail category
+ */
+export const setDetailCategoryServices = value => ({
+  type: actionTypes.category.SET_DETAILCATEGORYSERVICES,
+  value
+});
+
+/**
  * @name setCategoriesJasa
  * @param {*} value
  * @description redux action untuk set per data category

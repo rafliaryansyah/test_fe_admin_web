@@ -36,12 +36,23 @@ import { CompDialog, ConfirmDialog, Paginasi } from 'components';
 
 // redux
 import { connect } from 'react-redux';
-import { setCategoriesJasa } from 'modules';
+import { setCategoriesJasa, setDetailCategoryServices } from 'modules';
 
 // services
-import { getCategory, updateCategory, deleteCategory } from 'services';
+import {
+  getCategory,
+  getDetailCategoryServices,
+  updateCategory,
+  deleteCategory
+} from 'services';
 
-function TabJasa({ setDataCategoriesJasa, dataCategoriesJasa, history }) {
+function TabJasa({
+  setDataCategoriesJasa,
+  dataCategoriesJasa,
+  setDataDetailCategoryServices,
+  dataDetail,
+  history
+}) {
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
 
@@ -57,8 +68,6 @@ function TabJasa({ setDataCategoriesJasa, dataCategoriesJasa, history }) {
   });
 
   const [id, setID] = useState('');
-
-  const [detailCategory, setDetailCategory] = useState({});
 
   const [form, setForm] = useState({
     type: 1,
@@ -318,7 +327,9 @@ function TabJasa({ setDataCategoriesJasa, dataCategoriesJasa, history }) {
               <CardActionArea
                 disabled={data.isDeleted}
                 onClick={() => {
-                  setDetailCategory(data);
+                  getDetailCategoryServices(data.id)
+                    .then(res => setDataDetailCategoryServices(res.data))
+                    .catch(err => err);
                   setOpen({ ...open, detail: true });
                 }}>
                 <CardMedia
@@ -381,24 +392,22 @@ function TabJasa({ setDataCategoriesJasa, dataCategoriesJasa, history }) {
       <CompDialog
         open={open.detail}
         close={() => setOpen({ ...open, detail: false })}>
-        <img src={detailCategory.image} alt="photo" className={classes.img} />
+        <img src={dataDetail.image} alt="photo" className={classes.img} />
         <div className={classes.desk}>
           <span className={classes.teks}>nama kategori</span>
-          <span className={classes.teks}>{detailCategory.name}</span>
+          <span className={classes.teks}>{dataDetail.name}</span>
         </div>
         <div className={classes.desk}>
           <span className={classes.teks}>tipe kategori</span>
-          <span className={classes.teks}>
-            {detailCategory.type && detailCategory.type.name}
-          </span>
+          <span className={classes.teks}>{dataDetail.type}</span>
         </div>
         <div className={classes.desk}>
           <span className={classes.teks}>produk terkait</span>
           <span className={classes.teks}>
-            {detailCategory.relatedProduct} |
+            {dataDetail.totalRelated} |
             <span
               className={classes.cekTerkait}
-              onClick={() => history.replace('/category/jasa/terkait')}>
+              onClick={() => history.replace('/produk-terkait')}>
               cek
             </span>
           </span>
@@ -504,15 +513,20 @@ function TabJasa({ setDataCategoriesJasa, dataCategoriesJasa, history }) {
 
 TabJasa.propTypes = {
   setDataCategoriesJasa: propTypes.func,
-  dataCategoriesJasa: propTypes.array
+  dataCategoriesJasa: propTypes.array,
+  setDataDetailCategoryServices: propTypes.func,
+  dataDetail: propTypes.object
 };
 
 const mapStateToProps = state => ({
-  dataCategoriesJasa: state.category.categoriesJasa
+  dataCategoriesJasa: state.category.categoriesJasa,
+  dataDetail: state.category.detailCategoryServices
 });
 
 const mapDispatchToProps = dispatch => ({
-  setDataCategoriesJasa: value => dispatch(setCategoriesJasa(value))
+  setDataCategoriesJasa: value => dispatch(setCategoriesJasa(value)),
+  setDataDetailCategoryServices: value =>
+    dispatch(setDetailCategoryServices(value))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(TabJasa);

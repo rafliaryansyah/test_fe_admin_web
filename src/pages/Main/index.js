@@ -37,6 +37,7 @@ import Voucher from './Voucher';
 import UserLogs from './UserLogs';
 import Banner from './Banner';
 import Promo from './Promo';
+import ProdukTerkait from './ProdukTerkait';
 import Profile from './Profile';
 
 // components
@@ -320,6 +321,7 @@ function Main({ history }) {
           <PrivateRoute path="/user-logs" component={UserLogs} />
           <PrivateRoute path="/banner" component={Banner} />
           <PrivateRoute path="/promo" component={Promo} />
+          <PrivateRoute path="/produk-terkait" component={ProdukTerkait} />
           <PrivateRoute path="/profile" component={Profile} />
           <PrivateRoute exact path="/" component={DashboardPage} />
         </Switch>

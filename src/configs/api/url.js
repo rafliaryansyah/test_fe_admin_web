@@ -32,6 +32,8 @@ const apiEndpoint = {
 
   // category
   category: `${appActiveConfig.api.baseurl}/admin/categories`,
+  detailCategoryProducts: `${appActiveConfig.api.baseurl}/admin/categories`,
+  detailCategoryServices: `${appActiveConfig.api.baseurl}/admin/categories`,
   createCategory: `${appActiveConfig.api.baseurl}/admin/categories`,
   updateCategory: `${appActiveConfig.api.baseurl}/admin/categories`,
   deleteCategory: `${appActiveConfig.api.baseurl}/admin/categories`,

@@ -24,6 +24,44 @@ export const getCategory = (type, search, page) => {
 };
 
 /**
+ * service category for get all data category
+ */
+export const getDetailCategoryProducts = id => {
+  return new Promise((resolve, reject) => {
+    const data = {
+      path: `${id}`
+    };
+
+    API.detailCategoryProducts(data)
+      .then(res => {
+        resolve({ success: true, data: res.data });
+      })
+      .catch(err => {
+        reject({ success: false, data: err });
+      });
+  });
+};
+
+/**
+ * service category for get all data category
+ */
+export const getDetailCategoryServices = id => {
+  return new Promise((resolve, reject) => {
+    const data = {
+      path: `${id}/detail-services`
+    };
+
+    API.detailCategoryServices(data)
+      .then(res => {
+        resolve({ success: true, data: res.data });
+      })
+      .catch(err => {
+        reject({ success: false, data: err });
+      });
+  });
+};
+
+/**
  * service category for create data category
  */
 export const postCategory = formdata => {

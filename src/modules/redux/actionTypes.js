@@ -1,6 +1,15 @@
 /**
  * promo action types
  */
+const terkait = {
+  SET_PRODUKTERKAIT: 'PRODUKTERKAIT/SET',
+  SET_JASATERKAIT: 'JASATERKAIT/SET',
+  CLEAR_TERKAIT: 'TERKAIT/CLEAR'
+};
+
+/**
+ * promo action types
+ */
 const promo = {
   SET_PROMOS: 'PROMOS/SET',
   SET_PROMO: 'PROMO/SET',
@@ -28,7 +37,9 @@ const voucher = {
  */
 const category = {
   SET_CATEGORIESPRODUK: 'CATEGORIESPRODUK/SET',
+  SET_DETAILCATEGORYPRODUCTS: 'DETAILCATEGORYPRODUCTS/SET',
   SET_CATEGORIESJASA: 'CATEGORIESJASA/SET',
+  SET_DETAILCATEGORYSERVICES: 'DETAILCATEGORYSERVICES/SET',
   CLEAR_CATEGORIES: 'CATEGORIES/CLEAR'
 };
 
@@ -88,7 +99,8 @@ const actionTypes = {
   stores,
   banner,
   voucher,
-  promo
+  promo,
+  terkait
 };
 
 export default actionTypes;

@@ -39,12 +39,23 @@ import { CompDialog, ConfirmDialog, Paginasi } from 'components';
 
 // redux
 import { connect } from 'react-redux';
-import { setCategoriesProduk } from 'modules';
+import { setCategoriesProduk, setDetailCategoryProducts } from 'modules';
 
 // services
-import { getCategory, updateCategory, deleteCategory } from 'services';
+import {
+  getCategory,
+  getDetailCategoryProducts,
+  updateCategory,
+  deleteCategory
+} from 'services';
 
-function TabProduk({ setDataCategoriesProduk, dataCategoriesProduk, history }) {
+function TabProduk({
+  setDataCategoriesProduk,
+  dataCategoriesProduk,
+  setDataDetailCategoryProducts,
+  dataDetail,
+  history
+}) {
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
 
@@ -63,9 +74,6 @@ function TabProduk({ setDataCategoriesProduk, dataCategoriesProduk, history }) {
 
   // data id
   const [id, setID] = useState('');
-
-  // data detail
-  const [detailCategory, setDetailCategory] = useState({});
 
   // data form kategori
   const [form, setForm] = useState({
@@ -328,7 +336,9 @@ function TabProduk({ setDataCategoriesProduk, dataCategoriesProduk, history }) {
               <CardActionArea
                 disabled={data.isDeleted}
                 onClick={() => {
-                  setDetailCategory(data);
+                  getDetailCategoryProducts(data.id)
+                    .then(res => setDataDetailCategoryProducts(res.data))
+                    .catch(err => err);
                   setOpen({ ...open, detail: true });
                 }}>
                 <CardMedia
@@ -391,24 +401,26 @@ function TabProduk({ setDataCategoriesProduk, dataCategoriesProduk, history }) {
       <CompDialog
         open={open.detail}
         close={() => setOpen({ ...open, detail: false })}>
-        <img src={detailCategory.image} alt="photo" className={classes.img} />
+        <img
+          src={dataDetail.detail?.image}
+          alt="photo"
+          className={classes.img}
+        />
         <div className={classes.desk}>
           <span className={classes.teks}>nama kategori</span>
-          <span className={classes.teks}>{detailCategory.name}</span>
+          <span className={classes.teks}>{dataDetail.detail?.name}</span>
         </div>
         <div className={classes.desk}>
           <span className={classes.teks}>tipe kategori</span>
-          <span className={classes.teks}>
-            {detailCategory.type && detailCategory.type.name}
-          </span>
+          <span className={classes.teks}>{dataDetail.detail?.type}</span>
         </div>
         <div className={classes.desk}>
           <span className={classes.teks}>produk terkait</span>
           <span className={classes.teks}>
-            {detailCategory.relatedProduct} |
+            {dataDetail.detail?.totalRelated} |
             <span
               className={classes.cekTerkait}
-              onClick={() => history.replace('/category/produk/terkait')}>
+              onClick={() => history.replace('/produk-terkait')}>
               cek
             </span>
           </span>
@@ -514,15 +526,20 @@ function TabProduk({ setDataCategoriesProduk, dataCategoriesProduk, history }) {
 
 TabProduk.propTypes = {
   setDataCategoriesProduk: propTypes.func,
-  dataCategoriesProduk: propTypes.array
+  dataCategoriesProduk: propTypes.array,
+  setDataDetailCategoryProducts: propTypes.func,
+  dataDetail: propTypes.object
 };
 
 const mapStateToProps = state => ({
-  dataCategoriesProduk: state.category.categoriesProduk
+  dataCategoriesProduk: state.category.categoriesProduk,
+  dataDetail: state.category.detailCategoryProducts
 });
 
 const mapDispatchToProps = dispatch => ({
-  setDataCategoriesProduk: value => dispatch(setCategoriesProduk(value))
+  setDataCategoriesProduk: value => dispatch(setCategoriesProduk(value)),
+  setDataDetailCategoryProducts: value =>
+    dispatch(setDetailCategoryProducts(value))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(TabProduk);

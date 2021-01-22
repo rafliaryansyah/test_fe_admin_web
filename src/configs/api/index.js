@@ -41,6 +41,14 @@ API.customerRestore = apiRequest.patch(apiEndpoint.customerRestore, true);
 
 // category
 API.category = apiRequest.get(apiEndpoint.category, true);
+API.detailCategoryProducts = apiRequest.get(
+  apiEndpoint.detailCategoryProducts,
+  true
+);
+API.detailCategoryServices = apiRequest.get(
+  apiEndpoint.detailCategoryServices,
+  true
+);
 API.createCategory = apiRequest.post(apiEndpoint.createCategory, true);
 API.updateCategory = apiRequest.post(apiEndpoint.updateCategory, true);
 API.deleteCategory = apiRequest.delete(apiEndpoint.deleteCategory, true);
