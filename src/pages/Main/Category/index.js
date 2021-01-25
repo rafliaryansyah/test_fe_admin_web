@@ -33,9 +33,7 @@ import { CompDialog, PrivateRoute } from 'components';
 
 // pages
 import TabProduk from './TabProduk';
-import CekProduks from './TabProduk/CekProduks';
 import TabJasa from './TabJasa';
-import CekJasa from './TabJasa/CekJasa';
 
 // redux
 import { connect } from 'react-redux';
@@ -252,11 +250,6 @@ function Category({
           <Switch>
             <PrivateRoute exact path="/category/produk" component={TabProduk} />
             <PrivateRoute exact path="/category/jasa" component={TabJasa} />
-            <PrivateRoute
-              path="/category/produk/terkait"
-              component={CekProduks}
-            />
-            <PrivateRoute path="/category/jasa/terkait" component={CekJasa} />
             <Redirect to="/category/produk" />
           </Switch>
         </SwipeableViews>

@@ -106,7 +106,8 @@ API.restoreBannersMini = apiRequest.patch(apiEndpoint.restoreBannersMini, true);
 // promo
 API.createPromo = apiRequest.post(apiEndpoint.createPromo, true);
 API.readPromo = apiRequest.get(apiEndpoint.readPromo, true);
-API.detailPromo = apiRequest.get(apiEndpoint.detailPromo, true);
+API.detailPromoProduct = apiRequest.get(apiEndpoint.detailPromoProduct, true);
+API.detailPromoService = apiRequest.get(apiEndpoint.detailPromoService, true);
 API.updatePromo = apiRequest.post(apiEndpoint.updatePromo, true);
 API.updateStatusFiturPromo = apiRequest.patch(
   apiEndpoint.updateStatusFiturPromo,

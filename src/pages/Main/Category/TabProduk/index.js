@@ -30,8 +30,7 @@ import {
 import {
   IoSearchOutline,
   IoPencilOutline,
-  IoTrashOutline,
-  IoArrowBack
+  IoTrashOutline
 } from 'react-icons/io5';
 
 // components

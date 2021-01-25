@@ -73,7 +73,8 @@ const apiEndpoint = {
   // promo
   createPromo: `${appActiveConfig.api.baseurl}/admin/promos`,
   readPromo: `${appActiveConfig.api.baseurl}/admin/promos`,
-  detailPromo: `${appActiveConfig.api.baseurl}/admin/promos`,
+  detailPromoProduct: `${appActiveConfig.api.baseurl}/admin/promos`,
+  detailPromoService: `${appActiveConfig.api.baseurl}/admin/promos`,
   updatePromo: `${appActiveConfig.api.baseurl}/admin/promos`,
   updateStatusFiturPromo: `${appActiveConfig.api.baseurl}/admin/promos`,
   deletePromo: `${appActiveConfig.api.baseurl}/admin/promos`,

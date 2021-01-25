@@ -43,15 +43,34 @@ export const readPromo = (search, page) => {
 };
 
 /**
- * service promo for get detail data promo
+ * service promo for get detail data promo tipe product
  */
-export const detailPromo = id => {
+export const detailPromoProduct = id => {
   return new Promise((resolve, reject) => {
     const data = {
-      path: `${id}/detail`
+      path: `${id}/detail-products`
     };
 
-    API.detailPromo(data)
+    API.detailPromoProduct(data)
+      .then(res => {
+        resolve({ success: true, data: res.data });
+      })
+      .catch(err => {
+        reject({ success: false, data: err });
+      });
+  });
+};
+
+/**
+ * service promo for get detail data promo tipe service
+ */
+export const detailPromoService = id => {
+  return new Promise((resolve, reject) => {
+    const data = {
+      path: `${id}/detail-services`
+    };
+
+    API.detailPromoService(data)
       .then(res => {
         resolve({ success: true, data: res.data });
       })
@@ -73,6 +92,25 @@ export const updatePromo = (id, formdata) => {
     };
 
     API.updatePromo(data)
+      .then(res => {
+        resolve({ success: true, data: res.data });
+      })
+      .catch(err => {
+        reject({ success: false, data: err });
+      });
+  });
+};
+
+/**
+ * service promo for update data status promo
+ */
+export const updateStatusPromo = id => {
+  return new Promise((resolve, reject) => {
+    const data = {
+      path: `${id}/status`
+    };
+
+    API.updateStatusFiturPromo(data)
       .then(res => {
         resolve({ success: true, data: res.data });
       })

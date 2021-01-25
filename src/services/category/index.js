@@ -48,7 +48,7 @@ export const getDetailCategoryProducts = id => {
 export const getDetailCategoryServices = id => {
   return new Promise((resolve, reject) => {
     const data = {
-      path: `${id}/detail-services`
+      path: `${id}`
     };
 
     API.detailCategoryServices(data)
