@@ -9,15 +9,15 @@ export const getCustomers = (role, search, page) => {
       const data = {
         params: {
           role: role ? role : null,
-          page: page ? page : 1
-        }
+          page: page ? page : 1,
+        },
       };
 
       API.customers(data)
-        .then(res => {
+        .then((res) => {
           resolve({ success: true, data: res.data });
         })
-        .catch(err => {
+        .catch((err) => {
           reject({ success: false, data: err });
         });
     } else if (search) {
@@ -25,29 +25,29 @@ export const getCustomers = (role, search, page) => {
         params: {
           role: role ? role : null,
           search: search ? search : '',
-          page: page ? page : 1
-        }
+          page: page ? page : 1,
+        },
       };
 
       API.customers(data)
-        .then(res => {
+        .then((res) => {
           resolve({ success: true, data: res.data });
         })
-        .catch(err => {
+        .catch((err) => {
           reject({ success: false, data: err });
         });
     } else {
       const data = {
         params: {
-          page: page ? page : 1
-        }
+          page: page ? page : 1,
+        },
       };
 
       API.customers(data)
-        .then(res => {
+        .then((res) => {
           resolve({ success: true, data: res.data });
         })
-        .catch(err => {
+        .catch((err) => {
           reject({ success: false, data: err });
         });
     }
@@ -57,17 +57,17 @@ export const getCustomers = (role, search, page) => {
 /**
  * service customer for get per data customer
  */
-export const getCustomer = id => {
+export const getCustomer = (id) => {
   return new Promise((resolve, reject) => {
     const data = {
-      path: `${id}/detail`
+      path: `${id}/detail`,
     };
 
     API.customer(data)
-      .then(res => {
+      .then((res) => {
         resolve({ success: true, data: res.data });
       })
-      .catch(err => {
+      .catch((err) => {
         reject({ success: false, data: err });
       });
   });
@@ -80,16 +80,16 @@ export const updateRoleCustomer = (id, name) => {
   return new Promise((resolve, reject) => {
     const data = {
       body: {
-        name: name
+        name: name,
       },
-      path: `${id}/update-role`
+      path: `${id}/update-role`,
     };
 
     API.customerUpdateRole(data)
-      .then(res => {
+      .then((res) => {
         resolve({ success: true, data: res.data });
       })
-      .catch(err => {
+      .catch((err) => {
         reject({ success: false, data: err });
       });
   });
@@ -102,16 +102,16 @@ export const accessAdminCustomer = (id, name) => {
   return new Promise((resolve, reject) => {
     const data = {
       body: {
-        name: [name]
+        name: [name],
       },
-      path: `${id}/access-admin`
+      path: `${id}/access-admin`,
     };
 
     API.customerAccessAdmin(data)
-      .then(res => {
+      .then((res) => {
         resolve({ success: true, data: res.data });
       })
-      .catch(err => {
+      .catch((err) => {
         reject({ success: false, data: err });
       });
   });
@@ -120,17 +120,17 @@ export const accessAdminCustomer = (id, name) => {
 /**
  * service customer for delete per data customer
  */
-export const deleteCustomer = id => {
+export const deleteCustomer = (id) => {
   return new Promise((resolve, reject) => {
     const data = {
-      path: `${id}/delete`
+      path: `${id}/delete`,
     };
 
     API.customerDelete(data)
-      .then(res => {
+      .then((res) => {
         resolve({ success: true, data: res.data });
       })
-      .catch(err => {
+      .catch((err) => {
         reject({ success: false, data: err });
       });
   });
@@ -139,17 +139,17 @@ export const deleteCustomer = id => {
 /**
  * service customer for restore per data customer
  */
-export const restoreCustomer = id => {
+export const restoreCustomer = (id) => {
   return new Promise((resolve, reject) => {
     const data = {
-      path: `${id}/restore`
+      path: `${id}/restore`,
     };
 
     API.customerRestore(data)
-      .then(res => {
+      .then((res) => {
         resolve({ success: true, data: res.data });
       })
-      .catch(err => {
+      .catch((err) => {
         reject({ success: false, data: err });
       });
   });
