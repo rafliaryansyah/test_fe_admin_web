@@ -13,6 +13,7 @@ import banner from './banner/reducer';
 import category from './category/reducer';
 import voucher from './voucher/reducer';
 import promo from './promo/reducer';
+import terkait from './terkait/reducer';
 
 /**
  * Reducer yang terpisah digabung jadi satu disini
@@ -25,7 +26,8 @@ const reducer = combineReducers({
   banner,
   category,
   voucher,
-  promo
+  promo,
+  terkait
 });
 
 /**
@@ -46,3 +48,4 @@ export * from './banner/action';
 export * from './category/action';
 export * from './voucher/action';
 export * from './promo/action';
+export * from './terkait/action';

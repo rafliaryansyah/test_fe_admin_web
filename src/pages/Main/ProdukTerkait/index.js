@@ -1,4 +1,5 @@
 import useStyles from './styles';
+import propTypes from 'prop-types';
 
 // material-ui core
 import { FormControl, OutlinedInput, InputAdornment } from '@material-ui/core';
@@ -7,9 +8,16 @@ import { FormControl, OutlinedInput, InputAdornment } from '@material-ui/core';
 import { IoSearchOutline } from 'react-icons/io5';
 
 // components
-import { CardProduk } from 'components';
+import { CardProduk, Paginasi } from 'components';
 
-function ProdukTerkait() {
+// redux
+import { connect } from 'react-redux';
+import { setTerkait } from 'modules';
+
+// services
+import { getDetailCategoryProducts, getDetailCategoryServices } from 'services';
+
+function ProdukTerkait({ id, dari, dataTerkait, setDataTerkait }) {
   const classes = useStyles();
 
   return (
@@ -38,10 +46,63 @@ function ProdukTerkait() {
         </FormControl>
       </div>
       <div className={classes.konten}>
-          {}
+        {dataTerkait.data?.map(data => (
+          <CardProduk
+            key={data.id}
+            srcImage={data.images?.map(image => image.image)}
+            nama={data.name}
+            harga={data.price}
+            type={data.images?.map(image => image.type)}
+            stok={data.stock}
+            status={data.status}
+            toko={data.merchantInfo?.name}
+            alamatToko={data.merchantInfo?.location}
+          />
+        ))}
       </div>
+
+      <Paginasi
+        count={dataTerkait.meta?.last_page}
+        page={dataTerkait.meta?.current_page}
+        onChange={(e, value) => {
+          switch (dari) {
+            case 'kategori-produk':
+              getDetailCategoryProducts(id, value)
+                .then(res => setDataTerkait(res.data))
+                .catch(err => err);
+              break;
+
+            case 'kategori-service':
+              getDetailCategoryServices(id, value)
+                .then(res => setDataTerkait(res.data))
+                .catch(err => err);
+              break;
+
+            default:
+              console.log(value);
+              break;
+          }
+        }}
+      />
     </div>
   );
 }
 
-export default ProdukTerkait;
+ProdukTerkait.propTypes = {
+  id: propTypes.string,
+  dari: propTypes.string,
+  dataTerkait: propTypes.object,
+  setDataTerkait: propTypes.func
+};
+
+const mapStateToProps = state => ({
+  id: state.terkait.id,
+  dari: state.terkait.dari,
+  dataTerkait: state.terkait.terkait
+});
+
+const mapDispatchToProps = dispatch => ({
+  setDataTerkait: value => dispatch(setTerkait(value))
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(ProdukTerkait);

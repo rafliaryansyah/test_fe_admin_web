@@ -1,22 +1,32 @@
 import actionTypes from '../actionTypes';
 
 /**
- * @name setProdukTerkait
+ * @name setID
  * @param {*} value
- * @description redux action untuk set produk terkait
+ * @description redux action untuk set data id
  */
-export const setProdukTerkait = value => ({
-  type: actionTypes.terkait.SET_PRODUKTERKAIT,
+export const setID = value => ({
+  type: actionTypes.terkait.SET_ID,
   value
 });
 
 /**
- * @name setJasaTerkait
+ * @name setDari
  * @param {*} value
- * @description redux action untuk set jasa terkait
+ * @description redux action untuk set data terkait dari mana
  */
-export const setJasaTerkait = value => ({
-  type: actionTypes.terkait.SET_JASATERKAIT,
+export const setDari = value => ({
+  type: actionTypes.terkait.SET_DARI,
+  value
+});
+
+/**
+ * @name setTerkait
+ * @param {*} value
+ * @description redux action untuk set data terkait
+ */
+export const setTerkait = value => ({
+  type: actionTypes.terkait.SET_TERKAIT,
   value
 });
 

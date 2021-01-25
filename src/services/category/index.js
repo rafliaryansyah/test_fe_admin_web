@@ -26,10 +26,13 @@ export const getCategory = (type, search, page) => {
 /**
  * service category for get all data category
  */
-export const getDetailCategoryProducts = id => {
+export const getDetailCategoryProducts = (id, page) => {
   return new Promise((resolve, reject) => {
     const data = {
-      path: `${id}`
+      path: `${id}`,
+      params: {
+        page: page ? page : 1
+      }
     };
 
     API.detailCategoryProducts(data)
@@ -45,10 +48,13 @@ export const getDetailCategoryProducts = id => {
 /**
  * service category for get all data category
  */
-export const getDetailCategoryServices = id => {
+export const getDetailCategoryServices = (id, page) => {
   return new Promise((resolve, reject) => {
     const data = {
-      path: `${id}`
+      path: `${id}`,
+      params: {
+        page: page ? page : 1
+      }
     };
 
     API.detailCategoryServices(data)

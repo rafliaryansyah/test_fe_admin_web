@@ -1,8 +1,9 @@
 import actionTypes from '../actionTypes';
 
 const initialState = {
-  produkTerkait: {},
-  jasaTerkait: {}
+  id: '',
+  dari: '',
+  terkait: {}
 };
 
 /**
@@ -11,16 +12,22 @@ const initialState = {
  */
 const terkait = (state = initialState, action) => {
   switch (action.type) {
-    case actionTypes.terkait.SET_PRODUKTERKAIT:
+    case actionTypes.terkait.SET_ID:
       return {
         ...state,
-        produkTerkait: action.value
+        id: action.value
       };
 
-    case actionTypes.terkait.SET_JASATERKAIT:
+    case actionTypes.terkait.SET_DARI:
       return {
         ...state,
-        jasaTerkait: action.value
+        dari: action.value
+      };
+
+    case actionTypes.terkait.SET_TERKAIT:
+      return {
+        ...state,
+        terkait: action.value
       };
 
     case actionTypes.terkait.CLEAR_TERKAIT:
