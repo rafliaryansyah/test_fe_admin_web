@@ -71,15 +71,12 @@ function ProdukTerkait({ id, dari, dataTerkait, setDataTerkait }) {
                 .then(res => setDataTerkait(res.data))
                 .catch(err => err);
               break;
-
             case 'kategori-service':
               getDetailCategoryServices(id, value)
                 .then(res => setDataTerkait(res.data))
                 .catch(err => err);
               break;
-
             default:
-              console.log(value);
               break;
           }
         }}

@@ -33,11 +33,11 @@ import { readDashboard } from 'services';
 // utils
 import { currency } from 'utils';
 
-function Dashboard({ setDataDashboard, dataDashboard }) {
+function Dashboard({ setDataDashboard }) {
   const classes = useStyles();
 
   // bar chart
-  const [bar, setBar] = useState({
+  const [bar] = useState({
     options: {
       chart: {
         id: 'basic-bar'
@@ -61,7 +61,7 @@ function Dashboard({ setDataDashboard, dataDashboard }) {
   });
 
   // area chart
-  const [area, setArea] = useState({
+  const [area] = useState({
     options: {
       chart: {
         id: 'basic-area'
@@ -162,16 +162,11 @@ function Dashboard({ setDataDashboard, dataDashboard }) {
 }
 
 Dashboard.propTypes = {
-  setDataDashboard: propTypes.func,
-  dataDashboard: propTypes.object
+  setDataDashboard: propTypes.func
 };
-
-const mapStateToProps = state => ({
-  dataDashboard: state.dashboard.dashboard
-});
 
 const mapDispatchToProps = dispatch => ({
   setDataDashboard: value => dispatch(setDashboard(value))
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(Dashboard);
+export default connect(null, mapDispatchToProps)(Dashboard);

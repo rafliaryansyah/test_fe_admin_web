@@ -65,10 +65,8 @@ function Beranda({ setDataStore, setDataProduks, setDataReports, dataStore }) {
     // cek sukses atau gagal
     if (result.success) {
       setOpen(false);
-      console.log('sukses');
     } else {
       setOpen(false);
-      console.log('gagal');
     }
   };
 

@@ -1,7 +1,5 @@
 import { useEffect, useState } from 'react';
 import useStyles from './styles';
-import propTypes from 'prop-types';
-
 // react multi carousel
 import Carousel from 'react-multi-carousel';
 import 'react-multi-carousel/lib/styles.css';
@@ -22,25 +20,6 @@ const responsive = {
     breakpoint: { max: 464, min: 0 },
     items: 1,
     paritialVisibilityGutter: 0
-  }
-};
-
-// responsive carousel
-const responsiveHistory = {
-  desktop: {
-    breakpoint: { max: 3000, min: 1024 },
-    items: 6,
-    paritialVisibilityGutter: 0
-  },
-  tablet: {
-    breakpoint: { max: 1024, min: 464 },
-    items: 3,
-    paritialVisibilityGutter: 60
-  },
-  mobile: {
-    breakpoint: { max: 464, min: 0 },
-    items: 1,
-    paritialVisibilityGutter: -15
   }
 };
 
@@ -86,7 +65,6 @@ import { CompDialog, ConfirmDialog } from 'components';
 
 // redux
 import { connect } from 'react-redux';
-import { setBanners } from 'modules';
 
 // services
 import {
@@ -118,10 +96,11 @@ function getStyles(name, promos, theme) {
   };
 }
 
-function TabMain({ setDataBanners, dataBanners }) {
+function TabMain() {
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
   const theme = useTheme();
+  const names = [];
 
   const [open, setOpen] = useState({
     detail: false,
@@ -739,9 +718,6 @@ function TabMain({ setDataBanners, dataBanners }) {
           <label className={classes.title}>main banner history</label>
           <br />
           <br />
-          {/* <Carousel
-            itemClass={classes.card}
-            responsive={responsiveHistory}></Carousel> */}
         </div>
         <div className={classes.wrapperButton}>
           <Button
@@ -1093,17 +1069,4 @@ function TabMain({ setDataBanners, dataBanners }) {
   );
 }
 
-TabMain.propTypes = {
-  setDataBanners: propTypes.func,
-  dataBanners: propTypes.object
-};
-
-const mapStateToProps = state => ({
-  dataBanners: state.banner.banners
-});
-
-const mapDispatchToProps = dispatch => ({
-  setDataBanners: value => dispatch(setBanners(value))
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(TabMain);
+export default connect(null, null)(TabMain);
