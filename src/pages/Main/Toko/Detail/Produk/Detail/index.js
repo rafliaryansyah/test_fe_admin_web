@@ -26,7 +26,7 @@ function Detail({ dataStore }) {
 
   // detail produk
   const [produk, setProduk] = useState({});
-  const [status, setStatus] = useState(true);
+  const [status] = useState(true);
 
   // open
   const [open, setOpen] = useState(false);
@@ -43,15 +43,11 @@ function Detail({ dataStore }) {
     // services
     const result = await updateStatusProduk(dataStore.id, id).catch(err => err);
 
-    console.log(result);
-
     // cek sukses atau gagal
     if (result.success) {
       setOpen(false);
-      console.log('sukses');
     } else {
       setOpen(false);
-      console.log('gagal');
     }
   };
 

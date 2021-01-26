@@ -57,8 +57,10 @@ const CardCustomers = ({
       </div>
       <div className={classes.garis}></div>
       <div className={classes.role}>
-        {roles.map(item => (
-          <p className={classes.isiRole}>{item}</p>
+        {roles.map((item, i) => (
+          <p key={i} className={classes.isiRole}>
+            {item}
+          </p>
         ))}
       </div>
     </div>

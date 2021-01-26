@@ -516,7 +516,7 @@ function Promo({ setDataPromos, dataPromos }) {
         <div className={classes.desk}>
           <span className={classes.teks}>Status</span>
           <span className={classes.teks}>
-            {(status = true ? 'aktif' : 'tidak aktif')}
+            {status ? 'aktif' : 'tidak aktif'}
             <input type="checkbox" name="status" checked={true} onChange="" />
           </span>
         </div>

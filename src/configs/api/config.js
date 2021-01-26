@@ -85,31 +85,8 @@ class ApiRequest {
       data: payload.body ? payload.body : {}
     };
 
-    try {
-      console.log(
-        'API-REQUEST:',
-
-        requestPayload.url,
-
-        JSON.stringify(requestPayload)
-      );
-
-      const response = await apiInstance.request(requestPayload);
-
-      console.log(
-        'API-RESPONSE:',
-
-        requestPayload.url,
-
-        JSON.stringify(response)
-      );
-
-      return response;
-    } catch (err) {
-      console.log('API-RESPONSE:', requestPayload.url, JSON.stringify(err));
-
-      throw err;
-    }
+    const response = await apiInstance.request(requestPayload);
+    return response;
   }
 }
 

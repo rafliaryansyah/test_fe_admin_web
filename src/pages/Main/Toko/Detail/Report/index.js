@@ -1,5 +1,4 @@
 import useStyles from './styles';
-import propTypes from 'prop-types';
 
 // material-ui core
 import { Avatar, FormControl, MenuItem, Select } from '@material-ui/core';
@@ -7,7 +6,7 @@ import { Avatar, FormControl, MenuItem, Select } from '@material-ui/core';
 // redux
 import { connect } from 'react-redux';
 
-function Report({ dataReports }) {
+function Report() {
   const classes = useStyles();
 
   return (
@@ -73,12 +72,4 @@ function Report({ dataReports }) {
   );
 }
 
-Report.propTypes = {
-  dataReports: propTypes.object
-};
-
-const mapStateToProps = state => ({
-  dataReports: state.stores.reports
-});
-
-export default connect(mapStateToProps, null)(Report);
+export default connect(null, null)(Report);
