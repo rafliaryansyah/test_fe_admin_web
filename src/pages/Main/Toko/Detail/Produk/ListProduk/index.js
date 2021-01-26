@@ -23,14 +23,12 @@ function ListProduk({ dataProduks, history }) {
         {dataProduks?.map(data => (
           <CardProduk
             key={data.id}
-            srcImage={data.images[0].image}
+            srcImage={data.images?.[0].image}
             nama={data.name}
             harga={currency(data.price)}
             type={data.images[0].type}
             stok={data.stock}
             status={data.status}
-            toko="toko dummy"
-            alamatToko="Jl. Keberkahan"
             handleDetail={() => {
               history.push(`/toko/${id}/produk/${data.id}`);
             }}

@@ -19,27 +19,31 @@ function CardProduk({
 
   return (
     <div className={classes.cardProduk} onClick={handleDetail}>
-      <Avatar
-        alt={name}
-        src={srcImage}
-        variant="rounded"
-        className={classes.avatar}
-      />
+      {srcImage && (
+        <Avatar
+          alt={name}
+          src={srcImage}
+          variant="rounded"
+          className={classes.avatar}
+        />
+      )}
       <div className={classes.desk}>
         <div className={classes.ketProduk}>
-          <label className={classes.nama}>{nama}</label>
-          <span className={classes.harga}>{harga}</span>
-          <span className={classes.type}>{type}</span>
-          <span className={classes.stok}>{`stok : ${stok}`}</span>
+          {nama && <label className={classes.nama}>{nama}</label>}
+          {harga && <span className={classes.harga}>{harga}</span>}
+          {type && <span className={classes.type}>{type}</span>}
+          {stok && <span className={classes.stok}>{`stok : ${stok}`}</span>}
         </div>
         <div className={classes.ketStatusProdukToko}>
-          <span className={classes.status}>{status}</span>
-          <div className={classes.ketToko}>
-            <span className={classes.toko}>{toko}</span>
-            <div className={classes.ketAlamatToko}>
-              <span className={classes.alamatToko}>{alamatToko}</span>
+          {status && <span className={classes.status}>{status}</span>}
+          {toko && (
+            <div className={classes.ketToko}>
+              <span className={classes.toko}>{toko}</span>
+              <div className={classes.ketAlamatToko}>
+                <span className={classes.alamatToko}>{alamatToko}</span>
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
     </div>

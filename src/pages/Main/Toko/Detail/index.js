@@ -25,7 +25,7 @@ function Detail({ history, location }) {
   return (
     <div className={classes.wrapper}>
       <div className={classes.wrapperTitlePage}>
-        <IconButton onClick={() => history.push('/toko')}>
+        <IconButton onClick={() => history.goBack()}>
           <IoArrowBackOutline />
         </IconButton>
       </div>
