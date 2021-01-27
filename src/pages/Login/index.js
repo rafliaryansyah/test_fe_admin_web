@@ -119,16 +119,16 @@ function Login({ requestLoadingApp, loadingApp }) {
         getProfile()
           .then(res => {
             const user = JSON.stringify({
-              name: res.data.data.name,
-              image: res.data.data.image,
-              role: res.data.data.roles[0].name
+              name: res.data.data?.name,
+              image: res.data.data?.image,
+              role: res.data.data?.roles?.[0].name
             });
             localStorage.setItem('user', user);
           })
           .catch(err => err);
       } else {
         requestLoadingApp(false);
-        if (result.data.response.data.code === 400) {
+        if (result.data.response?.data.code === 400) {
           enqueueSnackbar('Email atau Password anda salah', {
             variant: 'error'
           });
