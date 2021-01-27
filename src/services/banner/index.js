@@ -5,9 +5,15 @@ import API from 'configs/api';
 /**
  * service customer for read banners
  */
-export const readBannersMain = () => {
+export const readBannersMain = isDeleted => {
   return new Promise((resolve, reject) => {
-    API.readBannersMain()
+    const data = {
+      params: {
+        isDeleted: isDeleted
+      }
+    };
+
+    API.readBannersMain(data)
       .then(res => {
         resolve({ success: true, data: res.data });
       })
