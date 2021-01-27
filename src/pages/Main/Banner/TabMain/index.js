@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import useStyles from './styles';
+
 // react multi carousel
 import Carousel from 'react-multi-carousel';
 import 'react-multi-carousel/lib/styles.css';
@@ -20,6 +21,25 @@ const responsive = {
     breakpoint: { max: 464, min: 0 },
     items: 1,
     paritialVisibilityGutter: 0
+  }
+};
+
+// responsive carousel
+const responsiveHistory = {
+  desktop: {
+    breakpoint: { max: 3000, min: 1024 },
+    items: 6,
+    paritialVisibilityGutter: 0
+  },
+  tablet: {
+    breakpoint: { max: 1024, min: 464 },
+    items: 3,
+    paritialVisibilityGutter: 60
+  },
+  mobile: {
+    breakpoint: { max: 464, min: 0 },
+    items: 1,
+    paritialVisibilityGutter: -15
   }
 };
 
@@ -46,11 +66,14 @@ import {
   Select,
   MenuItem,
   Input,
-  InputAdornment
+  InputAdornment,
+  List,
+  ListItem,
+  ListItemSecondaryAction,
+  ListItemText,
+  ListItemAvatar,
+  Checkbox
 } from '@material-ui/core';
-
-// useTheme
-import { useTheme } from '@material-ui/core/styles';
 
 // react icons
 import {
@@ -63,15 +86,14 @@ import {
 // components
 import { CompDialog, ConfirmDialog } from 'components';
 
-// redux
-import { connect } from 'react-redux';
-
 // services
 import {
   readBannersMain,
   createMainBanners,
   updateMainBanners,
-  deleteMainBanners
+  deleteMainBanners,
+  readPromo,
+  getCategory
 } from 'services';
 
 // MenuProps
@@ -86,31 +108,25 @@ const MenuProps = {
   }
 };
 
-// tanda kalau di pilih
-function getStyles(name, promos, theme) {
-  return {
-    fontWeight:
-      promos.indexOf(name) === -1
-        ? theme.typography.fontWeightRegular
-        : theme.typography.fontWeightMedium
-  };
-}
-
 function TabMain() {
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
-  const theme = useTheme();
-  const names = [];
 
-  const [open, setOpen] = useState({
-    detail: false,
-    form: false,
-    hapus: false
-  });
+  // open dialog
+  const [openForm, setOpenForm] = useState(false);
+  const [openDetail, setOpenDetail] = useState(false);
+  const [openHapus, setOpenHapus] = useState(false);
+
+  // promo
+  const [dataPromo, setDataPromo] = useState([]);
+
+  // kategori per tipe
+  const [kategoriProduk, setKategoriProduk] = useState([]);
+  const [kategoriJasa, setKategoriJasa] = useState([]);
 
   // data mains dan detail
   const [mains, setMains] = useState([]);
-  const [dataDetail, setDataDetail] = useState({});
+  const [detail, setDetail] = useState({});
 
   // tambah atau edit data
   const [isEdit, setIsEdit] = useState(false);
@@ -121,339 +137,245 @@ function TabMain() {
   // 1. Detail Produk atau 2. List Produk
   const [relate, setRelate] = useState('1');
 
-  // form data tipe detail produk
-  const [formDetailProduk, setFormDetailProduk] = useState({
-    status: 1,
-    product: '',
+  // type 1. produk 2. service
+  const [type, setType] = useState('1');
+
+  const [produk, setProduk] = useState('');
+  const [status, setStatus] = useState(2);
+  const [image, setImage] = useState('');
+  const [promos, setPromos] = useState([]);
+  const [categories, setCategories] = useState([]);
+
+  // error form
+  const [error, setError] = useState({
+    produk: '',
     image: ''
   });
 
-  // form data tipe list produk
-  const [formListProduk, setFormListProduk] = useState({
-    type: '1',
-    status: 1,
-    promos: [],
-    categories: [],
-    image: ''
-  });
+  // checkbox promos
+  const onCheckboxPromos = value => () => {
+    const currentIndex = promos.indexOf(value);
+    const newChecked = [...promos];
 
-  // error data
-  const [errorDetailProduk, setErrorDetailProduk] = useState({
-    status: '',
-    product: '',
-    image: ''
-  });
+    if (currentIndex === -1) {
+      newChecked.push(value);
+    } else {
+      newChecked.splice(currentIndex, 1);
+    }
 
-  // error data
-  const [errorListProduk, setErrorListProduk] = useState({
-    type: '',
-    status: '',
-    image: ''
-  });
-
-  // change tipe detail produk
-  const onChangeDetailProduk = e => {
-    setFormDetailProduk({
-      ...formDetailProduk,
-      [e.target.name]: e.target.value
-    });
-
-    setErrorDetailProduk({
-      ...errorDetailProduk,
-      [e.target.name]: ''
-    });
+    setPromos(newChecked);
   };
 
-  // change tipe list produk
-  const onChangeListProduk = e => {
-    setFormListProduk({
-      ...formListProduk,
-      [e.target.name]: e.target.value
-    });
+  // checkbox kategori
+  const onCheckboxKategori = value => () => {
+    const currentIndex = categories.indexOf(value);
+    const newChecked = [...categories];
 
-    setErrorListProduk({
-      ...errorListProduk,
-      [e.target.name]: ''
-    });
-  };
-
-  // validasi tipe detail produk
-  const validateDetailProduk = () => {
-    const newError = { ...errorDetailProduk };
-
-    if (!formDetailProduk.product) {
-      newError.product = 'Field kosong';
+    if (currentIndex === -1) {
+      newChecked.push(value);
+    } else {
+      newChecked.splice(currentIndex, 1);
     }
 
-    if (!formDetailProduk.status) {
-      newError.status = 'Field kosong';
-    }
-
-    return newError;
-  };
-
-  // validasi tipe list produk
-  const validateListProduk = () => {
-    const newError = { ...errorListProduk };
-
-    if (!formListProduk.type) {
-      newError.type = 'Field kosong';
-    }
-
-    if (!formListProduk.status) {
-      newError.status = 'Field kosong';
-    }
-
-    return newError;
+    setCategories(newChecked);
   };
 
   // read data banner
   useEffect(() => {
-    readBannersMain()
+    readBannersMain(false)
       .then(res => {
         setMains(res.data.data);
       })
       .catch(err => err);
   }, []);
 
-  // tambah data
+  // read data promo
+  useEffect(() => {
+    readPromo('')
+      .then(res => setDataPromo(res.data.data))
+      .catch(err => err);
+  }, []);
+
+  // read data kategori per tipe
+  useEffect(() => {
+    getCategory('1')
+      .then(res => setKategoriProduk(res.data.data))
+      .catch(err => err);
+    getCategory('2')
+      .then(res => setKategoriJasa(res.data.data))
+      .catch(err => err);
+  }, []);
+
   const onCreate = async e => {
     e.preventDefault();
 
-    // cek relate ke 1 atau 2
+    // cek ke detail atau list
     if (relate === '1') {
-      const findErrors = validateDetailProduk();
+      // validasi
+      if (!produk) {
+        setError({ ...error, produk: 'Field masih kosong' });
+      }
 
-      if (Object.values(findErrors).some(err => err !== '')) {
-        setErrorDetailProduk(findErrors);
-      } else {
-        if (isEdit) {
-          // state untuk tipe detail produk
-          const { product, status, image } = formDetailProduk;
+      if (isEdit) {
+        // form-data kosong
+        const formdata = new FormData();
 
-          // form-data untuk detail produk yang kosong
-          const formDataForDetailProduk = new FormData();
+        formdata.append('relate', parseInt(relate));
+        formdata.append('type', parseInt(type));
+        formdata.append('status', status);
+        formdata.append('product', produk);
 
-          // mengisi form-data menggunakan append
-          formDataForDetailProduk.append('relate', parseInt(relate));
-          formDataForDetailProduk.append('status', status);
-          formDataForDetailProduk.append('product', product);
+        // cek image baru atau yang lama
+        if (image.name) {
+          formdata.append('image', image);
+        }
 
-          // cek gambar baru atau tetap yang lama
-          if (image.name) {
-            formDataForDetailProduk.append('image', image);
-          }
+        // service
+        const result = await updateMainBanners(id, formdata).catch(err => err);
 
-          // services
-          const result = await updateMainBanners(
-            id,
-            formDataForDetailProduk
-          ).catch(err => err);
+        // cek sukses atau gagal
+        if (result.success) {
+          setOpenForm(false);
 
-          // cek sukses atau gagal
-          if (result.success) {
-            setFormDetailProduk({
-              status: 1,
-              product: '',
-              image: ''
-            });
-            setOpen({ ...open, form: false });
+          // read kembali data main
+          readBannersMain(false)
+            .then(res => {
+              setMains(res.data.data);
+            })
+            .catch(err => err);
 
-            // read kembali data baru
-            readBannersMain()
-              .then(res => {
-                setMains(res.data.data);
-              })
-              .catch(err => err);
-            enqueueSnackbar('Berhasil memperbarui data', {
-              variant: 'success'
-            });
-          } else {
-            setFormDetailProduk({
-              status: 1,
-              product: '',
-              image: ''
-            });
-            setOpen({ ...open, form: false });
-            enqueueSnackbar('Gagal memperbarui data', {
-              variant: 'success'
-            });
-          }
+          enqueueSnackbar('Berhasil membuat main', { variant: 'success' });
         } else {
-          // state untuk tipe detail produk
-          const { product, status, image } = formDetailProduk;
+          setOpenForm(false);
 
-          // form-data untuk detail produk yang kosong
-          const formDataForDetailProduk = new FormData();
+          enqueueSnackbar('Gagal membuat main', { variant: 'error' });
+        }
+      } else {
+        // form-data kosong
+        const formdata = new FormData();
 
-          // mengisi form-data menggunakan append
-          formDataForDetailProduk.append('relate', parseInt(relate));
-          formDataForDetailProduk.append('status', status);
-          formDataForDetailProduk.append('product', product);
+        formdata.append('relate', parseInt(relate));
+        formdata.append('type', parseInt(type));
+        formdata.append('status', status);
+        formdata.append('product', produk);
 
-          // cek gambar baru atau tetap yang lama
-          if (image.name) {
-            formDataForDetailProduk.append('image', image);
-          }
+        // cek image baru atau yang lama
+        if (image.name) {
+          formdata.append('image', image);
+        }
 
-          // services
-          const result = await createMainBanners(formDataForDetailProduk).catch(
-            err => err
-          );
+        // service
+        const result = await createMainBanners(formdata).catch(err => err);
 
-          // cek sukses atau gagal
-          if (result.success) {
-            setFormDetailProduk({
-              status: 1,
-              product: '',
-              image: ''
-            });
-            setOpen({ ...open, form: false });
+        // cek sukses atau gagal
+        if (result.success) {
+          setOpenForm(false);
 
-            // read kembali data baru
-            readBannersMain()
-              .then(res => {
-                setMains(res.data.data);
-              })
-              .catch(err => err);
+          // read kembali data main
+          readBannersMain(false)
+            .then(res => {
+              setMains(res.data.data);
+            })
+            .catch(err => err);
 
-            enqueueSnackbar('Berhasil membuat data baru', {
-              variant: 'success'
-            });
-          } else {
-            setFormDetailProduk({
-              status: 1,
-              product: '',
-              image: ''
-            });
-            setOpen({ ...open, form: false });
-            enqueueSnackbar('Gagal membuat data baru', {
-              variant: 'success'
-            });
-          }
+          enqueueSnackbar('Berhasil membuat main', { variant: 'success' });
+        } else {
+          setOpenForm(false);
+
+          enqueueSnackbar('Gagal membuat main', { variant: 'error' });
         }
       }
     } else {
-      const findErrors = validateListProduk();
+      // validasi
+      if (!produk) {
+        setError({ ...error, produk: 'Field masih kosong' });
+      }
 
-      if (Object.values(findErrors).some(err => err !== '')) {
-        setErrorListProduk(findErrors);
-      } else {
-        if (isEdit) {
-          // state untuk tipe list produk
-          const { type, status, promos, categories, image } = formListProduk;
+      if (isEdit) {
+        // form-data kosong
+        const formdata = new FormData();
 
-          // form-data untuk list produk yang kosong
-          const formDataForListProduk = new FormData();
+        formdata.append('relate', parseInt(relate));
+        formdata.append('type', parseInt(type));
+        formdata.append('status', status);
 
-          // mengisi form-data menggunakan append
-          formDataForListProduk.append('relate', parseInt(relate));
-          formDataForListProduk.append('type', parseInt(type));
-          formDataForListProduk.append('status', status);
-          formDataForListProduk.append('promos', promos);
-          formDataForListProduk.append('categories', categories);
+        // ambil data promos per index
+        promos.map((promo, index) => {
+          formdata.append(`promos[${index}]`, promo);
+        });
 
-          // cek gambar baru atau tetap yang lama
-          if (image.name) {
-            formDataForListProduk.append('image', image);
-          }
+        // ambil data categories per index
+        categories.map((category, index) => {
+          formdata.append(`categories[${index}]`, category);
+        });
 
-          // services
-          const result = await updateMainBanners(
-            id,
-            formDataForListProduk
-          ).catch(err => err);
+        // cek image baru atau lama
+        if (image.name) {
+          formdata.append('image', image);
+        }
 
-          // cek sukses atau gagal
-          if (result.success) {
-            setFormListProduk({
-              type: '1',
-              status: 1,
-              promos: [],
-              categories: [],
-              image: ''
-            });
-            setOpen({ ...open, form: false });
+        // service
+        const result = await updateMainBanners(id, formdata).catch(err => err);
 
-            // read kembali data baru
-            readBannersMain()
-              .then(res => {
-                setMains(res.data.data);
-              })
-              .catch(err => err);
+        // cek sukses atau gagal
+        if (result.success) {
+          setOpenForm(false);
 
-            enqueueSnackbar('Berhasil memperbarui data', {
-              variant: 'success'
-            });
-          } else {
-            setFormListProduk({
-              type: '1',
-              status: 1,
-              promos: [],
-              categories: [],
-              image: ''
-            });
-            setOpen({ ...open, form: false });
-            enqueueSnackbar('Gagal memperbarui data', { variant: 'error' });
-          }
+          // read kembali data main
+          readBannersMain(false)
+            .then(res => {
+              setMains(res.data.data);
+            })
+            .catch(err => err);
+
+          enqueueSnackbar('Berhasil memperbarui main', { variant: 'success' });
         } else {
-          // state untuk tipe list produk
-          const { type, status, promos, categories, image } = formListProduk;
+          setOpenForm(false);
 
-          // form-data untuk list produk yang kosong
-          const formDataForListProduk = new FormData();
+          enqueueSnackbar('Gagal memperbarui main', { variant: 'error' });
+        }
+      } else {
+        // form-data kosong
+        const formdata = new FormData();
 
-          // mengisi form-data menggunakan append
-          formDataForListProduk.append('relate', parseInt(relate));
-          formDataForListProduk.append('type', parseInt(type));
-          formDataForListProduk.append('status', status);
-          formDataForListProduk.append('promos', promos);
-          formDataForListProduk.append('categories', categories);
+        formdata.append('relate', parseInt(relate));
+        formdata.append('type', parseInt(type));
+        formdata.append('status', status);
 
-          // cek gambar baru atau tetap yang lama
-          if (image.name) {
-            formDataForListProduk.append('image', image);
-          }
+        // ambil data promos per index
+        promos.map((promo, index) => {
+          formdata.append(`promos[${index}]`, promo);
+        });
 
-          // services
-          const result = await createMainBanners(formDataForListProduk).catch(
-            err => err
-          );
+        // ambil data categories per index
+        categories.map((category, index) => {
+          formdata.append(`categories[${index}]`, category);
+        });
 
-          // cek sukses atau gagal
-          if (result.success) {
-            setFormListProduk({
-              type: '1',
-              status: 1,
-              promos: [],
-              categories: [],
-              image: ''
-            });
-            setOpen({ ...open, form: false });
+        // cek image baru atau lama
+        if (image.name) {
+          formdata.append('image', image);
+        }
 
-            // read kembali data baru
-            readBannersMain()
-              .then(res => {
-                setMains(res.data.data);
-              })
-              .catch(err => err);
+        // service
+        const result = await createMainBanners(formdata).catch(err => err);
 
-            enqueueSnackbar('Berhasil membuat data baru', {
-              variant: 'success'
-            });
-          } else {
-            setFormListProduk({
-              type: '1',
-              status: 1,
-              promos: [],
-              categories: [],
-              image: ''
-            });
-            setOpen({ ...open, form: false });
-            enqueueSnackbar('Gagal membuat data baru', {
-              variant: 'success'
-            });
-          }
+        // cek sukses atau gagal
+        if (result.success) {
+          setOpenForm(false);
+
+          // read kembali data main
+          readBannersMain(false)
+            .then(res => {
+              setMains(res.data.data);
+            })
+            .catch(err => err);
+
+          enqueueSnackbar('Berhasil membuat main', { variant: 'success' });
+        } else {
+          setOpenForm(false);
+
+          enqueueSnackbar('Gagal membuat main', { variant: 'error' });
         }
       }
     }
@@ -461,14 +383,15 @@ function TabMain() {
 
   // hapus data
   const onDelete = async () => {
+    // service
     const result = await deleteMainBanners(id).catch(err => err);
 
     // cek sukses atau tidak
     if (result.success) {
-      setOpen({ ...open, hapus: false });
+      setOpenHapus(false);
 
       // read kembali data baru
-      readBannersMain()
+      readBannersMain(false)
         .then(res => {
           setMains(res.data.data);
         })
@@ -478,113 +401,56 @@ function TabMain() {
         variant: 'success'
       });
     } else {
-      setOpen({ ...open, hapus: false });
+      setOpenHapus(false);
 
-      enqueueSnackbar('Berhasil menghapus data', {
-        variant: 'success'
+      enqueueSnackbar('Gagal menghapus data', {
+        variant: 'error'
       });
     }
   };
 
-  // upload image form tipe detail produk
-  const onSelectedImgForDetailProduk = async e => {
+  // upload image
+  const onSelectedImage = async e => {
     const file = e.target.files[0];
 
     if (!['image/png', 'image/jpeg'].includes(file.type)) {
-      setErrorDetailProduk({
-        ...errorDetailProduk,
+      setError({
+        ...error,
         image: `Tipe file tidak didukung: ${file.type}`
       });
     } else if (file.size >= 512000) {
-      setErrorDetailProduk({
-        ...errorDetailProduk,
+      setError({
+        ...error,
         image: 'Ukuran file terlalu besar dari 500KB'
       });
     } else {
       const reader = new FileReader();
 
       reader.onabort = () => {
-        setErrorDetailProduk({
-          ...errorDetailProduk,
+        setError({
+          ...error,
           image: 'Proses pembacaan file dibatalkan'
         });
       };
 
       reader.onerror = () => {
-        setErrorDetailProduk({
-          ...errorDetailProduk,
+        setError({
+          ...error,
           image: 'File tidak terbaca'
         });
       };
 
       reader.onload = async () => {
-        setErrorDetailProduk({
-          ...errorDetailProduk,
+        setError({
+          ...error,
           image: ''
         });
 
         try {
-          setFormDetailProduk({
-            ...formDetailProduk,
-            image: file
-          });
+          setImage(file);
         } catch (e) {
-          setErrorDetailProduk({
-            ...errorDetailProduk,
-            image: e.message
-          });
-        }
-      };
-
-      reader.readAsDataURL(file);
-    }
-  };
-
-  // upload image form tipe list produk
-  const onSelectedImgForListProduk = async e => {
-    const file = e.target.files[0];
-
-    if (!['image/png', 'image/jpeg'].includes(file.type)) {
-      setErrorListProduk({
-        ...errorListProduk,
-        image: `Tipe file tidak didukung: ${file.type}`
-      });
-    } else if (file.size >= 512000) {
-      setErrorListProduk({
-        ...errorListProduk,
-        image: 'Ukuran file terlalu besar dari 500KB'
-      });
-    } else {
-      const reader = new FileReader();
-
-      reader.onabort = () => {
-        setErrorListProduk({
-          ...errorListProduk,
-          image: 'Proses pembacaan file dibatalkan'
-        });
-      };
-
-      reader.onerror = () => {
-        setErrorListProduk({
-          ...errorListProduk,
-          image: 'File tidak terbaca'
-        });
-      };
-
-      reader.onload = async () => {
-        setErrorListProduk({
-          ...errorListProduk,
-          image: ''
-        });
-
-        try {
-          setFormListProduk({
-            ...formListProduk,
-            image: file
-          });
-        } catch (e) {
-          setErrorListProduk({
-            ...errorListProduk,
+          setError({
+            ...error,
             image: e.message
           });
         }
@@ -598,156 +464,270 @@ function TabMain() {
     <div className={classes.wrapper}>
       <div>
         <div className={classes.wrapperCard}>
-          <label className={classes.title}>main banner aktif</label>
+          <label className={classes.title}>main aktif</label>
           <br />
           <br />
-          <Carousel
-            ssr
-            partialVisible
-            itemClass={classes.card}
-            responsive={responsive}>
-            {mains?.map(item =>
-              item.relatedTo === 'Product Detail' ? (
-                <Card key={item.id}>
-                  <CardActionArea
-                    onClick={() => {
-                      setDataDetail(item);
-                      setRelate(
-                        item.relatedTo === 'Product Detail' ? '1' : '2'
-                      );
-                      setOpen({ ...open, detail: true });
-                    }}>
-                    <CardMedia
-                      component="img"
-                      alt="Contemplative Reptile"
-                      height="230"
-                      image={item.image}
-                      title="Contemplative Reptile"
-                    />
-                  </CardActionArea>
-                  <CardActions className={classes.action}>
-                    <IconButton
-                      size="small"
-                      color="primary"
-                      onClick={() => {
-                        setID(item.id);
-                        setIsEdit(true);
-                        setRelate(
-                          item.relatedTo === 'Product Detail' ? '1' : '2'
-                        );
-                        setFormDetailProduk({
-                          ...formDetailProduk,
-                          status: item.status?.id,
-                          product: item.detail,
-                          image: item.image
-                        });
-                        setOpen({ ...open, form: true });
-                      }}>
-                      <IoPencilOutline />
-                    </IconButton>
-                    <IconButton
-                      size="small"
-                      color="primary"
-                      onClick={() => {
-                        setID(item.id);
-                        setOpen({ ...open, hapus: true });
-                      }}>
-                      <IoTrashOutline />
-                    </IconButton>
-                  </CardActions>
-                </Card>
-              ) : (
-                <Card key={item.id}>
-                  <CardActionArea
-                    onClick={() => {
-                      setDataDetail(item);
-                      setRelate(
-                        item.relatedTo === 'Product Detail' ? '1' : '2'
-                      );
-                      setOpen({ ...open, detail: true });
-                    }}>
-                    <CardMedia
-                      component="img"
-                      alt="Contemplative Reptile"
-                      height="230"
-                      image={item.image}
-                      title="Contemplative Reptile"
-                    />
-                  </CardActionArea>
-                  <CardActions className={classes.action}>
-                    <IconButton
-                      size="small"
-                      color="primary"
-                      onClick={() => {
-                        setID(item.id);
-                        setIsEdit(true);
-                        setRelate(
-                          item.relatedTo === 'Product Detail' ? '1' : '2'
-                        );
-                        setFormListProduk({
-                          ...formListProduk,
-                          type: item.detail?.type === 'Product' ? '1' : '2',
-                          status: item.status?.id,
-                          promos: item.detail?.promos,
-                          categories: item.detail?.categories,
-                          image: item.image
-                        });
-                        setOpen({ ...open, form: true });
-                      }}>
-                      <IoPencilOutline />
-                    </IconButton>
-                    <IconButton
-                      size="small"
-                      color="primary"
-                      onClick={() => {
-                        setID(item.id);
-                        setOpen({ ...open, hapus: true });
-                      }}>
-                      <IoTrashOutline />
-                    </IconButton>
-                  </CardActions>
-                </Card>
-              )
-            )}
-          </Carousel>
+          {mains && (
+            <Carousel
+              ssr
+              partialVisbile
+              itemClass={classes.card}
+              responsive={responsive}>
+              {mains.map(
+                item =>
+                  item.status?.id === 1 &&
+                  (item.relatedTo === 'Product Detail' ? (
+                    <Card key={item.id}>
+                      <CardActionArea
+                        disabled={item.isDeleted}
+                        onClick={() => {
+                          setDetail(item);
+                          setRelate(
+                            item.relatedTo === 'Product Detail' ? '1' : '2'
+                          );
+                          setOpenDetail(true);
+                        }}>
+                        <CardMedia
+                          component="img"
+                          alt="Contemplative Reptile"
+                          height="230"
+                          image={item.image}
+                          title="main"
+                        />
+                      </CardActionArea>
+                      <CardActions className={classes.action}>
+                        <IconButton
+                          size="small"
+                          color="primary"
+                          disabled={item.isDeleted}
+                          onClick={() => {
+                            setID(item.id);
+                            setIsEdit(true);
+                            setRelate(
+                              item.relatedTo === 'Product Detail' ? '1' : '2'
+                            );
+                            setType(item.type?.id);
+                            setStatus(item.status?.id);
+                            setProduk(item.detail);
+                            setImage(item.image);
+                            setOpenForm(true);
+                          }}>
+                          <IoPencilOutline />
+                        </IconButton>
+                        <IconButton
+                          size="small"
+                          color="primary"
+                          disabled={item.isDeleted}
+                          onClick={() => {
+                            setID(item.id);
+                            setOpenHapus(true);
+                          }}>
+                          <IoTrashOutline />
+                        </IconButton>
+                      </CardActions>
+                    </Card>
+                  ) : (
+                    <Card key={item.id}>
+                      <CardActionArea
+                        disabled={item.isDeleted}
+                        onClick={() => {
+                          setDetail(item);
+                          setRelate(
+                            item.relatedTo === 'Product Detail' ? '1' : '2'
+                          );
+                          setOpenDetail(true);
+                        }}>
+                        <CardMedia
+                          component="img"
+                          alt="Contemplative Reptile"
+                          height="230"
+                          image={item.image}
+                          title="Main"
+                        />
+                      </CardActionArea>
+                      <CardActions className={classes.action}>
+                        <IconButton
+                          size="small"
+                          color="primary"
+                          disabled={item.isDeleted}
+                          onClick={() => {
+                            setID(item.id);
+                            setIsEdit(true);
+                            setRelate(
+                              item.relatedTo === 'Product Detail' ? '1' : '2'
+                            );
+                            setType(item.type?.id);
+                            setStatus(item.status?.id);
+                            setPromos(item.detail?.promos);
+                            setCategories(item.detail?.categories);
+                            setImage(item.image);
+                            setOpenForm(true);
+                          }}>
+                          <IoPencilOutline />
+                        </IconButton>
+                        <IconButton
+                          size="small"
+                          color="primary"
+                          disabled={item.isDeleted}
+                          onClick={() => {
+                            setID(item.id);
+                            setOpenHapus(true);
+                          }}>
+                          <IoTrashOutline />
+                        </IconButton>
+                      </CardActions>
+                    </Card>
+                  ))
+              )}
+            </Carousel>
+          )}
         </div>
         <br />
         <br />
         <br />
         <div className={classes.wrapperCard}>
-          <label className={classes.title}>main banner history</label>
+          <label className={classes.title}>main history</label>
           <br />
           <br />
+          {mains && (
+            <Carousel
+              ssr
+              partialVisbile
+              itemClass={classes.card}
+              responsive={responsiveHistory}>
+              {mains.map(
+                item =>
+                  item.status?.id === 2 &&
+                  (item.relatedTo === 'Product Detail' ? (
+                    <Card key={item.id}>
+                      <CardActionArea
+                        disabled={item.isDeleted}
+                        onClick={() => {
+                          setDetail(item);
+                          setRelate(
+                            item.relatedTo === 'Product Detail' ? '1' : '2'
+                          );
+                          setOpenDetail(true);
+                        }}>
+                        <CardMedia
+                          component="img"
+                          alt="Contemplative Reptile"
+                          height="230"
+                          image={item.image}
+                          title="main"
+                        />
+                      </CardActionArea>
+                      <CardActions className={classes.action}>
+                        <IconButton
+                          size="small"
+                          color="primary"
+                          disabled={item.isDeleted}
+                          onClick={() => {
+                            setID(item.id);
+                            setIsEdit(true);
+                            setRelate(
+                              item.relatedTo === 'Product Detail' ? '1' : '2'
+                            );
+                            setType(item.type?.id);
+                            setStatus(item.status?.id);
+                            setProduk(item.detail);
+                            setImage(item.image);
+                            setOpenForm(true);
+                          }}>
+                          <IoPencilOutline />
+                        </IconButton>
+                        <IconButton
+                          size="small"
+                          color="primary"
+                          disabled={item.isDeleted}
+                          onClick={() => {
+                            setID(item.id);
+                            setOpenHapus(true);
+                          }}>
+                          <IoTrashOutline />
+                        </IconButton>
+                      </CardActions>
+                    </Card>
+                  ) : (
+                    <Card key={item.id}>
+                      <CardActionArea
+                        disabled={item.isDeleted}
+                        onClick={() => {
+                          setDetail(item);
+                          setRelate(
+                            item.relatedTo === 'Product Detail' ? '1' : '2'
+                          );
+                          setOpenDetail(true);
+                        }}>
+                        <CardMedia
+                          component="img"
+                          alt="Contemplative Reptile"
+                          height="230"
+                          image={item.image}
+                          title="Main"
+                        />
+                      </CardActionArea>
+                      <CardActions className={classes.action}>
+                        <IconButton
+                          size="small"
+                          color="primary"
+                          disabled={item.isDeleted}
+                          onClick={() => {
+                            setID(item.id);
+                            setIsEdit(true);
+                            setRelate(
+                              item.relatedTo === 'Product Detail' ? '1' : '2'
+                            );
+                            setType(item.type?.id);
+                            setStatus(item.status?.id);
+                            setPromos(item.detail?.promos);
+                            setCategories(item.detail?.categories);
+                            setImage(item.image);
+                            setOpenForm(true);
+                          }}>
+                          <IoPencilOutline />
+                        </IconButton>
+                        <IconButton
+                          size="small"
+                          color="primary"
+                          disabled={item.isDeleted}
+                          onClick={() => {
+                            setID(item.id);
+                            setOpenHapus(true);
+                          }}>
+                          <IoTrashOutline />
+                        </IconButton>
+                      </CardActions>
+                    </Card>
+                  ))
+              )}
+            </Carousel>
+          )}
         </div>
         <div className={classes.wrapperButton}>
           <Button
             variant="contained"
             color="primary"
-            onClick={() => setOpen({ ...open, form: true })}>
-            buat banner
+            onClick={() => setOpenForm(true)}>
+            buat main
           </Button>
         </div>
       </div>
 
       <CompDialog
-        open={open.form}
+        open={openForm}
         close={() => {
           setIsEdit(false);
-          setFormDetailProduk({
-            status: 1,
-            product: '',
-            image: ''
-          });
-          setFormListProduk({
-            type: '1',
-            status: 1,
-            promos: [],
-            categories: [],
-            image: ''
-          });
-          setOpen({ ...open, form: false });
+          setRelate('1');
+          setType('1');
+          setStatus(2);
+          setProduk('');
+          setImage('');
+          setPromos([]);
+          setCategories([]);
+          setOpenForm(false);
         }}
-        title="Form Banner">
+        title="Form Main">
         <div className={classes.form}>
           <FormControl component="fieldset">
             <FormLabel component="legend">Arahkan ke</FormLabel>
@@ -770,31 +750,54 @@ function TabMain() {
             </RadioGroup>
           </FormControl>
 
+          <FormControl component="fieldset" style={{ marginBottom: 15 }}>
+            <FormLabel component="legend">Tipe</FormLabel>
+            <RadioGroup
+              row
+              aria-label="type"
+              name="type"
+              value={type}
+              onChange={e => setType(e.target.value)}>
+              <FormControlLabel
+                value="1"
+                control={<Radio color="primary" />}
+                label="Produk"
+              />
+              <FormControlLabel
+                value="2"
+                control={<Radio color="primary" />}
+                label="Jasa"
+              />
+            </RadioGroup>
+          </FormControl>
+
           {relate === '1' ? (
             <div style={{ marginTop: 10 }}>
-              <FormControl
-                variant="outlined"
-                size="small"
-                fullWidth
-                style={{ marginBottom: 15 }}>
-                <InputLabel id="status">status</InputLabel>
-                <Select
-                  labelId="status"
-                  id="status"
-                  name="status"
-                  value={formDetailProduk.status}
-                  onChange={onChangeDetailProduk}
-                  label="Status">
-                  <MenuItem value={1}>Aktif</MenuItem>
-                  <MenuItem value={2}>Tidak Aktif</MenuItem>
-                </Select>
-              </FormControl>
+              {isEdit && (
+                <FormControl
+                  variant="outlined"
+                  size="small"
+                  fullWidth
+                  style={{ marginBottom: 15 }}>
+                  <InputLabel id="status">status</InputLabel>
+                  <Select
+                    labelId="status"
+                    id="status"
+                    name="status"
+                    value={status}
+                    onChange={e => setStatus(e.target.value)}
+                    label="Status">
+                    <MenuItem value={1}>Aktif</MenuItem>
+                    <MenuItem value={2}>Tidak Aktif</MenuItem>
+                  </Select>
+                </FormControl>
+              )}
 
               <InputLabel
                 htmlFor="product"
-                error={errorDetailProduk.product ? true : false}
+                error={error.produk ? true : false}
                 className={classes.label}>
-                ID Produk
+                ID {type === '1' ? 'Produk' : 'Jasa'}
               </InputLabel>
               <FormControl
                 variant="outlined"
@@ -805,25 +808,21 @@ function TabMain() {
                   name="product"
                   id="product"
                   color="primary"
-                  onChange={onChangeDetailProduk}
-                  value={formDetailProduk.product}
-                  error={errorDetailProduk.product ? true : false}
+                  onChange={e => setProduk(e.target.value)}
+                  value={produk}
+                  error={error.produk ? true : false}
                 />
                 <FormHelperText
                   id="outlined-helper-text"
-                  error={errorDetailProduk.product ? true : false}>
-                  {errorDetailProduk.product}
+                  error={error.produk ? true : false}>
+                  {error.produk}
                 </FormHelperText>
               </FormControl>
 
               <div className={classes.inputFile}>
                 <Avatar
                   alt="photo"
-                  src={
-                    formDetailProduk.image.name
-                      ? URL.createObjectURL(formDetailProduk.image)
-                      : formDetailProduk.image
-                  }
+                  src={image.name ? URL.createObjectURL(image) : image}
                   variant="rounded"
                   className={classes.preview}
                 />
@@ -831,7 +830,7 @@ function TabMain() {
                   type="file"
                   id="upload"
                   accept="image/jpeg,image/png"
-                  onChange={onSelectedImgForDetailProduk}
+                  onChange={onSelectedImage}
                   style={{ display: 'none' }}
                 />
                 <label htmlFor="upload" className={classes.itemUpload}>
@@ -842,113 +841,153 @@ function TabMain() {
               <br />
               <FormHelperText
                 id="outlined-helper-text"
-                error={errorDetailProduk.image ? true : false}>
-                {errorDetailProduk.image}
+                error={error.image ? true : false}>
+                {error.image}
               </FormHelperText>
             </div>
           ) : (
             <div style={{ marginTop: 10 }}>
-              <FormControl component="fieldset" style={{ marginBottom: 15 }}>
-                <FormLabel component="legend">Tipe</FormLabel>
-                <RadioGroup
-                  row
-                  aria-label="type"
-                  name="type"
-                  value={formListProduk.type}
-                  onChange={onChangeListProduk}>
-                  <FormControlLabel
-                    value="1"
-                    control={<Radio color="primary" />}
-                    label="Produk"
-                  />
-                  <FormControlLabel
-                    value="2"
-                    control={<Radio color="primary" />}
-                    label="Jasa"
-                  />
-                </RadioGroup>
-              </FormControl>
+              {isEdit && (
+                <FormControl
+                  variant="outlined"
+                  size="small"
+                  fullWidth
+                  style={{ marginBottom: 15 }}>
+                  <InputLabel id="status">status</InputLabel>
+                  <Select
+                    labelId="status"
+                    id="status"
+                    name="status"
+                    value={status}
+                    onChange={e => setStatus(e.target.value)}
+                    label="Status">
+                    <MenuItem value={1}>Aktif</MenuItem>
+                    <MenuItem value={2}>Tidak Aktif</MenuItem>
+                  </Select>
+                </FormControl>
+              )}
 
+              <InputLabel id="products" style={{ marginBottom: 15 }}>
+                Promo (max 5)
+              </InputLabel>
               <FormControl
                 variant="outlined"
                 size="small"
                 fullWidth
                 style={{ marginBottom: 15 }}>
-                <InputLabel id="status">status</InputLabel>
-                <Select
-                  labelId="status"
-                  id="status"
-                  name="status"
-                  value={formListProduk.status}
-                  onChange={onChangeListProduk}
-                  label="Status">
-                  <MenuItem value={1}>Aktif</MenuItem>
-                  <MenuItem value={2}>Tidak Aktif</MenuItem>
-                </Select>
-              </FormControl>
-
-              <FormControl
-                variant="outlined"
-                size="small"
-                fullWidth
-                style={{ marginBottom: 15 }}>
-                <InputLabel id="promos">Promo</InputLabel>
                 <Select
                   labelId="promos"
                   id="promos"
                   name="promos"
                   multiple
-                  value={formListProduk.promos}
-                  onChange={onChangeListProduk}
+                  value={promos}
                   input={<Input />}
-                  label="Promo"
                   MenuProps={MenuProps}>
-                  {names?.map(name => (
-                    <MenuItem
-                      key={name}
-                      value={name}
-                      style={getStyles(name, formListProduk.promos, theme)}>
-                      {name}
-                    </MenuItem>
-                  ))}
+                  <List dense>
+                    {dataPromo.map(item => {
+                      const labelId = `checkbox-list-secondary-label-${item.title}`;
+                      return (
+                        <ListItem
+                          key={item.id}
+                          button
+                          onClick={onCheckboxPromos(item.id)}>
+                          <ListItemAvatar>
+                            <Avatar alt={`Avatar ${item.title}`} />
+                          </ListItemAvatar>
+                          <ListItemText id={labelId} primary={item.title} />
+                          <ListItemSecondaryAction>
+                            <Checkbox
+                              edge="end"
+                              onChange={onCheckboxPromos(item.id)}
+                              checked={promos.indexOf(item.id) !== -1}
+                              inputProps={{ 'aria-labelledby': labelId }}
+                            />
+                          </ListItemSecondaryAction>
+                        </ListItem>
+                      );
+                    })}
+                  </List>
                 </Select>
               </FormControl>
 
+              <InputLabel id="categories" style={{ marginBottom: 15 }}>
+                Kategori (max 5)
+              </InputLabel>
               <FormControl
                 variant="outlined"
                 size="small"
                 fullWidth
                 style={{ marginBottom: 15 }}>
-                <InputLabel id="categories">Kategori</InputLabel>
                 <Select
                   labelId="categories"
                   id="categories"
                   name="categories"
                   multiple
-                  value={formListProduk.categories}
-                  onChange={onChangeListProduk}
+                  value={categories}
                   input={<Input />}
-                  label="Kategori"
                   MenuProps={MenuProps}>
-                  {names?.map(name => (
-                    <MenuItem
-                      key={name}
-                      value={name}
-                      style={getStyles(name, formListProduk.categories, theme)}>
-                      {name}
-                    </MenuItem>
-                  ))}
+                  <List dense>
+                    {type === '1' &&
+                      kategoriProduk.map(item => {
+                        const labelId = `checkbox-list-secondary-label-${item.name}`;
+                        return (
+                          <ListItem
+                            key={item.id}
+                            button
+                            onClick={onCheckboxKategori(item.id)}>
+                            <ListItemAvatar>
+                              <Avatar
+                                alt={`Avatar ${item.name}`}
+                                src={item.image}
+                              />
+                            </ListItemAvatar>
+                            <ListItemText id={labelId} primary={item.name} />
+                            <ListItemSecondaryAction>
+                              <Checkbox
+                                edge="end"
+                                onChange={onCheckboxKategori(item.id)}
+                                checked={categories.indexOf(item.id) !== -1}
+                                inputProps={{ 'aria-labelledby': labelId }}
+                              />
+                            </ListItemSecondaryAction>
+                          </ListItem>
+                        );
+                      })}
+
+                    {type === '2' &&
+                      kategoriJasa.map(item => {
+                        const labelId = `checkbox-list-secondary-label-${item.name}`;
+                        return (
+                          <ListItem
+                            key={item.id}
+                            button
+                            onClick={onCheckboxKategori(item.id)}>
+                            <ListItemAvatar>
+                              <Avatar
+                                alt={`Avatar ${item.name}`}
+                                src={item.image}
+                              />
+                            </ListItemAvatar>
+                            <ListItemText id={labelId} primary={item.name} />
+                            <ListItemSecondaryAction>
+                              <Checkbox
+                                edge="end"
+                                onChange={onCheckboxKategori(item.id)}
+                                checked={categories.indexOf(item.id) !== -1}
+                                inputProps={{ 'aria-labelledby': labelId }}
+                              />
+                            </ListItemSecondaryAction>
+                          </ListItem>
+                        );
+                      })}
+                  </List>
                 </Select>
               </FormControl>
 
               <div className={classes.inputFile}>
                 <Avatar
                   alt="photo"
-                  src={
-                    formListProduk.image.name
-                      ? URL.createObjectURL(formListProduk.image)
-                      : formListProduk.image
-                  }
+                  src={image.name ? URL.createObjectURL(image) : image}
                   variant="rounded"
                   className={classes.preview}
                 />
@@ -956,7 +995,7 @@ function TabMain() {
                   type="file"
                   id="upload"
                   accept="image/jpeg,image/png"
-                  onChange={onSelectedImgForListProduk}
+                  onChange={onSelectedImage}
                   style={{ display: 'none' }}
                 />
                 <label htmlFor="upload" className={classes.itemUpload}>
@@ -967,8 +1006,8 @@ function TabMain() {
               <br />
               <FormHelperText
                 id="outlined-helper-text"
-                error={errorListProduk.image ? true : false}>
-                {errorListProduk.image}
+                error={error.image ? true : false}>
+                {error.image}
               </FormHelperText>
             </div>
           )}
@@ -984,12 +1023,10 @@ function TabMain() {
       </CompDialog>
 
       {relate === '1' ? (
-        <CompDialog
-          open={open.detail}
-          close={() => setOpen({ ...open, detail: false })}>
+        <CompDialog open={openDetail} close={() => setOpenDetail(false)}>
           <Avatar
             alt="photo"
-            src={dataDetail.image}
+            src={detail.image}
             variant="rounded"
             style={{ width: '100%', height: 250 }}
           />
@@ -1002,11 +1039,11 @@ function TabMain() {
             size="small"
             margin="normal"
             fullWidth>
-            <OutlinedInput value={dataDetail.relatedTo} disabled />
+            <OutlinedInput value={detail.relatedTo} disabled />
           </FormControl>
 
           <InputLabel htmlFor="nama_toko" style={{ marginTop: 15 }}>
-            ID Produk
+            ID {detail.type === '1' ? 'Produk' : 'Jasa'}
           </InputLabel>
           <FormControl
             variant="outlined"
@@ -1014,13 +1051,13 @@ function TabMain() {
             margin="normal"
             fullWidth>
             <OutlinedInput
-              value={dataDetail.detail}
+              value={detail.detail}
               disabled
               endAdornment={
                 <InputAdornment position="end">
                   <IconButton
                     onClick={() => {
-                      navigator.clipboard.writeText(dataDetail.detail);
+                      navigator.clipboard.writeText(detail.detail);
                       enqueueSnackbar('ID telah dicopy', {
                         variant: 'success'
                       });
@@ -1035,12 +1072,10 @@ function TabMain() {
           </FormControl>
         </CompDialog>
       ) : (
-        <CompDialog
-          open={open.detail}
-          close={() => setOpen({ ...open, detail: false })}>
+        <CompDialog open={openDetail} close={() => setOpenDetail(false)}>
           <Avatar
             alt="photo"
-            src={dataDetail.image}
+            src={detail.image}
             variant="rounded"
             style={{ width: '100%', height: 250 }}
           />
@@ -1053,20 +1088,20 @@ function TabMain() {
             size="small"
             margin="normal"
             fullWidth>
-            <OutlinedInput value={dataDetail.relatedTo} disabled />
+            <OutlinedInput value={detail.relatedTo} disabled />
           </FormControl>
         </CompDialog>
       )}
 
       <ConfirmDialog
-        open={open.hapus}
-        close={() => setOpen({ ...open, hapus: false })}
+        open={openHapus}
+        close={() => setOpenHapus(false)}
         submit={onDelete}
-        title="Hapus Banner">
+        title="Hapus Main">
         Apakah yakin ingin hapus ?
       </ConfirmDialog>
     </div>
   );
 }
 
-export default connect(null, null)(TabMain);
+export default TabMain;

@@ -77,9 +77,13 @@ export const getStore = id => {
 /**
  * service customer for update status store
  */
-export const updateStatusStore = id => {
+export const updateStatusStore = (id, status, official_store) => {
   return new Promise((resolve, reject) => {
     const data = {
+      body: {
+        status: status,
+        official_store: official_store
+      },
       path: `${id}/status`
     };
 
@@ -134,10 +138,13 @@ export const getProduk = (username, idProduk) => {
 /**
  * service customer for update status produk
  */
-export const updateStatusProduk = (idToko, idProduk) => {
+export const updateStatusProduk = (username, idProduk, status) => {
   return new Promise((resolve, reject) => {
     const data = {
-      path: `${idToko}/${idProduk}/update`
+      body: {
+        status: status
+      },
+      path: `${username}/${idProduk}/update`
     };
 
     API.storeUpdateStatusProduk(data)

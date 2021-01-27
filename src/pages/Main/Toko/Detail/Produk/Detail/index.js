@@ -3,6 +3,9 @@ import useStyles from './styles';
 import { useParams } from 'react-router-dom';
 import propTypes from 'prop-types';
 
+// notistack
+import { useSnackbar } from 'notistack';
+
 // material-ui core
 import { Avatar, Button } from '@material-ui/core';
 
@@ -20,13 +23,13 @@ import { ConfirmDialog } from 'components';
 
 function Detail({ dataStore }) {
   const classes = useStyles();
+  const { enqueueSnackbar } = useSnackbar();
 
   // id produk
   const { id } = useParams();
 
   // detail produk
   const [produk, setProduk] = useState({});
-  const [status] = useState(true);
 
   // open
   const [open, setOpen] = useState(false);
@@ -39,15 +42,52 @@ function Detail({ dataStore }) {
   }, []);
 
   // const update status produk
-  const updateStatus = async () => {
-    // services
-    const result = await updateStatusProduk(dataStore.id, id).catch(err => err);
+  const onStatus = async () => {
+    // cek status aktif atau tidak aktif
+    if (produk.status === 'Active') {
+      // services
+      const result = await updateStatusProduk(dataStore.username, id, 2).catch(
+        err => err
+      );
 
-    // cek sukses atau gagal
-    if (result.success) {
-      setOpen(false);
+      // cek sukses atau gagal
+      if (result.success) {
+        setOpen(false);
+
+        // read kembali data detail produk
+        getProduk(dataStore.username, id)
+          .then(res => setProduk(res.data.data))
+          .catch(err => err);
+
+        enqueueSnackbar('Berhasil mengnonaktifkan Status', {
+          variant: 'success'
+        });
+      } else {
+        setOpen(false);
+
+        enqueueSnackbar('Gagal mengnonaktifkan Status', { variant: 'error' });
+      }
     } else {
-      setOpen(false);
+      // services
+      const result = await updateStatusProduk(dataStore.username, id, 1).catch(
+        err => err
+      );
+
+      // cek sukses atau gagal
+      if (result.success) {
+        setOpen(false);
+
+        // read kembali data detail produk
+        getProduk(dataStore.username, id)
+          .then(res => setProduk(res.data.data))
+          .catch(err => err);
+
+        enqueueSnackbar('Berhasil mengaktifkan Status', { variant: 'success' });
+      } else {
+        setOpen(false);
+
+        enqueueSnackbar('Gagal mengaktifkan Status', { variant: 'error' });
+      }
     }
   };
 
@@ -55,7 +95,7 @@ function Detail({ dataStore }) {
     <div className={classes.wrapper}>
       <Avatar
         alt={produk.name}
-        // src={produk.images.map(item => item.image)}
+        src={produk.images?.[0].image}
         variant="rounded"
         className={classes.avatar}
       />
@@ -64,52 +104,48 @@ function Detail({ dataStore }) {
           <label className={classes.label}>nama</label>
           <span className={classes.text}>{produk.name}</span>
         </div>
-        <div className={classes.input}>
-          <label className={classes.label}>berat</label>
-          <span
-            className={
-              classes.text
-            }>{`${produk.heavy?.totalHeavy} ${produk.heavy?.type}`}</span>
-        </div>
+        {produk.heavy && (
+          <div className={classes.input}>
+            <label className={classes.label}>berat</label>
+            <span className={classes.text}>
+              {produk.heavy &&
+                `${produk.heavy?.totalHeavy} ${produk.heavy?.type}`}
+            </span>
+          </div>
+        )}
         <div className={classes.input}>
           <label className={classes.label}>tipe</label>
           <span className={classes.text}>{produk.type}</span>
         </div>
         <div className={classes.input}>
           <label className={classes.label}>harga</label>
-          <span className={classes.text}>{currency(produk.price)}</span>
+          <span className={classes.text}>
+            {produk.price && currency(produk.price)}
+          </span>
         </div>
         <div className={classes.input}>
           <label className={classes.label}>status</label>
           <span className={classes.text}>{produk.status}</span>
         </div>
-        <div className={classes.input}>
-          <label className={classes.label}>stock</label>
-          <span className={classes.text}>{produk.stock}</span>
-        </div>
-        {status ? (
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => setOpen(true)}
-            className={classes.btnNonaktif}>
-            aktif
-          </Button>
-        ) : (
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => setOpen(true)}
-            className={classes.btnNonaktif}>
-            nonaktifkan
-          </Button>
+        {produk.stock && (
+          <div className={classes.input}>
+            <label className={classes.label}>stock</label>
+            <span className={classes.text}>{produk.stock}</span>
+          </div>
         )}
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => setOpen(true)}
+          className={classes.btnNonaktif}>
+          {produk.status === 'Active' ? 'nonaktifkan' : 'aktifkan'}
+        </Button>
       </div>
       <ConfirmDialog
         open={open}
         close={() => setOpen(false)}
-        title="Ubah Status"
-        submit={updateStatus}>
+        title="Status"
+        submit={onStatus}>
         Apakah yakin ingin mengubah status?
       </ConfirmDialog>
     </div>

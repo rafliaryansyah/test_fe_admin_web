@@ -52,8 +52,8 @@ const apiEndpoint = {
   readBannersMain: `${appActiveConfig.api.baseurl}/admin/banners/main`,
   createBannersMain: `${appActiveConfig.api.baseurl}/admin/banners/main`,
   updateBannersMain: `${appActiveConfig.api.baseurl}/admin/banners/main`,
-  deleteBannersMain: `${appActiveConfig.api.baseurl}/admin/banners`,
-  restoreBannersMain: `${appActiveConfig.api.baseurl}/admin/banners`,
+  deleteBannersMain: `${appActiveConfig.api.baseurl}/admin/banners/main`,
+  restoreBannersMain: `${appActiveConfig.api.baseurl}/admin/banners/main`,
 
   // highlight
   readBannersHighlight: `${appActiveConfig.api.baseurl}/admin/banners/highlight`,
