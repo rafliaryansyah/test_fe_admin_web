@@ -1,10 +1,6 @@
 import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles(theme => ({
-  wrapper: {
-    // border: "1px solid",
-  },
-
   pencarian: {
     backgroundColor: '#ffffff',
     padding: 15,
@@ -99,6 +95,13 @@ const useStyles = makeStyles(theme => ({
     textTransform: 'capitalize',
     textAlign: 'justify',
     color: '#c4c4c4'
+  },
+
+  cekTerkait: {
+    textTransform: 'capitalize',
+    color: theme.palette.primary.main,
+    marginLeft: 4,
+    cursor: 'pointer'
   },
 
   garis: {

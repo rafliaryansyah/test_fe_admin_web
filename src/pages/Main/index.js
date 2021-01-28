@@ -2,7 +2,6 @@
 import { useState } from 'react';
 import { Switch, Route } from 'react-router-dom';
 import useStyles from './styles';
-// import propTypes from 'prop-types';
 
 // material-ui core
 import {
@@ -46,7 +45,7 @@ import { PrivateRoute, ConfirmDialog } from 'components';
 function Main({ history }) {
   const classes = useStyles();
 
-  const [drawerNav, setDrawerNav] = useState(false);
+  const [drawerNav, setDrawerNav] = useState(true);
   const [open, setOpen] = useState(false);
 
   // data profile admin form localstorage
@@ -297,7 +296,7 @@ function Main({ history }) {
           </List>
         </div>
 
-        <div>
+        <div style={{ padding: 15 }}>
           <List component="nav">
             <ListItem
               button
@@ -337,13 +336,11 @@ function Main({ history }) {
         open={open}
         close={() => setOpen(false)}
         submit={logout}
-        title="Keluar dari Grocery">
+        title="Keluar">
         Apakah anda yakin ingin keluar dari Grocery?
       </ConfirmDialog>
     </div>
   );
 }
-
-// Main.propTypes = {};
 
 export default Main;

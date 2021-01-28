@@ -30,7 +30,7 @@ const useStyles = makeStyles(theme => ({
   wrapperCard: {
     boxShadow: '0px 0px 1px rgba(0, 0, 0, 0.5)',
     display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(599px, 1fr))',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(500px, 1fr))',
     gridGap: 15,
     justifyContent: 'space-between',
     alignItems: 'center',

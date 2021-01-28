@@ -2,10 +2,15 @@ import useStyles from './styles';
 import propTypes from 'prop-types';
 
 // material-ui core
-import { FormControl, OutlinedInput, InputAdornment } from '@material-ui/core';
+import {
+  IconButton,
+  FormControl,
+  OutlinedInput,
+  InputAdornment
+} from '@material-ui/core';
 
 // react icons
-import { IoSearchOutline } from 'react-icons/io5';
+import { IoSearchOutline, IoArrowBack } from 'react-icons/io5';
 
 // components
 import { CardProduk, Paginasi } from 'components';
@@ -15,13 +20,26 @@ import { connect } from 'react-redux';
 import { setTerkait } from 'modules';
 
 // services
-import { getDetailCategoryProducts, getDetailCategoryServices } from 'services';
+import {
+  getDetailCategoryProducts,
+  getDetailCategoryServices,
+  detailPromoProduct,
+  detailPromoService
+} from 'services';
 
-function ProdukTerkait({ id, dari, dataTerkait, setDataTerkait }) {
+// utils
+import { currency } from 'utils';
+
+function ProdukTerkait({ id, dari, dataTerkait, setDataTerkait, history }) {
   const classes = useStyles();
 
   return (
     <div className={classes.wrapper}>
+      <IconButton onClick={() => history.goBack()}>
+        <IoArrowBack />
+      </IconButton>
+      <br />
+      <br />
       <div className={classes.itemSatu}>
         <FormControl
           variant="outlined"
@@ -49,10 +67,10 @@ function ProdukTerkait({ id, dari, dataTerkait, setDataTerkait }) {
         {dataTerkait.data?.map(data => (
           <CardProduk
             key={data.id}
-            srcImage={data.images?.map(image => image.image)}
+            srcImage={data.images?.[0].image}
             nama={data.name}
-            harga={data.price}
-            type={data.images?.map(image => image.type)}
+            harga={currency(data.price)}
+            type={data.images?.[0].type}
             stok={data.stock}
             status={data.status}
             toko={data.merchantInfo?.name}
@@ -76,7 +94,20 @@ function ProdukTerkait({ id, dari, dataTerkait, setDataTerkait }) {
                 .then(res => setDataTerkait(res.data))
                 .catch(err => err);
               break;
+            case 'promo':
+              detailPromoProduct(id, value)
+                .then(res => {
+                  setDataTerkait(res.data);
+                })
+                .catch(err => err);
+              detailPromoService(id, value)
+                .then(res => {
+                  setDataTerkait(res.data);
+                })
+                .catch(err => err);
+              break;
             default:
+              null;
               break;
           }
         }}

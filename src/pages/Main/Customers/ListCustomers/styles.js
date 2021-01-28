@@ -32,7 +32,7 @@ const useStyles = makeStyles(theme => ({
   wrapperCard: {
     marginBottom: 15,
     display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(599px, 1fr))',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(500px, 1fr))',
     justifyContent: 'space-between',
     gridGap: 15,
     padding: 15,

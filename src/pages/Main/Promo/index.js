@@ -34,16 +34,30 @@ import {
 import { Paginasi, CompDialog, ConfirmDialog } from 'components';
 
 // services
-import { createPromo, readPromo, updatePromo, deletePromo } from 'services';
+import {
+  createPromo,
+  readPromo,
+  detailPromoProduct,
+  detailPromoService,
+  updatePromo,
+  deletePromo
+} from 'services';
 
 // redux
 import { connect } from 'react-redux';
-import { setPromos } from 'modules';
+import { setPromos, setID, setDari, setTerkait } from 'modules';
 
 // utils
 import { currency, dateConverterReq, dateConverterRes } from 'utils';
 
-function Promo({ setDataPromos, dataPromos }) {
+function Promo({
+  setDataPromos,
+  dataPromos,
+  setDataID,
+  setDataDari,
+  setDataTerkait,
+  history
+}) {
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
 
@@ -139,9 +153,9 @@ function Promo({ setDataPromos, dataPromos }) {
     return newError;
   };
 
-  // proses merender untuk read data
+  // read data promo
   useEffect(() => {
-    readPromo()
+    readPromo(false)
       .then(res => {
         setDataPromos(res.data.data);
         setPagination({
@@ -196,6 +210,8 @@ function Promo({ setDataPromos, dataPromos }) {
 
         // cek sukses atau tidak
         if (result.success) {
+          setOpen({ ...open, form: false });
+
           setForm({
             title: '',
             started_at: '',
@@ -204,29 +220,29 @@ function Promo({ setDataPromos, dataPromos }) {
             discount: '',
             description: '',
             tac: ''
-          });
-          setOpen({ ...open, form: false });
-          enqueueSnackbar('Berhasil memperbarui promo', {
-            variant: 'success'
           });
 
           // read kembali data
-          setTimeout(() => {
-            readPromo()
-              .then(res => {
-                setDataPromos(res.data.data);
-                setPagination({
-                  ...pagination,
-                  current_page: res.data.meta.current_page
-                });
-                setPagination({
-                  ...pagination,
-                  last_page: res.data.meta.last_page
-                });
-              })
-              .catch(err => err);
-          }, 5000);
+          readPromo(false)
+            .then(res => {
+              setDataPromos(res.data.data);
+              setPagination({
+                ...pagination,
+                current_page: res.data.meta.current_page
+              });
+              setPagination({
+                ...pagination,
+                last_page: res.data.meta.last_page
+              });
+            })
+            .catch(err => err);
+
+          enqueueSnackbar('Berhasil memperbarui promo', {
+            variant: 'success'
+          });
         } else {
+          setOpen({ ...open, form: false });
+
           setForm({
             title: '',
             started_at: '',
@@ -236,7 +252,7 @@ function Promo({ setDataPromos, dataPromos }) {
             description: '',
             tac: ''
           });
-          setOpen({ ...open, form: false });
+
           enqueueSnackbar('Gagal memperbarui promo', {
             variant: 'error'
           });
@@ -272,6 +288,8 @@ function Promo({ setDataPromos, dataPromos }) {
 
         // cek sukses atau tidak
         if (result.success) {
+          setOpen({ ...open, form: false });
+
           setForm({
             title: '',
             started_at: '',
@@ -280,29 +298,29 @@ function Promo({ setDataPromos, dataPromos }) {
             discount: '',
             description: '',
             tac: ''
-          });
-          setOpen({ ...open, form: false });
-          enqueueSnackbar('Berhasil menambahkan promo baru', {
-            variant: 'success'
           });
 
           // read kembali data
-          setTimeout(() => {
-            readPromo()
-              .then(res => {
-                setDataPromos(res.data.data);
-                setPagination({
-                  ...pagination,
-                  current_page: res.data.meta.current_page
-                });
-                setPagination({
-                  ...pagination,
-                  last_page: res.data.meta.last_page
-                });
-              })
-              .catch(err => err);
-          }, 5000);
+          readPromo(false)
+            .then(res => {
+              setDataPromos(res.data.data);
+              setPagination({
+                ...pagination,
+                current_page: res.data.meta.current_page
+              });
+              setPagination({
+                ...pagination,
+                last_page: res.data.meta.last_page
+              });
+            })
+            .catch(err => err);
+
+          enqueueSnackbar('Berhasil menambahkan promo baru', {
+            variant: 'success'
+          });
         } else {
+          setOpen({ ...open, form: false });
+
           setForm({
             title: '',
             started_at: '',
@@ -312,7 +330,7 @@ function Promo({ setDataPromos, dataPromos }) {
             description: '',
             tac: ''
           });
-          setOpen({ ...open, form: false });
+
           enqueueSnackbar('Gagal menambahkan promo baru', {
             variant: 'error'
           });
@@ -329,28 +347,28 @@ function Promo({ setDataPromos, dataPromos }) {
     // cek sukses atau tidak
     if (result.success) {
       setOpen({ ...open, hapus: false });
+
+      // read kembali data
+      readPromo(false)
+        .then(res => {
+          setDataPromos(res.data.data);
+          setPagination({
+            ...pagination,
+            current_page: res.data.meta.current_page
+          });
+          setPagination({
+            ...pagination,
+            last_page: res.data.meta.last_page
+          });
+        })
+        .catch(err => err);
+
       enqueueSnackbar('Berhasil menghapus promo', {
         variant: 'success'
       });
-
-      // read kembali data
-      setTimeout(() => {
-        readPromo()
-          .then(res => {
-            setDataPromos(res.data.data);
-            setPagination({
-              ...pagination,
-              current_page: res.data.meta.current_page
-            });
-            setPagination({
-              ...pagination,
-              last_page: res.data.meta.last_page
-            });
-          })
-          .catch(err => err);
-      }, 5000);
     } else {
       setOpen({ ...open, hapus: false });
+
       enqueueSnackbar('Gagal menghapus promo', {
         variant: 'error'
       });
@@ -429,7 +447,8 @@ function Promo({ setDataPromos, dataPromos }) {
                       </span>
                     )}
                     <span className={classes.teksPromo}>
-                      produk terkait: {data.countRelatedProduct}
+                      item terkait:
+                      {data.countRelatedProduct + data.countRelatedService}
                     </span>
                   </div>
                 </CardContent>
@@ -514,15 +533,34 @@ function Promo({ setDataPromos, dataPromos }) {
           </div>
         )}
         <div className={classes.desk}>
-          <span className={classes.teks}>Status</span>
+          <span className={classes.teks}>Item Terkait</span>
           <span className={classes.teks}>
-            {status ? 'aktif' : 'tidak aktif'}
-            <input type="checkbox" name="status" checked={true} onChange="" />
+            {dataDetail.countRelatedProduct + dataDetail.countRelatedService} |
+            <span
+              className={classes.cekTerkait}
+              onClick={() => {
+                dataDetail.countRelatedProduct === 1 &&
+                  detailPromoProduct(dataDetail.id)
+                    .then(res => {
+                      setDataID(id);
+                      setDataDari('promo');
+                      setDataTerkait(res.data);
+                      history.replace('/produk-terkait');
+                    })
+                    .catch(err => err);
+                dataDetail.countRelatedService === 1 &&
+                  detailPromoService(dataDetail.id)
+                    .then(res => {
+                      setDataID(id);
+                      setDataDari('promo');
+                      setDataTerkait(res.data);
+                      history.replace('/produk-terkait');
+                    })
+                    .catch(err => err);
+              }}>
+              cek
+            </span>
           </span>
-        </div>
-        <div className={classes.desk}>
-          <span className={classes.teks}>Produk Terkait</span>
-          <span className={classes.teks}>{dataDetail.countRelatedProduct}</span>
         </div>
         <div className={classes.garis}></div>
         <label className={classes.label}>syarat & ketentuan</label>
@@ -719,7 +757,10 @@ function Promo({ setDataPromos, dataPromos }) {
 
 Promo.propTypes = {
   setDataPromos: propTypes.func,
-  dataPromos: propTypes.array
+  dataPromos: propTypes.array,
+  setDataID: propTypes.func,
+  setDataDari: propTypes.func,
+  setDataTerkait: propTypes.func
 };
 
 const mapStateToProps = state => ({
@@ -727,7 +768,10 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  setDataPromos: value => dispatch(setPromos(value))
+  setDataPromos: value => dispatch(setPromos(value)),
+  setDataID: value => dispatch(setID(value)),
+  setDataDari: value => dispatch(setDari(value)),
+  setDataTerkait: value => dispatch(setTerkait(value))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Promo);

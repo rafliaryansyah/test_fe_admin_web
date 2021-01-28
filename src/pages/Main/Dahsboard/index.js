@@ -33,7 +33,7 @@ import { readDashboard } from 'services';
 // utils
 import { currency } from 'utils';
 
-function Dashboard({ setDataDashboard }) {
+function Dashboard({ setDataDashboard, data }) {
   const classes = useStyles();
 
   // bar chart
@@ -127,7 +127,12 @@ function Dashboard({ setDataDashboard }) {
               <CardContent className={classes.content}>
                 <div>
                   <p className={classes.totalPendapatan}>total pendapatan</p>
-                  <p className={classes.nilai}>{currency(64100000)}</p>
+                  <p className={classes.nilai}>
+                    {currency(
+                      data.detail?.totalEarnProducts +
+                        data.detail?.totalEarnServices
+                    )}
+                  </p>
                 </div>
                 <IoCashOutline size={65} />
               </CardContent>
@@ -138,7 +143,10 @@ function Dashboard({ setDataDashboard }) {
               <CardContent className={classes.content}>
                 <div>
                   <p className={classes.totalPendapatan}>total order</p>
-                  <p className={classes.nilai}>2575</p>
+                  <p className={classes.nilai}>
+                    {data.detail?.totalOrderProducts +
+                      data.detail?.totalOrderServices}
+                  </p>
                 </div>
                 <IoCartOutline size={65} />
               </CardContent>
@@ -149,7 +157,7 @@ function Dashboard({ setDataDashboard }) {
               <CardContent className={classes.content}>
                 <div>
                   <p className={classes.totalPendapatan}>total pengguna</p>
-                  <p className={classes.nilai}>3743</p>
+                  <p className={classes.nilai}>{data.detail?.totalUsers}</p>
                 </div>
                 <IoPersonCircleOutline size={65} />
               </CardContent>
@@ -162,11 +170,16 @@ function Dashboard({ setDataDashboard }) {
 }
 
 Dashboard.propTypes = {
-  setDataDashboard: propTypes.func
+  setDataDashboard: propTypes.func,
+  data: propTypes.object
 };
+
+const mapStateToProps = state => ({
+  data: state.dashboard.dashboard
+});
 
 const mapDispatchToProps = dispatch => ({
   setDataDashboard: value => dispatch(setDashboard(value))
 });
 
-export default connect(null, mapDispatchToProps)(Dashboard);
+export default connect(mapStateToProps, mapDispatchToProps)(Dashboard);
