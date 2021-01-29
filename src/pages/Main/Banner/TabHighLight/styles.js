@@ -1,11 +1,11 @@
 import { makeStyles } from '@material-ui/core/styles';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   wrapper: {
     padding: '15px 0px 15px 0px',
     display: 'grid',
     gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-    gridGap: 15,
+    gridGap: 15
   },
 
   title: {
@@ -16,17 +16,17 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: 30,
 
     [theme.breakpoints.down('sm')]: {
-      fontSize: 15,
-    },
+      fontSize: 15
+    }
   },
 
   card: {
-    padding: 5,
+    padding: 5
   },
 
   action: {
     display: 'flex',
-    justifyContent: 'flex-end',
+    justifyContent: 'flex-end'
   },
 
   wrapperButton: {
@@ -34,25 +34,25 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'flex-end',
     alignItems: 'center',
     gridGap: 15,
-    marginTop: 30,
+    marginTop: 30
   },
 
   form: {
     display: 'grid',
-    padding: 15,
+    padding: 15
   },
 
   inputFile: {
     display: 'flex',
     justifyContent: 'space-between',
     flexDirection: 'column',
-    gridGap: 10,
+    gridGap: 10
   },
 
   preview: {
     objectFit: 'cover',
     width: '100%',
-    height: '100%',
+    height: '100%'
   },
 
   itemUpload: {
@@ -64,12 +64,12 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'center',
     alignItems: 'center',
     gridGap: 5,
-    cursor: 'pointer',
+    cursor: 'pointer'
   },
 
   submit: {
-    marginTop: 15,
-  },
+    marginTop: 15
+  }
 }));
 
 export default useStyles;

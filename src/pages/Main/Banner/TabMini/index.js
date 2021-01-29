@@ -11,18 +11,18 @@ const responsive = {
   desktop: {
     breakpoint: { max: 3000, min: 1024 },
     items: 3,
-    paritialVisibilityGutter: 74,
+    paritialVisibilityGutter: 74
   },
   tablet: {
     breakpoint: { max: 1024, min: 464 },
     items: 2,
-    paritialVisibilityGutter: 115,
+    paritialVisibilityGutter: 115
   },
   mobile: {
     breakpoint: { max: 464, min: 0 },
     items: 1,
-    paritialVisibilityGutter: 0,
-  },
+    paritialVisibilityGutter: 0
+  }
 };
 
 // responsive carousel
@@ -30,18 +30,18 @@ const responsiveHistory = {
   desktop: {
     breakpoint: { max: 3000, min: 1024 },
     items: 6,
-    paritialVisibilityGutter: 0,
+    paritialVisibilityGutter: 0
   },
   tablet: {
     breakpoint: { max: 1024, min: 464 },
     items: 3,
-    paritialVisibilityGutter: 60,
+    paritialVisibilityGutter: 60
   },
   mobile: {
     breakpoint: { max: 464, min: 0 },
     items: 1,
-    paritialVisibilityGutter: -15,
-  },
+    paritialVisibilityGutter: -15
+  }
 };
 
 // notistack
@@ -73,7 +73,7 @@ import {
   ListItemSecondaryAction,
   ListItemText,
   ListItemAvatar,
-  Checkbox,
+  Checkbox
 } from '@material-ui/core';
 
 // react icons
@@ -81,7 +81,7 @@ import {
   IoPencilOutline,
   IoTrashOutline,
   IoCloudDownloadOutline,
-  IoCopyOutline,
+  IoCopyOutline
 } from 'react-icons/io5';
 
 // components
@@ -98,7 +98,7 @@ import {
   updateMiniBanners,
   deleteMiniBanners,
   readPromo,
-  getCategory,
+  getCategory
 } from 'services';
 
 // MenuProps
@@ -108,9 +108,9 @@ const MenuProps = {
   PaperProps: {
     style: {
       maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-      width: 250,
-    },
-  },
+      width: 250
+    }
+  }
 };
 
 function TabMini() {
@@ -156,11 +156,11 @@ function TabMini() {
   // form error
   const [error, setError] = useState({
     product: '',
-    image: '',
+    image: ''
   });
 
   // checkbox promos
-  const onCheckboxPromos = (value) => () => {
+  const onCheckboxPromos = value => () => {
     const currentIndex = promos.indexOf(value);
     const newChecked = [...promos];
 
@@ -174,7 +174,7 @@ function TabMini() {
   };
 
   // checkbox kategori
-  const onCheckboxKategori = (value) => () => {
+  const onCheckboxKategori = value => () => {
     const currentIndex = categories.indexOf(value);
     const newChecked = [...categories];
 
@@ -190,35 +190,35 @@ function TabMini() {
   // read data mini
   useEffect(() => {
     readBannersMini('product', false)
-      .then((res) => {
+      .then(res => {
         setMiniProduk(res.data.data);
       })
-      .catch((err) => err);
+      .catch(err => err);
     readBannersMini('service', false)
-      .then((res) => {
+      .then(res => {
         setMiniService(res.data.data);
       })
-      .catch((err) => err);
+      .catch(err => err);
   }, []);
 
   // read data promo dan kategori
   useEffect(() => {
     readPromo('')
-      .then((res) => setDataPromo(res.data.data))
-      .catch((err) => err);
+      .then(res => setDataPromo(res.data.data))
+      .catch(err => err);
   }, []);
 
   useEffect(() => {
     getCategory('1')
-      .then((res) => setDataKategori(res.data.data))
-      .catch((err) => err);
+      .then(res => setDataKategori(res.data.data))
+      .catch(err => err);
     getCategory('2')
-      .then((res) => setDataKategori(res.data.data))
-      .catch((err) => err);
+      .then(res => setDataKategori(res.data.data))
+      .catch(err => err);
   }, []);
 
   // create dan update data tipe produk
-  const onSubmitProduk = async (e) => {
+  const onSubmitProduk = async e => {
     e.preventDefault();
 
     // cek relate
@@ -244,9 +244,7 @@ function TabMini() {
         }
 
         // services
-        const result = await updateMiniBanners(id, formdata).catch(
-          (err) => err,
-        );
+        const result = await updateMiniBanners(id, formdata).catch(err => err);
 
         // cek sukses atau tidak
         if (result.success) {
@@ -259,13 +257,13 @@ function TabMini() {
 
           // read kembali data baru
           readBannersMini('product', false)
-            .then((res) => {
+            .then(res => {
               setMiniProduk(res.data.data);
             })
-            .catch((err) => err);
+            .catch(err => err);
 
           enqueueSnackbar('Berhasil memperbarui data', {
-            variant: 'success',
+            variant: 'success'
           });
         } else {
           setRelate('1');
@@ -293,7 +291,7 @@ function TabMini() {
         }
 
         // services
-        const result = await createMiniBanners(formdata).catch((err) => err);
+        const result = await createMiniBanners(formdata).catch(err => err);
 
         // cek sukses atau tidak
         if (result.success) {
@@ -306,13 +304,13 @@ function TabMini() {
 
           // read kembali data baru
           readBannersMini('product', false)
-            .then((res) => {
+            .then(res => {
               setMiniProduk(res.data.data);
             })
-            .catch((err) => err);
+            .catch(err => err);
 
           enqueueSnackbar('Berhasil membuat data baru', {
-            variant: 'success',
+            variant: 'success'
           });
         } else {
           setRelate('1');
@@ -349,9 +347,7 @@ function TabMini() {
         }
 
         // services
-        const result = await updateMiniBanners(id, formdata).catch(
-          (err) => err,
-        );
+        const result = await updateMiniBanners(id, formdata).catch(err => err);
 
         // cek sukses atau tidak
         if (result.success) {
@@ -365,13 +361,13 @@ function TabMini() {
 
           // read kembali data baru
           readBannersMini('product', false)
-            .then((res) => {
+            .then(res => {
               setMiniProduk(res.data.data);
             })
-            .catch((err) => err);
+            .catch(err => err);
 
           enqueueSnackbar('Berhasil memperbarui data', {
-            variant: 'success',
+            variant: 'success'
           });
         } else {
           setRelate('1');
@@ -407,7 +403,7 @@ function TabMini() {
         }
 
         // services
-        const result = await createMiniBanners(formdata).catch((err) => err);
+        const result = await createMiniBanners(formdata).catch(err => err);
 
         // cek sukses atau tidak
         if (result.success) {
@@ -421,13 +417,13 @@ function TabMini() {
 
           // read kembali data baru
           readBannersMini('product', false)
-            .then((res) => {
+            .then(res => {
               setMiniProduk(res.data.data);
             })
-            .catch((err) => err);
+            .catch(err => err);
 
           enqueueSnackbar('Berhasil membuat data baru', {
-            variant: 'success',
+            variant: 'success'
           });
         } else {
           setRelate('1');
@@ -445,7 +441,7 @@ function TabMini() {
   };
 
   // create dan update data tipe service
-  const onSubmitService = async (e) => {
+  const onSubmitService = async e => {
     e.preventDefault();
 
     // cek relate
@@ -471,9 +467,7 @@ function TabMini() {
         }
 
         // services
-        const result = await updateMiniBanners(id, formdata).catch(
-          (err) => err,
-        );
+        const result = await updateMiniBanners(id, formdata).catch(err => err);
 
         // cek sukses atau tidak
         if (result.success) {
@@ -486,13 +480,13 @@ function TabMini() {
 
           // read kembali data baru
           readBannersMini('service', false)
-            .then((res) => {
+            .then(res => {
               setMiniService(res.data.data);
             })
-            .catch((err) => err);
+            .catch(err => err);
 
           enqueueSnackbar('Berhasil memperbarui data', {
-            variant: 'success',
+            variant: 'success'
           });
         } else {
           setRelate('1');
@@ -520,7 +514,7 @@ function TabMini() {
         }
 
         // services
-        const result = await createMiniBanners(formdata).catch((err) => err);
+        const result = await createMiniBanners(formdata).catch(err => err);
 
         // cek sukses atau tidak
         if (result.success) {
@@ -533,13 +527,13 @@ function TabMini() {
 
           // read kembali data baru
           readBannersMini('service', false)
-            .then((res) => {
+            .then(res => {
               setMiniService(res.data.data);
             })
-            .catch((err) => err);
+            .catch(err => err);
 
           enqueueSnackbar('Berhasil membuat data baru', {
-            variant: 'success',
+            variant: 'success'
           });
         } else {
           setRelate('1');
@@ -576,9 +570,7 @@ function TabMini() {
         }
 
         // services
-        const result = await updateMiniBanners(id, formdata).catch(
-          (err) => err,
-        );
+        const result = await updateMiniBanners(id, formdata).catch(err => err);
 
         // cek sukses atau tidak
         if (result.success) {
@@ -592,13 +584,13 @@ function TabMini() {
 
           // read kembali data baru
           readBannersMini('service', false)
-            .then((res) => {
+            .then(res => {
               setMiniService(res.data.data);
             })
-            .catch((err) => err);
+            .catch(err => err);
 
           enqueueSnackbar('Berhasil memperbarui data', {
-            variant: 'success',
+            variant: 'success'
           });
         } else {
           setRelate('1');
@@ -634,7 +626,7 @@ function TabMini() {
         }
 
         // services
-        const result = await createMiniBanners(formdata).catch((err) => err);
+        const result = await createMiniBanners(formdata).catch(err => err);
 
         // cek sukses atau tidak
         if (result.success) {
@@ -648,13 +640,13 @@ function TabMini() {
 
           // read kembali data baru
           readBannersMini('service', false)
-            .then((res) => {
+            .then(res => {
               setMiniService(res.data.data);
             })
-            .catch((err) => err);
+            .catch(err => err);
 
           enqueueSnackbar('Berhasil membuat data baru', {
-            variant: 'success',
+            variant: 'success'
           });
         } else {
           setRelate('1');
@@ -673,7 +665,7 @@ function TabMini() {
 
   // hapus data
   const onDelete = async () => {
-    const result = await deleteMiniBanners(id).catch((err) => err);
+    const result = await deleteMiniBanners(id).catch(err => err);
 
     // cek sukses atau tidak
     if (result.success) {
@@ -682,16 +674,16 @@ function TabMini() {
       // read kembali data baru
       if (type === 'Product') {
         readBannersMini('product', false)
-          .then((res) => {
+          .then(res => {
             setMiniProduk(res.data.data);
           })
-          .catch((err) => err);
+          .catch(err => err);
       } else {
         readBannersMini('service', false)
-          .then((res) => {
+          .then(res => {
             setMiniService(res.data.data);
           })
-          .catch((err) => err);
+          .catch(err => err);
       }
 
       enqueueSnackbar('Berhasil menghapus data', { variant: 'success' });
@@ -703,18 +695,18 @@ function TabMini() {
   };
 
   // upload image
-  const onSelectedImage = async (e) => {
+  const onSelectedImage = async e => {
     const file = e.target.files[0];
 
     if (!['image/png', 'image/jpeg'].includes(file.type)) {
       setError({
         ...error,
-        image: `Tipe file tidak didukung: ${file.type}`,
+        image: `Tipe file tidak didukung: ${file.type}`
       });
     } else if (file.size >= 512000) {
       setError({
         ...error,
-        image: 'Ukuran file terlalu besar dari 500KB',
+        image: 'Ukuran file terlalu besar dari 500KB'
       });
     } else {
       const reader = new FileReader();
@@ -722,21 +714,21 @@ function TabMini() {
       reader.onabort = () => {
         setError({
           ...error,
-          image: 'Proses pembacaan file dibatalkan',
+          image: 'Proses pembacaan file dibatalkan'
         });
       };
 
       reader.onerror = () => {
         setError({
           ...error,
-          image: 'File tidak terbaca',
+          image: 'File tidak terbaca'
         });
       };
 
       reader.onload = async () => {
         setError({
           ...error,
-          image: '',
+          image: ''
         });
 
         try {
@@ -744,7 +736,7 @@ function TabMini() {
         } catch (e) {
           setError({
             ...error,
-            image: e.message,
+            image: e.message
           });
         }
       };
@@ -766,7 +758,7 @@ function TabMini() {
               partialVisbile
               itemClass={classes.card}
               responsive={responsive}>
-              {miniProduk.map((item) =>
+              {miniProduk.map(item =>
                 item.status?.id === 1 ? (
                   item.relatedTo === 'Product Detail' ? (
                     <Card key={item.id}>
@@ -775,7 +767,7 @@ function TabMini() {
                         onClick={() => {
                           setDetail(item);
                           setRelate(
-                            item.relatedTo === 'Product Detail' ? '1' : '2',
+                            item.relatedTo === 'Product Detail' ? '1' : '2'
                           );
                           setOpenDetail(true);
                         }}>
@@ -796,7 +788,7 @@ function TabMini() {
                             setID(item.id);
                             setIsEdit(true);
                             setRelate(
-                              item.relatedTo === 'Product Detail' ? '1' : '2',
+                              item.relatedTo === 'Product Detail' ? '1' : '2'
                             );
                             setTypeProduk(1);
                             setStatus(item.status?.id);
@@ -826,7 +818,7 @@ function TabMini() {
                         onClick={() => {
                           setDetail(item);
                           setRelate(
-                            item.relatedTo === 'Product Detail' ? '1' : '2',
+                            item.relatedTo === 'Product Detail' ? '1' : '2'
                           );
                           setOpenDetail(true);
                         }}>
@@ -847,7 +839,7 @@ function TabMini() {
                             setID(item.id);
                             setIsEdit(true);
                             setRelate(
-                              item.relatedTo === 'Product Detail' ? '1' : '2',
+                              item.relatedTo === 'Product Detail' ? '1' : '2'
                             );
                             setTypeProduk(1);
                             setStatus(item.status?.id);
@@ -872,7 +864,7 @@ function TabMini() {
                       </CardActions>
                     </Card>
                   )
-                ) : null,
+                ) : null
               )}
             </Carousel>
           )}
@@ -890,7 +882,7 @@ function TabMini() {
               partialVisbile
               itemClass={classes.card}
               responsive={responsiveHistory}>
-              {miniProduk.map((item) =>
+              {miniProduk.map(item =>
                 item.status?.id !== 1 ? (
                   item.relatedTo === 'Product Detail' ? (
                     <Card key={item.id}>
@@ -899,7 +891,7 @@ function TabMini() {
                         onClick={() => {
                           setDetail(item);
                           setRelate(
-                            item.relatedTo === 'Product Detail' ? '1' : '2',
+                            item.relatedTo === 'Product Detail' ? '1' : '2'
                           );
                           setOpenDetail(true);
                         }}>
@@ -920,7 +912,7 @@ function TabMini() {
                             setID(item.id);
                             setIsEdit(true);
                             setRelate(
-                              item.relatedTo === 'Product Detail' ? '1' : '2',
+                              item.relatedTo === 'Product Detail' ? '1' : '2'
                             );
                             setTypeProduk(1);
                             setStatus(item.status?.id);
@@ -950,7 +942,7 @@ function TabMini() {
                         onClick={() => {
                           setDetail(item);
                           setRelate(
-                            item.relatedTo === 'Product Detail' ? '1' : '2',
+                            item.relatedTo === 'Product Detail' ? '1' : '2'
                           );
                           setOpenDetail(true);
                         }}>
@@ -971,7 +963,7 @@ function TabMini() {
                             setID(item.id);
                             setIsEdit(true);
                             setRelate(
-                              item.relatedTo === 'Product Detail' ? '1' : '2',
+                              item.relatedTo === 'Product Detail' ? '1' : '2'
                             );
                             setTypeProduk(1);
                             setStatus(item.status?.id);
@@ -996,7 +988,7 @@ function TabMini() {
                       </CardActions>
                     </Card>
                   )
-                ) : null,
+                ) : null
               )}
             </Carousel>
           )}
@@ -1019,7 +1011,7 @@ function TabMini() {
               partialVisbile
               itemClass={classes.card}
               responsive={responsive}>
-              {miniService.map((item) =>
+              {miniService.map(item =>
                 item.status?.id === 1 ? (
                   item.relatedTo === 'Product Detail' ? (
                     <Card key={item.id}>
@@ -1028,7 +1020,7 @@ function TabMini() {
                         onClick={() => {
                           setDetail(item);
                           setRelate(
-                            item.relatedTo === 'Product Detail' ? '1' : '2',
+                            item.relatedTo === 'Product Detail' ? '1' : '2'
                           );
                           setOpenDetail(true);
                         }}>
@@ -1049,7 +1041,7 @@ function TabMini() {
                             setID(item.id);
                             setIsEdit(true);
                             setRelate(
-                              item.relatedTo === 'Product Detail' ? '1' : '2',
+                              item.relatedTo === 'Product Detail' ? '1' : '2'
                             );
                             setTypeService(2);
                             setStatus(item.status?.id);
@@ -1079,7 +1071,7 @@ function TabMini() {
                         onClick={() => {
                           setDetail(item);
                           setRelate(
-                            item.relatedTo === 'Product Detail' ? '1' : '2',
+                            item.relatedTo === 'Product Detail' ? '1' : '2'
                           );
                           setOpenDetail(true);
                         }}>
@@ -1100,7 +1092,7 @@ function TabMini() {
                             setID(item.id);
                             setIsEdit(true);
                             setRelate(
-                              item.relatedTo === 'Product Detail' ? '1' : '2',
+                              item.relatedTo === 'Product Detail' ? '1' : '2'
                             );
                             setTypeService(2);
                             setStatus(item.status?.id);
@@ -1125,7 +1117,7 @@ function TabMini() {
                       </CardActions>
                     </Card>
                   )
-                ) : null,
+                ) : null
               )}
             </Carousel>
           )}
@@ -1143,7 +1135,7 @@ function TabMini() {
               partialVisbile
               itemClass={classes.card}
               responsive={responsiveHistory}>
-              {miniService.map((item) =>
+              {miniService.map(item =>
                 item.status?.id !== 1 ? (
                   item.relatedTo === 'Product Detail' ? (
                     <Card key={item.id}>
@@ -1152,7 +1144,7 @@ function TabMini() {
                         onClick={() => {
                           setDetail(item);
                           setRelate(
-                            item.relatedTo === 'Product Detail' ? '1' : '2',
+                            item.relatedTo === 'Product Detail' ? '1' : '2'
                           );
                           setOpenDetail(true);
                         }}>
@@ -1173,7 +1165,7 @@ function TabMini() {
                             setID(item.id);
                             setIsEdit(true);
                             setRelate(
-                              item.relatedTo === 'Product Detail' ? '1' : '2',
+                              item.relatedTo === 'Product Detail' ? '1' : '2'
                             );
                             setTypeService(2);
                             setStatus(item.status?.id);
@@ -1203,7 +1195,7 @@ function TabMini() {
                         onClick={() => {
                           setDetail(item);
                           setRelate(
-                            item.relatedTo === 'Product Detail' ? '1' : '2',
+                            item.relatedTo === 'Product Detail' ? '1' : '2'
                           );
                           setOpenDetail(true);
                         }}>
@@ -1224,7 +1216,7 @@ function TabMini() {
                             setID(item.id);
                             setIsEdit(true);
                             setRelate(
-                              item.relatedTo === 'Product Detail' ? '1' : '2',
+                              item.relatedTo === 'Product Detail' ? '1' : '2'
                             );
                             setTypeService(2);
                             setStatus(item.status?.id);
@@ -1249,7 +1241,7 @@ function TabMini() {
                       </CardActions>
                     </Card>
                   )
-                ) : null,
+                ) : null
               )}
             </Carousel>
           )}
@@ -1286,7 +1278,7 @@ function TabMini() {
               aria-label="relate"
               name="relate"
               value={relate}
-              onChange={(e) => setRelate(e.target.value)}>
+              onChange={e => setRelate(e.target.value)}>
               <FormControlLabel
                 value="1"
                 control={<Radio color="primary" />}
@@ -1314,7 +1306,7 @@ function TabMini() {
                     id="status"
                     name="status"
                     value={status}
-                    onChange={(e) => setStatus(e.target.value)}
+                    onChange={e => setStatus(e.target.value)}
                     label="Status">
                     <MenuItem value={1}>Aktif</MenuItem>
                     <MenuItem value={2}>Tidak Aktif</MenuItem>
@@ -1338,7 +1330,7 @@ function TabMini() {
                   id="product"
                   color="primary"
                   value={product}
-                  onChange={(e) => setProduct(e.target.value)}
+                  onChange={e => setProduct(e.target.value)}
                   error={error.product ? true : false}
                 />
                 <FormHelperText
@@ -1388,7 +1380,7 @@ function TabMini() {
                     id="status"
                     name="status"
                     value={status}
-                    onChange={(e) => setStatus(e.target.value)}
+                    onChange={e => setStatus(e.target.value)}
                     label="Status">
                     <MenuItem value={1}>Aktif</MenuItem>
                     <MenuItem value={2}>Tidak Aktif</MenuItem>
@@ -1413,7 +1405,7 @@ function TabMini() {
                   input={<Input />}
                   MenuProps={MenuProps}>
                   <List dense>
-                    {dataPromo.map((item) => {
+                    {dataPromo.map(item => {
                       const labelId = `checkbox-list-secondary-label-${item.title}`;
                       return (
                         <ListItem
@@ -1456,7 +1448,7 @@ function TabMini() {
                   input={<Input />}
                   MenuProps={MenuProps}>
                   <List dense>
-                    {dataKategori.map((item) => {
+                    {dataKategori.map(item => {
                       const labelId = `checkbox-list-secondary-label-${item.name}`;
                       return (
                         <ListItem
@@ -1545,7 +1537,7 @@ function TabMini() {
               aria-label="relate"
               name="relate"
               value={relate}
-              onChange={(e) => setRelate(e.target.value)}>
+              onChange={e => setRelate(e.target.value)}>
               <FormControlLabel
                 value="1"
                 control={<Radio color="primary" />}
@@ -1573,7 +1565,7 @@ function TabMini() {
                     id="status"
                     name="status"
                     value={status}
-                    onChange={(e) => setStatus(e.target.value)}
+                    onChange={e => setStatus(e.target.value)}
                     label="Status">
                     <MenuItem value={1}>Aktif</MenuItem>
                     <MenuItem value={2}>Tidak Aktif</MenuItem>
@@ -1597,7 +1589,7 @@ function TabMini() {
                   id="product"
                   color="primary"
                   value={product}
-                  onChange={(e) => setProduct(e.target.value)}
+                  onChange={e => setProduct(e.target.value)}
                   error={error.product ? true : false}
                 />
                 <FormHelperText
@@ -1647,7 +1639,7 @@ function TabMini() {
                     id="status"
                     name="status"
                     value={status}
-                    onChange={(e) => setStatus(e.target.value)}
+                    onChange={e => setStatus(e.target.value)}
                     label="Status">
                     <MenuItem value={1}>Aktif</MenuItem>
                     <MenuItem value={2}>Tidak Aktif</MenuItem>
@@ -1672,7 +1664,7 @@ function TabMini() {
                   input={<Input />}
                   MenuProps={MenuProps}>
                   <List dense>
-                    {dataPromo.map((item) => {
+                    {dataPromo.map(item => {
                       const labelId = `checkbox-list-secondary-label-${item.title}`;
                       return (
                         <ListItem
@@ -1715,7 +1707,7 @@ function TabMini() {
                   input={<Input />}
                   MenuProps={MenuProps}>
                   <List dense>
-                    {dataKategori.map((item) => {
+                    {dataKategori.map(item => {
                       const labelId = `checkbox-list-secondary-label-${item.name}`;
                       return (
                         <ListItem
@@ -1819,10 +1811,10 @@ function TabMini() {
                     onClick={() => {
                       navigator.clipboard.writeText(detail.detail);
                       enqueueSnackbar('ID telah dicopy', {
-                        variant: 'success',
+                        variant: 'success'
                       });
                     }}
-                    onMouseDown={(e) => e.preventDefault()}
+                    onMouseDown={e => e.preventDefault()}
                     edge="end">
                     <IoCopyOutline />
                   </IconButton>
@@ -1866,15 +1858,15 @@ function TabMini() {
 
 TabMini.propTypes = {
   setDataBanners: propTypes.func,
-  dataBanners: propTypes.object,
+  dataBanners: propTypes.object
 };
 
-const mapStateToProps = (state) => ({
-  dataBanners: state.banner.banners,
+const mapStateToProps = state => ({
+  dataBanners: state.banner.banners
 });
 
-const mapDispatchToProps = (dispatch) => ({
-  setDataBanners: (value) => dispatch(setBanners(value)),
+const mapDispatchToProps = dispatch => ({
+  setDataBanners: value => dispatch(setBanners(value))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(TabMini);

@@ -10,18 +10,18 @@ const responsive = {
   desktop: {
     breakpoint: { max: 3000, min: 1024 },
     items: 3,
-    paritialVisibilityGutter: 74,
+    paritialVisibilityGutter: 74
   },
   tablet: {
     breakpoint: { max: 1024, min: 464 },
     items: 2,
-    paritialVisibilityGutter: 115,
+    paritialVisibilityGutter: 115
   },
   mobile: {
     breakpoint: { max: 464, min: 0 },
     items: 1,
-    paritialVisibilityGutter: 0,
-  },
+    paritialVisibilityGutter: 0
+  }
 };
 
 // responsive carousel
@@ -29,18 +29,18 @@ const responsiveHistory = {
   desktop: {
     breakpoint: { max: 3000, min: 1024 },
     items: 6,
-    paritialVisibilityGutter: 0,
+    paritialVisibilityGutter: 0
   },
   tablet: {
     breakpoint: { max: 1024, min: 464 },
     items: 3,
-    paritialVisibilityGutter: 60,
+    paritialVisibilityGutter: 60
   },
   mobile: {
     breakpoint: { max: 464, min: 0 },
     items: 1,
-    paritialVisibilityGutter: -15,
-  },
+    paritialVisibilityGutter: -15
+  }
 };
 
 // notistack
@@ -72,7 +72,7 @@ import {
   ListItemSecondaryAction,
   ListItemText,
   ListItemAvatar,
-  Checkbox,
+  Checkbox
 } from '@material-ui/core';
 
 // react icons
@@ -80,7 +80,7 @@ import {
   IoPencilOutline,
   IoTrashOutline,
   IoCloudDownloadOutline,
-  IoCopyOutline,
+  IoCopyOutline
 } from 'react-icons/io5';
 
 // components
@@ -93,7 +93,7 @@ import {
   updateMainBanners,
   deleteMainBanners,
   readPromo,
-  getCategory,
+  getCategory
 } from 'services';
 
 // MenuProps
@@ -103,9 +103,9 @@ const MenuProps = {
   PaperProps: {
     style: {
       maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-      width: 250,
-    },
-  },
+      width: 250
+    }
+  }
 };
 
 function TabMain() {
@@ -149,11 +149,11 @@ function TabMain() {
   // error form
   const [error, setError] = useState({
     produk: '',
-    image: '',
+    image: ''
   });
 
   // checkbox promos
-  const onCheckboxPromos = (value) => () => {
+  const onCheckboxPromos = value => () => {
     const currentIndex = promos.indexOf(value);
     const newChecked = [...promos];
 
@@ -167,7 +167,7 @@ function TabMain() {
   };
 
   // checkbox kategori
-  const onCheckboxKategori = (value) => () => {
+  const onCheckboxKategori = value => () => {
     const currentIndex = categories.indexOf(value);
     const newChecked = [...categories];
 
@@ -183,30 +183,30 @@ function TabMain() {
   // read data banner
   useEffect(() => {
     readBannersMain(false)
-      .then((res) => {
+      .then(res => {
         setMains(res.data.data);
       })
-      .catch((err) => err);
+      .catch(err => err);
   }, []);
 
   // read data promo
   useEffect(() => {
     readPromo('')
-      .then((res) => setDataPromo(res.data.data))
-      .catch((err) => err);
+      .then(res => setDataPromo(res.data.data))
+      .catch(err => err);
   }, []);
 
   // read data kategori per tipe
   useEffect(() => {
     getCategory('1')
-      .then((res) => setKategoriProduk(res.data.data))
-      .catch((err) => err);
+      .then(res => setKategoriProduk(res.data.data))
+      .catch(err => err);
     getCategory('2')
-      .then((res) => setKategoriJasa(res.data.data))
-      .catch((err) => err);
+      .then(res => setKategoriJasa(res.data.data))
+      .catch(err => err);
   }, []);
 
-  const onCreate = async (e) => {
+  const onCreate = async e => {
     e.preventDefault();
 
     // cek ke detail atau list
@@ -231,9 +231,7 @@ function TabMain() {
         }
 
         // service
-        const result = await updateMainBanners(id, formdata).catch(
-          (err) => err,
-        );
+        const result = await updateMainBanners(id, formdata).catch(err => err);
 
         // cek sukses atau gagal
         if (result.success) {
@@ -241,10 +239,10 @@ function TabMain() {
 
           // read kembali data main
           readBannersMain(false)
-            .then((res) => {
+            .then(res => {
               setMains(res.data.data);
             })
-            .catch((err) => err);
+            .catch(err => err);
 
           enqueueSnackbar('Berhasil membuat main', { variant: 'success' });
         } else {
@@ -267,7 +265,7 @@ function TabMain() {
         }
 
         // service
-        const result = await createMainBanners(formdata).catch((err) => err);
+        const result = await createMainBanners(formdata).catch(err => err);
 
         // cek sukses atau gagal
         if (result.success) {
@@ -275,10 +273,10 @@ function TabMain() {
 
           // read kembali data main
           readBannersMain(false)
-            .then((res) => {
+            .then(res => {
               setMains(res.data.data);
             })
-            .catch((err) => err);
+            .catch(err => err);
 
           enqueueSnackbar('Berhasil membuat main', { variant: 'success' });
         } else {
@@ -317,9 +315,7 @@ function TabMain() {
         }
 
         // service
-        const result = await updateMainBanners(id, formdata).catch(
-          (err) => err,
-        );
+        const result = await updateMainBanners(id, formdata).catch(err => err);
 
         // cek sukses atau gagal
         if (result.success) {
@@ -327,10 +323,10 @@ function TabMain() {
 
           // read kembali data main
           readBannersMain(false)
-            .then((res) => {
+            .then(res => {
               setMains(res.data.data);
             })
-            .catch((err) => err);
+            .catch(err => err);
 
           enqueueSnackbar('Berhasil memperbarui main', { variant: 'success' });
         } else {
@@ -362,7 +358,7 @@ function TabMain() {
         }
 
         // service
-        const result = await createMainBanners(formdata).catch((err) => err);
+        const result = await createMainBanners(formdata).catch(err => err);
 
         // cek sukses atau gagal
         if (result.success) {
@@ -370,10 +366,10 @@ function TabMain() {
 
           // read kembali data main
           readBannersMain(false)
-            .then((res) => {
+            .then(res => {
               setMains(res.data.data);
             })
-            .catch((err) => err);
+            .catch(err => err);
 
           enqueueSnackbar('Berhasil membuat main', { variant: 'success' });
         } else {
@@ -388,7 +384,7 @@ function TabMain() {
   // hapus data
   const onDelete = async () => {
     // service
-    const result = await deleteMainBanners(id).catch((err) => err);
+    const result = await deleteMainBanners(id).catch(err => err);
 
     // cek sukses atau tidak
     if (result.success) {
@@ -396,36 +392,36 @@ function TabMain() {
 
       // read kembali data baru
       readBannersMain(false)
-        .then((res) => {
+        .then(res => {
           setMains(res.data.data);
         })
-        .catch((err) => err);
+        .catch(err => err);
 
       enqueueSnackbar('Berhasil menghapus data', {
-        variant: 'success',
+        variant: 'success'
       });
     } else {
       setOpenHapus(false);
 
       enqueueSnackbar('Gagal menghapus data', {
-        variant: 'error',
+        variant: 'error'
       });
     }
   };
 
   // upload image
-  const onSelectedImage = async (e) => {
+  const onSelectedImage = async e => {
     const file = e.target.files[0];
 
     if (!['image/png', 'image/jpeg'].includes(file.type)) {
       setError({
         ...error,
-        image: `Tipe file tidak didukung: ${file.type}`,
+        image: `Tipe file tidak didukung: ${file.type}`
       });
     } else if (file.size >= 512000) {
       setError({
         ...error,
-        image: 'Ukuran file terlalu besar dari 500KB',
+        image: 'Ukuran file terlalu besar dari 500KB'
       });
     } else {
       const reader = new FileReader();
@@ -433,21 +429,21 @@ function TabMain() {
       reader.onabort = () => {
         setError({
           ...error,
-          image: 'Proses pembacaan file dibatalkan',
+          image: 'Proses pembacaan file dibatalkan'
         });
       };
 
       reader.onerror = () => {
         setError({
           ...error,
-          image: 'File tidak terbaca',
+          image: 'File tidak terbaca'
         });
       };
 
       reader.onload = async () => {
         setError({
           ...error,
-          image: '',
+          image: ''
         });
 
         try {
@@ -455,7 +451,7 @@ function TabMain() {
         } catch (e) {
           setError({
             ...error,
-            image: e.message,
+            image: e.message
           });
         }
       };
@@ -478,7 +474,7 @@ function TabMain() {
               itemClass={classes.card}
               responsive={responsive}>
               {mains.map(
-                (item) =>
+                item =>
                   item.status?.id === 1 &&
                   (item.relatedTo === 'Product Detail' ? (
                     <Card key={item.id}>
@@ -487,7 +483,7 @@ function TabMain() {
                         onClick={() => {
                           setDetail(item);
                           setRelate(
-                            item.relatedTo === 'Product Detail' ? '1' : '2',
+                            item.relatedTo === 'Product Detail' ? '1' : '2'
                           );
                           setOpenDetail(true);
                         }}>
@@ -508,7 +504,7 @@ function TabMain() {
                             setID(item.id);
                             setIsEdit(true);
                             setRelate(
-                              item.relatedTo === 'Product Detail' ? '1' : '2',
+                              item.relatedTo === 'Product Detail' ? '1' : '2'
                             );
                             setType(item.type?.id);
                             setStatus(item.status?.id);
@@ -537,7 +533,7 @@ function TabMain() {
                         onClick={() => {
                           setDetail(item);
                           setRelate(
-                            item.relatedTo === 'Product Detail' ? '1' : '2',
+                            item.relatedTo === 'Product Detail' ? '1' : '2'
                           );
                           setOpenDetail(true);
                         }}>
@@ -558,7 +554,7 @@ function TabMain() {
                             setID(item.id);
                             setIsEdit(true);
                             setRelate(
-                              item.relatedTo === 'Product Detail' ? '1' : '2',
+                              item.relatedTo === 'Product Detail' ? '1' : '2'
                             );
                             setType(item.type?.id);
                             setStatus(item.status?.id);
@@ -581,7 +577,7 @@ function TabMain() {
                         </IconButton>
                       </CardActions>
                     </Card>
-                  )),
+                  ))
               )}
             </Carousel>
           )}
@@ -600,7 +596,7 @@ function TabMain() {
               itemClass={classes.card}
               responsive={responsiveHistory}>
               {mains.map(
-                (item) =>
+                item =>
                   item.status?.id === 2 &&
                   (item.relatedTo === 'Product Detail' ? (
                     <Card key={item.id}>
@@ -609,7 +605,7 @@ function TabMain() {
                         onClick={() => {
                           setDetail(item);
                           setRelate(
-                            item.relatedTo === 'Product Detail' ? '1' : '2',
+                            item.relatedTo === 'Product Detail' ? '1' : '2'
                           );
                           setOpenDetail(true);
                         }}>
@@ -630,7 +626,7 @@ function TabMain() {
                             setID(item.id);
                             setIsEdit(true);
                             setRelate(
-                              item.relatedTo === 'Product Detail' ? '1' : '2',
+                              item.relatedTo === 'Product Detail' ? '1' : '2'
                             );
                             setType(item.type?.id);
                             setStatus(item.status?.id);
@@ -659,7 +655,7 @@ function TabMain() {
                         onClick={() => {
                           setDetail(item);
                           setRelate(
-                            item.relatedTo === 'Product Detail' ? '1' : '2',
+                            item.relatedTo === 'Product Detail' ? '1' : '2'
                           );
                           setOpenDetail(true);
                         }}>
@@ -680,7 +676,7 @@ function TabMain() {
                             setID(item.id);
                             setIsEdit(true);
                             setRelate(
-                              item.relatedTo === 'Product Detail' ? '1' : '2',
+                              item.relatedTo === 'Product Detail' ? '1' : '2'
                             );
                             setType(item.type?.id);
                             setStatus(item.status?.id);
@@ -703,7 +699,7 @@ function TabMain() {
                         </IconButton>
                       </CardActions>
                     </Card>
-                  )),
+                  ))
               )}
             </Carousel>
           )}
@@ -740,7 +736,7 @@ function TabMain() {
               aria-label="relate"
               name="relate"
               value={relate}
-              onChange={(e) => setRelate(e.target.value)}>
+              onChange={e => setRelate(e.target.value)}>
               <FormControlLabel
                 value="1"
                 control={<Radio color="primary" />}
@@ -761,7 +757,7 @@ function TabMain() {
               aria-label="type"
               name="type"
               value={type}
-              onChange={(e) => setType(e.target.value)}>
+              onChange={e => setType(e.target.value)}>
               <FormControlLabel
                 value="1"
                 control={<Radio color="primary" />}
@@ -789,7 +785,7 @@ function TabMain() {
                     id="status"
                     name="status"
                     value={status}
-                    onChange={(e) => setStatus(e.target.value)}
+                    onChange={e => setStatus(e.target.value)}
                     label="Status">
                     <MenuItem value={1}>Aktif</MenuItem>
                     <MenuItem value={2}>Tidak Aktif</MenuItem>
@@ -812,7 +808,7 @@ function TabMain() {
                   name="product"
                   id="product"
                   color="primary"
-                  onChange={(e) => setProduk(e.target.value)}
+                  onChange={e => setProduk(e.target.value)}
                   value={produk}
                   error={error.produk ? true : false}
                 />
@@ -863,7 +859,7 @@ function TabMain() {
                     id="status"
                     name="status"
                     value={status}
-                    onChange={(e) => setStatus(e.target.value)}
+                    onChange={e => setStatus(e.target.value)}
                     label="Status">
                     <MenuItem value={1}>Aktif</MenuItem>
                     <MenuItem value={2}>Tidak Aktif</MenuItem>
@@ -888,7 +884,7 @@ function TabMain() {
                   input={<Input />}
                   MenuProps={MenuProps}>
                   <List dense>
-                    {dataPromo.map((item) => {
+                    {dataPromo.map(item => {
                       const labelId = `checkbox-list-secondary-label-${item.title}`;
                       return (
                         <ListItem
@@ -932,7 +928,7 @@ function TabMain() {
                   MenuProps={MenuProps}>
                   <List dense>
                     {type === '1' &&
-                      kategoriProduk.map((item) => {
+                      kategoriProduk.map(item => {
                         const labelId = `checkbox-list-secondary-label-${item.name}`;
                         return (
                           <ListItem
@@ -959,7 +955,7 @@ function TabMain() {
                       })}
 
                     {type === '2' &&
-                      kategoriJasa.map((item) => {
+                      kategoriJasa.map(item => {
                         const labelId = `checkbox-list-secondary-label-${item.name}`;
                         return (
                           <ListItem
@@ -1063,10 +1059,10 @@ function TabMain() {
                     onClick={() => {
                       navigator.clipboard.writeText(detail.detail);
                       enqueueSnackbar('ID telah dicopy', {
-                        variant: 'success',
+                        variant: 'success'
                       });
                     }}
-                    onMouseDown={(e) => e.preventDefault()}
+                    onMouseDown={e => e.preventDefault()}
                     edge="end">
                     <IoCopyOutline />
                   </IconButton>

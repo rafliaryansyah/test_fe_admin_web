@@ -1,11 +1,11 @@
 import { makeStyles } from '@material-ui/core/styles';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   card: {
     boxShadow: '0px 0px 3px rgba(0, 0, 0, 0.5)',
     borderRadius: 10,
     padding: 20,
-    cursor: 'pointer',
+    cursor: 'pointer'
   },
 
   info: {
@@ -13,8 +13,8 @@ const useStyles = makeStyles((theme) => ({
     gridGap: 20,
 
     [theme.breakpoints.down('sm')]: {
-      flexDirection: 'column',
-    },
+      flexDirection: 'column'
+    }
   },
 
   img: {
@@ -25,28 +25,28 @@ const useStyles = makeStyles((theme) => ({
 
     [theme.breakpoints.down('sm')]: {
       width: '100%',
-      height: '100%',
-    },
+      height: '100%'
+    }
   },
 
   text: {
     display: 'grid',
     gridGap: 15,
-    width: '100%',
+    width: '100%'
   },
 
   labelText: {
     display: 'flex',
     justifyContent: 'flex-start',
     alignItems: 'center',
-    gridGap: 5,
+    gridGap: 5
   },
 
   label: {
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
-    width: 130,
+    width: 130
   },
 
   isi: {
@@ -55,8 +55,8 @@ const useStyles = makeStyles((theme) => ({
     letterSpacing: 1,
 
     [theme.breakpoints.down('sm')]: {
-      fontSize: 10,
-    },
+      fontSize: 10
+    }
   },
 
   email: {
@@ -65,20 +65,20 @@ const useStyles = makeStyles((theme) => ({
     letterSpacing: 1,
 
     [theme.breakpoints.down('sm')]: {
-      fontSize: 10,
-    },
+      fontSize: 10
+    }
   },
 
   garis: {
     border: '1px solid #c4c4c4',
-    marginTop: 20,
+    marginTop: 20
   },
 
   role: {
     display: 'flex',
     justifyContent: 'flex-start',
     alignItems: 'center',
-    gridGap: 5,
+    gridGap: 5
   },
 
   isiRole: {
@@ -91,8 +91,8 @@ const useStyles = makeStyles((theme) => ({
     color: '#ffffff',
 
     [theme.breakpoints.down('sm')]: {
-      fontSize: 10,
-    },
+      fontSize: 10
+    }
   },
 
   isiRoleNonAktif: {
@@ -104,9 +104,9 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: 10,
 
     [theme.breakpoints.down('sm')]: {
-      fontSize: 10,
-    },
-  },
+      fontSize: 10
+    }
+  }
 }));
 
 export default useStyles;

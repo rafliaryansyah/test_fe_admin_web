@@ -1,7 +1,7 @@
 import { makeStyles } from '@material-ui/core/styles';
 import { Pattern } from 'assets';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   wrapper: {
     background: `url(${Pattern})`,
     backgroundColor: '#E5E5E5',
@@ -11,8 +11,8 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     [theme.breakpoints.down('sm')]: {
       backgroundColor: '#FFFFFF',
-      alignItems: 'flex-start',
-    },
+      alignItems: 'flex-start'
+    }
   },
 
   form: {
@@ -24,8 +24,8 @@ const useStyles = makeStyles((theme) => ({
     boxShadow: '0 0 10px rgba(0, 0, 0, .2)',
 
     [theme.breakpoints.down('sm')]: {
-      padding: 15,
-    },
+      padding: 15
+    }
   },
 
   title: {
@@ -37,16 +37,16 @@ const useStyles = makeStyles((theme) => ({
     color: '#FFA53A',
 
     [theme.breakpoints.down('sm')]: {
-      fontSize: 18,
-    },
+      fontSize: 18
+    }
   },
 
   button: {
     marginTop: 15,
     letterSpacing: 1,
     fontWeight: 700,
-    color: '#fff',
-  },
+    color: '#fff'
+  }
 }));
 
 export default useStyles;
