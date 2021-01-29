@@ -1,10 +1,6 @@
 import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles(theme => ({
-  wrapper: {
-    // border: '1px solid'
-  },
-
   itemSatu: {
     backgroundColor: '#ffffff',
     padding: 15,
@@ -32,7 +28,10 @@ const useStyles = makeStyles(theme => ({
   konten: {
     backgroundColor: '#ffffff',
     boxShadow: '0px 0px 1px rgba(0, 0, 0, 0.5)',
-    padding: 15
+    padding: 15,
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+    gridGap: 15
   }
 }));
 

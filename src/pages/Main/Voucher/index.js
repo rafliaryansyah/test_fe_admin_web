@@ -85,7 +85,8 @@ function Voucher({ setDataVoucher, dataVoucher }) {
   const [dataDetail, setDataDetail] = useState({});
 
   // data kategori
-  const [category, setCategory] = useState([]);
+  const [categoryProduct, setCategoryProduct] = useState([]);
+  const [categoryJasa, setCategoryJasa] = useState([]);
 
   // data form
   const [form, setForm] = useState({
@@ -194,6 +195,20 @@ function Voucher({ setDataVoucher, dataVoucher }) {
           ...pagination,
           last_page: res.data.meta.last_page
         });
+      })
+      .catch(err => err);
+  }, []);
+
+  // read data kategori
+  useEffect(() => {
+    getCategory('1', '')
+      .then(res => {
+        setCategoryProduct(res.data.data);
+      })
+      .catch(err => err);
+    getCategory('2', '')
+      .then(res => {
+        setCategoryJasa(res.data.data);
       })
       .catch(err => err);
   }, []);
@@ -743,27 +758,35 @@ function Voucher({ setDataVoucher, dataVoucher }) {
               <TextField
                 id="search"
                 name="search"
-                value={category}
+                value={form.type === '1' ? categoryProduct : categoryJasa}
                 onChange={e => {
-                  getCategory('1', e.target.value)
-                    .then(res => {
-                      setCategory(res.data.data);
-                    })
-                    .catch(err => err);
-                  getCategory('2', e.target.value)
-                    .then(res => {
-                      setCategory(res.data.data);
-                    })
-                    .catch(err => err);
+                  form.type === '1'
+                    ? getCategory('1', e.target.value)
+                        .then(res => {
+                          setCategoryProduct(res.data.data);
+                        })
+                        .catch(err => err)
+                    : getCategory('2', e.target.value)
+                        .then(res => {
+                          setCategoryJasa(res.data.data);
+                        })
+                        .catch(err => err);
                 }}
                 placeholder="search"
                 fullWidth
               />
-              {category.map(item => (
-                <MenuItem key={item.id} value={item.id}>
-                  {item.name}
-                </MenuItem>
-              ))}
+              {form.type === '1' &&
+                categoryProduct.map(item => (
+                  <MenuItem key={item.id} value={item.id}>
+                    {item.name}
+                  </MenuItem>
+                ))}
+              {form.type === '2' &&
+                categoryJasa.map(item => (
+                  <MenuItem key={item.id} value={item.id}>
+                    {item.name}
+                  </MenuItem>
+                ))}
             </Select>
           </FormControl>
 

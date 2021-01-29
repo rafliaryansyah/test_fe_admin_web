@@ -23,10 +23,11 @@ export const createPromo = formdata => {
 /**
  * service promo for get all data promo
  */
-export const readPromo = (search, page) => {
+export const readPromo = (isDeleted, search, page) => {
   return new Promise((resolve, reject) => {
     const data = {
       params: {
+        isDeleted: isDeleted,
         search: search ? search : '',
         page: page ? page : 1
       }
@@ -45,10 +46,13 @@ export const readPromo = (search, page) => {
 /**
  * service promo for get detail data promo tipe product
  */
-export const detailPromoProduct = id => {
+export const detailPromoProduct = (id, page) => {
   return new Promise((resolve, reject) => {
     const data = {
-      path: `${id}/detail-products`
+      path: `${id}/detail-products`,
+      params: {
+        page: page ? page : 1
+      }
     };
 
     API.detailPromoProduct(data)
@@ -64,10 +68,13 @@ export const detailPromoProduct = id => {
 /**
  * service promo for get detail data promo tipe service
  */
-export const detailPromoService = id => {
+export const detailPromoService = (id, page) => {
   return new Promise((resolve, reject) => {
     const data = {
-      path: `${id}/detail-services`
+      path: `${id}/detail-services`,
+      params: {
+        page: page ? page : 1
+      }
     };
 
     API.detailPromoService(data)

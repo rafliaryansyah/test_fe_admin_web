@@ -80,7 +80,11 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     flexDirection: 'column',
     paddingTop: 18,
-    paddingBottom: 15
+    paddingBottom: 15,
+
+    [theme.breakpoints.down('sm')]: {
+      width: drawerWidth
+    }
   },
 
   menuShift: {
@@ -94,12 +98,16 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     flexDirection: 'column',
     paddingTop: 18,
-    paddingBottom: 15
+    paddingBottom: 15,
+
+    [theme.breakpoints.down('sm')]: {
+      width: 173
+    }
   },
 
   wrapperList: {
     overflowY: 'auto',
-    maxHeight: 480,
+    maxHeight: 430,
     overflowX: 'hidden',
     flex: 1
   },
@@ -133,14 +141,11 @@ const useStyles = makeStyles(theme => ({
     padding: theme.spacing(1),
     backgroundColor: '#F2F2F2',
     paddingTop: 73,
-
-    [theme.breakpoints.up('sm')]: {
-      transition: theme.transitions.create('margin', {
-        easing: theme.transitions.easing.sharp,
-        duration: theme.transitions.duration.leavingScreen
-      }),
-      marginLeft: 173
-    },
+    transition: theme.transitions.create('margin', {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.leavingScreen
+    }),
+    marginLeft: 173,
 
     [theme.breakpoints.down('sm')]: {
       marginLeft: drawerWidth
@@ -151,17 +156,14 @@ const useStyles = makeStyles(theme => ({
     padding: theme.spacing(1),
     backgroundColor: '#F2F2F2',
     paddingTop: 73,
-
-    [theme.breakpoints.up('sm')]: {
-      transition: theme.transitions.create('margin', {
-        easing: theme.transitions.easing.easeOut,
-        duration: theme.transitions.duration.enteringScreen
-      }),
-      marginLeft: drawerWidth
-    },
+    transition: theme.transitions.create('margin', {
+      easing: theme.transitions.easing.easeOut,
+      duration: theme.transitions.duration.enteringScreen
+    }),
+    marginLeft: drawerWidth,
 
     [theme.breakpoints.down('sm')]: {
-      marginLeft: drawerWidth
+      marginLeft: 173
     }
   },
 
