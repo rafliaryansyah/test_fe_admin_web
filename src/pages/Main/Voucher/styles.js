@@ -1,6 +1,6 @@
 import { makeStyles } from '@material-ui/core/styles';
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   wrapper: {
     // border: "1px solid",
   },
@@ -17,16 +17,16 @@ const useStyles = makeStyles(theme => ({
 
     [theme.breakpoints.down('sm')]: {
       justifyContent: 'center',
-      flexDirection: 'column'
-    }
+      flexDirection: 'column',
+    },
   },
 
   formControl: {
     width: 200,
 
     [theme.breakpoints.down('sm')]: {
-      width: '100%'
-    }
+      width: '100%',
+    },
   },
 
   main: {
@@ -36,7 +36,7 @@ const useStyles = makeStyles(theme => ({
     marginBottom: 15,
     display: 'grid',
     gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-    gridGap: 15
+    gridGap: 15,
   },
 
   content: {
@@ -44,19 +44,20 @@ const useStyles = makeStyles(theme => ({
     textTransform: 'uppercase',
     letterSpacing: 3,
     fontWeight: 'bold',
-    textAlign: 'center'
+    textAlign: 'center',
   },
 
   action: {
     display: 'flex',
-    justifyContent: 'flex-end'
+    justifyContent: 'flex-end',
   },
 
   // detail
   img: {
     width: '100%',
-    height: 150,
-    textAlign: 'center'
+    height: '100%',
+    objectFit: 'cover',
+    textAlign: 'center',
   },
 
   nama: {
@@ -64,26 +65,26 @@ const useStyles = makeStyles(theme => ({
     textTransform: 'capitalize',
     letterSpacing: 3,
     fontWeight: 'bold',
-    color: '#424242'
+    color: '#424242',
   },
 
   desk: {
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 15
+    marginBottom: 15,
   },
 
   teks: {
     fontSize: 13,
     textTransform: 'capitalize',
     textAlign: 'justify',
-    color: '#c4c4c4'
+    color: '#c4c4c4',
   },
 
   garis: {
     border: '1px solid #c4c4c4',
-    marginBottom: 15
+    marginBottom: 15,
   },
 
   label: {
@@ -91,31 +92,31 @@ const useStyles = makeStyles(theme => ({
     textTransform: 'capitalize',
     fontWeight: 'bold',
     marginBottom: 15,
-    color: '#424242'
+    color: '#424242',
   },
 
   teksSyaratDanKetentuan: {
     textAlign: 'justify',
-    color: '#424242'
+    color: '#424242',
   },
 
   // form
   form: {
     display: 'grid',
-    padding: 15
+    padding: 15,
   },
 
   inputFile: {
     display: 'flex',
     justifyContent: 'space-between',
     flexDirection: 'column',
-    gridGap: 10
+    gridGap: 10,
   },
 
   preview: {
     objectFit: 'cover',
     width: '100%',
-    height: 130
+    height: 130,
   },
 
   itemUpload: {
@@ -126,8 +127,8 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    cursor: 'pointer'
-  }
+    cursor: 'pointer',
+  },
 }));
 
 export default useStyles;
