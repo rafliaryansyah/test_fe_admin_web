@@ -10,7 +10,7 @@ import Tab from '@material-ui/core/Tab';
 import { IoArrowBackOutline } from 'react-icons/io5';
 
 // components
-import { PrivateRoute } from '../../../../components';
+import { PrivateRoute } from 'components';
 
 // pages tab
 import Beranda from './Beranda';

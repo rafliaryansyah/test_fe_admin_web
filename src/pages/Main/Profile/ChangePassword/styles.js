@@ -2,7 +2,6 @@ import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles(theme => ({
   form: {
-    // border: '1px solid',
     margin: '15px 0px 15px 0px',
     width: 534,
 
