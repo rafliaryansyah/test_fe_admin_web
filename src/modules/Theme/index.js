@@ -5,5 +5,8 @@ export const theme = createMuiTheme({
     primary: {
       main: '#FFA53A'
     }
+  },
+  typography: {
+    fontFamily: ['Poppins']
   }
 });

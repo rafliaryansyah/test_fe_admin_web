@@ -86,7 +86,7 @@ const useStyles = makeStyles(theme => ({
     textTransform: 'capitalize',
     letterSpacing: 1,
     padding: 10,
-    backgroundColor: '#41337A',
+    backgroundColor: '#FFA53A',
     borderRadius: 10,
     color: '#ffffff',
 

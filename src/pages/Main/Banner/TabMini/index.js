@@ -1780,7 +1780,7 @@ function TabMini() {
             alt="photo"
             src={detail.image}
             variant="rounded"
-            style={{ width: '100%', height: 250 }}
+            style={{ width: '100%', height: '100%' }}
           />
 
           <InputLabel htmlFor="nama_toko" style={{ marginTop: 15 }}>
@@ -1829,7 +1829,7 @@ function TabMini() {
             alt="photo"
             src={detail.image}
             variant="rounded"
-            style={{ width: '100%', height: 250 }}
+            style={{ width: '100%', height: '100%' }}
           />
 
           <InputLabel htmlFor="nama_toko" style={{ marginTop: 15 }}>

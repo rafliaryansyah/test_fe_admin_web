@@ -1,10 +1,6 @@
 import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles(theme => ({
-  wrapper: {
-    // border: '1px solid',
-  },
-
   pencarian: {
     backgroundColor: '#ffffff',
     padding: 15,

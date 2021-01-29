@@ -1,10 +1,6 @@
 import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles(theme => ({
-  wrapper: {
-    // border: "1px solid",
-  },
-
   pencarian: {
     backgroundColor: '#ffffff',
     padding: 15,
@@ -55,7 +51,8 @@ const useStyles = makeStyles(theme => ({
   // detail
   img: {
     width: '100%',
-    height: 150,
+    height: '100%',
+    objectFit: 'cover',
     textAlign: 'center'
   },
 

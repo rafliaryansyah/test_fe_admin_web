@@ -52,7 +52,7 @@ const useStyles = makeStyles(theme => ({
   preview: {
     objectFit: 'cover',
     width: '100%',
-    height: 130
+    height: '100%'
   },
 
   itemUpload: {
