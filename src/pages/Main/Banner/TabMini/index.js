@@ -125,7 +125,8 @@ function TabMini() {
 
   // data promos dan category
   const [dataPromo, setDataPromo] = useState([]);
-  const [dataKategori, setDataKategori] = useState([]);
+  const [kategoriProduk, setKategoriProduk] = useState([]);
+  const [kategoriJasa, setKategoriJasa] = useState([]);
 
   // data mini dan detail
   const [miniProduk, setMiniProduk] = useState([]);
@@ -159,6 +160,13 @@ function TabMini() {
     image: ''
   });
 
+  // mencocokan data response kategori agar tercheckbox
+  const autoCheckboxPromo = values => {
+    values?.map(v => {
+      dataPromo.findIndex(promo => promo.title === v && promos.push(promo.id));
+    });
+  };
+
   // checkbox promos
   const onCheckboxPromos = value => () => {
     const currentIndex = promos.indexOf(value);
@@ -171,6 +179,24 @@ function TabMini() {
     }
 
     setPromos(newChecked);
+  };
+
+  // mencocokan data response kategori agar tercheckbox
+  const autoCheckboxKategoriProduk = values => {
+    values?.map(v => {
+      kategoriProduk.findIndex(
+        kategori => kategori.name === v && categories.push(kategori.id)
+      );
+    });
+  };
+
+  // mencocokan data response kategori agar tercheckbox
+  const autoCheckboxKategoriJasa = values => {
+    values?.map(v => {
+      kategoriJasa.findIndex(
+        kategori => kategori.name === v && categories.push(kategori.id)
+      );
+    });
   };
 
   // checkbox kategori
@@ -210,10 +236,10 @@ function TabMini() {
 
   useEffect(() => {
     getCategory('1')
-      .then(res => setDataKategori(res.data.data))
+      .then(res => setKategoriProduk(res.data.data))
       .catch(err => err);
     getCategory('2')
-      .then(res => setDataKategori(res.data.data))
+      .then(res => setKategoriJasa(res.data.data))
       .catch(err => err);
   }, []);
 
@@ -769,6 +795,7 @@ function TabMini() {
                           setRelate(
                             item.relatedTo === 'Product Detail' ? '1' : '2'
                           );
+                          setType(item.type);
                           setOpenDetail(true);
                         }}>
                         <CardMedia
@@ -820,6 +847,7 @@ function TabMini() {
                           setRelate(
                             item.relatedTo === 'Product Detail' ? '1' : '2'
                           );
+                          setType(item.type);
                           setOpenDetail(true);
                         }}>
                         <CardMedia
@@ -843,8 +871,8 @@ function TabMini() {
                             );
                             setTypeProduk(1);
                             setStatus(item.status?.id);
-                            setPromos(item.detail?.promos);
-                            setCategories(item.detail?.categories);
+                            autoCheckboxPromo(item.detail?.promos);
+                            autoCheckboxKategoriProduk(item.detail?.categories);
                             setImage(item.image);
                             setOpenFP(true);
                           }}>
@@ -893,6 +921,7 @@ function TabMini() {
                           setRelate(
                             item.relatedTo === 'Product Detail' ? '1' : '2'
                           );
+                          setType(item.type);
                           setOpenDetail(true);
                         }}>
                         <CardMedia
@@ -944,6 +973,7 @@ function TabMini() {
                           setRelate(
                             item.relatedTo === 'Product Detail' ? '1' : '2'
                           );
+                          setType(item.type);
                           setOpenDetail(true);
                         }}>
                         <CardMedia
@@ -967,8 +997,8 @@ function TabMini() {
                             );
                             setTypeProduk(1);
                             setStatus(item.status?.id);
-                            setPromos(item.detail?.promos);
-                            setCategories(item.detail?.categories);
+                            autoCheckboxPromo(item.detail?.promos);
+                            autoCheckboxKategoriProduk(item.detail?.categories);
                             setImage(item.image);
                             setOpenFP(true);
                           }}>
@@ -1022,6 +1052,7 @@ function TabMini() {
                           setRelate(
                             item.relatedTo === 'Product Detail' ? '1' : '2'
                           );
+                          setType(item.type);
                           setOpenDetail(true);
                         }}>
                         <CardMedia
@@ -1047,7 +1078,7 @@ function TabMini() {
                             setStatus(item.status?.id);
                             setProduct(item.detail);
                             setImage(item.image);
-                            setOpenFP(true);
+                            setOpenFS(true);
                           }}>
                           <IoPencilOutline />
                         </IconButton>
@@ -1073,6 +1104,7 @@ function TabMini() {
                           setRelate(
                             item.relatedTo === 'Product Detail' ? '1' : '2'
                           );
+                          setType(item.type);
                           setOpenDetail(true);
                         }}>
                         <CardMedia
@@ -1096,10 +1128,10 @@ function TabMini() {
                             );
                             setTypeService(2);
                             setStatus(item.status?.id);
-                            setPromos(item.detail?.promos);
-                            setCategories(item.detail?.categories);
+                            autoCheckboxPromo(item.detail?.promos);
+                            autoCheckboxKategoriJasa(item.detail?.categories);
                             setImage(item.image);
-                            setOpenFP(true);
+                            setOpenFS(true);
                           }}>
                           <IoPencilOutline />
                         </IconButton>
@@ -1146,6 +1178,7 @@ function TabMini() {
                           setRelate(
                             item.relatedTo === 'Product Detail' ? '1' : '2'
                           );
+                          setType(item.type);
                           setOpenDetail(true);
                         }}>
                         <CardMedia
@@ -1171,7 +1204,7 @@ function TabMini() {
                             setStatus(item.status?.id);
                             setProduct(item.detail);
                             setImage(item.image);
-                            setOpenFP(true);
+                            setOpenFS(true);
                           }}>
                           <IoPencilOutline />
                         </IconButton>
@@ -1197,6 +1230,7 @@ function TabMini() {
                           setRelate(
                             item.relatedTo === 'Product Detail' ? '1' : '2'
                           );
+                          setType(item.type);
                           setOpenDetail(true);
                         }}>
                         <CardMedia
@@ -1220,10 +1254,10 @@ function TabMini() {
                             );
                             setTypeService(2);
                             setStatus(item.status?.id);
-                            setPromos(item.detail?.promos);
-                            setCategories(item.detail?.categories);
+                            autoCheckboxPromo(item.detail?.promos);
+                            autoCheckboxKategoriJasa(item.detail?.categories);
                             setImage(item.image);
-                            setOpenFP(true);
+                            setOpenFS(true);
                           }}>
                           <IoPencilOutline />
                         </IconButton>
@@ -1448,7 +1482,7 @@ function TabMini() {
                   input={<Input />}
                   MenuProps={MenuProps}>
                   <List dense>
-                    {dataKategori.map(item => {
+                    {kategoriProduk.map(item => {
                       const labelId = `checkbox-list-secondary-label-${item.name}`;
                       return (
                         <ListItem
@@ -1577,7 +1611,7 @@ function TabMini() {
                 htmlFor="product"
                 error={error.product ? true : false}
                 className={classes.label}>
-                ID Produk
+                ID Jasa
               </InputLabel>
               <FormControl
                 variant="outlined"
@@ -1707,7 +1741,7 @@ function TabMini() {
                   input={<Input />}
                   MenuProps={MenuProps}>
                   <List dense>
-                    {dataKategori.map(item => {
+                    {kategoriJasa.map(item => {
                       const labelId = `checkbox-list-secondary-label-${item.name}`;
                       return (
                         <ListItem
@@ -1795,7 +1829,7 @@ function TabMini() {
           </FormControl>
 
           <InputLabel htmlFor="nama_toko" style={{ marginTop: 15 }}>
-            ID Produk
+            ID {type === 'Product' ? 'Produk' : 'Jasa'}
           </InputLabel>
           <FormControl
             variant="outlined"

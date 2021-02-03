@@ -152,6 +152,13 @@ function TabMain() {
     image: ''
   });
 
+  // mencocokan data response kategori agar tercheckbox
+  const autoCheckboxPromo = values => {
+    values?.map(v => {
+      dataPromo.findIndex(promo => promo.title === v && promos.push(promo.id));
+    });
+  };
+
   // checkbox promos
   const onCheckboxPromos = value => () => {
     const currentIndex = promos.indexOf(value);
@@ -164,6 +171,24 @@ function TabMain() {
     }
 
     setPromos(newChecked);
+  };
+
+  // mencocokan data response kategori agar tercheckbox
+  const autoCheckboxKategoriProduk = values => {
+    values?.map(v => {
+      kategoriProduk.findIndex(
+        kategori => kategori.name === v && categories.push(kategori.id)
+      );
+    });
+  };
+
+  // mencocokan data response kategori agar tercheckbox
+  const autoCheckboxKategoriJasa = values => {
+    values?.map(v => {
+      kategoriJasa.findIndex(
+        kategori => kategori.name === v && categories.push(kategori.id)
+      );
+    });
   };
 
   // checkbox kategori
@@ -558,8 +583,9 @@ function TabMain() {
                             );
                             setType(item.type?.id);
                             setStatus(item.status?.id);
-                            setPromos(item.detail?.promos);
-                            setCategories(item.detail?.categories);
+                            autoCheckboxPromo(item.detail?.promos);
+                            autoCheckboxKategoriProduk(item.detail?.categories);
+                            autoCheckboxKategoriJasa(item.detail?.categories);
                             setImage(item.image);
                             setOpenForm(true);
                           }}>
@@ -680,8 +706,9 @@ function TabMain() {
                             );
                             setType(item.type?.id);
                             setStatus(item.status?.id);
-                            setPromos(item.detail?.promos);
-                            setCategories(item.detail?.categories);
+                            autoCheckboxPromo(item.detail?.promos);
+                            autoCheckboxKategoriProduk(item.detail?.categories);
+                            autoCheckboxKategoriJasa(item.detail?.categories);
                             setImage(item.image);
                             setOpenForm(true);
                           }}>

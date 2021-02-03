@@ -1,40 +1,23 @@
 import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles(theme => ({
-  wrapper: {
-    padding: '15px 0px 15px 0px',
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+  pencarian: {
+    padding: theme.spacing(1.5),
+    backgroundColor: '#ffffff',
+    boxShadow: '0px 0px 3px rgba(0, 0, 0, 0.1)',
+    marginBottom: 8,
+    display: 'flex',
+    justifyContent: 'flex-end',
     gridGap: 15
   },
 
-  title: {
-    fontSize: 20,
-    textTransform: 'capitalize',
-    letterSpacing: 1,
-    fontWeight: 'bold',
-    marginBottom: 30,
-
-    [theme.breakpoints.down('sm')]: {
-      fontSize: 15
-    }
-  },
-
-  card: {
-    padding: 5
-  },
-
-  action: {
-    display: 'flex',
-    justifyContent: 'flex-end'
-  },
-
-  wrapperButton: {
-    display: 'flex',
-    justifyContent: 'flex-end',
-    alignItems: 'center',
+  main: {
+    padding: theme.spacing(1.5),
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))',
     gridGap: 15,
-    marginTop: 30
+    backgroundColor: '#ffffff',
+    boxShadow: '0px 0px 3px rgba(0, 0, 0, 0.1)'
   },
 
   form: {
@@ -50,9 +33,9 @@ const useStyles = makeStyles(theme => ({
   },
 
   preview: {
-    objectFit: 'cover',
     width: '100%',
-    height: 360
+    height: 400,
+    objectFit: 'cover'
   },
 
   itemUpload: {
@@ -65,10 +48,6 @@ const useStyles = makeStyles(theme => ({
     alignItems: 'center',
     gridGap: 5,
     cursor: 'pointer'
-  },
-
-  submit: {
-    marginTop: 15
   }
 }));
 

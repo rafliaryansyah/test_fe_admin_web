@@ -61,12 +61,12 @@ import {
   OutlinedInput,
   Select,
   TextField,
-  List,
-  ListItem,
-  ListItemSecondaryAction,
-  ListItemText,
-  ListItemAvatar,
-  Checkbox,
+  // List,
+  // ListItem,
+  // ListItemSecondaryAction,
+  // ListItemText,
+  // ListItemAvatar,
+  // Checkbox,
   MenuItem,
   FormHelperText,
   Input,
@@ -136,7 +136,9 @@ function TabHighLight() {
   const [stores, setStores] = useState([]);
   const [namaStore, setNamaStore] = useState('');
   const [produkToko, setProdukToko] = useState([]);
+  const [produkName, setProdukName] = useState([]);
   const [serviceToko, setServiceToko] = useState([]);
+  const [serviceName, setServiceName] = useState([]);
 
   // data id dan type highlight
   const [id, setID] = useState('');
@@ -188,12 +190,12 @@ function TabHighLight() {
   });
 
   // checkbox tipe produk
-  const onCheckboxProduk = value => () => {
-    const currentIndex = formProduk.products.indexOf(value);
+  const onCheckboxProduk = id => () => {
+    const currentIndex = formProduk.products.indexOf(id);
     const newChecked = [...formProduk.products];
 
     if (currentIndex === -1) {
-      newChecked.push(value);
+      newChecked.push(id);
     } else {
       newChecked.splice(currentIndex, 1);
     }
@@ -202,12 +204,12 @@ function TabHighLight() {
   };
 
   // checkbox tipe service
-  const onCheckboxService = value => () => {
-    const currentIndex = formServices.services.indexOf(value);
+  const onCheckboxService = id => () => {
+    const currentIndex = formServices.services.indexOf(id);
     const newChecked = [...formServices.services];
 
     if (currentIndex === -1) {
-      newChecked.push(value);
+      newChecked.push(id);
     } else {
       newChecked.splice(currentIndex, 1);
     }
@@ -1421,6 +1423,7 @@ function TabHighLight() {
                         const data =
                           res.data.data.merchantProductsAndService.products
                             .data;
+
                         setProdukToko(data);
                       })
                       .catch(err => err);
@@ -1431,50 +1434,30 @@ function TabHighLight() {
             </Select>
           </FormControl>
 
-          <InputLabel id="products" style={{ marginBottom: 15 }}>
+          <InputLabel id="demo-mutiple-name-label" style={{ marginBottom: 15 }}>
             Produk (max 5)
           </InputLabel>
-          <FormControl
-            variant="outlined"
-            size="small"
-            className={classes.formControl}>
+          <FormControl className={classes.formControl}>
             <Select
-              labelId="products"
-              id="products"
-              name="products"
+              labelId="demo-mutiple-name-label"
+              id="demo-mutiple-name"
               multiple
-              value={formProduk.products}
+              value={produkName}
+              onChange={event => setProdukName(event.target.value)}
               input={<Input />}
               MenuProps={MenuProps}>
-              <List dense>
-                {produkToko.map(produk => {
-                  const labelId = `checkbox-list-secondary-label-${produk.name}`;
-                  return (
-                    <ListItem
-                      key={produk.id}
-                      button
-                      onClick={onCheckboxProduk(produk.id)}>
-                      <ListItemAvatar>
-                        <Avatar
-                          alt={`Avatar ${produk.name}`}
-                          src={produk.images[0].image}
-                        />
-                      </ListItemAvatar>
-                      <ListItemText id={labelId} primary={produk.name} />
-                      <ListItemSecondaryAction>
-                        <Checkbox
-                          edge="end"
-                          onChange={onCheckboxProduk(produk.id)}
-                          checked={
-                            formProduk.products.indexOf(produk.id) !== -1
-                          }
-                          inputProps={{ 'aria-labelledby': labelId }}
-                        />
-                      </ListItemSecondaryAction>
-                    </ListItem>
-                  );
-                })}
-              </List>
+              {produkToko?.map(produk => (
+                <MenuItem
+                  key={produk.id}
+                  value={produk.name}
+                  onClick={onCheckboxProduk(produk.id)}>
+                  {produk.name}
+                  <input
+                    type="checkbox"
+                    checked={formProduk.products?.indexOf(produk.id) !== -1}
+                  />
+                </MenuItem>
+              ))}
             </Select>
           </FormControl>
 
@@ -1622,6 +1605,7 @@ function TabHighLight() {
                         const data =
                           res.data.data.merchantProductsAndService.services
                             .data;
+
                         setServiceToko(data);
                       })
                       .catch(err => err);
@@ -1632,50 +1616,30 @@ function TabHighLight() {
             </Select>
           </FormControl>
 
-          <InputLabel id="services" style={{ marginBottom: 15 }}>
+          <InputLabel id="demo-mutiple-name-label" style={{ marginBottom: 15 }}>
             Jasa (max 5)
           </InputLabel>
-          <FormControl
-            variant="outlined"
-            size="small"
-            style={{ marginBottom: 15 }}>
+          <FormControl className={classes.formControl}>
             <Select
-              labelId="services"
-              id="services"
-              name="services"
+              labelId="demo-mutiple-name-label"
+              id="demo-mutiple-name"
               multiple
-              value={formServices.services}
+              value={serviceName}
+              onChange={event => setServiceName(event.target.value)}
               input={<Input />}
               MenuProps={MenuProps}>
-              <List dense>
-                {serviceToko.map(jasa => {
-                  const labelId = `checkbox-list-secondary-label-${jasa.name}`;
-                  return (
-                    <ListItem
-                      key={jasa.id}
-                      button
-                      onClick={onCheckboxService(jasa.id)}>
-                      <ListItemAvatar>
-                        <Avatar
-                          alt={`Avatar ${jasa.name}`}
-                          src={jasa.images[0].image}
-                        />
-                      </ListItemAvatar>
-                      <ListItemText id={labelId} primary={jasa.name} />
-                      <ListItemSecondaryAction>
-                        <Checkbox
-                          edge="end"
-                          onChange={onCheckboxService(jasa.id)}
-                          checked={
-                            formServices.services.indexOf(jasa.id) !== -1
-                          }
-                          inputProps={{ 'aria-labelledby': labelId }}
-                        />
-                      </ListItemSecondaryAction>
-                    </ListItem>
-                  );
-                })}
-              </List>
+              {serviceToko?.map(service => (
+                <MenuItem
+                  key={service.id}
+                  value={service.name}
+                  onClick={onCheckboxService(service.id)}>
+                  {service.name}
+                  <input
+                    type="checkbox"
+                    checked={formServices.services?.indexOf(service.id) !== -1}
+                  />
+                </MenuItem>
+              ))}
             </Select>
           </FormControl>
 

@@ -7,3 +7,4 @@ export * from './stores';
 export * from './banner';
 export * from './voucher';
 export * from './promo';
+export * from './kurir';

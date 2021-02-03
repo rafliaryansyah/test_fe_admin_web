@@ -68,7 +68,7 @@ const useStyles = makeStyles(theme => ({
 
   // menu
   menu: {
-    width: 173,
+    width: 200,
     height: '100vh',
     position: 'fixed',
     zIndex: 200,
@@ -143,7 +143,7 @@ const useStyles = makeStyles(theme => ({
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen
     }),
-    marginLeft: 173,
+    marginLeft: 200,
 
     [theme.breakpoints.down('sm')]: {
       marginLeft: drawerWidth

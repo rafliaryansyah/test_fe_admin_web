@@ -36,6 +36,8 @@ import Voucher from './Voucher';
 import UserLogs from './UserLogs';
 import Banner from './Banner';
 import Promo from './Promo';
+import Kurir from './Kurir';
+import Izin from './Izin';
 import ProdukTerkait from './ProdukTerkait';
 import Profile from './Profile';
 
@@ -75,7 +77,9 @@ function Main({ history }) {
           </IconButton>
           <div className={classes.teks}>
             <span className={classes.nama}>{user?.name}</span>
-            <span className={classes.akses}>{user?.role}</span>
+            <span className={classes.akses}>
+              {user?.role === 'super-admin-ecommerce' && 'super admin'}
+            </span>
           </div>
         </div>
       </div>
@@ -92,7 +96,6 @@ function Main({ history }) {
                     button
                     selected={match ? true : false}
                     onClick={() => {
-                      setDrawerNav(false);
                       history.push('/');
                     }}>
                     <ListItemIcon>
@@ -117,7 +120,6 @@ function Main({ history }) {
                     button
                     selected={match ? true : false}
                     onClick={() => {
-                      setDrawerNav(false);
                       history.push('/customers');
                     }}>
                     <ListItemIcon>
@@ -144,7 +146,6 @@ function Main({ history }) {
                     button
                     selected={match ? true : false}
                     onClick={() => {
-                      setDrawerNav(false);
                       history.push('/toko');
                     }}>
                     <ListItemIcon>
@@ -171,7 +172,6 @@ function Main({ history }) {
                     button
                     selected={match ? true : false}
                     onClick={() => {
-                      setDrawerNav(false);
                       history.push('/category');
                     }}>
                     <ListItemIcon>
@@ -196,7 +196,6 @@ function Main({ history }) {
                     button
                     selected={match ? true : false}
                     onClick={() => {
-                      setDrawerNav(false);
                       history.push('/voucher');
                     }}>
                     <ListItemIcon>
@@ -223,7 +222,6 @@ function Main({ history }) {
                     button
                     selected={match ? true : false}
                     onClick={() => {
-                      setDrawerNav(false);
                       history.push('/user-logs');
                     }}>
                     <ListItemIcon>
@@ -248,7 +246,6 @@ function Main({ history }) {
                     button
                     selected={match ? true : false}
                     onClick={() => {
-                      setDrawerNav(false);
                       history.push('/banner/main');
                     }}>
                     <ListItemIcon>
@@ -293,6 +290,58 @@ function Main({ history }) {
                 );
               }}
             />
+
+            <Route
+              path="/kurir"
+              children={({ match, history }) => {
+                return (
+                  <ListItem
+                    button
+                    selected={match ? true : false}
+                    onClick={() => {
+                      history.push('/kurir');
+                    }}>
+                    <ListItemIcon>
+                      <IoPricetagOutline
+                        className={match && classes.labelAktif}
+                      />
+                    </ListItemIcon>
+                    {drawerNav && (
+                      <ListItemText
+                        primary="Kurir"
+                        className={match && classes.labelAktif}
+                      />
+                    )}
+                  </ListItem>
+                );
+              }}
+            />
+
+            <Route
+              path="/izin"
+              children={({ match, history }) => {
+                return (
+                  <ListItem
+                    button
+                    selected={match ? true : false}
+                    onClick={() => {
+                      history.push('/izin');
+                    }}>
+                    <ListItemIcon>
+                      <IoPricetagOutline
+                        className={match && classes.labelAktif}
+                      />
+                    </ListItemIcon>
+                    {drawerNav && (
+                      <ListItemText
+                        primary="Izin"
+                        className={match && classes.labelAktif}
+                      />
+                    )}
+                  </ListItem>
+                );
+              }}
+            />
           </List>
         </div>
 
@@ -302,7 +351,6 @@ function Main({ history }) {
               button
               className={classes.keluar}
               onClick={() => {
-                setDrawerNav(false);
                 setOpen(true);
               }}>
               {drawerNav ? 'KELUAR' : <IoExitOutline />}
@@ -320,6 +368,8 @@ function Main({ history }) {
           <PrivateRoute path="/user-logs" component={UserLogs} />
           <PrivateRoute path="/banner" component={Banner} />
           <PrivateRoute path="/promo" component={Promo} />
+          <PrivateRoute path="/kurir" component={Kurir} />
+          <PrivateRoute path="/izin" component={Izin} />
           <PrivateRoute path="/produk-terkait" component={ProdukTerkait} />
           <PrivateRoute path="/profile" component={Profile} />
           <PrivateRoute exact path="/" component={DashboardPage} />
@@ -337,7 +387,7 @@ function Main({ history }) {
         close={() => setOpen(false)}
         submit={logout}
         title="Keluar">
-        Apakah anda yakin ingin keluar dari Grocery?
+        Apakah anda yakin ingin keluar?
       </ConfirmDialog>
     </div>
   );

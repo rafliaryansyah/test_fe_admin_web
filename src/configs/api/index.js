@@ -116,4 +116,10 @@ API.updateStatusFiturPromo = apiRequest.patch(
 API.deletePromo = apiRequest.delete(apiEndpoint.deletePromo, true);
 API.restorePromo = apiRequest.patch(apiEndpoint.restorePromo, true);
 
+// kurir
+API.readKurir = apiRequest.get(apiEndpoint.readKurir, true);
+API.updateKurir = apiRequest.post(apiEndpoint.updateKurir, true);
+API.deleteKurir = apiRequest.delete(apiEndpoint.deleteKurir, true);
+API.restoreKurir = apiRequest.patch(apiEndpoint.restoreKurir, true);
+
 export default API;

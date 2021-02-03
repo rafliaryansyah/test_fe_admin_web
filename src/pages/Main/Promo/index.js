@@ -533,30 +533,40 @@ function Promo({
           </div>
         )}
         <div className={classes.desk}>
-          <span className={classes.teks}>Item Terkait</span>
+          <span className={classes.teks}>Produk Terkait</span>
           <span className={classes.teks}>
-            {dataDetail.countRelatedProduct + dataDetail.countRelatedService} |
+            {dataDetail.countRelatedProduct} |
             <span
               className={classes.cekTerkait}
               onClick={() => {
-                dataDetail.countRelatedProduct === 1 &&
-                  detailPromoProduct(dataDetail.id)
-                    .then(res => {
-                      setDataID(id);
-                      setDataDari('promo');
-                      setDataTerkait(res.data);
-                      history.replace('/produk-terkait');
-                    })
-                    .catch(err => err);
-                dataDetail.countRelatedService === 1 &&
-                  detailPromoService(dataDetail.id)
-                    .then(res => {
-                      setDataID(id);
-                      setDataDari('promo');
-                      setDataTerkait(res.data);
-                      history.replace('/produk-terkait');
-                    })
-                    .catch(err => err);
+                detailPromoProduct(dataDetail.id)
+                  .then(res => {
+                    setDataID(dataDetail.id);
+                    setDataDari('promo-produk');
+                    setDataTerkait(res.data);
+                    history.replace('/produk-terkait');
+                  })
+                  .catch(err => err);
+              }}>
+              cek
+            </span>
+          </span>
+        </div>
+        <div className={classes.desk}>
+          <span className={classes.teks}>Jasa Terkait</span>
+          <span className={classes.teks}>
+            {dataDetail.countRelatedService} |
+            <span
+              className={classes.cekTerkait}
+              onClick={() => {
+                detailPromoService(dataDetail.id)
+                  .then(res => {
+                    setDataID(dataDetail.id);
+                    setDataDari('promo-jasa');
+                    setDataTerkait(res.data);
+                    history.replace('/produk-terkait');
+                  })
+                  .catch(err => err);
               }}>
               cek
             </span>

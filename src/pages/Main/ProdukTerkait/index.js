@@ -94,12 +94,14 @@ function ProdukTerkait({ id, dari, dataTerkait, setDataTerkait, history }) {
                 .then(res => setDataTerkait(res.data))
                 .catch(err => err);
               break;
-            case 'promo':
+            case 'promo-produk':
               detailPromoProduct(id, value)
                 .then(res => {
                   setDataTerkait(res.data);
                 })
                 .catch(err => err);
+              break;
+            case 'promo-jasa':
               detailPromoService(id, value)
                 .then(res => {
                   setDataTerkait(res.data);

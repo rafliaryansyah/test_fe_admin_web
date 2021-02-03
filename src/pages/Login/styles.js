@@ -4,26 +4,28 @@ import { Pattern } from 'assets';
 const useStyles = makeStyles(theme => ({
   wrapper: {
     background: `url(${Pattern})`,
-    backgroundColor: '#E5E5E5',
     height: '100vh',
-    display: 'flex',
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 360px))',
     justifyContent: 'center',
     alignItems: 'center',
+
     [theme.breakpoints.down('sm')]: {
-      backgroundColor: '#FFFFFF',
+      background: '#FFFFFF',
       alignItems: 'flex-start'
     }
   },
 
   form: {
     backgroundColor: '#FFFFFF',
-    width: 360,
     height: 360,
-    padding: 40,
+    padding: 30,
     borderRadius: 10,
     boxShadow: '0 0 10px rgba(0, 0, 0, .2)',
 
     [theme.breakpoints.down('sm')]: {
+      backgroundColor: 'transparent',
+      boxShadow: 'none',
       padding: 15
     }
   },

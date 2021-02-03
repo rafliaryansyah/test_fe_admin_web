@@ -78,7 +78,13 @@ const apiEndpoint = {
   updatePromo: `${appActiveConfig.api.baseurl}/admin/promos`,
   updateStatusFiturPromo: `${appActiveConfig.api.baseurl}/admin/promos`,
   deletePromo: `${appActiveConfig.api.baseurl}/admin/promos`,
-  restorePromo: `${appActiveConfig.api.baseurl}/admin/promos`
+  restorePromo: `${appActiveConfig.api.baseurl}/admin/promos`,
+
+  // kurir
+  readKurir: `${appActiveConfig.api.baseurl}/admin/couriers`,
+  updateKurir: `${appActiveConfig.api.baseurl}/admin/couriers`,
+  deleteKurir: `${appActiveConfig.api.baseurl}/admin/couriers`,
+  restoreKurir: `${appActiveConfig.api.baseurl}/admin/couriers`
 };
 
 export { apiEndpoint };
