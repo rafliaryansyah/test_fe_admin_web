@@ -55,7 +55,7 @@ function ListCustomers({ setDataCustomers, dataCustomers, history }) {
       <div className={classes.pencarian}>
         <Chip
           label={`Hasil Pencarian : ${count ? count : 0}`}
-          variant="outlined"
+          variant="default"
         />
         <FormControl
           variant="outlined"
@@ -115,7 +115,6 @@ function ListCustomers({ setDataCustomers, dataCustomers, history }) {
           dataCustomers.map(user => (
             <CardCustomers
               key={user.id}
-              srcImage="https://images.unsplash.com/photo-1549913772-820279f909b7?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=747&q=80"
               nama={user.name}
               status={user.statusUser && user.statusUser.name}
               jenisKelamin={user.gender && user.gender.name}

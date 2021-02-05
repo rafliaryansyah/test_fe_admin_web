@@ -1,6 +1,9 @@
 import useStyles from './styles';
 import propTypes from 'prop-types';
 
+// material-ui core
+import { Avatar } from '@material-ui/core';
+
 const CardCustomers = ({
   srcImage,
   nama,
@@ -16,7 +19,12 @@ const CardCustomers = ({
   return (
     <div className={classes.card} onClick={handleDetail}>
       <div className={classes.info}>
-        <img src={srcImage} alt="foto" className={classes.img} />
+        <Avatar
+          alt={nama}
+          src={srcImage}
+          variant="rounded"
+          className={classes.img}
+        />
         <div className={classes.text}>
           <div className={classes.labelText}>
             <div className={classes.label}>

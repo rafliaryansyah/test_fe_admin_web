@@ -2,26 +2,32 @@ import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles(theme => ({
   card: {
-    boxShadow: '0px 0px 3px rgba(0, 0, 0, 0.5)',
-    borderRadius: 10,
-    padding: 20,
-    cursor: 'pointer'
+    boxShadow: '0px 0px 5px rgba(0, 0, 0, 0.3)',
+    borderRadius: 5,
+    padding: 15,
+    cursor: 'pointer',
+
+    [theme.breakpoints.down('sm')]: {
+      boxShadow: '0px 0px 5px rgba(0, 0, 0, 0.1)',
+      padding: 10
+    }
   },
 
   info: {
     display: 'flex',
-    gridGap: 20,
+    gridGap: 10,
 
     [theme.breakpoints.down('sm')]: {
+      gridGap: 15,
       flexDirection: 'column'
     }
   },
 
   img: {
     objectFit: 'cover',
-    width: 100,
-    height: 100,
-    borderRadius: 10,
+    width: 90,
+    height: 90,
+    borderRadius: 5,
 
     [theme.breakpoints.down('sm')]: {
       width: '100%',
@@ -32,7 +38,11 @@ const useStyles = makeStyles(theme => ({
   text: {
     display: 'grid',
     gridGap: 15,
-    width: '100%'
+    width: '100%',
+
+    [theme.breakpoints.down('sm')]: {
+      gridGap: 5
+    }
   },
 
   labelText: {
@@ -46,26 +56,30 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
-    width: 130
+    width: 90,
+
+    [theme.breakpoints.down('sm')]: {
+      width: 73
+    }
   },
 
   isi: {
-    fontSize: 15,
+    fontSize: 10,
     textTransform: 'capitalize',
     letterSpacing: 1,
 
     [theme.breakpoints.down('sm')]: {
-      fontSize: 10
+      fontSize: 8
     }
   },
 
   email: {
-    fontSize: 15,
+    fontSize: 10,
     textTransform: 'lowercase',
     letterSpacing: 1,
 
     [theme.breakpoints.down('sm')]: {
-      fontSize: 10
+      fontSize: 8
     }
   },
 
@@ -82,29 +96,19 @@ const useStyles = makeStyles(theme => ({
   },
 
   isiRole: {
-    fontSize: 15,
+    fontSize: 10,
     textTransform: 'capitalize',
-    letterSpacing: 1,
-    padding: 10,
-    backgroundColor: '#FFA53A',
-    borderRadius: 10,
+    letterSpacing: 1.5,
+    padding: 5,
+    backgroundColor: `${theme.palette.primary.main}`,
+    borderRadius: 5,
     color: '#ffffff',
 
     [theme.breakpoints.down('sm')]: {
-      fontSize: 10
-    }
-  },
-
-  isiRoleNonAktif: {
-    fontSize: 15,
-    textTransform: 'capitalize',
-    letterSpacing: 1,
-    padding: 10,
-    backgroundColor: '#8E8E8E',
-    borderRadius: 10,
-
-    [theme.breakpoints.down('sm')]: {
-      fontSize: 10
+      fontSize: 8,
+      padding: 3,
+      borderRadius: 3,
+      letterSpacing: 0.5
     }
   }
 }));

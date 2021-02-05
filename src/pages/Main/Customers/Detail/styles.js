@@ -1,10 +1,6 @@
 import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles(theme => ({
-  wrapper: {
-    // border: "1px solid"
-  },
-
   wrapperTitlePage: {
     display: 'flex',
     justifyContent: 'flex-start',
@@ -23,15 +19,11 @@ const useStyles = makeStyles(theme => ({
     backgroundColor: '#ffffff'
   },
 
-  itemFotoDanRoles: {
-    // border: '1px solid'
-  },
-
   img: {
     objectFit: 'cover',
-    width: 300,
-    height: 300,
-    borderRadius: 10,
+    width: 250,
+    height: 250,
+    borderRadius: 5,
 
     [theme.breakpoints.down('sm')]: {
       width: '100%'
@@ -44,13 +36,12 @@ const useStyles = makeStyles(theme => ({
   },
 
   title: {
-    fontSize: 25,
+    fontSize: 13,
     textTransform: 'capitalize',
-    letterSpacing: 1
+    letterSpacing: 1.5
   },
 
   itemDataUser: {
-    // border: '1px solid',
     display: 'flex',
     flexDirection: 'column',
     gridGap: 15
@@ -67,19 +58,25 @@ const useStyles = makeStyles(theme => ({
   label: {
     fontSize: 13,
     textTransform: 'capitalize',
-    letterSpacing: 3
+    letterSpacing: 1.5,
+
+    [theme.breakpoints.down('sm')]: {
+      letterSpacing: 1,
+      fontSize: 10
+    }
   },
 
   text: {
-    fontSize: 18,
-    letterSpacing: 1,
+    fontSize: 10,
+    letterSpacing: 1.5,
     fontWeight: 'bold',
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
 
     [theme.breakpoints.down('sm')]: {
-      fontSize: 10
+      letterSpacing: 1,
+      fontSize: 8
     }
   },
 

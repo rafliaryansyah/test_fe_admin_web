@@ -12,11 +12,12 @@ import {
   IconButton,
   Button,
   FormControlLabel,
-  Checkbox,
   Radio,
   RadioGroup,
   FormControl,
-  FormLabel
+  FormLabel,
+  FormGroup,
+  Switch
 } from '@material-ui/core';
 
 // react icons
@@ -47,7 +48,7 @@ function Detail({ setDataCustomer, dataCustomer, history }) {
   // data awal roles
   const [roles, setRoles] = useState([
     { id: 1, label: 'customer', checked: false },
-    { id: 2, label: 'super-admin-merchant', checked: false },
+    { id: 2, label: 'admin-merchant', checked: false },
     { id: 3, label: 'contributor-merchant', checked: false },
     { id: 4, label: 'super-admin-ecommerce', checked: false },
     { id: 5, label: 'admin-ecommerce', checked: false },
@@ -64,8 +65,8 @@ function Detail({ setDataCustomer, dataCustomer, history }) {
   const [event, setEvent] = useState();
 
   // change roles
-  const onRoleChange = e => {
-    if (e.target.value !== 'customer') {
+  const onRoleChange = () => {
+    if (event.target.value !== 'customer') {
       const newRoles = [...roles];
 
       const indexCheck = newRoles.findIndex(
@@ -89,12 +90,14 @@ function Detail({ setDataCustomer, dataCustomer, history }) {
   // mengambil data customer redu(global state)
   const getCustomerRoles = () => {
     const newRoles = [...roles];
-    // for(let oldRoles of dataCustomer.roles) {
-    dataCustomer?.roles?.map(customerRoles => {
+
+    dataCustomer.roles?.map(customerRoles => {
       const indexCheck = newRoles.findIndex(
         role => role.label === customerRoles
       );
+
       newRoles[indexCheck].checked = true;
+
       setRoles(newRoles);
 
       // data value check roles baru
@@ -118,7 +121,8 @@ function Detail({ setDataCustomer, dataCustomer, history }) {
   // update role
   const updateRoles = async e => {
     e.preventDefault();
-    if (e.target.value !== 'customer') {
+
+    if (event.target.value !== 'customer') {
       let data = [];
       roles.find(role => {
         role.checked === true ? data.push(role.label) : null;
@@ -129,18 +133,21 @@ function Detail({ setDataCustomer, dataCustomer, history }) {
         .then(() => {
           // success update role
           setOpen({ ...open, confirm: false });
+
+          // read kembali data
+          getCustomerRoles();
+
           enqueueSnackbar('Berhasil mengperbarui roles', {
             variant: 'success'
           });
-          getCustomerRoles();
         })
         .catch(() => {
           // gagal update role
           setOpen({ ...open, confirm: false });
+
           enqueueSnackbar('Gagal memperbarui roles', {
             variant: 'error'
           });
-          getCustomerRoles();
         });
     }
   };
@@ -157,11 +164,13 @@ function Detail({ setDataCustomer, dataCustomer, history }) {
     // cek sukses atau gagal
     if (result.success) {
       setOpen({ ...open, form: false });
+
       enqueueSnackbar('sekarang anda mempunyai akses ke web admin', {
         variant: 'success'
       });
     } else {
       setOpen({ ...open, form: false });
+
       enqueueSnackbar('Gagal membuat akses', {
         variant: 'error'
       });
@@ -171,7 +180,7 @@ function Detail({ setDataCustomer, dataCustomer, history }) {
   return (
     <div className={classes.wrapper}>
       <div className={classes.wrapperTitlePage}>
-        <IconButton onClick={() => history.push('/customers')}>
+        <IconButton onClick={() => history.goBack()}>
           <IoArrowBack />
         </IconButton>
       </div>
@@ -184,30 +193,39 @@ function Detail({ setDataCustomer, dataCustomer, history }) {
             variant="rounded"
             className={classes.img}
           />
-          <div className={classes.roles}>
-            <p className={classes.title}>roles :</p>
-            {roles.map(role => {
-              return (
-                <div key={role.id}>
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        onChange={e => {
-                          setOpen({ ...open, confirm: true });
-                          setEvent(e);
-                        }}
-                        name={role.label}
-                        value={role.label}
-                        checked={role.checked}
-                      />
-                    }
-                    label={role.label}
-                    className={classes.checkbox}
-                  />
-                </div>
-              );
-            })}
-          </div>
+          <br />
+          <FormControl component="fieldset">
+            <FormLabel component="legend">Akses Role</FormLabel>
+            <FormGroup>
+              {roles?.map(role => (
+                <FormControlLabel
+                  key={role.id}
+                  control={
+                    <Switch
+                      checked={role.checked}
+                      onChange={e => {
+                        setOpen({ ...open, confirm: true });
+                        setEvent(e);
+                      }}
+                      name={role.label}
+                      value={role.label}
+                    />
+                  }
+                  label={
+                    (role.label === 'customer' && 'Customer') ||
+                    (role.label === 'admin-merchant' && 'Admin Merchant') ||
+                    (role.label === 'contributor-merchant' &&
+                      'Contributor Merchant') ||
+                    (role.label === 'super-admin-ecommerce' &&
+                      'Super Admin Ecommerce') ||
+                    (role.label === 'admin-ecommerce' && 'Admin Ecommerce') ||
+                    (role.label === 'contributor-ecommerce' &&
+                      'Contributor Ecommerce')
+                  }
+                />
+              ))}
+            </FormGroup>
+          </FormControl>
         </div>
 
         <div className={classes.itemDataUser}>
@@ -255,6 +273,7 @@ function Detail({ setDataCustomer, dataCustomer, history }) {
           </div>
         </div>
       </div>
+
       <CompDialog
         open={open.form}
         close={() => setOpen({ ...open, form: false })}
@@ -296,12 +315,13 @@ function Detail({ setDataCustomer, dataCustomer, history }) {
           </Button>
         </div>
       </CompDialog>
+
       <ConfirmDialog
         open={open.confirm}
         close={() => setOpen({ ...open, confirm: false })}
         title="Konfirmasi Role"
         submit={e => {
-          onRoleChange(e);
+          onRoleChange();
           setOpen({ ...open, confirm: false });
           setTimeout(() => {
             updateRoles(e); //update roles
