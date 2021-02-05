@@ -84,7 +84,14 @@ const apiEndpoint = {
   readKurir: `${appActiveConfig.api.baseurl}/admin/couriers`,
   updateKurir: `${appActiveConfig.api.baseurl}/admin/couriers`,
   deleteKurir: `${appActiveConfig.api.baseurl}/admin/couriers`,
-  restoreKurir: `${appActiveConfig.api.baseurl}/admin/couriers`
+  restoreKurir: `${appActiveConfig.api.baseurl}/admin/couriers`,
+
+  // roles
+  readRoles: `${appActiveConfig.api.baseurl}/admin/rbac/roles`,
+  readPermissions: `${appActiveConfig.api.baseurl}/admin/rbac/permissions`,
+  createRoles: `${appActiveConfig.api.baseurl}/admin/rbac/roles`,
+  updateRoles: `${appActiveConfig.api.baseurl}/admin/rbac/roles`,
+  deleteRoles: `${appActiveConfig.api.baseurl}/admin/rbac/roles`
 };
 
 export { apiEndpoint };

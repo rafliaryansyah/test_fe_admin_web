@@ -9,6 +9,7 @@ import BarApexChart from './BarApexChart';
 import AreaApexChart from './AreaApexChart';
 import CompCheckbox from './CompCheckbox';
 import CardKurir from './CardKurir';
+import RowTable from './RowTable';
 
 export {
   ConfirmDialog,
@@ -20,5 +21,6 @@ export {
   BarApexChart,
   AreaApexChart,
   CompCheckbox,
-  CardKurir
+  CardKurir,
+  RowTable
 };

@@ -122,4 +122,11 @@ API.updateKurir = apiRequest.post(apiEndpoint.updateKurir, true);
 API.deleteKurir = apiRequest.delete(apiEndpoint.deleteKurir, true);
 API.restoreKurir = apiRequest.patch(apiEndpoint.restoreKurir, true);
 
+// roles
+API.readRoles = apiRequest.get(apiEndpoint.readRoles, true);
+API.readPermissions = apiRequest.get(apiEndpoint.readPermissions, true);
+API.createRoles = apiRequest.post(apiEndpoint.createRoles, true);
+API.updateRoles = apiRequest.patch(apiEndpoint.updateRoles, true);
+API.deleteRoles = apiRequest.delete(apiEndpoint.deleteRoles, true);
+
 export default API;
