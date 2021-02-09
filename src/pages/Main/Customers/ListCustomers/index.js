@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import useStyles from './styles';
-import propTypes from 'prop-types';
 
 // material-ui core
 import {
@@ -19,34 +18,41 @@ import { IoSearchOutline } from 'react-icons/io5';
 // components
 import { CardCustomers, Paginasi } from 'components';
 
-// redux
-import { connect } from 'react-redux';
-import { setCustomers } from 'modules';
-
 // services
 import { getCustomers } from 'services';
 
-function ListCustomers({ setDataCustomers, dataCustomers, history }) {
+function ListCustomers({ history }) {
   const classes = useStyles();
 
-  const [pagination, setPagination] = useState({
-    current_page: 1,
-    last_page: ''
-  });
+  // data filter role
+  const [roles] = useState([
+    { name: 'Semua Role', value: '' },
+    { name: 'Customer', value: 'customer' },
+    { name: 'Super Admin Merchant', value: 'super-admin-merchant' },
+    { name: 'Admin Merchant', value: 'admin-merchant' },
+    { name: 'Contributor Merchant', value: 'contributor-merchant' },
+    { name: 'Finance Merchant', value: 'finance-merchant' },
+    { name: 'Admin Ecommerce', value: 'admin-ecommerce' },
+    { name: 'Contributor Ecommerce', value: 'contributor-ecommerce' },
+    { name: 'Finance Ecommerce', value: 'finance-ecommerce' }
+  ]);
 
+  // data paginasi
+  const [currentPage, setCurrentPage] = useState(0);
+  const [lastPage, setLastPage] = useState(0);
+
+  // data hasil pencarian
   const [count, setCount] = useState(0);
 
+  // data customers
+  const [customers, setCustomers] = useState([]);
+
+  // read data customers
   useEffect(() => {
     getCustomers().then(res => {
-      setDataCustomers(res.data.data);
-      setPagination({
-        ...pagination,
-        current_page: res.data.meta.current_page
-      });
-      setPagination({
-        ...pagination,
-        last_page: res.data.meta.last_page
-      });
+      setCustomers(res.data.data);
+      setCurrentPage(res.data.meta.current_page);
+      setLastPage(res.data.meta.last_page);
     });
   }, []);
 
@@ -68,25 +74,15 @@ function ListCustomers({ setDataCustomers, dataCustomers, history }) {
             id="select-role"
             onChange={e =>
               getCustomers(e.target.value).then(res => {
-                setDataCustomers(res.data.data);
+                setCustomers(res.data.data);
               })
             }
             label="Semua Role">
-            <MenuItem value="">Semua Role</MenuItem>
-            <MenuItem value="customer">Customer</MenuItem>
-            <MenuItem value="super-admin-merchant">
-              Super Admin Merchant
-            </MenuItem>
-            <MenuItem value="contributor-merchant">
-              Contributor Merchant
-            </MenuItem>
-            <MenuItem value="super-admin-ecommerce">
-              Super Admin Ecommerce
-            </MenuItem>
-            <MenuItem value="admin-ecommerce">Admin Ecommerce</MenuItem>
-            <MenuItem value="contributor-ecommerce">
-              Contributor Ecommerce
-            </MenuItem>
+            {roles?.map((role, index) => (
+              <MenuItem key={index} value={role.value}>
+                {role.name}
+              </MenuItem>
+            ))}
           </Select>
         </FormControl>
         <FormControl variant="outlined" size="small">
@@ -97,7 +93,7 @@ function ListCustomers({ setDataCustomers, dataCustomers, history }) {
             placeholder="Cari"
             onChange={e =>
               getCustomers('', e.target.value).then(res => {
-                setDataCustomers(res.data.data);
+                setCustomers(res.data.data);
                 setCount(res.data.count);
               })
             }
@@ -111,31 +107,35 @@ function ListCustomers({ setDataCustomers, dataCustomers, history }) {
       </div>
 
       <div className={classes.wrapperCard}>
-        {dataCustomers &&
-          dataCustomers.map(user => (
-            <CardCustomers
-              key={user.id}
-              nama={user.name}
-              status={user.statusUser && user.statusUser.name}
-              jenisKelamin={user.gender && user.gender.name}
-              email={user.email}
-              noTelp={user.phone}
-              roles={user.roles}
-              handleDetail={() => history.push(`/customers/${user.id}`)}
-            />
-          ))}
+        {customers?.map(user => (
+          <CardCustomers
+            key={user.id}
+            nama={user.name}
+            status={
+              user.statusUser?.name === 'Active' ? 'aktif' : 'tidak aktif'
+            }
+            jenisKelamin={
+              user.gender?.id !== ''
+                ? user.gender?.id === 1
+                  ? 'Laki-Laki'
+                  : 'Perempuan'
+                : null
+            }
+            email={user.email}
+            noTelp={user.phone}
+            roles={user.roles}
+            handleDetail={() => history.push(`/customers/${user.id}`)}
+          />
+        ))}
       </div>
 
       <Paginasi
-        count={pagination.last_page}
-        page={pagination.current_page}
+        count={lastPage}
+        page={currentPage}
         onChange={(e, value) =>
           getCustomers('', '', value).then(res => {
-            setDataCustomers(res.data.data);
-            setPagination({
-              ...pagination,
-              current_page: res.data.meta.current_page
-            });
+            setCustomers(res.data.data);
+            setCurrentPage(res.data.meta.current_page);
           })
         }
       />
@@ -143,17 +143,4 @@ function ListCustomers({ setDataCustomers, dataCustomers, history }) {
   );
 }
 
-ListCustomers.propTypes = {
-  dataCustomers: propTypes.array,
-  setDataCustomers: propTypes.func
-};
-
-const mapStateToProps = state => ({
-  dataCustomers: state.customer.customers
-});
-
-const mapDispatchToProps = dispatch => ({
-  setDataCustomers: value => dispatch(setCustomers(value))
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(ListCustomers);
+export default ListCustomers;

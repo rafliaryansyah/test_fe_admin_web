@@ -7,7 +7,6 @@ import actionTypes from './actionTypes';
  */
 import global from './global/reducer';
 import dashboard from './dashboard/reducer';
-import customer from './customer/reducer';
 import stores from './stores/reducer';
 import banner from './banner/reducer';
 import category from './category/reducer';
@@ -21,7 +20,6 @@ import terkait from './terkait/reducer';
 const reducer = combineReducers({
   global,
   dashboard,
-  customer,
   stores,
   banner,
   category,
@@ -42,7 +40,6 @@ export { store, actionTypes };
  */
 export * from './global/action';
 export * from './dashboard/action';
-export * from './customer/action';
 export * from './stores/action';
 export * from './banner/action';
 export * from './category/action';

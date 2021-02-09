@@ -102,7 +102,7 @@ export const accessAdminCustomer = (id, name) => {
   return new Promise((resolve, reject) => {
     const data = {
       body: {
-        name: [name]
+        name: name
       },
       path: `${id}/access-admin`
     };

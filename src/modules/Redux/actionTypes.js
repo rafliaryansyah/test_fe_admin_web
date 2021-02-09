@@ -56,15 +56,6 @@ const stores = {
 };
 
 /**
- * Customer action types
- */
-const customer = {
-  SET_CUSTOMERS: 'CUSTOMERS/SET',
-  SET_CUSTOMER: 'CUSTOMER/SET',
-  CLEAR_CUSTOMER: 'CUSTOMER/CLEAR'
-};
-
-/**
  * Global action types
  */
 const dashboard = {
@@ -95,7 +86,6 @@ const actionTypes = {
   global,
   dashboard,
   profile,
-  customer,
   category,
   stores,
   banner,
