@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import useStyles from './styles';
-import propTypes from 'prop-types';
 
 // notistack
 import { useSnackbar } from 'notistack';
 
 // material-ui core
 import {
+  Typography,
   Avatar,
   Button,
   IconButton,
@@ -22,10 +22,6 @@ import {
 // material-ui icons
 import { IoCopyOutline } from 'react-icons/io5';
 
-// redux
-import { connect } from 'react-redux';
-import { setStore, setProduks, setReports } from 'modules';
-
 // services
 import { getStore, updateStatusStore } from 'services';
 
@@ -35,7 +31,7 @@ import { dateConverterRes } from 'utils';
 // components
 import { ConfirmDialog } from 'components';
 
-function Beranda({ setDataStore, setDataProduks, setDataReports, dataStore }) {
+function Beranda() {
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
 
@@ -46,150 +42,90 @@ function Beranda({ setDataStore, setDataProduks, setDataReports, dataStore }) {
   const [openStatus, setOpenStatus] = useState(false);
   const [openOfficialStore, setOpenOfficialStore] = useState(false);
 
+  // data detail store
+  const [store, setStore] = useState({});
+
+  // data status
+  const [status, setStatus] = useState(2);
+
+  // data official store
+  const [officialStore, setOfficialStore] = useState(false);
+
+  // event
+  const [event, setEvent] = useState();
+
   // read data detail toko
   useEffect(() => {
     getStore(id).then(res => {
-      setDataStore(res.data.data.merchantDetail);
-      const data = res.data.data.merchantProductsAndService.products.data.concat(
-        res.data.data.merchantProductsAndService.services.data
-      );
-      setDataProduks(data);
-      setDataReports(res.data.data.merchantReports);
+      setStore(res.data.data.merchantDetail);
+      setStatus(res.data.data.merchantDetail.status?.id);
+      setOfficialStore(res.data.data.merchantDetail.isOfficialStore?.status);
     });
   }, []);
 
   // status
   const onStatus = async () => {
-    if (dataStore.status?.name === 'Approved') {
-      // services
-      const result = await updateStatusStore(
-        id,
-        3,
-        dataStore.isOfficialStore?.id
-      ).catch(err => err);
+    // services
+    const result = await updateStatusStore(
+      id,
+      status === 2 ? 3 : 2,
+      officialStore ? 1 : 2
+    ).catch(err => err);
 
-      // cek sukses atau gagal
-      if (result.success) {
-        setOpenStatus(false);
+    // cek sukses atau gagal
+    if (result.success) {
+      setOpenStatus(false);
 
-        // read kembali data
-        getStore(id).then(res => {
-          setDataStore(res.data.data.merchantDetail);
-          const data = res.data.data.merchantProductsAndService.products.data.concat(
-            res.data.data.merchantProductsAndService.services.data
-          );
-          setDataProduks(data);
-          setDataReports(res.data.data.merchantReports);
-        });
+      // read kembali data
+      getStore(id).then(res => {
+        setStore(res.data.data.merchantDetail);
+        setStatus(res.data.data.merchantDetail.status?.id);
+        setOfficialStore(res.data.data.merchantDetail.isOfficialStore?.status);
+      });
 
-        enqueueSnackbar('Berhasil mengubah Status', {
-          variant: 'success'
-        });
-      } else {
-        setOpenStatus(false);
-
-        enqueueSnackbar('Gagal mengubah Status', {
-          variant: 'error'
-        });
-      }
+      enqueueSnackbar('Berhasil memperbarui Status', {
+        variant: 'success'
+      });
     } else {
-      // services
-      const result = await updateStatusStore(
-        id,
-        2,
-        dataStore.isOfficialStore?.id
-      ).catch(err => err);
+      setOpenStatus(false);
 
-      // cek sukses atau gagal
-      if (result.success) {
-        setOpenStatus(false);
-
-        // read kembali data
-        getStore(id).then(res => {
-          setDataStore(res.data.data.merchantDetail);
-          const data = res.data.data.merchantProductsAndService.products.data.concat(
-            res.data.data.merchantProductsAndService.services.data
-          );
-          setDataProduks(data);
-          setDataReports(res.data.data.merchantReports);
-        });
-
-        enqueueSnackbar('Berhasil mengubah Status', {
-          variant: 'success'
-        });
-      } else {
-        setOpenStatus(false);
-
-        enqueueSnackbar('Gagal mengubah Status', {
-          variant: 'error'
-        });
-      }
+      enqueueSnackbar('Gagal memperbarui Status', {
+        variant: 'error'
+      });
     }
   };
 
   // official store
-  const onOfficialStore = async () => {
-    // cek official store true atau false
-    if (dataStore.isOfficialStore?.status) {
-      // services
-      const result = await updateStatusStore(id, dataStore.status?.id, 2).catch(
-        err => err
-      );
+  const onOfficialStore = async e => {
+    e.preventDefault();
 
-      // cek sukses atau gagal
-      if (result.success) {
-        setOpenOfficialStore(false);
+    // services
+    const result = await updateStatusStore(
+      id,
+      status === 2 ? 2 : 3,
+      officialStore ? 2 : 1
+    ).catch(err => err);
 
-        // read kembali data
-        getStore(id).then(res => {
-          setDataStore(res.data.data.merchantDetail);
-          const data = res.data.data.merchantProductsAndService.products.data.concat(
-            res.data.data.merchantProductsAndService.services.data
-          );
-          setDataProduks(data);
-          setDataReports(res.data.data.merchantReports);
-        });
+    // cek sukses atau gagal
+    if (result.success) {
+      setOpenOfficialStore(false);
 
-        enqueueSnackbar('Berhasil mengubah Official Store', {
-          variant: 'success'
-        });
-      } else {
-        setOpenOfficialStore(false);
+      // read kembali data
+      getStore(id).then(res => {
+        setStore(res.data.data.merchantDetail);
+        setStatus(res.data.data.merchantDetail.status?.id);
+        setOfficialStore(res.data.data.merchantDetail.isOfficialStore?.status);
+      });
 
-        enqueueSnackbar('Gagal mengubah Official Store', {
-          variant: 'error'
-        });
-      }
+      enqueueSnackbar('Berhasil memperbarui Official Store', {
+        variant: 'success'
+      });
     } else {
-      // services
-      const result = await updateStatusStore(id, dataStore.status?.id, 1).catch(
-        err => err
-      );
+      setOpenOfficialStore(false);
 
-      // cek sukses atau gagal
-      if (result.success) {
-        setOpenOfficialStore(false);
-
-        // read kembali data
-        getStore(id).then(res => {
-          setDataStore(res.data.data.merchantDetail);
-          const data = res.data.data.merchantProductsAndService.products.data.concat(
-            res.data.data.merchantProductsAndService.services.data
-          );
-          setDataProduks(data);
-          setDataReports(res.data.data.merchantReports);
-        });
-
-        enqueueSnackbar('Berhasil mengubah Official Store', {
-          variant: 'success'
-        });
-      } else {
-        setOpenOfficialStore(false);
-
-        enqueueSnackbar('Gagal mengubah Official Store', {
-          variant: 'error'
-        });
-      }
+      enqueueSnackbar('Gagal memperbarui Official Store', {
+        variant: 'error'
+      });
     }
   };
 
@@ -197,8 +133,8 @@ function Beranda({ setDataStore, setDataProduks, setDataReports, dataStore }) {
     <div className={classes.wrapper}>
       <div>
         <Avatar
-          alt={dataStore.name}
-          src=""
+          alt={store.name}
+          // src=""
           variant="rounded"
           className={classes.avatar}
         />
@@ -209,41 +145,46 @@ function Beranda({ setDataStore, setDataProduks, setDataReports, dataStore }) {
             setOpenStatus(true);
           }}
           className={classes.btnNonaktifkan}>
-          {dataStore.status?.name === 'Approved' ? 'nonaktifkan' : 'aktifkan'}
+          {store.status?.name === 'Approved' ? 'nonaktifkan' : 'aktifkan'}
         </Button>
         <br />
         <FormControlLabel
           control={
             <Checkbox
-              checked={dataStore.isOfficialStore?.status}
-              onClick={() => {
+              checked={officialStore ? true : false}
+              onChange={e => {
                 setOpenOfficialStore(true);
+                setEvent(e);
               }}
-              name="official_store"
+              name="officialStore"
             />
           }
           label="Official Store"
         />
       </div>
       <div>
+        <Typography variant="h6" color="primary">
+          Data Toko
+        </Typography>
+        <br />
         <InputLabel htmlFor="nama_toko" className={classes.label}>
           Nama
         </InputLabel>
         <FormControl variant="outlined" size="small" margin="normal" fullWidth>
-          <OutlinedInput value={dataStore.name} disabled />
+          <OutlinedInput value={store.name} disabled />
         </FormControl>
         <InputLabel htmlFor="nama_toko" className={classes.label}>
           ID Toko
         </InputLabel>
         <FormControl variant="outlined" size="small" margin="normal" fullWidth>
           <OutlinedInput
-            value={dataStore.id}
+            value={store.id}
             disabled
             endAdornment={
               <InputAdornment position="end">
                 <IconButton
                   onClick={() => {
-                    navigator.clipboard.writeText(dataStore.id);
+                    navigator.clipboard.writeText(store.id);
                     enqueueSnackbar('ID telah dicopy', { variant: 'success' });
                   }}
                   onMouseDown={e => e.preventDefault()}
@@ -258,24 +199,37 @@ function Beranda({ setDataStore, setDataProduks, setDataReports, dataStore }) {
           Alamat
         </InputLabel>
         <FormControl variant="outlined" size="small" margin="normal" fullWidth>
-          <OutlinedInput value={dataStore.address} disabled />
+          <OutlinedInput value={store.address} disabled />
         </FormControl>
         <InputLabel htmlFor="nama_toko" className={classes.label}>
           Buka Sejak
         </InputLabel>
         <FormControl variant="outlined" size="small" margin="normal" fullWidth>
           <OutlinedInput
-            value={dateConverterRes(dataStore?.createdAt)}
+            value={store.createdAt && dateConverterRes(store.createdAt)}
             disabled
           />
         </FormControl>
+        <br />
+        <br />
+        <Typography variant="h6" color="primary">
+          Data Pemilik Toko
+        </Typography>
+        <br />
         <InputLabel htmlFor="nama_toko" className={classes.label}>
-          Nama Pemilik
+          Nama
         </InputLabel>
         <FormControl variant="outlined" size="small" margin="normal" fullWidth>
-          <OutlinedInput value={dataStore?.owners?.name} disabled />
+          <OutlinedInput value={store.owners?.name} disabled />
+        </FormControl>
+        <InputLabel htmlFor="nama_toko" className={classes.label}>
+          Email
+        </InputLabel>
+        <FormControl variant="outlined" size="small" margin="normal" fullWidth>
+          <OutlinedInput value={store.owners?.email} disabled />
         </FormControl>
       </div>
+
       <ConfirmDialog
         open={openStatus}
         close={() => setOpenStatus(false)}
@@ -283,32 +237,19 @@ function Beranda({ setDataStore, setDataProduks, setDataReports, dataStore }) {
         submit={onStatus}>
         Apakah yakin ingin mengubah Status?
       </ConfirmDialog>
+
       <ConfirmDialog
         open={openOfficialStore}
         close={() => setOpenOfficialStore(false)}
         title="Official Store"
-        submit={onOfficialStore}>
+        submit={e => {
+          setOfficialStore(!event.target.checked);
+          onOfficialStore(e);
+        }}>
         Apakah yakin ingin mengubah Official Store?
       </ConfirmDialog>
     </div>
   );
 }
 
-Beranda.propTypes = {
-  dataStore: propTypes.object,
-  setDataStore: propTypes.func,
-  setDataProduks: propTypes.func,
-  setDataReports: propTypes.func
-};
-
-const mapStateToProps = state => ({
-  dataStore: state.stores.store
-});
-
-const mapDispatchToProps = dispatch => ({
-  setDataStore: value => dispatch(setStore(value)),
-  setDataProduks: value => dispatch(setProduks(value)),
-  setDataReports: value => dispatch(setReports(value))
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(Beranda);
+export default Beranda;
