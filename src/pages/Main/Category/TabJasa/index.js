@@ -2,6 +2,9 @@ import { useEffect, useState } from 'react';
 import useStyles from './styles';
 import propTypes from 'prop-types';
 
+// debonce untuk fitur pencarian
+import { debounce } from 'debounce';
+
 // notistack
 import { useSnackbar } from 'notistack';
 
@@ -281,11 +284,11 @@ function TabJasa({
         <OutlinedInput
           color="primary"
           placeholder="Cari"
-          onChange={e => {
-            getCategory('2', e.target.value).then(res => {
+          onChange={debounce(e => {
+            getCategory(false, '2', e.target.value).then(res => {
               setDataCategoriesJasa(res.data.data);
             });
-          }}
+          }, 3000)}
           endAdornment={
             <InputAdornment position="start">
               <IoSearchOutline />

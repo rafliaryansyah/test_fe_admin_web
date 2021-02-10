@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react';
 import useStyles from './styles';
 
+// debonce untuk fitur pencarian
+import { debounce } from 'debounce';
+
 // material-ui core
 import {
   FormControl,
@@ -91,12 +94,12 @@ function ListCustomers({ history }) {
             id="email"
             color="primary"
             placeholder="Cari"
-            onChange={e =>
+            onChange={debounce(e => {
               getCustomers('', e.target.value).then(res => {
                 setCustomers(res.data.data);
                 setCount(res.data.count);
-              })
-            }
+              });
+            }, 3000)}
             endAdornment={
               <InputAdornment position="start">
                 <IoSearchOutline />

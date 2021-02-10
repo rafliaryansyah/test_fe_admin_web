@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react';
 import useStyles from './styles';
 
+// debonce untuk fitur pencarian
+import { debounce } from 'debounce';
+
 // material-ui core
 import FormControl from '@material-ui/core/FormControl';
 import OutlinedInput from '@material-ui/core/OutlinedInput';
@@ -69,11 +72,11 @@ const ListToko = ({ history }) => {
             id="email"
             color="primary"
             placeholder="Cari"
-            onChange={e =>
+            onChange={debounce(e => {
               getStores('', e.target.value).then(res => {
                 setStores(res.data.data);
-              })
-            }
+              });
+            }, 3000)}
             endAdornment={
               <InputAdornment position="start">
                 <IoSearchOutline />
