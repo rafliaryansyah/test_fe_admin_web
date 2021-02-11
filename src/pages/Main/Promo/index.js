@@ -2,6 +2,9 @@ import { useEffect, useState } from 'react';
 import useStyles from './styles';
 import propTypes from 'prop-types';
 
+// debounce untuk fitur pencarian
+import { debounce } from 'debounce';
+
 // notistack
 import { useSnackbar } from 'notistack';
 
@@ -45,40 +48,32 @@ import {
 
 // redux
 import { connect } from 'react-redux';
-import { setPromos, setID, setDari, setTerkait } from 'modules';
+import { setID, setDari, setTerkait } from 'modules';
 
 // utils
 import { currency, dateConverterReq, dateConverterRes } from 'utils';
 
-function Promo({
-  setDataPromos,
-  dataPromos,
-  setDataID,
-  setDataDari,
-  setDataTerkait,
-  history
-}) {
+function Promo({ setDataID, setDataDari, setDataTerkait, history }) {
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
 
   // data open dialog
-  const [open, setOpen] = useState({
-    detail: false,
-    form: false,
-    hapus: false
-  });
+  const [openDetail, setOpenDetail] = useState(false);
+  const [openForm, setOpenForm] = useState(false);
+  const [openHapus, setOpenHapus] = useState(false);
 
   // data paginasi
-  const [pagination, setPagination] = useState({
-    current_page: 1,
-    last_page: ''
-  });
+  const [currentPage, setCurrentPage] = useState(0);
+  const [lastPage, setLastPage] = useState(0);
 
   // data id
   const [id, setID] = useState('');
 
   // data cek untuk update
   const [isEdit, setIsEdit] = useState(false);
+
+  // data promos
+  const [promos, setPromos] = useState([]);
 
   // data detail
   const [dataDetail, setDataDetail] = useState({});
@@ -155,23 +150,15 @@ function Promo({
 
   // read data promo
   useEffect(() => {
-    readPromo(false)
-      .then(res => {
-        setDataPromos(res.data.data);
-        setPagination({
-          ...pagination,
-          current_page: res.data.meta.current_page
-        });
-        setPagination({
-          ...pagination,
-          last_page: res.data.meta.last_page
-        });
-      })
-      .catch(err => err);
+    readPromo(false).then(res => {
+      setPromos(res.data.data);
+      setCurrentPage(res.data.meta.current_page);
+      setLastPage(res.data.meta.last_page);
+    });
   }, []);
 
   // tambah atau edit data
-  const submit = async e => {
+  const onSubmit = async e => {
     e.preventDefault();
 
     const findErrors = validate();
@@ -180,8 +167,6 @@ function Promo({
       setError(findErrors);
     } else {
       if (isEdit) {
-        // edit data
-
         // state
         const {
           title,
@@ -210,7 +195,7 @@ function Promo({
 
         // cek sukses atau tidak
         if (result.success) {
-          setOpen({ ...open, form: false });
+          setOpenForm(false);
 
           setForm({
             title: '',
@@ -223,43 +208,54 @@ function Promo({
           });
 
           // read kembali data
-          readPromo(false)
-            .then(res => {
-              setDataPromos(res.data.data);
-              setPagination({
-                ...pagination,
-                current_page: res.data.meta.current_page
-              });
-              setPagination({
-                ...pagination,
-                last_page: res.data.meta.last_page
-              });
-            })
-            .catch(err => err);
+          readPromo(false).then(res => {
+            setPromos(res.data.data);
+            setCurrentPage(res.data.meta.current_page);
+            setLastPage(res.data.meta.last_page);
+          });
 
-          enqueueSnackbar('Berhasil memperbarui promo', {
+          enqueueSnackbar('Berhasil memperbarui data', {
             variant: 'success'
           });
         } else {
-          setOpen({ ...open, form: false });
+          // cek validasi errors
+          if (
+            result.data.response.data.errors?.title ||
+            result.data.response.data.errors?.started_at ||
+            result.data.response.data.errors?.ended_at
+          ) {
+            setError({
+              ...error,
+              title: result.data.response.data.errors?.title
+                ? 'Nama tidak boleh ada spasi.'
+                : '',
+              started_at: result.data.response.data.errors?.started_at
+                ? 'Minimal tanggal setelah hari ini.'
+                : '',
+              ended_at: result.data.response.data.errors?.ended_at
+                ? 'Minimal tanggal setelah tanggal mulai.'
+                : ''
+            });
+          }
 
-          setForm({
-            title: '',
-            started_at: '',
-            ended_at: '',
-            discount_type: 'percent',
-            discount: '',
-            description: '',
-            tac: ''
-          });
+          // cek image
+          if (result.data.response.data.errors?.image) {
+            setForm({
+              title: '',
+              started_at: '',
+              ended_at: '',
+              discount_type: 'percent',
+              discount: '',
+              description: '',
+              tac: ''
+            });
 
-          enqueueSnackbar('Gagal memperbarui promo', {
-            variant: 'error'
-          });
+            setOpenForm(false);
+
+            enqueueSnackbar('Image masih kosong.', { variant: 'error' });
+          }
         }
       } else {
-        // tambah data
-
         // state
         const {
           title,
@@ -288,7 +284,7 @@ function Promo({
 
         // cek sukses atau tidak
         if (result.success) {
-          setOpen({ ...open, form: false });
+          setOpenForm(false);
 
           setForm({
             title: '',
@@ -301,75 +297,80 @@ function Promo({
           });
 
           // read kembali data
-          readPromo(false)
-            .then(res => {
-              setDataPromos(res.data.data);
-              setPagination({
-                ...pagination,
-                current_page: res.data.meta.current_page
-              });
-              setPagination({
-                ...pagination,
-                last_page: res.data.meta.last_page
-              });
-            })
-            .catch(err => err);
+          readPromo(false).then(res => {
+            setPromos(res.data.data);
+            setCurrentPage(res.data.meta.current_page);
+            setLastPage(res.data.meta.last_page);
+          });
 
-          enqueueSnackbar('Berhasil menambahkan promo baru', {
+          enqueueSnackbar('Berhasil menambah data', {
             variant: 'success'
           });
         } else {
-          setOpen({ ...open, form: false });
+          // cek validasi errors
+          if (
+            result.data.response.data.errors?.title ||
+            result.data.response.data.errors?.started_at ||
+            result.data.response.data.errors?.ended_at
+          ) {
+            setError({
+              ...error,
+              title: result.data.response.data.errors?.title
+                ? 'Nama tidak boleh ada spasi.'
+                : '',
+              started_at: result.data.response.data.errors?.started_at
+                ? 'Minimal tanggal setelah hari ini.'
+                : '',
+              ended_at: result.data.response.data.errors?.ended_at
+                ? 'Minimal tanggal setelah tanggal mulai.'
+                : ''
+            });
+          }
 
-          setForm({
-            title: '',
-            started_at: '',
-            ended_at: '',
-            discount_type: 'percent',
-            discount: '',
-            description: '',
-            tac: ''
-          });
+          // cek image
+          if (result.data.response.data.errors?.image) {
+            setForm({
+              title: '',
+              started_at: '',
+              ended_at: '',
+              discount_type: 'percent',
+              discount: '',
+              description: '',
+              tac: ''
+            });
 
-          enqueueSnackbar('Gagal menambahkan promo baru', {
-            variant: 'error'
-          });
+            setOpenForm(false);
+
+            enqueueSnackbar('Image masih kosong.', { variant: 'error' });
+          }
         }
       }
     }
   };
 
   // hapus data
-  const hapus = async () => {
+  const onHapus = async () => {
     // services
     const result = await deletePromo(id).catch(err => err);
 
     // cek sukses atau tidak
     if (result.success) {
-      setOpen({ ...open, hapus: false });
+      setOpenHapus(false);
 
       // read kembali data
-      readPromo(false)
-        .then(res => {
-          setDataPromos(res.data.data);
-          setPagination({
-            ...pagination,
-            current_page: res.data.meta.current_page
-          });
-          setPagination({
-            ...pagination,
-            last_page: res.data.meta.last_page
-          });
-        })
-        .catch(err => err);
+      readPromo(false).then(res => {
+        setPromos(res.data.data);
+        setCurrentPage(res.data.meta.current_page);
+        setLastPage(res.data.meta.last_page);
+      });
 
-      enqueueSnackbar('Berhasil menghapus promo', {
+      enqueueSnackbar('Berhasil menghapus data', {
         variant: 'success'
       });
     } else {
-      setOpen({ ...open, hapus: false });
+      setOpenHapus(false);
 
-      enqueueSnackbar('Gagal menghapus promo', {
+      enqueueSnackbar('Gagal menghapus data', {
         variant: 'error'
       });
     }
@@ -381,12 +382,7 @@ function Promo({
         <Button
           variant="contained"
           color="primary"
-          onClick={() =>
-            setOpen({
-              ...open,
-              form: true
-            })
-          }
+          onClick={() => setOpenForm(true)}
           className={classes.formControl}>
           buat promo
         </Button>
@@ -399,11 +395,11 @@ function Promo({
             id="email"
             color="primary"
             placeholder="Cari"
-            onChange={e =>
-              readPromo(e.target.value).then(res => {
-                setDataPromos(res.data.data);
-              })
-            }
+            onChange={debounce(e => {
+              readPromo(false, e.target.value).then(res => {
+                setPromos(res.data.data);
+              });
+            }, 3000)}
             endAdornment={
               <InputAdornment position="start">
                 <IoSearchOutline />
@@ -414,100 +410,104 @@ function Promo({
       </div>
 
       <div className={classes.main}>
-        {dataPromos &&
-          dataPromos.map(data => (
-            <Card key={data.id}>
-              <CardActionArea
-                disabled={data.isDeleted}
-                onClick={() => {
-                  setDataDetail(data);
-                  setOpen({ ...open, detail: true });
-                }}>
-                <CardContent>
-                  <div className={classes.titlePromo}>
-                    <span>{data.title}</span>
-                  </div>
-                  <div className={classes.wrapperTeks}>
-                    <span className={classes.teksPromo}>
-                      periode promo:
+        {promos?.map(data => (
+          <Card
+            key={data.id}
+            style={{ boxShadow: '0px 0px 5px rgba(0, 0, 0, 0.3)' }}>
+            <CardActionArea
+              disabled={data.isDeleted}
+              onClick={() => {
+                setDataDetail(data);
+                setOpenDetail(true);
+              }}>
+              <CardContent>
+                <div className={classes.titlePromo}>
+                  <span>{data.title}</span>
+                </div>
+                <div className={classes.wrapperTeks}>
+                  <span className={classes.teksPromo}>
+                    <span style={{ fontWeight: 'bold' }}>periode promo</span>
+                    <span>
                       {`${dateConverterRes(
                         data.startedAt
                       )} - ${dateConverterRes(data.endedAt)}`}
                     </span>
-                    {data.discountType &&
-                    data.discountType.slug === 'percent' ? (
-                      <span className={classes.teksPromo}>
-                        potongan harga:
-                        {`${data.discount}${data.discountType.name}`}
-                      </span>
-                    ) : (
-                      <span className={classes.teksPromo}>
-                        potongan harga:
-                        {currency(data.discount)}
-                      </span>
-                    )}
+                  </span>
+                  {data.discountType && data.discountType.slug === 'percent' ? (
                     <span className={classes.teksPromo}>
-                      item terkait:
+                      <span style={{ fontWeight: 'bold' }}>potongan harga</span>
+                      <span>{`${data.discount}${data.discountType.name}`}</span>
+                    </span>
+                  ) : (
+                    <span className={classes.teksPromo}>
+                      <span style={{ fontWeight: 'bold' }}>potongan harga</span>
+                      <span>{data.discount && currency(data.discount)}</span>
+                    </span>
+                  )}
+                  <span className={classes.teksPromo}>
+                    <span style={{ fontWeight: 'bold' }}>item terkait</span>
+                    <span>
                       {data.countRelatedProduct + data.countRelatedService}
                     </span>
-                  </div>
-                </CardContent>
-              </CardActionArea>
-              <CardActions className={classes.action}>
-                <IconButton
-                  disabled={data.isDeleted}
-                  size="small"
-                  color="primary"
-                  onClick={() => {
-                    setID(data.id);
-                    setIsEdit(true);
-                    setForm({
-                      ...form,
-                      title: data.title,
-                      started_at: dateConverterReq(data.startedAt),
-                      ended_at: dateConverterReq(data.endedAt),
-                      discount_type:
-                        data.discountType && data.discountType.slug,
-                      discount: data.discount,
-                      description: data.description,
-                      tac: data.termAndConditions
-                    });
-                    setOpen({ ...open, form: true });
-                  }}>
-                  <IoPencilOutline />
-                </IconButton>
-                <IconButton
-                  disabled={data.isDeleted}
-                  size="small"
-                  color="primary"
-                  onClick={() => {
-                    setID(data.id);
-                    setOpen({ ...open, hapus: true });
-                  }}>
-                  <IoTrashOutline />
-                </IconButton>
-              </CardActions>
-            </Card>
-          ))}
+                  </span>
+                </div>
+              </CardContent>
+            </CardActionArea>
+            <CardActions className={classes.action}>
+              <IconButton
+                disabled={data.isDeleted}
+                size="small"
+                color="primary"
+                onClick={() => {
+                  setID(data.id);
+                  setIsEdit(true);
+                  setForm({
+                    ...form,
+                    title: data.title,
+                    started_at: dateConverterReq(data.startedAt),
+                    ended_at: dateConverterReq(data.endedAt),
+                    discount_type: data.discountType && data.discountType.slug,
+                    discount: data.discount,
+                    description: data.description,
+                    tac: data.termAndConditions
+                  });
+                  setOpenForm(true);
+                }}>
+                <IoPencilOutline />
+              </IconButton>
+              <IconButton
+                disabled={data.isDeleted}
+                size="small"
+                color="primary"
+                onClick={() => {
+                  setID(data.id);
+                  setOpenHapus(true);
+                }}>
+                <IoTrashOutline />
+              </IconButton>
+            </CardActions>
+          </Card>
+        ))}
       </div>
 
       <Paginasi
-        count={pagination.last_page}
-        page={pagination.current_page}
+        count={lastPage}
+        page={currentPage}
         onChange={(e, value) =>
-          readPromo('', value).then(res => {
-            setDataPromos(res.data.data);
-            setPagination({
-              ...pagination,
-              current_page: res.data.meta.current_page
-            });
+          readPromo(false, '', value).then(res => {
+            setPromos(res.data.data);
+            setCurrentPage(res.data.meta.current_page);
+            setLastPage(res.data.meta.last_page);
           })
         }
       />
 
       <CompDialog
-        open={open.detail}
-        close={() => setOpen({ ...open, detail: false })}
+        open={openDetail}
+        close={() => {
+          setDataDetail({});
+          setOpenDetail(false);
+        }}
         title={dataDetail.title}>
         <p className={classes.nama}>{dataDetail.description}</p>
         <div className={classes.desk}>
@@ -580,10 +580,19 @@ function Promo({
       </CompDialog>
 
       <CompDialog
-        open={open.form}
+        open={openForm}
         close={() => {
           setIsEdit(false);
-          setOpen({ ...open, form: false });
+          setForm({
+            title: '',
+            started_at: '',
+            ended_at: '',
+            discount_type: 'percent',
+            discount: '',
+            description: '',
+            tac: ''
+          });
+          setOpenForm(false);
         }}
         title="Form Promo">
         <div className={classes.form}>
@@ -749,39 +758,33 @@ function Promo({
             variant="contained"
             color="primary"
             fullWidth
-            onClick={submit}>
+            onClick={onSubmit}>
             simpan
           </Button>
         </div>
       </CompDialog>
+
       <ConfirmDialog
-        open={open.hapus}
+        open={openHapus}
         title="Hapus Promo"
-        close={() => setOpen({ ...open, hapus: false })}
-        submit={hapus}>
-        Yakin ingin menghapus promo ?
+        close={() => setOpenHapus(false)}
+        submit={onHapus}>
+        Yakin ingin menghapus?
       </ConfirmDialog>
     </div>
   );
 }
 
 Promo.propTypes = {
-  setDataPromos: propTypes.func,
-  dataPromos: propTypes.array,
   setDataID: propTypes.func,
   setDataDari: propTypes.func,
   setDataTerkait: propTypes.func
 };
 
-const mapStateToProps = state => ({
-  dataPromos: state.promo.promos
-});
-
 const mapDispatchToProps = dispatch => ({
-  setDataPromos: value => dispatch(setPromos(value)),
   setDataID: value => dispatch(setID(value)),
   setDataDari: value => dispatch(setDari(value)),
   setDataTerkait: value => dispatch(setTerkait(value))
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(Promo);
+export default connect(null, mapDispatchToProps)(Promo);

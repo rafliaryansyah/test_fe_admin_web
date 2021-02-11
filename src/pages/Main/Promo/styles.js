@@ -36,26 +36,27 @@ const useStyles = makeStyles(theme => ({
   },
 
   titlePromo: {
-    fontSize: 18,
+    fontSize: 15,
     textTransform: 'uppercase',
-    letterSpacing: 3,
+    letterSpacing: 1.5,
     fontWeight: 'bold',
     textAlign: 'center'
   },
 
   wrapperTeks: {
     display: 'grid',
-    justifyContent: 'flex-start',
     borderBottom: '1px solid #c4c4c4',
     padding: '15px 0px 15px 0px'
   },
 
   teksPromo: {
-    fontSize: 15,
+    fontSize: 10,
+    display: 'flex',
+    justifyContent: 'space-between',
     textTransform: 'capitalize',
     letterSpacing: 1,
     color: '#424242',
-    lineHeight: 1.5
+    lineHeight: 2.0
   },
 
   action: {
@@ -64,21 +65,10 @@ const useStyles = makeStyles(theme => ({
   },
 
   // detail
-  banner: {
-    width: 100,
-    height: 50
-  },
-
-  img: {
-    width: '100%',
-    height: 200,
-    textAlign: 'center'
-  },
-
   nama: {
-    fontSize: 18,
+    fontSize: 15,
     textTransform: 'capitalize',
-    letterSpacing: 3,
+    letterSpacing: 1.5,
     fontWeight: 'bold',
     color: '#424242'
   },
@@ -91,7 +81,7 @@ const useStyles = makeStyles(theme => ({
   },
 
   teks: {
-    fontSize: 13,
+    fontSize: 10,
     textTransform: 'capitalize',
     textAlign: 'justify',
     color: '#c4c4c4'
