@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react';
 import useStyles from './styles';
 
+// debounce untuk fitur pencarian
+import { debounce } from 'debounce';
+
 // material-ui core
 import {
   Avatar,
@@ -212,11 +215,9 @@ function Kurir() {
           <OutlinedInput
             color="primary"
             placeholder="Cari"
-            onChange={e =>
-              readKurir(e.target.value)
-                .then(res => setKurirs(res.data.data))
-                .catch(err => err)
-            }
+            onChange={debounce(e => {
+              readKurir(e.target.value).then(res => setKurirs(res.data.data));
+            }, 3000)}
             endAdornment={
               <InputAdornment position="start">
                 <IoSearchOutline />
@@ -227,13 +228,13 @@ function Kurir() {
       </div>
 
       <div className={classes.main}>
-        {kurirs.map(kurir => (
+        {kurirs?.map(kurir => (
           <CardKurir
             key={kurir.id}
             srcImage={kurir.image}
             code={kurir.code}
             nama={kurir.name}
-            status={kurir.status}
+            status={kurir.status === 'Active' ? 'aktif' : 'tidak aktif'}
             checkReceipt={kurir.checkReceipt ? 'true' : 'false'}
             checkCost={kurir.checkCost ? 'true' : 'false'}>
             <IconButton
