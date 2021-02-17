@@ -56,7 +56,7 @@ const CardCustomers = ({
           </div>
           <div className={classes.labelText}>
             <div className={classes.label}>
-              <span className={classes.isi}>no telp </span>
+              <span className={classes.isi}>telepon </span>
               <span className={classes.isi}>:</span>
             </div>
             <span className={classes.isi}>{noTelp}</span>
@@ -67,7 +67,15 @@ const CardCustomers = ({
       <div className={classes.role}>
         {roles.map((item, i) => (
           <p key={i} className={classes.isiRole}>
-            {item}
+            {(item === 'customer' && 'C') ||
+              (item === 'super-admin-merchant' && 'S-A-M') ||
+              (item === 'admin-merchant' && 'A-M') ||
+              (item === 'contributor-merchant' && 'C-M') ||
+              (item === 'finance-merchant' && 'F-M') ||
+              (item === 'super-admin-ecommerce' && 'S-A-E') ||
+              (item === 'admin-ecommerce' && 'A-E') ||
+              (item === 'contributor-ecommerce' && 'C-E') ||
+              (item === 'finance-ecommerce' && 'F-E')}
           </p>
         ))}
       </div>

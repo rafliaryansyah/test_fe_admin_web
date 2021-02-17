@@ -23,10 +23,11 @@ export const createVoucher = formdata => {
 /**
  * service voucher for get all data voucher
  */
-export const readVoucher = (search, page) => {
+export const readVoucher = (isDeleted, search, page) => {
   return new Promise((resolve, reject) => {
     const data = {
       params: {
+        isDeleted: isDeleted,
         search: search ? search : '',
         page: page ? page : 1
       }

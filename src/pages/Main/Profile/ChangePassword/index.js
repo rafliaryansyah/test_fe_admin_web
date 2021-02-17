@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import useStyles from './styles';
 import propTypes from 'prop-types';
-import { Prompt } from 'react-router-dom';
 
 // validator (isEmail)
 import isEmail from 'validator/lib/isEmail';
@@ -34,8 +33,6 @@ function ChangePassword({ open, close, history }) {
 
   // data tampilkan teks password
   const [showPassword, setShowPassword] = useState(false);
-
-  const [isSomethingChange, setIsSomethingChange] = useState(false);
 
   // data form
   const [form, setForm] = useState({
@@ -120,19 +117,21 @@ function ChangePassword({ open, close, history }) {
             new_password: '',
             confirm_password: ''
           });
+
+          // close dialog
           close();
+
           enqueueSnackbar('Berhasil memperbarui password', {
             variant: 'success'
           });
-          setIsSomethingChange(false);
+
+          // history untuk keluar dari app
           history();
         }
       } else {
-        setIsSomethingChange(false);
-
         // cek validasi dari api
         if (result.data.response.data.code === 422) {
-          enqueueSnackbar('Email anda salah', {
+          enqueueSnackbar('Email atau Password lama anda salah', {
             variant: 'error'
           });
         }
@@ -323,10 +322,6 @@ function ChangePassword({ open, close, history }) {
           </Button>
         </div>
       </DialogContent>
-      <Prompt
-        when={isSomethingChange}
-        message="Terjadi perubahan yang belum disimpan! Yakin ingin membuangnya?"
-      />
     </Dialog>
   );
 }

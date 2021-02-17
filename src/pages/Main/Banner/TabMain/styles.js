@@ -52,13 +52,19 @@ const useStyles = makeStyles(theme => ({
   preview: {
     objectFit: 'cover',
     width: '100%',
-    height: 130
+    height: '100%'
   },
 
-  itemUpload: {
+  actionUploadFile: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    gridGap: 15
+  },
+
+  item: {
     width: '100%',
     border: `1px solid ${theme.palette.primary.main}`,
-    borderRadius: 10,
+    borderRadius: 5,
     padding: '15px 0px',
     display: 'flex',
     justifyContent: 'center',

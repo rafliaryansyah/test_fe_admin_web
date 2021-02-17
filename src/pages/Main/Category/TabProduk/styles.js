@@ -5,7 +5,7 @@ const useStyles = makeStyles(theme => ({
     paddingTop: 15
   },
 
-  cardGrid: {
+  main: {
     display: 'grid',
     gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
     gridGap: 15,
@@ -26,12 +26,6 @@ const useStyles = makeStyles(theme => ({
   },
 
   // detail
-  img: {
-    width: '100%',
-    height: 200,
-    textAlign: 'center'
-  },
-
   nama: {
     fontSize: 18,
     textTransform: 'capitalize',
@@ -72,7 +66,7 @@ const useStyles = makeStyles(theme => ({
   preview: {
     objectFit: 'cover',
     width: '100%',
-    height: 130
+    height: 400
   },
 
   itemUpload: {

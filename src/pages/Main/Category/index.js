@@ -124,41 +124,40 @@ function Category({
 
       // cek sukses atau tidak
       if (result.success) {
+        setOpen(false);
+
+        // cek tipe
+        if (form.type === '1') {
+          // read kembali data kategori type produk baru
+          getCategory(false, '1').then(res => {
+            setDataCategoriesProduk(res.data.data);
+          });
+        } else {
+          // read kembali data kategori type jasa baru
+          getCategory(false, '2').then(res => {
+            setDataCategoriesJasa(res.data.data);
+          });
+        }
+
         setForm({
           type: '1',
           name: '',
           image: ''
         });
-        setOpen(false);
-        enqueueSnackbar('berhasil membuat kategori baru', {
+
+        enqueueSnackbar('berhasil menambah data baru', {
           variant: 'success'
         });
-
-        // read kembali data kategori type produk baru
-        setTimeout(() => {
-          getCategory('1')
-            .then(res => {
-              setDataCategoriesProduk(res.data.data);
-            })
-            .catch(err => err);
-        }, 5000);
-
-        // read kembali data kategori type jasa baru
-        setTimeout(() => {
-          getCategory('2')
-            .then(res => {
-              setDataCategoriesJasa(res.data.data);
-            })
-            .catch(err => err);
-        }, 5000);
       } else {
+        setOpen(false);
+
         setForm({
           type: '1',
           name: '',
           image: ''
         });
-        setOpen(false);
-        enqueueSnackbar('gagal membuat kategori baru', { variant: 'error' });
+
+        enqueueSnackbar('gagal menambah data baru', { variant: 'error' });
       }
     }
   };

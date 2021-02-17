@@ -2,15 +2,15 @@ import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles(theme => ({
   card: {
-    boxShadow: '0px 0px 3px rgba(0, 0, 0, 0.5)',
-    borderRadius: 10,
-    padding: 20,
+    boxShadow: '0px 0px 5px rgba(0, 0, 0, 0.3)',
+    borderRadius: 5,
+    padding: 15,
     cursor: 'pointer'
   },
 
   info: {
     display: 'flex',
-    gridGap: 20,
+    gridGap: 15,
 
     [theme.breakpoints.down('sm')]: {
       flexDirection: 'column'
@@ -19,9 +19,9 @@ const useStyles = makeStyles(theme => ({
 
   avatar: {
     objectFit: 'cover',
-    width: 150,
-    height: 150,
-    borderRadius: 10,
+    width: 90,
+    height: 90,
+    borderRadius: 5,
 
     [theme.breakpoints.down('sm')]: {
       width: '100%',
@@ -46,26 +46,26 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
-    width: 130
+    width: 100
   },
 
   isi: {
-    fontSize: 15,
+    fontSize: 10,
     textTransform: 'capitalize',
-    letterSpacing: 1,
+    letterSpacing: 1.5,
 
     [theme.breakpoints.down('sm')]: {
-      fontSize: 10
+      fontSize: 8
     }
   },
 
   aktif: {
-    fontSize: 15,
+    fontSize: 10,
     textTransform: 'lowercase',
-    letterSpacing: 1,
+    letterSpacing: 1.5,
 
     [theme.breakpoints.down('sm')]: {
-      fontSize: 10
+      fontSize: 8
     }
   }
 }));

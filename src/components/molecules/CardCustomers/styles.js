@@ -96,10 +96,14 @@ const useStyles = makeStyles(theme => ({
   },
 
   isiRole: {
+    height: 10,
+    display: 'flex',
+    alignItems: 'center',
+    textAlign: 'center',
     fontSize: 10,
     textTransform: 'capitalize',
     letterSpacing: 1.5,
-    padding: 5,
+    padding: 10,
     backgroundColor: `${theme.palette.primary.main}`,
     borderRadius: 5,
     color: '#ffffff',

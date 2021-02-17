@@ -48,20 +48,8 @@ const category = {
  * Category action types
  */
 const stores = {
-  SET_STORES: 'STORES/SET',
   SET_STORE: 'STORE/SET',
-  SET_PRODUKS: 'PRODUKS/SET',
-  SET_REPORTS: 'REPORTS/SET',
   CLEAR_STORES: 'STORES/CLEAR'
-};
-
-/**
- * Customer action types
- */
-const customer = {
-  SET_CUSTOMERS: 'CUSTOMERS/SET',
-  SET_CUSTOMER: 'CUSTOMER/SET',
-  CLEAR_CUSTOMER: 'CUSTOMER/CLEAR'
 };
 
 /**
@@ -95,7 +83,6 @@ const actionTypes = {
   global,
   dashboard,
   profile,
-  customer,
   category,
   stores,
   banner,

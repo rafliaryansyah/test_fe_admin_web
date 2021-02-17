@@ -1,5 +1,12 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import useStyles from './styles';
+
+// resize image
+import Resizer from 'react-image-file-resizer';
+
+// image crop
+import ReactCrop from 'react-image-crop';
+import 'react-image-crop/dist/ReactCrop.css';
 
 // react multi carousel
 import Carousel from 'react-multi-carousel';
@@ -96,6 +103,9 @@ import {
   getCategory
 } from 'services';
 
+// utils
+import { fileExtention, uriToFile } from 'utils';
+
 // MenuProps
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -142,7 +152,7 @@ function TabMain() {
 
   const [produk, setProduk] = useState('');
   const [status, setStatus] = useState(2);
-  const [image, setImage] = useState('');
+  const [image, setImage] = useState(null);
   const [promos, setPromos] = useState([]);
   const [categories, setCategories] = useState([]);
 
@@ -151,6 +161,14 @@ function TabMain() {
     produk: '',
     image: ''
   });
+
+  // crop
+  const [uri, setURI] = useState(null);
+  const [crop, setCrop] = useState({ unit: 'px', width: 300, aspect: 16 / 9 });
+  const [cropImage, setCropImage] = useState(null);
+  const [completeCrop, setCompleteCrop] = useState(null);
+  const previewCanvasRef = useRef();
+  const imageRef = useRef();
 
   // mencocokan data response kategori agar tercheckbox
   const autoCheckboxPromo = values => {
@@ -207,38 +225,35 @@ function TabMain() {
 
   // read data banner
   useEffect(() => {
-    readBannersMain(false)
-      .then(res => {
-        setMains(res.data.data);
-      })
-      .catch(err => err);
+    readBannersMain(false).then(res => {
+      setMains(res.data.data);
+    });
   }, []);
 
   // read data promo
   useEffect(() => {
-    readPromo('')
-      .then(res => setDataPromo(res.data.data))
-      .catch(err => err);
+    readPromo(false).then(res => setDataPromo(res.data.data));
   }, []);
 
   // read data kategori per tipe
   useEffect(() => {
-    getCategory('1')
-      .then(res => setKategoriProduk(res.data.data))
-      .catch(err => err);
-    getCategory('2')
-      .then(res => setKategoriJasa(res.data.data))
-      .catch(err => err);
+    getCategory(false, '1').then(res => setKategoriProduk(res.data.data));
+    getCategory(false, '2').then(res => setKategoriJasa(res.data.data));
   }, []);
 
+  // tambah atau edit
   const onCreate = async e => {
     e.preventDefault();
 
     // cek ke detail atau list
     if (relate === '1') {
       // validasi
-      if (!produk) {
-        setError({ ...error, produk: 'Field masih kosong' });
+      if (!produk || !image) {
+        return setError({
+          ...error,
+          produk: !produk ? 'Field masih kosong' : '',
+          image: !image ? 'Field masih kosong' : ''
+        });
       }
 
       if (isEdit) {
@@ -250,7 +265,7 @@ function TabMain() {
         formdata.append('status', status);
         formdata.append('product', produk);
 
-        // cek image baru atau yang lama
+        // cek apakah baru atau lama
         if (image.name) {
           formdata.append('image', image);
         }
@@ -263,17 +278,15 @@ function TabMain() {
           setOpenForm(false);
 
           // read kembali data main
-          readBannersMain(false)
-            .then(res => {
-              setMains(res.data.data);
-            })
-            .catch(err => err);
+          readBannersMain(false).then(res => {
+            setMains(res.data.data);
+          });
 
-          enqueueSnackbar('Berhasil membuat main', { variant: 'success' });
+          enqueueSnackbar('Berhasil memperbarui data', { variant: 'success' });
         } else {
           setOpenForm(false);
 
-          enqueueSnackbar('Gagal membuat main', { variant: 'error' });
+          enqueueSnackbar('Gagal memperbarui data', { variant: 'error' });
         }
       } else {
         // form-data kosong
@@ -284,7 +297,7 @@ function TabMain() {
         formdata.append('status', status);
         formdata.append('product', produk);
 
-        // cek image baru atau yang lama
+        // cek apakah baru atau lama
         if (image.name) {
           formdata.append('image', image);
         }
@@ -297,23 +310,24 @@ function TabMain() {
           setOpenForm(false);
 
           // read kembali data main
-          readBannersMain(false)
-            .then(res => {
-              setMains(res.data.data);
-            })
-            .catch(err => err);
+          readBannersMain(false).then(res => {
+            setMains(res.data.data);
+          });
 
-          enqueueSnackbar('Berhasil membuat main', { variant: 'success' });
+          enqueueSnackbar('Berhasil menambah data', { variant: 'success' });
         } else {
           setOpenForm(false);
 
-          enqueueSnackbar('Gagal membuat main', { variant: 'error' });
+          enqueueSnackbar('Gagal menambah data', { variant: 'error' });
         }
       }
     } else {
       // validasi
-      if (!produk) {
-        setError({ ...error, produk: 'Field masih kosong' });
+      if (!image) {
+        return setError({
+          ...error,
+          image: !image ? 'Field masih kosong' : ''
+        });
       }
 
       if (isEdit) {
@@ -334,7 +348,7 @@ function TabMain() {
           formdata.append(`categories[${index}]`, category);
         });
 
-        // cek image baru atau lama
+        // cek apakah baru atau lama
         if (image.name) {
           formdata.append('image', image);
         }
@@ -347,17 +361,15 @@ function TabMain() {
           setOpenForm(false);
 
           // read kembali data main
-          readBannersMain(false)
-            .then(res => {
-              setMains(res.data.data);
-            })
-            .catch(err => err);
+          readBannersMain(false).then(res => {
+            setMains(res.data.data);
+          });
 
-          enqueueSnackbar('Berhasil memperbarui main', { variant: 'success' });
+          enqueueSnackbar('Berhasil memperbarui data', { variant: 'success' });
         } else {
           setOpenForm(false);
 
-          enqueueSnackbar('Gagal memperbarui main', { variant: 'error' });
+          enqueueSnackbar('Gagal memperbarui data', { variant: 'error' });
         }
       } else {
         // form-data kosong
@@ -377,7 +389,7 @@ function TabMain() {
           formdata.append(`categories[${index}]`, category);
         });
 
-        // cek image baru atau lama
+        // cek apakah baru atau lama
         if (image.name) {
           formdata.append('image', image);
         }
@@ -390,17 +402,15 @@ function TabMain() {
           setOpenForm(false);
 
           // read kembali data main
-          readBannersMain(false)
-            .then(res => {
-              setMains(res.data.data);
-            })
-            .catch(err => err);
+          readBannersMain(false).then(res => {
+            setMains(res.data.data);
+          });
 
-          enqueueSnackbar('Berhasil membuat main', { variant: 'success' });
+          enqueueSnackbar('Berhasil menambah data', { variant: 'success' });
         } else {
           setOpenForm(false);
 
-          enqueueSnackbar('Gagal membuat main', { variant: 'error' });
+          enqueueSnackbar('Gagal menambah data', { variant: 'error' });
         }
       }
     }
@@ -416,11 +426,9 @@ function TabMain() {
       setOpenHapus(false);
 
       // read kembali data baru
-      readBannersMain(false)
-        .then(res => {
-          setMains(res.data.data);
-        })
-        .catch(err => err);
+      readBannersMain(false).then(res => {
+        setMains(res.data.data);
+      });
 
       enqueueSnackbar('Berhasil menghapus data', {
         variant: 'success'
@@ -436,17 +444,12 @@ function TabMain() {
 
   // upload image
   const onSelectedImage = async e => {
-    const file = e.target.files[0];
+    const file = e.target.files?.[0];
 
     if (!['image/png', 'image/jpeg'].includes(file.type)) {
       setError({
         ...error,
         image: `Tipe file tidak didukung: ${file.type}`
-      });
-    } else if (file.size >= 512000) {
-      setError({
-        ...error,
-        image: 'Ukuran file terlalu besar dari 500KB'
       });
     } else {
       const reader = new FileReader();
@@ -472,7 +475,26 @@ function TabMain() {
         });
 
         try {
-          setImage(file);
+          if (file) {
+            Resizer.imageFileResizer(
+              file,
+              300,
+              300,
+              file?.type === 'image/jpeg' ? 'JPEG' : 'PNG',
+              100,
+              0,
+              uri => {
+                if (uri) {
+                  setURI(uri);
+
+                  const photoFile = uriToFile(uri);
+
+                  setImage(photoFile);
+                }
+              },
+              'base64'
+            );
+          }
         } catch (e) {
           setError({
             ...error,
@@ -482,6 +504,67 @@ function TabMain() {
       };
 
       reader.readAsDataURL(file);
+    }
+  };
+
+  // crop
+  const imageLoaded = image => {
+    imageRef.current = image;
+  };
+
+  const onChangeCrop = crop => {
+    setCrop(crop);
+  };
+
+  const onCropComplete = crop => {
+    setCompleteCrop(crop);
+
+    const image = imageRef.current; // image
+    const canvas = previewCanvasRef.current; // document.createElement('canvas');
+    const pixelRatio = window.devicePixelRatio; // pixel ratio
+
+    const scaleX = image.naturalWidth / image.width;
+    const scaleY = image.naturalHeight / image.height;
+
+    const ctx = canvas.getContext('2d');
+
+    canvas.width = crop.width * pixelRatio;
+    canvas.height = crop.height * pixelRatio;
+
+    image.crossOrigin = 'anonymus';
+
+    ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+    ctx.imageSmoothingQuality = 'high';
+
+    ctx.drawImage(
+      image,
+      crop.x * scaleX,
+      crop.y * scaleY,
+      crop.width * scaleX,
+      crop.height * scaleY,
+      0,
+      0,
+      crop.width,
+      crop.height
+    );
+  };
+
+  // set crop
+  const onClickToSetCrop = e => {
+    e.preventDefault();
+
+    if (cropImage) {
+      const canvasRef = previewCanvasRef.current;
+
+      const fileExtension = fileExtention(cropImage);
+      const imageBase64 = canvasRef.toDataURL(`image/${fileExtension}`);
+
+      // sebelum upload ubah dari base64 ke file
+      const base64ToFile = uriToFile(imageBase64);
+
+      setImage(base64ToFile);
+
+      setCropImage();
     }
   };
 
@@ -749,9 +832,11 @@ function TabMain() {
           setType('1');
           setStatus(2);
           setProduk('');
-          setImage('');
+          setImage(null);
           setPromos([]);
           setCategories([]);
+          setError({ ...error, produk: '', image: '' });
+          setCropImage();
           setOpenForm(false);
         }}
         title="Form Main">
@@ -847,12 +932,41 @@ function TabMain() {
               </FormControl>
 
               <div className={classes.inputFile}>
-                <Avatar
-                  alt="photo"
-                  src={image.name ? URL.createObjectURL(image) : image}
-                  variant="rounded"
-                  className={classes.preview}
-                />
+                <InputLabel id="image" style={{ marginBottom: 15 }}>
+                  Gambar
+                </InputLabel>
+                {!cropImage && (
+                  <Avatar
+                    alt="image"
+                    src={image?.name ? URL.createObjectURL(image) : image}
+                    variant="rounded"
+                    className={classes.preview}
+                  />
+                )}
+
+                <div style={{ textAlign: 'center' }}>
+                  <ReactCrop
+                    src={cropImage}
+                    crop={crop}
+                    onImageLoaded={imageLoaded}
+                    onComplete={onCropComplete}
+                    onChange={onChangeCrop}
+                  />
+                </div>
+
+                {cropImage && (
+                  <div style={{ textAlign: 'center' }}>
+                    <p>Preview Crop</p>
+                    <canvas
+                      ref={previewCanvasRef}
+                      style={{
+                        width: Math.round(completeCrop?.width ?? 0),
+                        height: Math.round(completeCrop?.height ?? 0)
+                      }}
+                    />
+                  </div>
+                )}
+
                 <input
                   type="file"
                   id="upload"
@@ -860,10 +974,43 @@ function TabMain() {
                   onChange={onSelectedImage}
                   style={{ display: 'none' }}
                 />
-                <label htmlFor="upload" className={classes.itemUpload}>
-                  <IoCloudDownloadOutline />
-                  Upload
-                </label>
+
+                <div className={classes.actionUploadFile}>
+                  {!cropImage && (
+                    <label htmlFor="upload" className={classes.item}>
+                      <IoCloudDownloadOutline />
+                      Upload
+                    </label>
+                  )}
+                  {!cropImage && (
+                    <label
+                      onClick={() => setImage('')}
+                      className={classes.item}>
+                      hapus
+                    </label>
+                  )}
+                  {image?.name && (
+                    <label
+                      onClick={() => {
+                        setCropImage(image?.name ? uri : image);
+                      }}
+                      className={classes.item}>
+                      crop
+                    </label>
+                  )}
+                  {cropImage && (
+                    <label
+                      onClick={() => setCropImage()}
+                      className={classes.item}>
+                      batal crop
+                    </label>
+                  )}
+                  {cropImage && (
+                    <label onClick={onClickToSetCrop} className={classes.item}>
+                      set crop
+                    </label>
+                  )}
+                </div>
               </div>
               <br />
               <FormHelperText
@@ -911,7 +1058,7 @@ function TabMain() {
                   input={<Input />}
                   MenuProps={MenuProps}>
                   <List dense>
-                    {dataPromo.map(item => {
+                    {dataPromo?.map(item => {
                       const labelId = `checkbox-list-secondary-label-${item.title}`;
                       return (
                         <ListItem
@@ -926,7 +1073,7 @@ function TabMain() {
                             <Checkbox
                               edge="end"
                               onChange={onCheckboxPromos(item.id)}
-                              checked={promos.indexOf(item.id) !== -1}
+                              checked={promos?.indexOf(item.id) !== -1}
                               inputProps={{ 'aria-labelledby': labelId }}
                             />
                           </ListItemSecondaryAction>
@@ -955,7 +1102,7 @@ function TabMain() {
                   MenuProps={MenuProps}>
                   <List dense>
                     {type === '1' &&
-                      kategoriProduk.map(item => {
+                      kategoriProduk?.map(item => {
                         const labelId = `checkbox-list-secondary-label-${item.name}`;
                         return (
                           <ListItem
@@ -973,7 +1120,7 @@ function TabMain() {
                               <Checkbox
                                 edge="end"
                                 onChange={onCheckboxKategori(item.id)}
-                                checked={categories.indexOf(item.id) !== -1}
+                                checked={categories?.indexOf(item.id) !== -1}
                                 inputProps={{ 'aria-labelledby': labelId }}
                               />
                             </ListItemSecondaryAction>
@@ -982,7 +1129,7 @@ function TabMain() {
                       })}
 
                     {type === '2' &&
-                      kategoriJasa.map(item => {
+                      kategoriJasa?.map(item => {
                         const labelId = `checkbox-list-secondary-label-${item.name}`;
                         return (
                           <ListItem
@@ -1000,7 +1147,7 @@ function TabMain() {
                               <Checkbox
                                 edge="end"
                                 onChange={onCheckboxKategori(item.id)}
-                                checked={categories.indexOf(item.id) !== -1}
+                                checked={categories?.indexOf(item.id) !== -1}
                                 inputProps={{ 'aria-labelledby': labelId }}
                               />
                             </ListItemSecondaryAction>
@@ -1012,12 +1159,41 @@ function TabMain() {
               </FormControl>
 
               <div className={classes.inputFile}>
-                <Avatar
-                  alt="photo"
-                  src={image.name ? URL.createObjectURL(image) : image}
-                  variant="rounded"
-                  className={classes.preview}
-                />
+                <InputLabel id="image" style={{ marginBottom: 15 }}>
+                  Gambar
+                </InputLabel>
+                {!cropImage && (
+                  <Avatar
+                    alt="image"
+                    src={image?.name ? URL.createObjectURL(image) : image}
+                    variant="rounded"
+                    className={classes.preview}
+                  />
+                )}
+
+                <div style={{ textAlign: 'center' }}>
+                  <ReactCrop
+                    src={cropImage}
+                    crop={crop}
+                    onImageLoaded={imageLoaded}
+                    onComplete={onCropComplete}
+                    onChange={onChangeCrop}
+                  />
+                </div>
+
+                {cropImage && (
+                  <div style={{ textAlign: 'center' }}>
+                    <p>Preview Crop</p>
+                    <canvas
+                      ref={previewCanvasRef}
+                      style={{
+                        width: Math.round(completeCrop?.width ?? 0),
+                        height: Math.round(completeCrop?.height ?? 0)
+                      }}
+                    />
+                  </div>
+                )}
+
                 <input
                   type="file"
                   id="upload"
@@ -1025,10 +1201,43 @@ function TabMain() {
                   onChange={onSelectedImage}
                   style={{ display: 'none' }}
                 />
-                <label htmlFor="upload" className={classes.itemUpload}>
-                  <IoCloudDownloadOutline />
-                  Upload
-                </label>
+
+                <div className={classes.actionUploadFile}>
+                  {!cropImage && (
+                    <label htmlFor="upload" className={classes.item}>
+                      <IoCloudDownloadOutline />
+                      Upload
+                    </label>
+                  )}
+                  {!cropImage && (
+                    <label
+                      onClick={() => setImage('')}
+                      className={classes.item}>
+                      hapus
+                    </label>
+                  )}
+                  {image?.name && (
+                    <label
+                      onClick={() => {
+                        setCropImage(image?.name ? uri : image);
+                      }}
+                      className={classes.item}>
+                      crop
+                    </label>
+                  )}
+                  {cropImage && (
+                    <label
+                      onClick={() => setCropImage()}
+                      className={classes.item}>
+                      batal crop
+                    </label>
+                  )}
+                  {cropImage && (
+                    <label onClick={onClickToSetCrop} className={classes.item}>
+                      set crop
+                    </label>
+                  )}
+                </div>
               </div>
               <br />
               <FormHelperText

@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import useStyles from './styles';
-import propTypes from 'prop-types';
+
+// debonce untuk fitur pencarian
+import { debounce } from 'debounce';
 
 // material-ui core
 import FormControl from '@material-ui/core/FormControl';
@@ -16,35 +18,27 @@ import { IoSearchOutline } from 'react-icons/io5';
 // components
 import { CardToko, Paginasi } from 'components';
 
-// redux
-import { connect } from 'react-redux';
-import { setStores } from 'modules';
-
 // services
 import { getStores } from 'services';
 
 // utils
 import { dateConverterRes } from 'utils';
 
-const ListToko = ({ dataStores, setDataStores, history }) => {
+const ListToko = ({ history }) => {
   const classes = useStyles();
 
-  const [pagination, setPagination] = useState({
-    current_page: 1,
-    last_page: ''
-  });
+  // data paginasi
+  const [currentPage, setCurrentPage] = useState(0);
+  const [lastPage, setLastPage] = useState(0);
+
+  // data stores
+  const [stores, setStores] = useState([]);
 
   useEffect(() => {
     getStores().then(res => {
-      setDataStores(res.data.data);
-      setPagination({
-        ...pagination,
-        current_page: res.data.meta.current_page
-      });
-      setPagination({
-        ...pagination,
-        last_page: res.data.meta.last_page
-      });
+      setStores(res.data.data);
+      setCurrentPage(res.data.meta.current_page);
+      setLastPage(res.data.meta.last_page);
     });
   }, []);
 
@@ -62,7 +56,7 @@ const ListToko = ({ dataStores, setDataStores, history }) => {
             id="select-status"
             onChange={e => {
               getStores(parseInt(e.target.value)).then(res => {
-                setDataStores(res.data.data);
+                setStores(res.data.data);
               });
             }}
             label="Semua Status">
@@ -78,11 +72,11 @@ const ListToko = ({ dataStores, setDataStores, history }) => {
             id="email"
             color="primary"
             placeholder="Cari"
-            onChange={e =>
+            onChange={debounce(e => {
               getStores('', e.target.value).then(res => {
-                setDataStores(res.data.data);
-              })
-            }
+                setStores(res.data.data);
+              });
+            }, 3000)}
             endAdornment={
               <InputAdornment position="start">
                 <IoSearchOutline />
@@ -93,29 +87,27 @@ const ListToko = ({ dataStores, setDataStores, history }) => {
       </div>
 
       <div className={classes.wrapperCard}>
-        {dataStores?.map(data => (
+        {stores?.map(data => (
           <CardToko
             key={data.id}
             srcImage=""
             nama={data.name}
-            status={data.status && data.status.name}
+            status={data.status?.name === 'Approved' ? 'aktif' : 'tidak aktif'}
             alamat={data.address}
-            bukaSejak={dateConverterRes(data.joinedAt)}
+            bukaSejak={data.joinedAt && dateConverterRes(data.joinedAt)}
             handleDetail={() => history.push(`/toko/${data.id}`)}
           />
         ))}
       </div>
 
       <Paginasi
-        count={pagination.last_page}
-        page={pagination.current_page}
+        count={lastPage}
+        page={currentPage}
         onChange={(e, value) =>
           getStores('', '', value).then(res => {
-            setDataStores(res.data.data);
-            setPagination({
-              ...pagination,
-              current_page: res.data.meta.current_page
-            });
+            setStores(res.data.data);
+            setCurrentPage(res.data.meta.current_page);
+            setLastPage(res.data.meta.last_page);
           })
         }
       />
@@ -123,16 +115,4 @@ const ListToko = ({ dataStores, setDataStores, history }) => {
   );
 };
 
-ListToko.propTypes = {
-  dataStores: propTypes.array,
-  setDataStores: propTypes.func
-};
-
-const mapStateToProps = state => ({
-  dataStores: state.stores.stores
-});
-const mapDispatchToProps = dispatch => ({
-  setDataStores: value => dispatch(setStores(value))
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(ListToko);
+export default ListToko;

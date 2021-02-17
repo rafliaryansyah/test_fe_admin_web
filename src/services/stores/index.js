@@ -58,10 +58,13 @@ export const getStores = (status, search, page) => {
 /**
  * service customer for get detail store
  */
-export const getStore = id => {
+export const getStore = (id, page) => {
   return new Promise((resolve, reject) => {
     const data = {
-      path: `${id}`
+      path: `${id}`,
+      params: {
+        page: page ? page : 1
+      }
     };
 
     API.store(data)
@@ -88,25 +91,6 @@ export const updateStatusStore = (id, status, official_store) => {
     };
 
     API.storeUpdateStatus(data)
-      .then(res => {
-        resolve({ success: true, data: res.data });
-      })
-      .catch(err => {
-        reject({ success: false, data: err });
-      });
-  });
-};
-
-/**
- * service customer for update mode store
- */
-export const updateModeStore = id => {
-  return new Promise((resolve, reject) => {
-    const data = {
-      path: `${id}/update`
-    };
-
-    API.storeUpdateMode(data)
       .then(res => {
         resolve({ success: true, data: res.data });
       })

@@ -1,6 +1,13 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import useStyles from './styles';
 import propTypes from 'prop-types';
+
+// resize image
+import Resizer from 'react-image-file-resizer';
+
+// image crop
+import ReactCrop from 'react-image-crop';
+import 'react-image-crop/dist/ReactCrop.css';
 
 // react multi carousel
 import Carousel from 'react-multi-carousel';
@@ -101,6 +108,9 @@ import {
   getCategory
 } from 'services';
 
+// utils
+import { fileExtention, uriToFile } from 'utils';
+
 // MenuProps
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -159,6 +169,14 @@ function TabMini() {
     product: '',
     image: ''
   });
+
+  // crop
+  const [uri, setURI] = useState(null);
+  const [crop, setCrop] = useState({ unit: 'px' });
+  const [cropImage, setCropImage] = useState(null);
+  const [completeCrop, setCompleteCrop] = useState(null);
+  const previewCanvasRef = useRef();
+  const imageRef = useRef();
 
   // mencocokan data response kategori agar tercheckbox
   const autoCheckboxPromo = values => {
@@ -250,8 +268,12 @@ function TabMini() {
     // cek relate
     if (relate === '1') {
       // validasi
-      if (!product) {
-        setError({ ...error, product: 'Field masih kosong' });
+      if (!product || !image) {
+        return setError({
+          ...error,
+          product: !product ? 'Field masih kosong' : '',
+          image: !image ? 'Field masih kosong' : ''
+        });
       }
 
       if (isEdit) {
@@ -274,29 +296,23 @@ function TabMini() {
 
         // cek sukses atau tidak
         if (result.success) {
+          setOpenFP(false);
+
           setRelate('1');
           setTypeProduk(1);
           setStatus(2);
           setProduct('');
           setImage('');
-          setOpenFP(false);
 
           // read kembali data baru
-          readBannersMini('product', false)
-            .then(res => {
-              setMiniProduk(res.data.data);
-            })
-            .catch(err => err);
+          readBannersMini('product', false).then(res => {
+            setMiniProduk(res.data.data);
+          });
 
           enqueueSnackbar('Berhasil memperbarui data', {
             variant: 'success'
           });
         } else {
-          setRelate('1');
-          setTypeProduk(1);
-          setStatus(2);
-          setProduct('');
-          setImage('');
           setOpenFP(false);
 
           enqueueSnackbar('Gagal memperbarui data', { variant: 'error' });
@@ -321,35 +337,37 @@ function TabMini() {
 
         // cek sukses atau tidak
         if (result.success) {
+          setOpenFP(false);
+
           setRelate('1');
           setTypeProduk(1);
           setStatus(2);
           setProduct('');
           setImage('');
-          setOpenFP(false);
 
           // read kembali data baru
-          readBannersMini('product', false)
-            .then(res => {
-              setMiniProduk(res.data.data);
-            })
-            .catch(err => err);
+          readBannersMini('product', false).then(res => {
+            setMiniProduk(res.data.data);
+          });
 
-          enqueueSnackbar('Berhasil membuat data baru', {
+          enqueueSnackbar('Berhasil menambah data', {
             variant: 'success'
           });
         } else {
-          setRelate('1');
-          setTypeProduk(1);
-          setStatus(2);
-          setProduct('');
-          setImage('');
           setOpenFP(false);
 
-          enqueueSnackbar('Gagal membuat data baru', { variant: 'error' });
+          enqueueSnackbar('Gagal menambah data', { variant: 'error' });
         }
       }
     } else {
+      // validasi
+      if (!image) {
+        return setError({
+          ...error,
+          image: !image ? 'Field masih kosong' : ''
+        });
+      }
+
       if (isEdit) {
         // form-data yang kosong
         const formdata = new FormData();
@@ -377,31 +395,24 @@ function TabMini() {
 
         // cek sukses atau tidak
         if (result.success) {
+          setOpenFP(false);
+
           setRelate('1');
           setTypeProduk(1);
           setStatus(2);
           setPromos([]);
           setCategories([]);
           setImage('');
-          setOpenFP(false);
 
           // read kembali data baru
-          readBannersMini('product', false)
-            .then(res => {
-              setMiniProduk(res.data.data);
-            })
-            .catch(err => err);
+          readBannersMini('product', false).then(res => {
+            setMiniProduk(res.data.data);
+          });
 
           enqueueSnackbar('Berhasil memperbarui data', {
             variant: 'success'
           });
         } else {
-          setRelate('1');
-          setTypeProduk(1);
-          setStatus(2);
-          setPromos([]);
-          setCategories([]);
-          setImage('');
           setOpenFP(false);
 
           enqueueSnackbar('Gagal memperbarui data', { variant: 'error' });
@@ -433,34 +444,27 @@ function TabMini() {
 
         // cek sukses atau tidak
         if (result.success) {
+          setOpenFP(false);
+
           setRelate('1');
           setTypeProduk(1);
           setStatus(2);
           setPromos([]);
           setCategories([]);
           setImage('');
-          setOpenFP(false);
 
           // read kembali data baru
-          readBannersMini('product', false)
-            .then(res => {
-              setMiniProduk(res.data.data);
-            })
-            .catch(err => err);
+          readBannersMini('product', false).then(res => {
+            setMiniProduk(res.data.data);
+          });
 
-          enqueueSnackbar('Berhasil membuat data baru', {
+          enqueueSnackbar('Berhasil menambah data', {
             variant: 'success'
           });
         } else {
-          setRelate('1');
-          setTypeProduk(1);
-          setStatus(2);
-          setPromos([]);
-          setCategories([]);
-          setImage('');
           setOpenFP(false);
 
-          enqueueSnackbar('Gagal membuat data baru', { variant: 'error' });
+          enqueueSnackbar('Gagal menambah data', { variant: 'error' });
         }
       }
     }
@@ -473,8 +477,12 @@ function TabMini() {
     // cek relate
     if (relate === '1') {
       // validasi
-      if (!product) {
-        setError({ ...error, product: 'Field masih kosong' });
+      if (!product || !image) {
+        return setError({
+          ...error,
+          product: !product ? 'Field masih kosong' : '',
+          image: !image ? 'Field masih kosong' : ''
+        });
       }
 
       if (isEdit) {
@@ -497,29 +505,23 @@ function TabMini() {
 
         // cek sukses atau tidak
         if (result.success) {
+          setOpenFS(false);
+
           setRelate('1');
           setTypeService(2);
           setStatus(2);
           setProduct('');
           setImage('');
-          setOpenFS(false);
 
           // read kembali data baru
-          readBannersMini('service', false)
-            .then(res => {
-              setMiniService(res.data.data);
-            })
-            .catch(err => err);
+          readBannersMini('service', false).then(res => {
+            setMiniService(res.data.data);
+          });
 
           enqueueSnackbar('Berhasil memperbarui data', {
             variant: 'success'
           });
         } else {
-          setRelate('1');
-          setTypeService(2);
-          setStatus(2);
-          setProduct('');
-          setImage('');
           setOpenFS(false);
 
           enqueueSnackbar('Gagal memperbarui data', { variant: 'error' });
@@ -544,35 +546,37 @@ function TabMini() {
 
         // cek sukses atau tidak
         if (result.success) {
+          setOpenFS(false);
+
           setRelate('1');
           setTypeService(2);
           setStatus(2);
           setProduct('');
           setImage('');
-          setOpenFS(false);
 
           // read kembali data baru
-          readBannersMini('service', false)
-            .then(res => {
-              setMiniService(res.data.data);
-            })
-            .catch(err => err);
+          readBannersMini('service', false).then(res => {
+            setMiniService(res.data.data);
+          });
 
-          enqueueSnackbar('Berhasil membuat data baru', {
+          enqueueSnackbar('Berhasil menambah data', {
             variant: 'success'
           });
         } else {
-          setRelate('1');
-          setTypeService(2);
-          setStatus(2);
-          setProduct('');
-          setImage('');
           setOpenFS(false);
 
-          enqueueSnackbar('Gagal membuat data baru', { variant: 'error' });
+          enqueueSnackbar('Gagal menambah data', { variant: 'error' });
         }
       }
     } else {
+      // validasi
+      if (!image) {
+        return setError({
+          ...error,
+          image: !image ? 'Field masih kosong' : ''
+        });
+      }
+
       if (isEdit) {
         // form-data yang kosong
         const formdata = new FormData();
@@ -600,31 +604,24 @@ function TabMini() {
 
         // cek sukses atau tidak
         if (result.success) {
+          setOpenFS(false);
+
           setRelate('1');
           setTypeService(2);
           setStatus(2);
           setPromos([]);
           setCategories([]);
           setImage('');
-          setOpenFS(false);
 
           // read kembali data baru
-          readBannersMini('service', false)
-            .then(res => {
-              setMiniService(res.data.data);
-            })
-            .catch(err => err);
+          readBannersMini('service', false).then(res => {
+            setMiniService(res.data.data);
+          });
 
           enqueueSnackbar('Berhasil memperbarui data', {
             variant: 'success'
           });
         } else {
-          setRelate('1');
-          setTypeService(2);
-          setStatus(2);
-          setPromos([]);
-          setCategories([]);
-          setImage('');
           setOpenFS(false);
 
           enqueueSnackbar('Gagal memperbarui data', { variant: 'error' });
@@ -656,34 +653,27 @@ function TabMini() {
 
         // cek sukses atau tidak
         if (result.success) {
+          setOpenFS(false);
+
           setRelate('1');
           setTypeService(2);
           setStatus(2);
           setPromos([]);
           setCategories([]);
           setImage('');
-          setOpenFS(false);
 
           // read kembali data baru
-          readBannersMini('service', false)
-            .then(res => {
-              setMiniService(res.data.data);
-            })
-            .catch(err => err);
+          readBannersMini('service', false).then(res => {
+            setMiniService(res.data.data);
+          });
 
-          enqueueSnackbar('Berhasil membuat data baru', {
+          enqueueSnackbar('Berhasil menambah data', {
             variant: 'success'
           });
         } else {
-          setRelate('1');
-          setTypeService(2);
-          setStatus(2);
-          setPromos([]);
-          setCategories([]);
-          setImage('');
           setOpenFS(false);
 
-          enqueueSnackbar('Gagal membuat data baru', { variant: 'error' });
+          enqueueSnackbar('Gagal menambah data', { variant: 'error' });
         }
       }
     }
@@ -699,17 +689,13 @@ function TabMini() {
 
       // read kembali data baru
       if (type === 'Product') {
-        readBannersMini('product', false)
-          .then(res => {
-            setMiniProduk(res.data.data);
-          })
-          .catch(err => err);
+        readBannersMini('product', false).then(res => {
+          setMiniProduk(res.data.data);
+        });
       } else {
-        readBannersMini('service', false)
-          .then(res => {
-            setMiniService(res.data.data);
-          })
-          .catch(err => err);
+        readBannersMini('service', false).then(res => {
+          setMiniService(res.data.data);
+        });
       }
 
       enqueueSnackbar('Berhasil menghapus data', { variant: 'success' });
@@ -758,7 +744,26 @@ function TabMini() {
         });
 
         try {
-          setImage(file);
+          if (file) {
+            Resizer.imageFileResizer(
+              file,
+              300,
+              300,
+              file?.type === 'image/jpeg' ? 'JPEG' : 'PNG',
+              100,
+              0,
+              uri => {
+                if (uri) {
+                  setURI(uri);
+
+                  const photoFile = uriToFile(uri);
+
+                  setImage(photoFile);
+                }
+              },
+              'base64'
+            );
+          }
         } catch (e) {
           setError({
             ...error,
@@ -768,6 +773,67 @@ function TabMini() {
       };
 
       reader.readAsDataURL(file);
+    }
+  };
+
+  // crop
+  const imageLoaded = image => {
+    imageRef.current = image;
+  };
+
+  const onChangeCrop = crop => {
+    setCrop(crop);
+  };
+
+  const onCropComplete = crop => {
+    setCompleteCrop(crop);
+
+    const image = imageRef.current; // image
+    const canvas = previewCanvasRef.current; // document.createElement('canvas');
+    const pixelRatio = window.devicePixelRatio; // pixel ratio
+
+    const scaleX = image.naturalWidth / image.width;
+    const scaleY = image.naturalHeight / image.height;
+
+    const ctx = canvas.getContext('2d');
+
+    canvas.width = crop.width * pixelRatio;
+    canvas.height = crop.height * pixelRatio;
+
+    image.crossOrigin = 'anonymus';
+
+    ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+    ctx.imageSmoothingQuality = 'high';
+
+    ctx.drawImage(
+      image,
+      crop.x * scaleX,
+      crop.y * scaleY,
+      crop.width * scaleX,
+      crop.height * scaleY,
+      0,
+      0,
+      crop.width,
+      crop.height
+    );
+  };
+
+  // set crop
+  const onClickToSetCrop = e => {
+    e.preventDefault();
+
+    if (cropImage) {
+      const canvasRef = previewCanvasRef.current;
+
+      const fileExtension = fileExtention(cropImage);
+      const imageBase64 = canvasRef.toDataURL(`image/${fileExtension}`);
+
+      // sebelum upload ubah dari base64 ke file
+      const base64ToFile = uriToFile(imageBase64);
+
+      setImage(base64ToFile);
+
+      setCropImage();
     }
   };
 
@@ -1301,6 +1367,12 @@ function TabMini() {
           setImage('');
           setPromos([]);
           setCategories([]);
+          setError({
+            ...error,
+            product: '',
+            image: ''
+          });
+          setCropImage();
           setOpenFP(false);
         }}
         title="Form Mini Produk">
@@ -1375,12 +1447,41 @@ function TabMini() {
               </FormControl>
 
               <div className={classes.inputFile}>
-                <Avatar
-                  alt="photo"
-                  src={image.name ? URL.createObjectURL(image) : image}
-                  variant="rounded"
-                  className={classes.preview}
-                />
+                <InputLabel id="image" style={{ marginBottom: 15 }}>
+                  Gambar
+                </InputLabel>
+                {!cropImage && (
+                  <Avatar
+                    alt="image"
+                    src={image?.name ? URL.createObjectURL(image) : image}
+                    variant="rounded"
+                    className={classes.preview}
+                  />
+                )}
+
+                <div style={{ textAlign: 'center' }}>
+                  <ReactCrop
+                    src={cropImage}
+                    crop={crop}
+                    onImageLoaded={imageLoaded}
+                    onComplete={onCropComplete}
+                    onChange={onChangeCrop}
+                  />
+                </div>
+
+                {cropImage && (
+                  <div style={{ textAlign: 'center' }}>
+                    <p>Preview Crop</p>
+                    <canvas
+                      ref={previewCanvasRef}
+                      style={{
+                        width: Math.round(completeCrop?.width ?? 0),
+                        height: Math.round(completeCrop?.height ?? 0)
+                      }}
+                    />
+                  </div>
+                )}
+
                 <input
                   type="file"
                   id="upload"
@@ -1388,10 +1489,43 @@ function TabMini() {
                   onChange={onSelectedImage}
                   style={{ display: 'none' }}
                 />
-                <label htmlFor="upload" className={classes.itemUpload}>
-                  <IoCloudDownloadOutline />
-                  Upload
-                </label>
+
+                <div className={classes.actionUploadFile}>
+                  {!cropImage && (
+                    <label htmlFor="upload" className={classes.item}>
+                      <IoCloudDownloadOutline />
+                      Upload
+                    </label>
+                  )}
+                  {!cropImage && (
+                    <label
+                      onClick={() => setImage('')}
+                      className={classes.item}>
+                      hapus
+                    </label>
+                  )}
+                  {image?.name && (
+                    <label
+                      onClick={() => {
+                        setCropImage(image?.name ? uri : image);
+                      }}
+                      className={classes.item}>
+                      crop
+                    </label>
+                  )}
+                  {cropImage && (
+                    <label
+                      onClick={() => setCropImage()}
+                      className={classes.item}>
+                      batal crop
+                    </label>
+                  )}
+                  {cropImage && (
+                    <label onClick={onClickToSetCrop} className={classes.item}>
+                      set crop
+                    </label>
+                  )}
+                </div>
               </div>
               <br />
               <FormHelperText
@@ -1512,12 +1646,41 @@ function TabMini() {
               </FormControl>
 
               <div className={classes.inputFile}>
-                <Avatar
-                  alt="photo"
-                  src={image.name ? URL.createObjectURL(image) : image}
-                  variant="rounded"
-                  className={classes.preview}
-                />
+                <InputLabel id="image" style={{ marginBottom: 15 }}>
+                  Gambar
+                </InputLabel>
+                {!cropImage && (
+                  <Avatar
+                    alt="image"
+                    src={image?.name ? URL.createObjectURL(image) : image}
+                    variant="rounded"
+                    className={classes.preview}
+                  />
+                )}
+
+                <div style={{ textAlign: 'center' }}>
+                  <ReactCrop
+                    src={cropImage}
+                    crop={crop}
+                    onImageLoaded={imageLoaded}
+                    onComplete={onCropComplete}
+                    onChange={onChangeCrop}
+                  />
+                </div>
+
+                {cropImage && (
+                  <div style={{ textAlign: 'center' }}>
+                    <p>Preview Crop</p>
+                    <canvas
+                      ref={previewCanvasRef}
+                      style={{
+                        width: Math.round(completeCrop?.width ?? 0),
+                        height: Math.round(completeCrop?.height ?? 0)
+                      }}
+                    />
+                  </div>
+                )}
+
                 <input
                   type="file"
                   id="upload"
@@ -1525,10 +1688,43 @@ function TabMini() {
                   onChange={onSelectedImage}
                   style={{ display: 'none' }}
                 />
-                <label htmlFor="upload" className={classes.itemUpload}>
-                  <IoCloudDownloadOutline />
-                  Upload
-                </label>
+
+                <div className={classes.actionUploadFile}>
+                  {!cropImage && (
+                    <label htmlFor="upload" className={classes.item}>
+                      <IoCloudDownloadOutline />
+                      Upload
+                    </label>
+                  )}
+                  {!cropImage && (
+                    <label
+                      onClick={() => setImage('')}
+                      className={classes.item}>
+                      hapus
+                    </label>
+                  )}
+                  {image?.name && (
+                    <label
+                      onClick={() => {
+                        setCropImage(image?.name ? uri : image);
+                      }}
+                      className={classes.item}>
+                      crop
+                    </label>
+                  )}
+                  {cropImage && (
+                    <label
+                      onClick={() => setCropImage()}
+                      className={classes.item}>
+                      batal crop
+                    </label>
+                  )}
+                  {cropImage && (
+                    <label onClick={onClickToSetCrop} className={classes.item}>
+                      set crop
+                    </label>
+                  )}
+                </div>
               </div>
               <br />
               <FormHelperText
@@ -1560,6 +1756,12 @@ function TabMini() {
           setImage('');
           setPromos([]);
           setCategories([]);
+          setError({
+            ...error,
+            product: '',
+            image: ''
+          });
+          setCropImage();
           setOpenFS(false);
         }}
         title="Form Mini Jasa">
@@ -1634,12 +1836,41 @@ function TabMini() {
               </FormControl>
 
               <div className={classes.inputFile}>
-                <Avatar
-                  alt="photo"
-                  src={image.name ? URL.createObjectURL(image) : image}
-                  variant="rounded"
-                  className={classes.preview}
-                />
+                <InputLabel id="image" style={{ marginBottom: 15 }}>
+                  Gambar
+                </InputLabel>
+                {!cropImage && (
+                  <Avatar
+                    alt="image"
+                    src={image?.name ? URL.createObjectURL(image) : image}
+                    variant="rounded"
+                    className={classes.preview}
+                  />
+                )}
+
+                <div style={{ textAlign: 'center' }}>
+                  <ReactCrop
+                    src={cropImage}
+                    crop={crop}
+                    onImageLoaded={imageLoaded}
+                    onComplete={onCropComplete}
+                    onChange={onChangeCrop}
+                  />
+                </div>
+
+                {cropImage && (
+                  <div style={{ textAlign: 'center' }}>
+                    <p>Preview Crop</p>
+                    <canvas
+                      ref={previewCanvasRef}
+                      style={{
+                        width: Math.round(completeCrop?.width ?? 0),
+                        height: Math.round(completeCrop?.height ?? 0)
+                      }}
+                    />
+                  </div>
+                )}
+
                 <input
                   type="file"
                   id="upload"
@@ -1647,10 +1878,43 @@ function TabMini() {
                   onChange={onSelectedImage}
                   style={{ display: 'none' }}
                 />
-                <label htmlFor="upload" className={classes.itemUpload}>
-                  <IoCloudDownloadOutline />
-                  Upload
-                </label>
+
+                <div className={classes.actionUploadFile}>
+                  {!cropImage && (
+                    <label htmlFor="upload" className={classes.item}>
+                      <IoCloudDownloadOutline />
+                      Upload
+                    </label>
+                  )}
+                  {!cropImage && (
+                    <label
+                      onClick={() => setImage('')}
+                      className={classes.item}>
+                      hapus
+                    </label>
+                  )}
+                  {image?.name && (
+                    <label
+                      onClick={() => {
+                        setCropImage(image?.name ? uri : image);
+                      }}
+                      className={classes.item}>
+                      crop
+                    </label>
+                  )}
+                  {cropImage && (
+                    <label
+                      onClick={() => setCropImage()}
+                      className={classes.item}>
+                      batal crop
+                    </label>
+                  )}
+                  {cropImage && (
+                    <label onClick={onClickToSetCrop} className={classes.item}>
+                      set crop
+                    </label>
+                  )}
+                </div>
               </div>
               <br />
               <FormHelperText
@@ -1771,12 +2035,41 @@ function TabMini() {
               </FormControl>
 
               <div className={classes.inputFile}>
-                <Avatar
-                  alt="photo"
-                  src={image.name ? URL.createObjectURL(image) : image}
-                  variant="rounded"
-                  className={classes.preview}
-                />
+                <InputLabel id="image" style={{ marginBottom: 15 }}>
+                  Gambar
+                </InputLabel>
+                {!cropImage && (
+                  <Avatar
+                    alt="image"
+                    src={image?.name ? URL.createObjectURL(image) : image}
+                    variant="rounded"
+                    className={classes.preview}
+                  />
+                )}
+
+                <div style={{ textAlign: 'center' }}>
+                  <ReactCrop
+                    src={cropImage}
+                    crop={crop}
+                    onImageLoaded={imageLoaded}
+                    onComplete={onCropComplete}
+                    onChange={onChangeCrop}
+                  />
+                </div>
+
+                {cropImage && (
+                  <div style={{ textAlign: 'center' }}>
+                    <p>Preview Crop</p>
+                    <canvas
+                      ref={previewCanvasRef}
+                      style={{
+                        width: Math.round(completeCrop?.width ?? 0),
+                        height: Math.round(completeCrop?.height ?? 0)
+                      }}
+                    />
+                  </div>
+                )}
+
                 <input
                   type="file"
                   id="upload"
@@ -1784,10 +2077,43 @@ function TabMini() {
                   onChange={onSelectedImage}
                   style={{ display: 'none' }}
                 />
-                <label htmlFor="upload" className={classes.itemUpload}>
-                  <IoCloudDownloadOutline />
-                  Upload
-                </label>
+
+                <div className={classes.actionUploadFile}>
+                  {!cropImage && (
+                    <label htmlFor="upload" className={classes.item}>
+                      <IoCloudDownloadOutline />
+                      Upload
+                    </label>
+                  )}
+                  {!cropImage && (
+                    <label
+                      onClick={() => setImage('')}
+                      className={classes.item}>
+                      hapus
+                    </label>
+                  )}
+                  {image?.name && (
+                    <label
+                      onClick={() => {
+                        setCropImage(image?.name ? uri : image);
+                      }}
+                      className={classes.item}>
+                      crop
+                    </label>
+                  )}
+                  {cropImage && (
+                    <label
+                      onClick={() => setCropImage()}
+                      className={classes.item}>
+                      batal crop
+                    </label>
+                  )}
+                  {cropImage && (
+                    <label onClick={onClickToSetCrop} className={classes.item}>
+                      set crop
+                    </label>
+                  )}
+                </div>
               </div>
               <br />
               <FormHelperText

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import useStyles from './styles';
 import propTypes from 'prop-types';
 
@@ -8,6 +8,13 @@ import 'react-multi-carousel/lib/styles.css';
 
 // notistack
 import { useSnackbar } from 'notistack';
+
+// resize image
+import Resizer from 'react-image-file-resizer';
+
+// image crop
+import ReactCrop from 'react-image-crop';
+import 'react-image-crop/dist/ReactCrop.css';
 
 // responsive carousel
 const responsive = {
@@ -118,7 +125,7 @@ const MenuProps = {
 };
 
 // utils
-import { dateConverterRes } from 'utils';
+import { dateConverterRes, fileExtention, uriToFile } from 'utils';
 
 function TabHighLight() {
   const classes = useStyles();
@@ -189,6 +196,14 @@ function TabHighLight() {
     image: ''
   });
 
+  // crop
+  const [uri, setURI] = useState(null);
+  const [crop, setCrop] = useState({ unit: 'px', width: 300, aspect: 16 / 9 });
+  const [cropImage, setCropImage] = useState(null);
+  const [completeCrop, setCompleteCrop] = useState(null);
+  const previewCanvasRef = useRef();
+  const imageRef = useRef();
+
   // checkbox tipe produk
   const onCheckboxProduk = id => () => {
     const currentIndex = formProduk.products.indexOf(id);
@@ -251,6 +266,10 @@ function TabHighLight() {
       newError.headline = 'Field masih kosong';
     }
 
+    if (!formProduk.image) {
+      newError.image = 'Field masih kosong';
+    }
+
     return newError;
   };
 
@@ -260,6 +279,10 @@ function TabHighLight() {
 
     if (!formServices.headline) {
       newError.headline = 'Field masih kosong';
+    }
+
+    if (!formServices.image) {
+      newError.image = 'Field masih kosong';
     }
 
     return newError;
@@ -328,6 +351,8 @@ function TabHighLight() {
 
         // cek sukses atau tidak
         if (result.success) {
+          setOpenHP(false);
+
           setFormProduk({
             type: 1,
             headline: '',
@@ -335,26 +360,16 @@ function TabHighLight() {
             products: [],
             image: ''
           });
-          setOpenHP(false);
 
           // read kembali data baru
-          readBannersHighlight('product', false)
-            .then(res => {
-              setHighlightProduks(res.data.data);
-            })
-            .catch(err => err);
+          readBannersHighlight('product', false).then(res => {
+            setHighlightProduks(res.data.data);
+          });
 
           enqueueSnackbar('Berhasil memperbarui data', {
             variant: 'success'
           });
         } else {
-          setFormProduk({
-            type: 1,
-            headline: '',
-            status: 2,
-            products: [],
-            image: ''
-          });
           setOpenHP(false);
 
           enqueueSnackbar('Gagal memperbarui data', { variant: 'error' });
@@ -385,6 +400,8 @@ function TabHighLight() {
 
         // cek sukses atau tidak
         if (result.success) {
+          setOpenHP(false);
+
           setFormProduk({
             type: 1,
             headline: '',
@@ -392,29 +409,19 @@ function TabHighLight() {
             products: [],
             image: ''
           });
-          setOpenHP(false);
 
           // read kembali data baru
-          readBannersHighlight('product', false)
-            .then(res => {
-              setHighlightProduks(res.data.data);
-            })
-            .catch(err => err);
+          readBannersHighlight('product', false).then(res => {
+            setHighlightProduks(res.data.data);
+          });
 
-          enqueueSnackbar('Berhasil menambah data baru', {
+          enqueueSnackbar('Berhasil menambah data', {
             variant: 'success'
           });
         } else {
-          setFormProduk({
-            type: 1,
-            headline: '',
-            status: 2,
-            products: [],
-            image: ''
-          });
           setOpenHP(false);
 
-          enqueueSnackbar('Gagal menambah data baru', { variant: 'error' });
+          enqueueSnackbar('Gagal menambah data', { variant: 'error' });
         }
       }
     }
@@ -458,6 +465,8 @@ function TabHighLight() {
 
         // cek sukses atau tidak
         if (result.success) {
+          setOpenHS(false);
+
           setFormServices({
             type: 2,
             headline: '',
@@ -465,25 +474,14 @@ function TabHighLight() {
             services: [],
             image: ''
           });
-          setOpenHS(false);
 
           // read kembali data baru
-          readBannersHighlight('service', false)
-            .then(res => {
-              setHighlightServices(res.data.data);
-            })
-            .catch(err => err);
+          readBannersHighlight('service', false).then(res => {
+            setHighlightServices(res.data.data);
+          });
 
           enqueueSnackbar('Berhasil memperbarui data', { variant: 'success' });
         } else {
-          setFormServices({
-            type: 2,
-            headline: '',
-            status: 2,
-            services: [],
-            image: ''
-          });
-
           setOpenHS(false);
 
           enqueueSnackbar('Gagal memperbarui data', { variant: 'error' });
@@ -515,6 +513,8 @@ function TabHighLight() {
 
         // cek sukses atau tidak
         if (result.success) {
+          setOpenHS(false);
+
           setFormServices({
             type: 2,
             headline: '',
@@ -522,30 +522,19 @@ function TabHighLight() {
             services: [],
             image: ''
           });
-          setOpenHS(false);
 
           // read kembali data baru
-          readBannersHighlight('service', false)
-            .then(res => {
-              setHighlightServices(res.data.data);
-            })
-            .catch(err => err);
+          readBannersHighlight('service', false).then(res => {
+            setHighlightServices(res.data.data);
+          });
 
-          enqueueSnackbar('Berhasil menambah data baru', {
+          enqueueSnackbar('Berhasil menambah data', {
             variant: 'success'
           });
         } else {
-          setFormServices({
-            type: 2,
-            headline: '',
-            status: 2,
-            services: [],
-            image: ''
-          });
-
           setOpenHS(false);
 
-          enqueueSnackbar('Gagal menambah data baru', { variant: 'error' });
+          enqueueSnackbar('Gagal menambah data', { variant: 'error' });
         }
       }
     }
@@ -562,17 +551,13 @@ function TabHighLight() {
 
       // cek tipe untuk read kembali data baru
       if (type === 1) {
-        readBannersHighlight('product', false)
-          .then(res => {
-            setHighlightProduks(res.data.data);
-          })
-          .catch(err => err);
+        readBannersHighlight('product', false).then(res => {
+          setHighlightProduks(res.data.data);
+        });
       } else {
-        readBannersHighlight('service', false)
-          .then(res => {
-            setHighlightServices(res.data.data);
-          })
-          .catch(err => err);
+        readBannersHighlight('service', false).then(res => {
+          setHighlightServices(res.data.data);
+        });
       }
 
       enqueueSnackbar('Berhasil menghapus data', { variant: 'success' });
@@ -591,11 +576,6 @@ function TabHighLight() {
       setErrorProduk({
         ...errorProduk,
         image: `Tipe file tidak didukung: ${file?.type}`
-      });
-    } else if (file?.size >= 512000) {
-      setErrorProduk({
-        ...errorProduk,
-        image: 'Ukuran file terlalu besar dari 500KB'
       });
     } else {
       const reader = new FileReader();
@@ -621,10 +601,29 @@ function TabHighLight() {
         });
 
         try {
-          setFormProduk({
-            ...formProduk,
-            image: file
-          });
+          if (file) {
+            Resizer.imageFileResizer(
+              file,
+              300,
+              300,
+              file?.type === 'image/jpeg' ? 'JPEG' : 'PNG',
+              100,
+              0,
+              uri => {
+                if (uri) {
+                  setURI(uri);
+
+                  const photoFile = uriToFile(uri);
+
+                  setFormProduk({
+                    ...formProduk,
+                    image: photoFile
+                  });
+                }
+              },
+              'base64'
+            );
+          }
         } catch (e) {
           setErrorProduk({
             ...errorProduk,
@@ -646,11 +645,6 @@ function TabHighLight() {
         ...errorServices,
         image: `Tipe file tidak didukung: ${file?.type}`
       });
-    } else if (file?.size >= 512000) {
-      setErrorServices({
-        ...errorServices,
-        image: 'Ukuran file terlalu besar dari 500KB'
-      });
     } else {
       const reader = new FileReader();
 
@@ -675,10 +669,29 @@ function TabHighLight() {
         });
 
         try {
-          setFormServices({
-            ...formServices,
-            image: file
-          });
+          if (file) {
+            Resizer.imageFileResizer(
+              file,
+              300,
+              300,
+              file?.type === 'image/jpeg' ? 'JPEG' : 'PNG',
+              100,
+              0,
+              uri => {
+                if (uri) {
+                  setURI(uri);
+
+                  const photoFile = uriToFile(uri);
+
+                  setFormServices({
+                    ...formServices,
+                    image: photoFile
+                  });
+                }
+              },
+              'base64'
+            );
+          }
         } catch (e) {
           setErrorServices({
             ...errorServices,
@@ -688,6 +701,86 @@ function TabHighLight() {
       };
 
       reader.readAsDataURL(file);
+    }
+  };
+
+  // crop
+  const imageLoaded = image => {
+    imageRef.current = image;
+  };
+
+  const onChangeCrop = crop => {
+    setCrop(crop);
+  };
+
+  const onCropComplete = crop => {
+    setCompleteCrop(crop);
+
+    const image = imageRef.current; // image
+    const canvas = previewCanvasRef.current; // document.createElement('canvas');
+    const pixelRatio = window.devicePixelRatio; // pixel ratio
+
+    const scaleX = image.naturalWidth / image.width;
+    const scaleY = image.naturalHeight / image.height;
+
+    const ctx = canvas.getContext('2d');
+
+    canvas.width = crop.width * pixelRatio;
+    canvas.height = crop.height * pixelRatio;
+
+    image.crossOrigin = 'anonymus';
+
+    ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+    ctx.imageSmoothingQuality = 'high';
+
+    ctx.drawImage(
+      image,
+      crop.x * scaleX,
+      crop.y * scaleY,
+      crop.width * scaleX,
+      crop.height * scaleY,
+      0,
+      0,
+      crop.width,
+      crop.height
+    );
+  };
+
+  // set crop
+  const onClickToSetCropProduk = e => {
+    e.preventDefault();
+
+    if (cropImage) {
+      const canvasRef = previewCanvasRef.current;
+
+      const fileExtension = fileExtention(cropImage);
+      const imageBase64 = canvasRef.toDataURL(`image/${fileExtension}`);
+
+      // sebelum upload ubah dari base64 ke file
+      const base64ToFile = uriToFile(imageBase64);
+
+      setFormProduk({ ...formProduk, image: base64ToFile });
+
+      setCropImage();
+    }
+  };
+
+  // set crop
+  const onClickToSetCropService = e => {
+    e.preventDefault();
+
+    if (cropImage) {
+      const canvasRef = previewCanvasRef.current;
+
+      const fileExtension = fileExtention(cropImage);
+      const imageBase64 = canvasRef.toDataURL(`image/${fileExtension}`);
+
+      // sebelum upload ubah dari base64 ke file
+      const base64ToFile = uriToFile(imageBase64);
+
+      setFormServices({ ...formServices, image: base64ToFile });
+
+      setCropImage();
     }
   };
 
@@ -1299,6 +1392,13 @@ function TabHighLight() {
             products: [],
             image: ''
           });
+          setErrorProduk({
+            ...errorProduk,
+            headline: '',
+            status: '',
+            image: ''
+          });
+          setCropImage();
           setOpenHP(false);
         }}
         title="Form Highlight Produk">
@@ -1354,18 +1454,44 @@ function TabHighLight() {
 
           <div className={classes.inputFile}>
             <InputLabel id="image" style={{ marginBottom: 15 }}>
-              Gambar (max 500KB)
+              Gambar
             </InputLabel>
-            <Avatar
-              alt="photo"
-              src={
-                formProduk.image.name
-                  ? URL.createObjectURL(formProduk.image)
-                  : formProduk.image
-              }
-              variant="rounded"
-              className={classes.preview}
-            />
+            {!cropImage && (
+              <Avatar
+                alt="image"
+                src={
+                  formProduk.image?.name
+                    ? URL.createObjectURL(formProduk.image)
+                    : formProduk.image
+                }
+                variant="rounded"
+                className={classes.preview}
+              />
+            )}
+
+            <div style={{ textAlign: 'center' }}>
+              <ReactCrop
+                src={cropImage}
+                crop={crop}
+                onImageLoaded={imageLoaded}
+                onComplete={onCropComplete}
+                onChange={onChangeCrop}
+              />
+            </div>
+
+            {cropImage && (
+              <div style={{ textAlign: 'center' }}>
+                <p>Preview Crop</p>
+                <canvas
+                  ref={previewCanvasRef}
+                  style={{
+                    width: Math.round(completeCrop?.width ?? 0),
+                    height: Math.round(completeCrop?.height ?? 0)
+                  }}
+                />
+              </div>
+            )}
+
             <input
               type="file"
               id="upload"
@@ -1373,10 +1499,45 @@ function TabHighLight() {
               onChange={onSelectedForProduk}
               style={{ display: 'none' }}
             />
-            <label htmlFor="upload" className={classes.itemUpload}>
-              <IoCloudDownloadOutline />
-              Upload
-            </label>
+
+            <div className={classes.actionUploadFile}>
+              {!cropImage && (
+                <label htmlFor="upload" className={classes.item}>
+                  <IoCloudDownloadOutline />
+                  Upload
+                </label>
+              )}
+              {!cropImage && (
+                <label
+                  onClick={() => setFormProduk({ ...formProduk, image: '' })}
+                  className={classes.item}>
+                  hapus
+                </label>
+              )}
+              {formProduk.image?.name && (
+                <label
+                  onClick={() => {
+                    setCropImage(
+                      formProduk.image?.name ? uri : formProduk.image
+                    );
+                  }}
+                  className={classes.item}>
+                  crop
+                </label>
+              )}
+              {cropImage && (
+                <label onClick={() => setCropImage()} className={classes.item}>
+                  batal crop
+                </label>
+              )}
+              {cropImage && (
+                <label
+                  onClick={onClickToSetCropProduk}
+                  className={classes.item}>
+                  set crop
+                </label>
+              )}
+            </div>
           </div>
           <br />
           <FormHelperText
@@ -1483,6 +1644,13 @@ function TabHighLight() {
             services: [],
             image: ''
           });
+          setErrorServices({
+            ...errorServices,
+            headline: '',
+            status: '',
+            image: ''
+          });
+          setCropImage();
           setOpenHS(false);
         }}
         title="Form Highlight Jasa">
@@ -1537,17 +1705,45 @@ function TabHighLight() {
           )}
 
           <div className={classes.inputFile}>
-            <InputLabel id="image">Gambar (max 500KB)</InputLabel>
-            <Avatar
-              alt="photo"
-              src={
-                formServices.image.name
-                  ? URL.createObjectURL(formServices.image)
-                  : formServices.image
-              }
-              variant="rounded"
-              className={classes.preview}
-            />
+            <InputLabel id="image" style={{ marginBottom: 15 }}>
+              Gambar
+            </InputLabel>
+            {!cropImage && (
+              <Avatar
+                alt="image"
+                src={
+                  formServices.image?.name
+                    ? URL.createObjectURL(formServices.image)
+                    : formServices.image
+                }
+                variant="rounded"
+                className={classes.preview}
+              />
+            )}
+
+            <div style={{ textAlign: 'center' }}>
+              <ReactCrop
+                src={cropImage}
+                crop={crop}
+                onImageLoaded={imageLoaded}
+                onComplete={onCropComplete}
+                onChange={onChangeCrop}
+              />
+            </div>
+
+            {cropImage && (
+              <div style={{ textAlign: 'center' }}>
+                <p>Preview Crop</p>
+                <canvas
+                  ref={previewCanvasRef}
+                  style={{
+                    width: Math.round(completeCrop?.width ?? 0),
+                    height: Math.round(completeCrop?.height ?? 0)
+                  }}
+                />
+              </div>
+            )}
+
             <input
               type="file"
               id="upload"
@@ -1555,10 +1751,47 @@ function TabHighLight() {
               onChange={onSelectedForServices}
               style={{ display: 'none' }}
             />
-            <label htmlFor="upload" className={classes.itemUpload}>
-              <IoCloudDownloadOutline />
-              Upload
-            </label>
+
+            <div className={classes.actionUploadFile}>
+              {!cropImage && (
+                <label htmlFor="upload" className={classes.item}>
+                  <IoCloudDownloadOutline />
+                  Upload
+                </label>
+              )}
+              {!cropImage && (
+                <label
+                  onClick={() =>
+                    setFormServices({ ...formServices, image: '' })
+                  }
+                  className={classes.item}>
+                  hapus
+                </label>
+              )}
+              {formServices.image?.name && (
+                <label
+                  onClick={() => {
+                    setCropImage(
+                      formServices.image?.name ? uri : formServices.image
+                    );
+                  }}
+                  className={classes.item}>
+                  crop
+                </label>
+              )}
+              {cropImage && (
+                <label onClick={() => setCropImage()} className={classes.item}>
+                  batal crop
+                </label>
+              )}
+              {cropImage && (
+                <label
+                  onClick={onClickToSetCropService}
+                  className={classes.item}>
+                  set crop
+                </label>
+              )}
+            </div>
           </div>
           <br />
           <FormHelperText

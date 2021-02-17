@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import useStyles from './styles';
 import { useParams } from 'react-router-dom';
+import useStyles from './styles';
 import propTypes from 'prop-types';
 
 // notistack
@@ -36,9 +36,7 @@ function Detail({ dataStore }) {
 
   // read data detail toko
   useEffect(() => {
-    getProduk(dataStore.username, id)
-      .then(res => setProduk(res.data.data))
-      .catch(err => err);
+    getProduk(dataStore.username, id).then(res => setProduk(res.data.data));
   }, []);
 
   // const update status produk
@@ -55,9 +53,7 @@ function Detail({ dataStore }) {
         setOpen(false);
 
         // read kembali data detail produk
-        getProduk(dataStore.username, id)
-          .then(res => setProduk(res.data.data))
-          .catch(err => err);
+        getProduk(dataStore.username, id).then(res => setProduk(res.data.data));
 
         enqueueSnackbar('Berhasil mengnonaktifkan Status', {
           variant: 'success'
@@ -78,9 +74,7 @@ function Detail({ dataStore }) {
         setOpen(false);
 
         // read kembali data detail produk
-        getProduk(dataStore.username, id)
-          .then(res => setProduk(res.data.data))
-          .catch(err => err);
+        getProduk(dataStore.username, id).then(res => setProduk(res.data.data));
 
         enqueueSnackbar('Berhasil mengaktifkan Status', { variant: 'success' });
       } else {
@@ -141,6 +135,7 @@ function Detail({ dataStore }) {
           {produk.status === 'Active' ? 'nonaktifkan' : 'aktifkan'}
         </Button>
       </div>
+
       <ConfirmDialog
         open={open}
         close={() => setOpen(false)}

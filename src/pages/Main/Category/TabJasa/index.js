@@ -1,6 +1,11 @@
 import { useEffect, useState } from 'react';
 import useStyles from './styles';
 import propTypes from 'prop-types';
+
+// debonce untuk fitur pencarian
+import { debounce } from 'debounce';
+
+// notistack
 import { useSnackbar } from 'notistack';
 
 // material-ui core
@@ -57,21 +62,20 @@ function TabJasa({
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
 
-  const [open, setOpen] = useState({
-    detail: false,
-    edit: false,
-    hapus: false
-  });
+  // open dialog
+  const [openDetail, setOpenDetail] = useState(false);
+  const [openEdit, setOpenEdit] = useState(false);
+  const [openHapus, setOpenHapus] = useState(false);
 
-  const [pagination, setPagination] = useState({
-    current_page: 1,
-    last_page: ''
-  });
-
+  // pagination
+  const [currentPage, setCurrentPage] = useState(0);
+  const [lastPage, setLastPage] = useState(0);
   const [id, setID] = useState('');
 
+  // data detail
   const [detail, setDetail] = useState({});
 
+  // data form
   const [form, setForm] = useState({
     type: 1,
     name: '',
@@ -116,19 +120,11 @@ function TabJasa({
 
   // read
   useEffect(() => {
-    getCategory('2')
-      .then(res => {
-        setDataCategoriesJasa(res.data.data);
-        setPagination({
-          ...pagination,
-          current_page: res.data.meta.current_page
-        });
-        setPagination({
-          ...pagination,
-          last_page: res.data.meta.last_page
-        });
-      })
-      .catch(err => err);
+    getCategory(false, '2').then(res => {
+      setDataCategoriesJasa(res.data.data);
+      setCurrentPage(res.data.meta.current_page);
+      setLastPage(res.data.meta.last_page);
+    });
   }, []);
 
   // update
@@ -160,55 +156,34 @@ function TabJasa({
 
       // cek sukses atau tidak
       if (result.success) {
+        setOpenEdit(false);
+
+        // read kembali data
+        getCategory(false, '2').then(res => {
+          setDataCategoriesJasa(res.data.data);
+          setCurrentPage(res.data.meta.current_page);
+          setLastPage(res.data.meta.last_page);
+        });
+
         setForm({
           type: '1',
           name: '',
           image: ''
         });
-        setOpen({ ...open, edit: false });
-        enqueueSnackbar(result.data.message, {
+
+        enqueueSnackbar('Berhasil memperbarui data', {
           variant: 'success'
         });
-
-        // read kembali data kategori baru
-        setTimeout(() => {
-          getCategory('2')
-            .then(res => {
-              setDataCategoriesJasa(res.data.data);
-              setPagination({
-                ...pagination,
-                current_page: res.data.meta.current_page
-              });
-              setPagination({
-                ...pagination,
-                last_page: res.data.meta.last_page
-              });
-            })
-            .catch(err => err);
-        }, 5000);
       } else {
-        // cek unauthentikasi
-        if (result.data.response.status === 401) {
-          setForm({
-            type: '1',
-            name: '',
-            image: ''
-          });
-          setOpen({ ...open, edit: false });
-          localStorage.removeItem('token');
-          history.push('/login');
-          enqueueSnackbar(result.data.response.data.message, {
-            variant: 'error'
-          });
-        }
+        setOpenEdit(false);
 
         setForm({
           type: '1',
           name: '',
           image: ''
         });
-        setOpen({ ...open, edit: false });
-        enqueueSnackbar(result.data.response.data.message, {
+
+        enqueueSnackbar('Gagal memperbarui data', {
           variant: 'error'
         });
       }
@@ -222,32 +197,30 @@ function TabJasa({
 
     // cek sukses atau gagal
     if (result.success) {
-      setOpen({ ...open, hapus: false });
-      enqueueSnackbar(result.data.message, {
-        variant: 'success'
+      setOpenHapus(false);
+
+      // read kembali data
+      getCategory(false, '2').then(res => {
+        setDataCategoriesJasa(res.data.data);
+        setCurrentPage(res.data.meta.current_page);
+        setLastPage(res.data.meta.last_page);
       });
 
-      // read kembali data kategori baru
-      setTimeout(() => {
-        getCategory('2')
-          .then(res => {
-            setDataCategoriesJasa(res.data.data);
-            setPagination({
-              ...pagination,
-              current_page: res.data.meta.current_page
-            });
-            setPagination({
-              ...pagination,
-              last_page: res.data.meta.last_page
-            });
-          })
-          .catch(err => err);
-      }, 5000);
-    } else {
-      setOpen({ ...open, hapus: false });
-      enqueueSnackbar(result.data.response.data.message, {
-        variant: 'error'
+      enqueueSnackbar('Berhasil menghapus data', {
+        variant: 'success'
       });
+    } else {
+      setOpenHapus(false);
+
+      // cek response code
+      if (result.data.response.data.code === 422) {
+        enqueueSnackbar(
+          'Kategori tidak dapat dihapus karena memiliki item terkait.',
+          {
+            variant: 'error'
+          }
+        );
+      }
     }
   };
 
@@ -311,11 +284,11 @@ function TabJasa({
         <OutlinedInput
           color="primary"
           placeholder="Cari"
-          onChange={e => {
-            getCategory('2', e.target.value).then(res => {
+          onChange={debounce(e => {
+            getCategory(false, '2', e.target.value).then(res => {
               setDataCategoriesJasa(res.data.data);
             });
-          }}
+          }, 3000)}
           endAdornment={
             <InputAdornment position="start">
               <IoSearchOutline />
@@ -324,77 +297,78 @@ function TabJasa({
         />
       </FormControl>
       <div className={classes.cardGrid}>
-        {dataCategoriesJasa &&
-          dataCategoriesJasa.map(data => (
-            <Card key={data.id}>
-              <CardActionArea
+        {dataCategoriesJasa?.map(data => (
+          <Card key={data.id}>
+            <CardActionArea
+              disabled={data.isDeleted}
+              onClick={() => {
+                setDetail(data);
+                setID(data.id);
+                setOpenDetail(true);
+              }}>
+              <CardMedia
+                component="img"
+                alt="Contemplative Reptile"
+                height="150"
+                image={data.image}
+                title={data.name}
+              />
+              <CardContent className={classes.content}>
+                <span>{data.name}</span>
+              </CardContent>
+            </CardActionArea>
+            <CardActions className={classes.action}>
+              <IconButton
+                size="small"
+                color="primary"
                 disabled={data.isDeleted}
                 onClick={() => {
-                  setDetail(data);
                   setID(data.id);
-                  setOpen({ ...open, detail: true });
+                  setForm({
+                    ...form,
+                    type: data.type && data.type.id.toString(),
+                    name: data.name,
+                    image: data.image
+                  });
+                  setOpenEdit(true);
                 }}>
-                <CardMedia
-                  component="img"
-                  alt="Contemplative Reptile"
-                  height="150"
-                  image={data.image}
-                  title={data.name}
-                />
-                <CardContent className={classes.content}>
-                  <span>{data.name}</span>
-                </CardContent>
-              </CardActionArea>
-              <CardActions className={classes.action}>
-                <IconButton
-                  size="small"
-                  color="primary"
-                  disabled={data.isDeleted}
-                  onClick={() => {
-                    setID(data.id);
-                    setForm({
-                      ...form,
-                      type: data.type && data.type.id.toString(),
-                      name: data.name,
-                      image: data.image
-                    });
-                    setOpen({ ...open, edit: true });
-                  }}>
-                  <IoPencilOutline />
-                </IconButton>
-                <IconButton
-                  size="small"
-                  color="primary"
-                  disabled={data.isDeleted}
-                  onClick={() => {
-                    setID(data.id);
-                    setOpen({ ...open, hapus: true });
-                  }}>
-                  <IoTrashOutline />
-                </IconButton>
-              </CardActions>
-            </Card>
-          ))}
+                <IoPencilOutline />
+              </IconButton>
+              <IconButton
+                size="small"
+                color="primary"
+                disabled={data.isDeleted}
+                onClick={() => {
+                  setID(data.id);
+                  setOpenHapus(true);
+                }}>
+                <IoTrashOutline />
+              </IconButton>
+            </CardActions>
+          </Card>
+        ))}
       </div>
 
       <Paginasi
-        count={pagination.last_page}
-        page={pagination.current_page}
+        count={lastPage}
+        page={currentPage}
         onChange={(e, value) =>
           getCategory('2', '', value).then(res => {
             setDataCategoriesJasa(res.data.data);
-            setPagination({
-              ...pagination,
-              current_page: res.data.meta.current_page
-            });
+            setCurrentPage(res.data.meta.current_page);
+            setLastPage(res.data.meta.last_page);
           })
         }
       />
 
-      <CompDialog
-        open={open.detail}
-        close={() => setOpen({ ...open, detail: false })}>
-        <img src={detail.image} alt="photo" className={classes.img} />
+      <CompDialog open={openDetail} close={() => setOpenDetail(false)}>
+        <Avatar
+          alt="photo"
+          src={detail.image}
+          variant="rounded"
+          className={classes.preview}
+        />
+        <br />
         <div className={classes.desk}>
           <span className={classes.teks}>nama kategori</span>
           <span className={classes.teks}>{detail.name}</span>
@@ -426,8 +400,15 @@ function TabJasa({
       </CompDialog>
 
       <CompDialog
-        open={open.edit}
-        close={() => setOpen({ ...open, edit: false })}
+        open={openEdit}
+        close={() => {
+          setForm({
+            type: '1',
+            name: '',
+            image: ''
+          });
+          setOpenEdit(false);
+        }}
         title="Edit Kategori">
         <div style={{ display: 'grid', padding: 15 }}>
           <FormControl component="fieldset">
@@ -512,11 +493,11 @@ function TabJasa({
       </CompDialog>
 
       <ConfirmDialog
-        open={open.hapus}
-        close={() => setOpen({ ...open, hapus: false })}
+        open={openHapus}
+        close={() => setOpenHapus(false)}
         submit={onDelete}
         title="Hapus Kategori">
-        Yakin ingin menghapus kategori ?
+        Yakin ingin menghapus?
       </ConfirmDialog>
     </div>
   );

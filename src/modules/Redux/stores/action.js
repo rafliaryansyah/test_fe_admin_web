@@ -1,42 +1,12 @@
 import actionTypes from '../actionTypes';
 
 /**
- * @name setStores
- * @param {*} value
- * @description redux action untuk set stores
- */
-export const setStores = value => ({
-  type: actionTypes.stores.SET_STORES,
-  value
-});
-
-/**
  * @name setStore
  * @param {*} value
- * @description redux action untuk set stores
+ * @description redux action untuk set detail store
  */
 export const setStore = value => ({
   type: actionTypes.stores.SET_STORE,
-  value
-});
-
-/**
- * @name setProduks
- * @param {*} value
- * @description redux action untuk set stores
- */
-export const setProduks = value => ({
-  type: actionTypes.stores.SET_PRODUKS,
-  value
-});
-
-/**
- * @name setReports
- * @param {*} value
- * @description redux action untuk set stores
- */
-export const setReports = value => ({
-  type: actionTypes.stores.SET_REPORTS,
   value
 });
 
