@@ -240,7 +240,7 @@ function Detail({ history }) {
                     />
                   }
                   label={
-                    (role.label === 'customer' && 'Customer') ||
+                    (role.label === 'customer' && `Customer ${'(aktif)'}`) ||
                     (role.label === 'super-admin-merchant' &&
                       'Super Admin Merchant') ||
                     (role.label === 'admin-merchant' && 'Admin Merchant') ||

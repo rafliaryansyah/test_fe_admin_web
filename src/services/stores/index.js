@@ -101,25 +101,6 @@ export const updateStatusStore = (id, status, official_store) => {
 };
 
 /**
- * service customer for update mode store
- */
-// export const updateModeStore = id => {
-//   return new Promise((resolve, reject) => {
-//     const data = {
-//       path: `${id}/update`
-//     };
-
-//     API.storeUpdateMode(data)
-//       .then(res => {
-//         resolve({ success: true, data: res.data });
-//       })
-//       .catch(err => {
-//         reject({ success: false, data: err });
-//       });
-//   });
-// };
-
-/**
  * service customer for get detail produk store
  */
 export const getProduk = (username, idProduk) => {

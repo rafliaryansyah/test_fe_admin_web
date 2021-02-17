@@ -46,19 +46,25 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     justifyContent: 'space-between',
     flexDirection: 'column',
-    gridGap: 15
+    gridGap: 10
   },
 
   preview: {
     objectFit: 'cover',
     width: '100%',
-    height: 360
+    height: 300
   },
 
-  itemUpload: {
+  actionUploadFile: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    gridGap: 15
+  },
+
+  item: {
     width: '100%',
     border: `1px solid ${theme.palette.primary.main}`,
-    borderRadius: 10,
+    borderRadius: 5,
     padding: '15px 0px',
     display: 'flex',
     justifyContent: 'center',

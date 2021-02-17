@@ -48,10 +48,7 @@ const category = {
  * Category action types
  */
 const stores = {
-  SET_STORES: 'STORES/SET',
   SET_STORE: 'STORE/SET',
-  SET_PRODUKS: 'PRODUKS/SET',
-  SET_REPORTS: 'REPORTS/SET',
   CLEAR_STORES: 'STORES/CLEAR'
 };
 

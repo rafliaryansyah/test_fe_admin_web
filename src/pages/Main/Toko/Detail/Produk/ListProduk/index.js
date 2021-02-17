@@ -1,19 +1,15 @@
-import useStyles from './styles';
-import propTypes from 'prop-types';
+import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import useStyles from './styles';
 
 // components
 import { CardProduk, Paginasi } from 'components';
-
-// redux
-import { connect } from 'react-redux';
 
 // utils
 import { currency } from 'utils';
 
 // services
 import { getStore } from 'services';
-import { useEffect, useState } from 'react';
 
 function ListProduk({ history }) {
   const classes = useStyles();
@@ -89,12 +85,4 @@ function ListProduk({ history }) {
   );
 }
 
-ListProduk.propTypes = {
-  dataProduks: propTypes.array
-};
-
-const mapStateToProps = state => ({
-  dataProduks: state.stores.produks
-});
-
-export default connect(mapStateToProps, null)(ListProduk);
+export default ListProduk;

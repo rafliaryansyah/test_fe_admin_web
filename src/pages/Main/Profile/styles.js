@@ -63,10 +63,6 @@ const useStyles = makeStyles(theme => ({
     display: 'grid'
   },
 
-  jenisKelamin: {
-    margin: '15px 0px 15px 0px'
-  },
-
   wrapperButton: {
     display: 'flex',
     flexDirection: 'column',

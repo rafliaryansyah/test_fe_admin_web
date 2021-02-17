@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import useStyles from './styles';
+import propTypes from 'prop-types';
 
 // notistack
 import { useSnackbar } from 'notistack';
@@ -31,7 +32,11 @@ import { dateConverterRes } from 'utils';
 // components
 import { ConfirmDialog } from 'components';
 
-function Beranda() {
+// redux
+import { connect } from 'react-redux';
+import { setStore } from 'modules';
+
+function Beranda({ setDataStore, dataStore }) {
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
 
@@ -41,9 +46,6 @@ function Beranda() {
   // open dialog confirm
   const [openStatus, setOpenStatus] = useState(false);
   const [openOfficialStore, setOpenOfficialStore] = useState(false);
-
-  // data detail store
-  const [store, setStore] = useState({});
 
   // data status
   const [status, setStatus] = useState(2);
@@ -57,7 +59,7 @@ function Beranda() {
   // read data detail toko
   useEffect(() => {
     getStore(id).then(res => {
-      setStore(res.data.data.merchantDetail);
+      setDataStore(res.data.data.merchantDetail);
       setStatus(res.data.data.merchantDetail.status?.id);
       setOfficialStore(res.data.data.merchantDetail.isOfficialStore?.status);
     });
@@ -133,7 +135,7 @@ function Beranda() {
     <div className={classes.wrapper}>
       <div>
         <Avatar
-          alt={store.name}
+          alt={dataStore.name}
           // src=""
           variant="rounded"
           className={classes.avatar}
@@ -145,7 +147,7 @@ function Beranda() {
             setOpenStatus(true);
           }}
           className={classes.btnNonaktifkan}>
-          {store.status?.name === 'Approved' ? 'nonaktifkan' : 'aktifkan'}
+          {dataStore.status?.name === 'Approved' ? 'nonaktifkan' : 'aktifkan'}
         </Button>
         <br />
         <FormControlLabel
@@ -171,20 +173,20 @@ function Beranda() {
           Nama
         </InputLabel>
         <FormControl variant="outlined" size="small" margin="normal" fullWidth>
-          <OutlinedInput value={store.name} disabled />
+          <OutlinedInput value={dataStore.name} disabled />
         </FormControl>
         <InputLabel htmlFor="nama_toko" className={classes.label}>
           ID Toko
         </InputLabel>
         <FormControl variant="outlined" size="small" margin="normal" fullWidth>
           <OutlinedInput
-            value={store.id}
+            value={dataStore.id}
             disabled
             endAdornment={
               <InputAdornment position="end">
                 <IconButton
                   onClick={() => {
-                    navigator.clipboard.writeText(store.id);
+                    navigator.clipboard.writeText(dataStore.id);
                     enqueueSnackbar('ID telah dicopy', { variant: 'success' });
                   }}
                   onMouseDown={e => e.preventDefault()}
@@ -199,14 +201,14 @@ function Beranda() {
           Alamat
         </InputLabel>
         <FormControl variant="outlined" size="small" margin="normal" fullWidth>
-          <OutlinedInput value={store.address} disabled />
+          <OutlinedInput value={dataStore.address} disabled />
         </FormControl>
         <InputLabel htmlFor="nama_toko" className={classes.label}>
           Buka Sejak
         </InputLabel>
         <FormControl variant="outlined" size="small" margin="normal" fullWidth>
           <OutlinedInput
-            value={store.createdAt && dateConverterRes(store.createdAt)}
+            value={dataStore.createdAt && dateConverterRes(dataStore.createdAt)}
             disabled
           />
         </FormControl>
@@ -220,13 +222,13 @@ function Beranda() {
           Nama
         </InputLabel>
         <FormControl variant="outlined" size="small" margin="normal" fullWidth>
-          <OutlinedInput value={store.owners?.name} disabled />
+          <OutlinedInput value={dataStore.owners?.name} disabled />
         </FormControl>
         <InputLabel htmlFor="nama_toko" className={classes.label}>
           Email
         </InputLabel>
         <FormControl variant="outlined" size="small" margin="normal" fullWidth>
-          <OutlinedInput value={store.owners?.email} disabled />
+          <OutlinedInput value={dataStore.owners?.email} disabled />
         </FormControl>
       </div>
 
@@ -252,4 +254,17 @@ function Beranda() {
   );
 }
 
-export default Beranda;
+Beranda.propTypes = {
+  setDataStore: propTypes.func,
+  dataStore: propTypes.object
+};
+
+const mapStateToProps = state => ({
+  dataStore: state.stores.store
+});
+
+const mapDispatchToProps = dispatch => ({
+  setDataStore: value => dispatch(setStore(value))
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Beranda);
