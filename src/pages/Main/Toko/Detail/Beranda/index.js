@@ -80,7 +80,7 @@ function Beranda({ setDataStore, dataStore }) {
 
       // read kembali data
       getStore(id).then(res => {
-        setStore(res.data.data.merchantDetail);
+        setDataStore(res.data.data.merchantDetail);
         setStatus(res.data.data.merchantDetail.status?.id);
         setOfficialStore(res.data.data.merchantDetail.isOfficialStore?.status);
       });
@@ -114,7 +114,7 @@ function Beranda({ setDataStore, dataStore }) {
 
       // read kembali data
       getStore(id).then(res => {
-        setStore(res.data.data.merchantDetail);
+        setDataStore(res.data.data.merchantDetail);
         setStatus(res.data.data.merchantDetail.status?.id);
         setOfficialStore(res.data.data.merchantDetail.isOfficialStore?.status);
       });

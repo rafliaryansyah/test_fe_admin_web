@@ -86,7 +86,6 @@ import {
 import {
   IoPencilOutline,
   IoTrashOutline,
-  IoCloudDownloadOutline,
   IoCopyOutline
 } from 'react-icons/io5';
 
@@ -152,7 +151,7 @@ function TabMain() {
 
   const [produk, setProduk] = useState('');
   const [status, setStatus] = useState(2);
-  const [image, setImage] = useState(null);
+  const [image, setImage] = useState('');
   const [promos, setPromos] = useState([]);
   const [categories, setCategories] = useState([]);
 
@@ -163,9 +162,8 @@ function TabMain() {
   });
 
   // crop
-  const [uri, setURI] = useState(null);
-  const [crop, setCrop] = useState({ unit: 'px', width: 300, aspect: 16 / 9 });
-  const [cropImage, setCropImage] = useState(null);
+  const [uri, setURI] = useState();
+  const [crop, setCrop] = useState({ unit: 'px', height: 300, aspect: 16 / 9 });
   const [completeCrop, setCompleteCrop] = useState(null);
   const previewCanvasRef = useRef();
   const imageRef = useRef();
@@ -296,11 +294,7 @@ function TabMain() {
         formdata.append('type', parseInt(type));
         formdata.append('status', status);
         formdata.append('product', produk);
-
-        // cek apakah baru atau lama
-        if (image.name) {
-          formdata.append('image', image);
-        }
+        formdata.append('image', image);
 
         // service
         const result = await createMainBanners(formdata).catch(err => err);
@@ -389,10 +383,7 @@ function TabMain() {
           formdata.append(`categories[${index}]`, category);
         });
 
-        // cek apakah baru atau lama
-        if (image.name) {
-          formdata.append('image', image);
-        }
+        formdata.append('image', image);
 
         // service
         const result = await createMainBanners(formdata).catch(err => err);
@@ -486,10 +477,6 @@ function TabMain() {
               uri => {
                 if (uri) {
                   setURI(uri);
-
-                  const photoFile = uriToFile(uri);
-
-                  setImage(photoFile);
                 }
               },
               'base64'
@@ -553,10 +540,10 @@ function TabMain() {
   const onClickToSetCrop = e => {
     e.preventDefault();
 
-    if (cropImage) {
+    if (uri) {
       const canvasRef = previewCanvasRef.current;
 
-      const fileExtension = fileExtention(cropImage);
+      const fileExtension = fileExtention(uri);
       const imageBase64 = canvasRef.toDataURL(`image/${fileExtension}`);
 
       // sebelum upload ubah dari base64 ke file
@@ -564,7 +551,7 @@ function TabMain() {
 
       setImage(base64ToFile);
 
-      setCropImage();
+      setURI();
     }
   };
 
@@ -836,7 +823,7 @@ function TabMain() {
           setPromos([]);
           setCategories([]);
           setError({ ...error, produk: '', image: '' });
-          setCropImage();
+          setURI();
           setOpenForm(false);
         }}
         title="Form Main">
@@ -935,7 +922,7 @@ function TabMain() {
                 <InputLabel id="image" style={{ marginBottom: 15 }}>
                   Gambar
                 </InputLabel>
-                {!cropImage && (
+                {!uri && (
                   <Avatar
                     alt="image"
                     src={image?.name ? URL.createObjectURL(image) : image}
@@ -944,25 +931,27 @@ function TabMain() {
                   />
                 )}
 
-                <div style={{ textAlign: 'center' }}>
-                  <ReactCrop
-                    src={cropImage}
-                    crop={crop}
-                    onImageLoaded={imageLoaded}
-                    onComplete={onCropComplete}
-                    onChange={onChangeCrop}
-                  />
-                </div>
-
-                {cropImage && (
+                {uri && (
                   <div style={{ textAlign: 'center' }}>
-                    <p>Preview Crop</p>
                     <canvas
                       ref={previewCanvasRef}
                       style={{
                         width: Math.round(completeCrop?.width ?? 0),
                         height: Math.round(completeCrop?.height ?? 0)
                       }}
+                    />
+                  </div>
+                )}
+
+                {uri && (
+                  <div style={{ textAlign: 'center' }}>
+                    <ReactCrop
+                      src={uri}
+                      crop={crop}
+                      onImageLoaded={imageLoaded}
+                      onComplete={onCropComplete}
+                      onChange={onChangeCrop}
+                      keepSelection={true}
                     />
                   </div>
                 )}
@@ -976,38 +965,22 @@ function TabMain() {
                 />
 
                 <div className={classes.actionUploadFile}>
-                  {!cropImage && (
-                    <label htmlFor="upload" className={classes.item}>
-                      <IoCloudDownloadOutline />
-                      Upload
-                    </label>
-                  )}
-                  {!cropImage && (
-                    <label
-                      onClick={() => setImage('')}
-                      className={classes.item}>
-                      hapus
-                    </label>
-                  )}
-                  {image?.name && (
-                    <label
-                      onClick={() => {
-                        setCropImage(image?.name ? uri : image);
-                      }}
-                      className={classes.item}>
-                      crop
-                    </label>
-                  )}
-                  {cropImage && (
-                    <label
-                      onClick={() => setCropImage()}
-                      className={classes.item}>
-                      batal crop
-                    </label>
-                  )}
-                  {cropImage && (
+                  <label htmlFor="upload" className={classes.item}>
+                    pilih foto
+                  </label>
+                  {/* {isActiveForm && !uri && (
+            <label
+              onClick={() => {
+                setURI(form.photo);
+                console.log(form.photo);
+              }}
+              className={classes.item}>
+              crop
+            </label>
+          )} */}
+                  {uri && (
                     <label onClick={onClickToSetCrop} className={classes.item}>
-                      set crop
+                      set
                     </label>
                   )}
                 </div>
@@ -1162,7 +1135,7 @@ function TabMain() {
                 <InputLabel id="image" style={{ marginBottom: 15 }}>
                   Gambar
                 </InputLabel>
-                {!cropImage && (
+                {!uri && (
                   <Avatar
                     alt="image"
                     src={image?.name ? URL.createObjectURL(image) : image}
@@ -1171,25 +1144,27 @@ function TabMain() {
                   />
                 )}
 
-                <div style={{ textAlign: 'center' }}>
-                  <ReactCrop
-                    src={cropImage}
-                    crop={crop}
-                    onImageLoaded={imageLoaded}
-                    onComplete={onCropComplete}
-                    onChange={onChangeCrop}
-                  />
-                </div>
-
-                {cropImage && (
+                {uri && (
                   <div style={{ textAlign: 'center' }}>
-                    <p>Preview Crop</p>
                     <canvas
                       ref={previewCanvasRef}
                       style={{
                         width: Math.round(completeCrop?.width ?? 0),
                         height: Math.round(completeCrop?.height ?? 0)
                       }}
+                    />
+                  </div>
+                )}
+
+                {uri && (
+                  <div style={{ textAlign: 'center' }}>
+                    <ReactCrop
+                      src={uri}
+                      crop={crop}
+                      onImageLoaded={imageLoaded}
+                      onComplete={onCropComplete}
+                      onChange={onChangeCrop}
+                      keepSelection={true}
                     />
                   </div>
                 )}
@@ -1203,38 +1178,22 @@ function TabMain() {
                 />
 
                 <div className={classes.actionUploadFile}>
-                  {!cropImage && (
-                    <label htmlFor="upload" className={classes.item}>
-                      <IoCloudDownloadOutline />
-                      Upload
-                    </label>
-                  )}
-                  {!cropImage && (
-                    <label
-                      onClick={() => setImage('')}
-                      className={classes.item}>
-                      hapus
-                    </label>
-                  )}
-                  {image?.name && (
-                    <label
-                      onClick={() => {
-                        setCropImage(image?.name ? uri : image);
-                      }}
-                      className={classes.item}>
-                      crop
-                    </label>
-                  )}
-                  {cropImage && (
-                    <label
-                      onClick={() => setCropImage()}
-                      className={classes.item}>
-                      batal crop
-                    </label>
-                  )}
-                  {cropImage && (
+                  <label htmlFor="upload" className={classes.item}>
+                    pilih foto
+                  </label>
+                  {/* {isActiveForm && !uri && (
+            <label
+              onClick={() => {
+                setURI(form.photo);
+                console.log(form.photo);
+              }}
+              className={classes.item}>
+              crop
+            </label>
+          )} */}
+                  {uri && (
                     <label onClick={onClickToSetCrop} className={classes.item}>
-                      set crop
+                      set
                     </label>
                   )}
                 </div>

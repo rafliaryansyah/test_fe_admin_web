@@ -1,5 +1,12 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import useStyles from './styles';
+
+// resize image
+import Resizer from 'react-image-file-resizer';
+
+// image crop
+import ReactCrop from 'react-image-crop';
+import 'react-image-crop/dist/ReactCrop.css';
 
 // debounce untuk fitur pencarian
 import { debounce } from 'debounce';
@@ -51,7 +58,13 @@ import {
 } from 'services';
 
 // utils
-import { currency, dateConverterReq, dateConverterRes } from 'utils';
+import {
+  currency,
+  dateConverterReq,
+  dateConverterRes,
+  fileExtention,
+  uriToFile
+} from 'utils';
 
 function Voucher() {
   const classes = useStyles();
@@ -112,6 +125,13 @@ function Voucher() {
     image: ''
   });
 
+  // crop
+  const [uri, setURI] = useState();
+  const [crop, setCrop] = useState({ unit: 'px', height: 450, aspect: 1 / 1 });
+  const [completeCrop, setCompleteCrop] = useState(null);
+  const previewCanvasRef = useRef();
+  const imageRef = useRef();
+
   // change input field pada form
   const handleChange = e => {
     setForm({
@@ -167,6 +187,10 @@ function Voucher() {
 
     if (!form.tac) {
       newError.tac = 'Field masih kosong';
+    }
+
+    if (!form.image) {
+      newError.image = 'Field masih kosong';
     }
 
     return newError;
@@ -242,13 +266,6 @@ function Voucher() {
         if (result.success) {
           setOpenForm(false);
 
-          // read kembali data
-          readVoucher(false).then(res => {
-            setVouchers(res.data.data);
-            setCurrentPage(res.data.meta.current_page);
-            setLastPage(res.data.meta.last_page);
-          });
-
           setForm({
             code: '',
             type: '1',
@@ -261,6 +278,13 @@ function Voucher() {
             description: '',
             tac: '',
             image: ''
+          });
+
+          // read kembali data
+          readVoucher(false).then(res => {
+            setVouchers(res.data.data);
+            setCurrentPage(res.data.meta.current_page);
+            setLastPage(res.data.meta.last_page);
           });
 
           enqueueSnackbar('Berhasil memperbarui data', {
@@ -340,24 +364,13 @@ function Voucher() {
         dataCreate.append('quantity', quantity);
         dataCreate.append('description', description);
         dataCreate.append('tac', tac);
-
-        // cek image baru atau tetap yang lama
-        if (image.name) {
-          dataCreate.append('image', image);
-        }
+        dataCreate.append('image', image);
 
         // services
         const result = await createVoucher(dataCreate).catch(err => err);
 
         if (result.success) {
           setOpenForm(false);
-
-          // read kembali data
-          readVoucher(false).then(res => {
-            setVouchers(res.data.data);
-            setCurrentPage(res.data.meta.current_page);
-            setLastPage(res.data.meta.last_page);
-          });
 
           setForm({
             code: '',
@@ -373,7 +386,14 @@ function Voucher() {
             image: ''
           });
 
-          enqueueSnackbar('Berhasil menambahkan data', {
+          // read kembali data
+          readVoucher(false).then(res => {
+            setVouchers(res.data.data);
+            setCurrentPage(res.data.meta.current_page);
+            setLastPage(res.data.meta.last_page);
+          });
+
+          enqueueSnackbar('Berhasil menambah data', {
             variant: 'success'
           });
         } else {
@@ -456,7 +476,7 @@ function Voucher() {
   };
 
   // upload image
-  const handleUploadFile = async e => {
+  const onSelectedImage = async e => {
     const file = e.target.files[0];
 
     if (!['image/png', 'image/jpeg'].includes(file && file.type)) {
@@ -493,10 +513,22 @@ function Voucher() {
         });
 
         try {
-          setForm({
-            ...form,
-            image: file
-          });
+          if (file) {
+            Resizer.imageFileResizer(
+              file,
+              300,
+              300,
+              file?.type === 'image/jpeg' ? 'JPEG' : 'PNG',
+              100,
+              0,
+              uri => {
+                if (uri) {
+                  setURI(uri);
+                }
+              },
+              'base64'
+            );
+          }
         } catch (e) {
           setError({
             ...error,
@@ -506,6 +538,67 @@ function Voucher() {
       };
 
       reader.readAsDataURL(file);
+    }
+  };
+
+  // crop
+  const imageLoaded = image => {
+    imageRef.current = image;
+  };
+
+  const onChangeCrop = crop => {
+    setCrop(crop);
+  };
+
+  const onCropComplete = crop => {
+    setCompleteCrop(crop);
+
+    const image = imageRef.current; // image
+    const canvas = previewCanvasRef.current; // document.createElement('canvas');
+    const pixelRatio = window.devicePixelRatio; // pixel ratio
+
+    const scaleX = image.naturalWidth / image.width;
+    const scaleY = image.naturalHeight / image.height;
+
+    const ctx = canvas.getContext('2d');
+
+    canvas.width = crop.width * pixelRatio;
+    canvas.height = crop.height * pixelRatio;
+
+    image.crossOrigin = 'anonymus';
+
+    ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+    ctx.imageSmoothingQuality = 'high';
+
+    ctx.drawImage(
+      image,
+      crop.x * scaleX,
+      crop.y * scaleY,
+      crop.width * scaleX,
+      crop.height * scaleY,
+      0,
+      0,
+      crop.width,
+      crop.height
+    );
+  };
+
+  // set crop
+  const onClickToSetCrop = e => {
+    e.preventDefault();
+
+    if (uri) {
+      const canvasRef = previewCanvasRef.current;
+
+      const fileExtension = fileExtention(uri);
+      const imageBase64 = canvasRef.toDataURL(`image/${fileExtension}`);
+
+      // sebelum upload ubah dari base64 ke file
+      const base64ToFile = uriToFile(imageBase64);
+
+      setForm({ ...form, image: base64ToFile });
+
+      setURI();
     }
   };
 
@@ -684,6 +777,7 @@ function Voucher() {
             tac: '',
             image: ''
           });
+          setURI();
           setOpenForm(false);
         }}
         title="Form Voucher">
@@ -935,24 +1029,78 @@ function Voucher() {
           </FormControl>
 
           <div className={classes.inputFile}>
-            <Avatar
-              alt="photo"
-              src={
-                form.image.name ? URL.createObjectURL(form.image) : form.image
-              }
-              variant="rounded"
-              className={classes.preview}
-            />
+            <InputLabel
+              id="image"
+              style={{ marginBottom: 15 }}
+              error={error.image ? true : false}>
+              Gambar
+            </InputLabel>
+            {!uri && (
+              <Avatar
+                alt="image"
+                src={
+                  form.image?.name
+                    ? URL.createObjectURL(form.image)
+                    : form.image
+                }
+                variant="rounded"
+                className={classes.preview}
+              />
+            )}
+
+            {uri && (
+              <div style={{ textAlign: 'center' }}>
+                <canvas
+                  ref={previewCanvasRef}
+                  style={{
+                    width: Math.round(completeCrop?.width ?? 0),
+                    height: Math.round(completeCrop?.height ?? 0)
+                  }}
+                />
+              </div>
+            )}
+
+            {uri && (
+              <div style={{ textAlign: 'center' }}>
+                <ReactCrop
+                  src={uri}
+                  crop={crop}
+                  onImageLoaded={imageLoaded}
+                  onComplete={onCropComplete}
+                  onChange={onChangeCrop}
+                  keepSelection={true}
+                />
+              </div>
+            )}
+
             <input
               type="file"
               id="upload"
               accept="image/jpeg,image/png"
-              onChange={handleUploadFile}
+              onChange={onSelectedImage}
               style={{ display: 'none' }}
             />
-            <label htmlFor="upload" className={classes.itemUpload}>
-              Upload Foto
+
+            <div className={classes.actionUploadFile}>
+              <label htmlFor="upload" className={classes.item}>
+                pilih foto
+              </label>
+              {/* {isActiveForm && !uri && (
+            <label
+              onClick={() => {
+                setURI(form.photo);
+                console.log(form.photo);
+              }}
+              className={classes.item}>
+              crop
             </label>
+          )} */}
+              {uri && (
+                <label onClick={onClickToSetCrop} className={classes.item}>
+                  set
+                </label>
+              )}
+            </div>
           </div>
           <br />
           <FormHelperText
@@ -960,6 +1108,7 @@ function Voucher() {
             error={error.image ? true : false}>
             {error.image}
           </FormHelperText>
+          <br />
 
           <Button
             variant="contained"

@@ -89,11 +89,7 @@ import {
 import { useTheme } from '@material-ui/core/styles';
 
 // react icons
-import {
-  IoPencilOutline,
-  IoTrashOutline,
-  IoCloudDownloadOutline
-} from 'react-icons/io5';
+import { IoPencilOutline, IoTrashOutline } from 'react-icons/io5';
 
 // components
 import { CompDialog, ConfirmDialog } from 'components';
@@ -197,9 +193,8 @@ function TabHighLight() {
   });
 
   // crop
-  const [uri, setURI] = useState(null);
-  const [crop, setCrop] = useState({ unit: 'px', width: 300, aspect: 16 / 9 });
-  const [cropImage, setCropImage] = useState(null);
+  const [uri, setURI] = useState();
+  const [crop, setCrop] = useState({ unit: 'px', height: 300, aspect: 16 / 9 });
   const [completeCrop, setCompleteCrop] = useState(null);
   const previewCanvasRef = useRef();
   const imageRef = useRef();
@@ -290,28 +285,22 @@ function TabHighLight() {
 
   // read data banner type product dan service
   useEffect(() => {
-    readBannersHighlight('product', false)
-      .then(res => {
-        setHighlightProduks(res.data.data);
-      })
-      .catch(err => err);
+    readBannersHighlight('product', false).then(res => {
+      setHighlightProduks(res.data.data);
+    });
   }, []);
 
   useEffect(() => {
-    readBannersHighlight('service', false)
-      .then(res => {
-        setHighlightServices(res.data.data);
-      })
-      .catch(err => err);
+    readBannersHighlight('service', false).then(res => {
+      setHighlightServices(res.data.data);
+    });
   }, []);
 
   // read data toko
   useEffect(() => {
-    getStores('', '')
-      .then(res => {
-        setStores(res.data.data);
-      })
-      .catch(err => err);
+    getStores('', '').then(res => {
+      setStores(res.data.data);
+    });
   }, []);
 
   // create dan update data tipe produk
@@ -390,10 +379,7 @@ function TabHighLight() {
           formdata.append(`products[${index}]`, product);
         });
 
-        // cek apakah image baru atau tetap yang lama
-        if (image.name) {
-          formdata.append('image', image);
-        }
+        formdata.append('image', image);
 
         // services
         const result = await createHighLightBanners(formdata).catch(err => err);
@@ -503,10 +489,7 @@ function TabHighLight() {
           formdata.append(`services[${index}]`, service);
         });
 
-        // cek apakah image baru atau tetap yang lama
-        if (image.name) {
-          formdata.append('image', image);
-        }
+        formdata.append('image', image);
 
         // services
         const result = await createHighLightBanners(formdata).catch(err => err);
@@ -612,13 +595,6 @@ function TabHighLight() {
               uri => {
                 if (uri) {
                   setURI(uri);
-
-                  const photoFile = uriToFile(uri);
-
-                  setFormProduk({
-                    ...formProduk,
-                    image: photoFile
-                  });
                 }
               },
               'base64'
@@ -680,13 +656,6 @@ function TabHighLight() {
               uri => {
                 if (uri) {
                   setURI(uri);
-
-                  const photoFile = uriToFile(uri);
-
-                  setFormServices({
-                    ...formServices,
-                    image: photoFile
-                  });
                 }
               },
               'base64'
@@ -750,10 +719,10 @@ function TabHighLight() {
   const onClickToSetCropProduk = e => {
     e.preventDefault();
 
-    if (cropImage) {
+    if (uri) {
       const canvasRef = previewCanvasRef.current;
 
-      const fileExtension = fileExtention(cropImage);
+      const fileExtension = fileExtention(uri);
       const imageBase64 = canvasRef.toDataURL(`image/${fileExtension}`);
 
       // sebelum upload ubah dari base64 ke file
@@ -761,7 +730,7 @@ function TabHighLight() {
 
       setFormProduk({ ...formProduk, image: base64ToFile });
 
-      setCropImage();
+      setURI();
     }
   };
 
@@ -769,10 +738,10 @@ function TabHighLight() {
   const onClickToSetCropService = e => {
     e.preventDefault();
 
-    if (cropImage) {
+    if (uri) {
       const canvasRef = previewCanvasRef.current;
 
-      const fileExtension = fileExtention(cropImage);
+      const fileExtension = fileExtention(uri);
       const imageBase64 = canvasRef.toDataURL(`image/${fileExtension}`);
 
       // sebelum upload ubah dari base64 ke file
@@ -780,7 +749,7 @@ function TabHighLight() {
 
       setFormServices({ ...formServices, image: base64ToFile });
 
-      setCropImage();
+      setURI();
     }
   };
 
@@ -1398,7 +1367,7 @@ function TabHighLight() {
             status: '',
             image: ''
           });
-          setCropImage();
+          setURI();
           setOpenHP(false);
         }}
         title="Form Highlight Produk">
@@ -1456,7 +1425,7 @@ function TabHighLight() {
             <InputLabel id="image" style={{ marginBottom: 15 }}>
               Gambar
             </InputLabel>
-            {!cropImage && (
+            {!uri && (
               <Avatar
                 alt="image"
                 src={
@@ -1469,25 +1438,27 @@ function TabHighLight() {
               />
             )}
 
-            <div style={{ textAlign: 'center' }}>
-              <ReactCrop
-                src={cropImage}
-                crop={crop}
-                onImageLoaded={imageLoaded}
-                onComplete={onCropComplete}
-                onChange={onChangeCrop}
-              />
-            </div>
-
-            {cropImage && (
+            {uri && (
               <div style={{ textAlign: 'center' }}>
-                <p>Preview Crop</p>
                 <canvas
                   ref={previewCanvasRef}
                   style={{
                     width: Math.round(completeCrop?.width ?? 0),
                     height: Math.round(completeCrop?.height ?? 0)
                   }}
+                />
+              </div>
+            )}
+
+            {uri && (
+              <div style={{ textAlign: 'center' }}>
+                <ReactCrop
+                  src={uri}
+                  crop={crop}
+                  onImageLoaded={imageLoaded}
+                  onComplete={onCropComplete}
+                  onChange={onChangeCrop}
+                  keepSelection={true}
                 />
               </div>
             )}
@@ -1501,40 +1472,24 @@ function TabHighLight() {
             />
 
             <div className={classes.actionUploadFile}>
-              {!cropImage && (
-                <label htmlFor="upload" className={classes.item}>
-                  <IoCloudDownloadOutline />
-                  Upload
-                </label>
-              )}
-              {!cropImage && (
-                <label
-                  onClick={() => setFormProduk({ ...formProduk, image: '' })}
-                  className={classes.item}>
-                  hapus
-                </label>
-              )}
-              {formProduk.image?.name && (
-                <label
-                  onClick={() => {
-                    setCropImage(
-                      formProduk.image?.name ? uri : formProduk.image
-                    );
-                  }}
-                  className={classes.item}>
-                  crop
-                </label>
-              )}
-              {cropImage && (
-                <label onClick={() => setCropImage()} className={classes.item}>
-                  batal crop
-                </label>
-              )}
-              {cropImage && (
+              <label htmlFor="upload" className={classes.item}>
+                pilih foto
+              </label>
+              {/* {isActiveForm && !uri && (
+            <label
+              onClick={() => {
+                setURI(form.photo);
+                console.log(form.photo);
+              }}
+              className={classes.item}>
+              crop
+            </label>
+          )} */}
+              {uri && (
                 <label
                   onClick={onClickToSetCropProduk}
                   className={classes.item}>
-                  set crop
+                  set
                 </label>
               )}
             </div>
@@ -1650,7 +1605,7 @@ function TabHighLight() {
             status: '',
             image: ''
           });
-          setCropImage();
+          setURI();
           setOpenHS(false);
         }}
         title="Form Highlight Jasa">
@@ -1708,7 +1663,7 @@ function TabHighLight() {
             <InputLabel id="image" style={{ marginBottom: 15 }}>
               Gambar
             </InputLabel>
-            {!cropImage && (
+            {!uri && (
               <Avatar
                 alt="image"
                 src={
@@ -1721,25 +1676,27 @@ function TabHighLight() {
               />
             )}
 
-            <div style={{ textAlign: 'center' }}>
-              <ReactCrop
-                src={cropImage}
-                crop={crop}
-                onImageLoaded={imageLoaded}
-                onComplete={onCropComplete}
-                onChange={onChangeCrop}
-              />
-            </div>
-
-            {cropImage && (
+            {uri && (
               <div style={{ textAlign: 'center' }}>
-                <p>Preview Crop</p>
                 <canvas
                   ref={previewCanvasRef}
                   style={{
                     width: Math.round(completeCrop?.width ?? 0),
                     height: Math.round(completeCrop?.height ?? 0)
                   }}
+                />
+              </div>
+            )}
+
+            {uri && (
+              <div style={{ textAlign: 'center' }}>
+                <ReactCrop
+                  src={uri}
+                  crop={crop}
+                  onImageLoaded={imageLoaded}
+                  onComplete={onCropComplete}
+                  onChange={onChangeCrop}
+                  keepSelection={true}
                 />
               </div>
             )}
@@ -1753,42 +1710,24 @@ function TabHighLight() {
             />
 
             <div className={classes.actionUploadFile}>
-              {!cropImage && (
-                <label htmlFor="upload" className={classes.item}>
-                  <IoCloudDownloadOutline />
-                  Upload
-                </label>
-              )}
-              {!cropImage && (
-                <label
-                  onClick={() =>
-                    setFormServices({ ...formServices, image: '' })
-                  }
-                  className={classes.item}>
-                  hapus
-                </label>
-              )}
-              {formServices.image?.name && (
-                <label
-                  onClick={() => {
-                    setCropImage(
-                      formServices.image?.name ? uri : formServices.image
-                    );
-                  }}
-                  className={classes.item}>
-                  crop
-                </label>
-              )}
-              {cropImage && (
-                <label onClick={() => setCropImage()} className={classes.item}>
-                  batal crop
-                </label>
-              )}
-              {cropImage && (
+              <label htmlFor="upload" className={classes.item}>
+                pilih foto
+              </label>
+              {/* {isActiveForm && !uri && (
+            <label
+              onClick={() => {
+                setURI(form.photo);
+                console.log(form.photo);
+              }}
+              className={classes.item}>
+              crop
+            </label>
+          )} */}
+              {uri && (
                 <label
                   onClick={onClickToSetCropService}
                   className={classes.item}>
-                  set crop
+                  set
                 </label>
               )}
             </div>
