@@ -97,7 +97,7 @@ function Voucher() {
 
   // data form
   const [form, setForm] = useState({
-    code: '',
+    title: '',
     type: '1',
     status: '1',
     category: '',
@@ -112,7 +112,7 @@ function Voucher() {
 
   // data errors form
   const [error, setError] = useState({
-    code: '',
+    title: '',
     type: '',
     status: '',
     category: '',
@@ -149,8 +149,8 @@ function Voucher() {
   const validate = () => {
     const newError = { ...error };
 
-    if (!form.code) {
-      newError.code = 'Field masih kosong';
+    if (!form.title) {
+      newError.title = 'Field masih kosong';
     }
 
     if (!form.type) {
@@ -227,7 +227,7 @@ function Voucher() {
       if (isEdit) {
         // state
         const {
-          code,
+          title,
           type,
           status,
           category,
@@ -244,7 +244,7 @@ function Voucher() {
         const dataUpdate = new FormData();
 
         // mengisi data menggunakan append
-        dataUpdate.append('code', code);
+        dataUpdate.append('title', title);
         dataUpdate.append('type', parseInt(type));
         dataUpdate.append('status', status);
         dataUpdate.append('category', category);
@@ -267,7 +267,7 @@ function Voucher() {
           setOpenForm(false);
 
           setForm({
-            code: '',
+            title: '',
             type: '1',
             status: 1,
             category: '',
@@ -293,17 +293,17 @@ function Voucher() {
         } else {
           // cek error validation dari api
           if (
-            result.data.response.data.errors?.code ||
+            result.data.response.data.errors?.title ||
             result.data.response.data.errors?.expired_at ||
             result.data.response.data.errors?.min_amount
           ) {
             setError({
               ...error,
-              code: result.data.response.data.errors?.code
+              title: result.data.response.data.errors?.title
                 ? 'Nama sudah ada.'
                 : '',
               expired_at: result.data.response.data.errors?.expired_at
-                ? 'Minimal tanggal hari esok.'
+                ? 'Minimal tanggal setelah hari ini.'
                 : '',
               min_amount: result.data.response.data.errors?.min_amount
                 ? 'Minimal transaksi harus lebih besar dari potongan harga.'
@@ -316,7 +316,7 @@ function Voucher() {
             setOpenForm(false);
 
             setForm({
-              code: '',
+              title: '',
               type: '1',
               status: 1,
               category: '',
@@ -337,7 +337,7 @@ function Voucher() {
       } else {
         // state
         const {
-          code,
+          title,
           type,
           status,
           category,
@@ -354,7 +354,7 @@ function Voucher() {
         const dataCreate = new FormData();
 
         // mengisi data menggunakan append
-        dataCreate.append('code', code);
+        dataCreate.append('title', title);
         dataCreate.append('type', parseInt(type));
         dataCreate.append('status', status);
         dataCreate.append('category', category);
@@ -373,7 +373,7 @@ function Voucher() {
           setOpenForm(false);
 
           setForm({
-            code: '',
+            title: '',
             type: '1',
             status: 1,
             category: '',
@@ -399,17 +399,17 @@ function Voucher() {
         } else {
           // cek error validation dari api
           if (
-            result.data.response.data.errors?.code ||
+            result.data.response.data.errors?.title ||
             result.data.response.data.errors?.expired_at ||
             result.data.response.data.errors?.min_amount
           ) {
             setError({
               ...error,
-              code: result.data.response.data.errors?.code
+              title: result.data.response.data.errors?.title
                 ? 'Nama sudah ada.'
                 : '',
               expired_at: result.data.response.data.errors?.expired_at
-                ? 'Minimal tanggal hari esok.'
+                ? 'Minimal tanggal setelah hari ini.'
                 : '',
               min_amount: result.data.response.data.errors?.min_amount
                 ? 'Minimal transaksi harus lebih besar dari potongan harga.'
@@ -422,7 +422,7 @@ function Voucher() {
             setOpenForm(false);
 
             setForm({
-              code: '',
+              title: '',
               type: '1',
               status: 1,
               category: '',
@@ -655,7 +655,7 @@ function Voucher() {
                 title="Contemplative Reptile"
               />
               <CardContent className={classes.content}>
-                <span>{data.code}</span>
+                <span>{data.title}</span>
               </CardContent>
             </CardActionArea>
             <CardActions className={classes.action}>
@@ -668,7 +668,7 @@ function Voucher() {
                   setIsEdit(true);
                   setForm({
                     ...form,
-                    code: data.code,
+                    title: data.title,
                     type: data.voucherType?.id.toString(),
                     status: data.voucherStatus?.id,
                     category: data.voucherCategory?.id,
@@ -714,7 +714,7 @@ function Voucher() {
       <CompDialog
         open={openDetail}
         close={() => setOpenDetail(false)}
-        title={dataDetail.code}>
+        title={dataDetail.title}>
         <Avatar
           alt="photo"
           src={dataDetail.image}
@@ -752,7 +752,7 @@ function Voucher() {
         close={() => {
           setIsEdit(false);
           setForm({
-            code: '',
+            title: '',
             type: '1',
             status: 1,
             category: '',
@@ -765,7 +765,7 @@ function Voucher() {
             image: ''
           });
           setError({
-            code: '',
+            title: '',
             type: '',
             status: '',
             category: '',
@@ -782,7 +782,7 @@ function Voucher() {
         }}
         title="Form Voucher">
         <div className={classes.form}>
-          <InputLabel htmlFor="code" error={error.code ? true : false}>
+          <InputLabel htmlFor="title" error={error.title ? true : false}>
             Nama Voucher
           </InputLabel>
           <FormControl
@@ -791,15 +791,15 @@ function Voucher() {
             margin="normal"
             fullWidth>
             <OutlinedInput
-              name="code"
-              id="code"
+              name="title"
+              id="title"
               color="primary"
               onChange={handleChange}
-              value={form.code}
-              error={error.code ? true : false}
+              value={form.title}
+              error={error.title ? true : false}
             />
-            <FormHelperText id="outlined-helper-text" error={error.code}>
-              {error.code}
+            <FormHelperText id="outlined-helper-text" error={error.title}>
+              {error.title}
             </FormHelperText>
           </FormControl>
 
