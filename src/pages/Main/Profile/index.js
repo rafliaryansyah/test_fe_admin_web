@@ -30,8 +30,6 @@ import ChangePassword from './ChangePassword';
 // services
 import { getProfile, editProfile } from 'services';
 
-import { CompDialog } from 'components';
-
 // formatter
 import { dateConverterReq, uriToFile, fileExtention } from 'utils';
 
@@ -44,7 +42,6 @@ function Profile({ history }) {
 
   // data open dialog
   const [openChangePassword, setOpenChangePassword] = useState(false);
-  const [openCrop, setOpenCrop] = useState(false);
 
   // data form
   const [form, setForm] = useState({
@@ -57,9 +54,8 @@ function Profile({ history }) {
   });
 
   // crop
-  const [uri, setURI] = useState(null);
-  const [crop, setCrop] = useState({ unit: 'px', width: 200, aspect: 1 / 1 });
-  const [cropImage, setCropImage] = useState(null);
+  const [uri, setURI] = useState();
+  const [crop, setCrop] = useState({ unit: 'px', height: 300, aspect: 1 / 1 });
   const [completeCrop, setCompleteCrop] = useState(null);
   const previewCanvasRef = useRef();
   const imageRef = useRef();
@@ -74,19 +70,17 @@ function Profile({ history }) {
 
   // read data
   useEffect(() => {
-    getProfile()
-      .then(res => {
-        setForm({
-          ...form,
-          name: res.data.data.name,
-          dob: dateConverterReq(res.data.data.date_of_birth),
-          gender: res.data.data.gender && res.data.data.gender.id.toString(),
-          email: res.data.data.email,
-          phone: res.data.data.phone,
-          photo: res.data.data.image
-        });
-      })
-      .catch(err => err);
+    getProfile().then(res => {
+      setForm({
+        ...form,
+        name: res.data.data.name,
+        dob: dateConverterReq(res.data.data.date_of_birth),
+        gender: res.data.data.gender && res.data.data.gender.id.toString(),
+        email: res.data.data.email,
+        phone: res.data.data.phone,
+        photo: res.data.data.image
+      });
+    });
   }, []);
 
   // edit profile user
@@ -116,9 +110,6 @@ function Profile({ history }) {
 
     // cek sukses atau gagal update
     if (result.success) {
-      enqueueSnackbar(result.data.message, {
-        variant: 'success'
-      });
       setIsActiveForm(false);
 
       // read kembali data user profile
@@ -139,11 +130,16 @@ function Profile({ history }) {
         });
         localStorage.setItem('user', user);
       });
+
+      enqueueSnackbar('Berhasil memperbarui profile', {
+        variant: 'success'
+      });
     } else {
-      enqueueSnackbar(result.data.response.data.message, {
+      setIsActiveForm(false);
+
+      enqueueSnackbar('Gagal memperbarui profile', {
         variant: 'error'
       });
-      setIsActiveForm(false);
     }
   };
 
@@ -183,13 +179,6 @@ function Profile({ history }) {
               uri => {
                 if (uri) {
                   setURI(uri);
-
-                  const photoFile = uriToFile(uri);
-
-                  setForm({
-                    ...form,
-                    photo: photoFile
-                  });
                 }
               },
               'base64'
@@ -206,6 +195,7 @@ function Profile({ history }) {
     }
   };
 
+  // crop
   const imageLoaded = image => {
     imageRef.current = image;
   };
@@ -251,10 +241,10 @@ function Profile({ history }) {
   const onClickToSetCrop = e => {
     e.preventDefault();
 
-    if (cropImage) {
+    if (uri) {
       const canvasRef = previewCanvasRef.current;
 
-      const fileExtension = fileExtention(cropImage);
+      const fileExtension = fileExtention(uri);
       const imageBase64 = canvasRef.toDataURL(`image/${fileExtension}`);
 
       // sebelum upload ubah dari base64 ke file
@@ -262,52 +252,79 @@ function Profile({ history }) {
 
       setForm({ ...form, photo: base64ToFile });
 
-      setOpenCrop(false);
+      setURI(null);
     }
   };
 
   return (
     <div className={classes.wrapper}>
       <div className={classes.itemFotoDanRoles}>
-        <Avatar
-          alt={form.name}
-          src={form.photo.name ? URL.createObjectURL(form.photo) : form.photo}
-          variant="rounded"
-          className={classes.avatar}
-        />
+        {!uri && (
+          <Avatar
+            alt="image"
+            src={
+              form.photo?.name ? URL.createObjectURL(form.photo) : form.photo
+            }
+            variant="rounded"
+            className={classes.preview}
+          />
+        )}
+
+        {isActiveForm && uri && (
+          <div style={{ textAlign: 'center' }}>
+            <canvas
+              ref={previewCanvasRef}
+              style={{
+                width: Math.round(completeCrop?.width ?? 0),
+                height: Math.round(completeCrop?.height ?? 0)
+              }}
+            />
+          </div>
+        )}
+
+        {isActiveForm && uri && (
+          <div style={{ textAlign: 'center' }}>
+            <ReactCrop
+              src={uri}
+              crop={crop}
+              onImageLoaded={imageLoaded}
+              onComplete={onCropComplete}
+              onChange={onChangeCrop}
+              keepSelection={true}
+            />
+          </div>
+        )}
 
         <input
           type="file"
-          accept="image/png,image/jpeg"
-          onChange={onSelectedImage}
           id="upload"
+          accept="image/jpeg,image/png"
+          onChange={onSelectedImage}
           style={{ display: 'none' }}
         />
 
-        {isActiveForm && (
-          <label htmlFor="upload" className={classes.upload}>
-            upload
-          </label>
-        )}
-
-        {isActiveForm && form.photo !== null && (
-          <label
-            onClick={() => setForm({ ...form, photo: '' })}
-            className={classes.upload}>
-            hapus
-          </label>
-        )}
-
-        {isActiveForm && (
-          <label
-            onClick={() => {
-              setOpenCrop(true);
-              setCropImage(form.photo.name ? uri : form.photo);
-            }}
-            className={classes.upload}>
-            crop
-          </label>
-        )}
+        <div className={classes.actionUploadFile}>
+          {isActiveForm && (
+            <label htmlFor="upload" className={classes.item}>
+              pilih foto
+            </label>
+          )}
+          {/* {isActiveForm && !uri && (
+            <label
+              onClick={() => {
+                setURI(form.photo);
+                console.log(form.photo);
+              }}
+              className={classes.item}>
+              crop
+            </label>
+          )} */}
+          {isActiveForm && uri && (
+            <label onClick={onClickToSetCrop} className={classes.item}>
+              set
+            </label>
+          )}
+        </div>
       </div>
 
       <div className={classes.wrapperInfo}>
@@ -390,6 +407,7 @@ function Profile({ history }) {
               variant="contained"
               color="primary"
               fullWidth
+              disabled={form.photo?.name ? false : true}
               onClick={update}>
               simpan
             </Button>
@@ -422,66 +440,6 @@ function Profile({ history }) {
           </div>
         )}
       </div>
-
-      <CompDialog
-        open={openCrop}
-        close={() => {
-          setOpenCrop(false);
-          setCropImage();
-        }}
-        title="Crop Image">
-        <div style={{ display: 'grid' }}>
-          <div style={{ textAlign: 'center' }}>
-            <ReactCrop
-              src={cropImage}
-              crop={crop}
-              onImageLoaded={imageLoaded}
-              onComplete={onCropComplete}
-              onChange={onChangeCrop}
-              style={{ textAlign: 'center' }}
-            />
-          </div>
-
-          <br />
-
-          <p>Preview</p>
-
-          <div>
-            <canvas
-              ref={previewCanvasRef}
-              style={{
-                width: Math.round(completeCrop?.width ?? 0),
-                height: Math.round(completeCrop?.height ?? 0)
-              }}
-            />
-          </div>
-
-          <br />
-
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'flex-end',
-              gridGap: 15
-            }}>
-            <Button
-              variant="text"
-              color="primary"
-              onClick={() => {
-                setOpenCrop(false);
-                setCropImage();
-              }}>
-              batal
-            </Button>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={onClickToSetCrop}>
-              set crop
-            </Button>
-          </div>
-        </div>
-      </CompDialog>
 
       <ChangePassword
         open={openChangePassword}

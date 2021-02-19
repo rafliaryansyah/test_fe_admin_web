@@ -130,9 +130,17 @@ function ChangePassword({ open, close, history }) {
         }
       } else {
         // cek validasi dari api
-        if (result.data.response.data.code === 422) {
-          enqueueSnackbar('Email atau Password lama anda salah', {
-            variant: 'error'
+        if (result.data.response.data?.code === 422) {
+          setError({
+            ...error,
+            email:
+              result.data.response.data?.code === 422
+                ? 'Silakan cek email anda'
+                : '',
+            old_password:
+              result.data.response.data?.code === 422
+                ? 'Silakan cek password lama anda'
+                : ''
           });
         }
       }
@@ -155,6 +163,13 @@ function ChangePassword({ open, close, history }) {
       </DialogTitle>
       <DialogContent>
         <div className={classes.form}>
+          <span style={{ fontSize: 15 }}>
+            Sebelum memperbarui Password. Mohon masukkan Email & Password lama
+            dengan benar.
+          </span>
+          <br />
+          <br />
+
           <InputLabel htmlFor="email" error={error.email ? true : false}>
             Email
           </InputLabel>
@@ -219,107 +234,122 @@ function ChangePassword({ open, close, history }) {
             </FormHelperText>
           </FormControl>
 
-          <InputLabel
-            htmlFor="new_password"
-            error={error.new_password ? true : false}
-            className={classes.label}>
-            Password baru
-          </InputLabel>
-          <FormControl
-            variant="outlined"
-            size="small"
-            margin="normal"
-            fullWidth>
-            <OutlinedInput
-              type={showPassword ? 'text' : 'password'}
-              name="new_password"
-              id="new_password"
-              onChange={handleChange}
-              value={form.new_password}
-              error={error.new_password ? true : false}
-              endAdornment={
-                <InputAdornment position="end">
-                  <IconButton
-                    aria-label="toggle password visibility"
-                    onClick={() => setShowPassword(!showPassword)}
-                    onMouseDown={e => e.preventDefault()}
-                    edge="end">
-                    {showPassword ? (
-                      <IoEyeOutline color="primary" />
-                    ) : (
-                      <IoEyeOffOutline color="primary" />
-                    )}
-                  </IconButton>
-                </InputAdornment>
-              }
-              color="primary"
-              aria-describedby="outlined-helper-text"
-            />
-            <FormHelperText
-              id="outlined-helper-text"
-              error={error.new_password ? true : false}>
-              {error.new_password}
-            </FormHelperText>
-          </FormControl>
+          {form.email &&
+            isEmail(form.email) &&
+            form.old_password &&
+            form.old_password.length > 6 && (
+              <div>
+                <br />
+                <br />
+                <span style={{ fontSize: 15 }}>
+                  Silahkan memperbarui password
+                </span>
+                <br />
+                <br />
 
-          <InputLabel
-            htmlFor="confirm_password"
-            error={error.confirm_password ? true : false}
-            className={classes.label}>
-            Konfirmasi password baru
-          </InputLabel>
-          <FormControl
-            variant="outlined"
-            size="small"
-            margin="normal"
-            fullWidth>
-            <OutlinedInput
-              type={showPassword ? 'text' : 'password'}
-              name="confirm_password"
-              id="confirm_password"
-              onChange={handleChange}
-              value={form.confirm_password}
-              error={error.confirm_password ? true : false}
-              endAdornment={
-                <InputAdornment position="end">
-                  <IconButton
-                    aria-label="toggle password visibility"
-                    onClick={() => setShowPassword(!showPassword)}
-                    onMouseDown={e => e.preventDefault()}
-                    edge="end">
-                    {showPassword ? (
-                      <IoEyeOutline color="primary" />
-                    ) : (
-                      <IoEyeOutline color="primary" />
-                    )}
-                  </IconButton>
-                </InputAdornment>
-              }
-              color="primary"
-              aria-describedby="outlined-helper-text"
-            />
-            <FormHelperText
-              id="outlined-helper-text"
-              error={error.confirm_password ? true : false}>
-              {error.confirm_password}
-            </FormHelperText>
-          </FormControl>
+                <InputLabel
+                  htmlFor="new_password"
+                  error={error.new_password ? true : false}
+                  className={classes.label}>
+                  Password baru
+                </InputLabel>
+                <FormControl
+                  variant="outlined"
+                  size="small"
+                  margin="normal"
+                  fullWidth>
+                  <OutlinedInput
+                    type={showPassword ? 'text' : 'password'}
+                    name="new_password"
+                    id="new_password"
+                    onChange={handleChange}
+                    value={form.new_password}
+                    error={error.new_password ? true : false}
+                    endAdornment={
+                      <InputAdornment position="end">
+                        <IconButton
+                          aria-label="toggle password visibility"
+                          onClick={() => setShowPassword(!showPassword)}
+                          onMouseDown={e => e.preventDefault()}
+                          edge="end">
+                          {showPassword ? (
+                            <IoEyeOutline color="primary" />
+                          ) : (
+                            <IoEyeOffOutline color="primary" />
+                          )}
+                        </IconButton>
+                      </InputAdornment>
+                    }
+                    color="primary"
+                    aria-describedby="outlined-helper-text"
+                  />
+                  <FormHelperText
+                    id="outlined-helper-text"
+                    error={error.new_password ? true : false}>
+                    {error.new_password}
+                  </FormHelperText>
+                </FormControl>
 
-          <Button
-            variant="contained"
-            color="primary"
-            fullWidth
-            onClick={submit}
-            disabled={
-              form.email &&
-              form.old_password &&
-              form.new_password &&
-              form.confirm_password
-                ? false
-                : true
-            }>
-            ubah
-          </Button>
+                <InputLabel
+                  htmlFor="confirm_password"
+                  error={error.confirm_password ? true : false}
+                  className={classes.label}>
+                  Konfirmasi password baru
+                </InputLabel>
+                <FormControl
+                  variant="outlined"
+                  size="small"
+                  margin="normal"
+                  fullWidth>
+                  <OutlinedInput
+                    type={showPassword ? 'text' : 'password'}
+                    name="confirm_password"
+                    id="confirm_password"
+                    onChange={handleChange}
+                    value={form.confirm_password}
+                    error={error.confirm_password ? true : false}
+                    endAdornment={
+                      <InputAdornment position="end">
+                        <IconButton
+                          aria-label="toggle password visibility"
+                          onClick={() => setShowPassword(!showPassword)}
+                          onMouseDown={e => e.preventDefault()}
+                          edge="end">
+                          {showPassword ? (
+                            <IoEyeOutline color="primary" />
+                          ) : (
+                            <IoEyeOutline color="primary" />
+                          )}
+                        </IconButton>
+                      </InputAdornment>
+                    }
+                    color="primary"
+                    aria-describedby="outlined-helper-text"
+                  />
+                  <FormHelperText
+                    id="outlined-helper-text"
+                    error={error.confirm_password ? true : false}>
+                    {error.confirm_password}
+                  </FormHelperText>
+                </FormControl>
+
+                <Button
+                  variant="contained"
+                  color="primary"
+                  fullWidth
+                  onClick={submit}
+                  disabled={
+                    form.email &&
+                    form.old_password &&
+                    form.new_password &&
+                    form.confirm_password
+                      ? false
+                      : true
+                  }>
+                  ubah
+                </Button>
+              </div>
+            )}
         </div>
       </DialogContent>
     </Dialog>

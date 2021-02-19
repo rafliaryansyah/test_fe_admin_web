@@ -1,6 +1,13 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import useStyles from './styles';
 import propTypes from 'prop-types';
+
+// resize image
+import Resizer from 'react-image-file-resizer';
+
+// image crop
+import ReactCrop from 'react-image-crop';
+import 'react-image-crop/dist/ReactCrop.css';
 
 // debonce untuk fitur pencarian
 import { debounce } from 'debounce';
@@ -51,6 +58,9 @@ import {
   deleteCategory
 } from 'services';
 
+// utils
+import { fileExtention, uriToFile } from 'utils';
+
 function TabJasa({
   setDataCategoriesJasa,
   dataCategoriesJasa,
@@ -87,6 +97,13 @@ function TabJasa({
     name: '',
     image: ''
   });
+
+  // crop
+  const [uri, setURI] = useState();
+  const [crop, setCrop] = useState({ unit: 'px', height: 450, aspect: 1 / 1 });
+  const [completeCrop, setCompleteCrop] = useState(null);
+  const previewCanvasRef = useRef();
+  const imageRef = useRef();
 
   const handleChange = e => {
     setForm({
@@ -158,6 +175,12 @@ function TabJasa({
       if (result.success) {
         setOpenEdit(false);
 
+        setForm({
+          type: '1',
+          name: '',
+          image: ''
+        });
+
         // read kembali data
         getCategory(false, '2').then(res => {
           setDataCategoriesJasa(res.data.data);
@@ -165,23 +188,11 @@ function TabJasa({
           setLastPage(res.data.meta.last_page);
         });
 
-        setForm({
-          type: '1',
-          name: '',
-          image: ''
-        });
-
         enqueueSnackbar('Berhasil memperbarui data', {
           variant: 'success'
         });
       } else {
         setOpenEdit(false);
-
-        setForm({
-          type: '1',
-          name: '',
-          image: ''
-        });
 
         enqueueSnackbar('Gagal memperbarui data', {
           variant: 'error'
@@ -225,7 +236,7 @@ function TabJasa({
   };
 
   // upload image
-  const handleUploadFile = async e => {
+  const onSelectedImage = async e => {
     const file = e.target.files[0];
 
     if (!['image/png', 'image/jpeg'].includes(file.type)) {
@@ -262,10 +273,22 @@ function TabJasa({
         });
 
         try {
-          setForm({
-            ...form,
-            image: file
-          });
+          if (file) {
+            Resizer.imageFileResizer(
+              file,
+              300,
+              300,
+              file?.type === 'image/jpeg' ? 'JPEG' : 'PNG',
+              100,
+              0,
+              uri => {
+                if (uri) {
+                  setURI(uri);
+                }
+              },
+              'base64'
+            );
+          }
         } catch (e) {
           setError({
             ...error,
@@ -275,6 +298,67 @@ function TabJasa({
       };
 
       reader.readAsDataURL(file);
+    }
+  };
+
+  // crop
+  const imageLoaded = image => {
+    imageRef.current = image;
+  };
+
+  const onChangeCrop = crop => {
+    setCrop(crop);
+  };
+
+  const onCropComplete = crop => {
+    setCompleteCrop(crop);
+
+    const image = imageRef.current; // image
+    const canvas = previewCanvasRef.current; // document.createElement('canvas');
+    const pixelRatio = window.devicePixelRatio; // pixel ratio
+
+    const scaleX = image.naturalWidth / image.width;
+    const scaleY = image.naturalHeight / image.height;
+
+    const ctx = canvas.getContext('2d');
+
+    canvas.width = crop.width * pixelRatio;
+    canvas.height = crop.height * pixelRatio;
+
+    image.crossOrigin = 'anonymus';
+
+    ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+    ctx.imageSmoothingQuality = 'high';
+
+    ctx.drawImage(
+      image,
+      crop.x * scaleX,
+      crop.y * scaleY,
+      crop.width * scaleX,
+      crop.height * scaleY,
+      0,
+      0,
+      crop.width,
+      crop.height
+    );
+  };
+
+  // set crop
+  const onClickToSetCrop = e => {
+    e.preventDefault();
+
+    if (uri) {
+      const canvasRef = previewCanvasRef.current;
+
+      const fileExtension = fileExtention(uri);
+      const imageBase64 = canvasRef.toDataURL(`image/${fileExtension}`);
+
+      // sebelum upload ubah dari base64 ke file
+      const base64ToFile = uriToFile(imageBase64);
+
+      setForm({ ...form, image: base64ToFile });
+
+      setURI();
     }
   };
 
@@ -407,6 +491,12 @@ function TabJasa({
             name: '',
             image: ''
           });
+          setError({
+            type: '',
+            name: '',
+            image: ''
+          });
+          setURI();
           setOpenEdit(false);
         }}
         title="Edit Kategori">
@@ -455,24 +545,75 @@ function TabJasa({
           </FormControl>
 
           <div className={classes.inputFile}>
-            <Avatar
-              alt="photo"
-              src={
-                form.image.name ? URL.createObjectURL(form.image) : form.image
-              }
-              variant="rounded"
-              className={classes.preview}
-            />
+            <InputLabel id="image" style={{ marginBottom: 15 }}>
+              Gambar
+            </InputLabel>
+            {!uri && (
+              <Avatar
+                alt="image"
+                src={
+                  form.image?.name
+                    ? URL.createObjectURL(form.image)
+                    : form.image
+                }
+                variant="rounded"
+                className={classes.preview}
+              />
+            )}
+
+            {uri && (
+              <div style={{ textAlign: 'center' }}>
+                <canvas
+                  ref={previewCanvasRef}
+                  style={{
+                    width: Math.round(completeCrop?.width ?? 0),
+                    height: Math.round(completeCrop?.height ?? 0)
+                  }}
+                />
+              </div>
+            )}
+
+            {uri && (
+              <div style={{ textAlign: 'center' }}>
+                <ReactCrop
+                  src={uri}
+                  crop={crop}
+                  onImageLoaded={imageLoaded}
+                  onComplete={onCropComplete}
+                  onChange={onChangeCrop}
+                  keepSelection={true}
+                />
+              </div>
+            )}
+
             <input
               type="file"
               id="upload"
               accept="image/jpeg,image/png"
-              onChange={handleUploadFile}
+              onChange={onSelectedImage}
               style={{ display: 'none' }}
             />
-            <label htmlFor="upload" className={classes.itemUpload}>
-              Upload Foto
+
+            <div className={classes.actionUploadFile}>
+              <label htmlFor="upload" className={classes.item}>
+                pilih foto
+              </label>
+              {/* {isActiveForm && !uri && (
+            <label
+              onClick={() => {
+                setURI(form.photo);
+                console.log(form.photo);
+              }}
+              className={classes.item}>
+              crop
             </label>
+          )} */}
+              {uri && (
+                <label onClick={onClickToSetCrop} className={classes.item}>
+                  set
+                </label>
+              )}
+            </div>
           </div>
           <br />
           <FormHelperText

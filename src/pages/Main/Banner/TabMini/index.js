@@ -87,7 +87,6 @@ import {
 import {
   IoPencilOutline,
   IoTrashOutline,
-  IoCloudDownloadOutline,
   IoCopyOutline
 } from 'react-icons/io5';
 
@@ -171,9 +170,8 @@ function TabMini() {
   });
 
   // crop
-  const [uri, setURI] = useState(null);
-  const [crop, setCrop] = useState({ unit: 'px' });
-  const [cropImage, setCropImage] = useState(null);
+  const [uri, setURI] = useState();
+  const [crop, setCrop] = useState({ unit: 'px', height: 300, aspect: 16 / 9 });
   const [completeCrop, setCompleteCrop] = useState(null);
   const previewCanvasRef = useRef();
   const imageRef = useRef();
@@ -233,32 +231,22 @@ function TabMini() {
 
   // read data mini
   useEffect(() => {
-    readBannersMini('product', false)
-      .then(res => {
-        setMiniProduk(res.data.data);
-      })
-      .catch(err => err);
-    readBannersMini('service', false)
-      .then(res => {
-        setMiniService(res.data.data);
-      })
-      .catch(err => err);
+    readBannersMini('product', false).then(res => {
+      setMiniProduk(res.data.data);
+    });
+    readBannersMini('service', false).then(res => {
+      setMiniService(res.data.data);
+    });
   }, []);
 
   // read data promo dan kategori
   useEffect(() => {
-    readPromo('')
-      .then(res => setDataPromo(res.data.data))
-      .catch(err => err);
+    readPromo('').then(res => setDataPromo(res.data.data));
   }, []);
 
   useEffect(() => {
-    getCategory('1')
-      .then(res => setKategoriProduk(res.data.data))
-      .catch(err => err);
-    getCategory('2')
-      .then(res => setKategoriJasa(res.data.data))
-      .catch(err => err);
+    getCategory('1').then(res => setKategoriProduk(res.data.data));
+    getCategory('2').then(res => setKategoriJasa(res.data.data));
   }, []);
 
   // create dan update data tipe produk
@@ -326,11 +314,7 @@ function TabMini() {
         formdata.append('type_banner', typeProduk);
         formdata.append('status', status);
         formdata.append('product', product);
-
-        // cek apakah image baru atau tetap yang lama
-        if (image.name) {
-          formdata.append('image', image);
-        }
+        formdata.append('image', image);
 
         // services
         const result = await createMiniBanners(formdata).catch(err => err);
@@ -434,10 +418,7 @@ function TabMini() {
           formdata.append(`categories[${index}]`, category);
         });
 
-        // cek apakah image baru atau tetap yang lama
-        if (image.name) {
-          formdata.append('image', image);
-        }
+        formdata.append('image', image);
 
         // services
         const result = await createMiniBanners(formdata).catch(err => err);
@@ -535,11 +516,7 @@ function TabMini() {
         formdata.append('type_banner', typeService);
         formdata.append('status', status);
         formdata.append('product', product);
-
-        // cek apakah image baru atau tetap yang lama
-        if (image.name) {
-          formdata.append('image', image);
-        }
+        formdata.append('image', image);
 
         // services
         const result = await createMiniBanners(formdata).catch(err => err);
@@ -643,10 +620,7 @@ function TabMini() {
           formdata.append(`categories[${index}]`, category);
         });
 
-        // cek apakah image baru atau tetap yang lama
-        if (image.name) {
-          formdata.append('image', image);
-        }
+        formdata.append('image', image);
 
         // services
         const result = await createMiniBanners(formdata).catch(err => err);
@@ -755,10 +729,6 @@ function TabMini() {
               uri => {
                 if (uri) {
                   setURI(uri);
-
-                  const photoFile = uriToFile(uri);
-
-                  setImage(photoFile);
                 }
               },
               'base64'
@@ -822,10 +792,10 @@ function TabMini() {
   const onClickToSetCrop = e => {
     e.preventDefault();
 
-    if (cropImage) {
+    if (uri) {
       const canvasRef = previewCanvasRef.current;
 
-      const fileExtension = fileExtention(cropImage);
+      const fileExtension = fileExtention(uri);
       const imageBase64 = canvasRef.toDataURL(`image/${fileExtension}`);
 
       // sebelum upload ubah dari base64 ke file
@@ -833,7 +803,7 @@ function TabMini() {
 
       setImage(base64ToFile);
 
-      setCropImage();
+      setURI();
     }
   };
 
@@ -1372,7 +1342,7 @@ function TabMini() {
             product: '',
             image: ''
           });
-          setCropImage();
+          setURI();
           setOpenFP(false);
         }}
         title="Form Mini Produk">
@@ -1450,7 +1420,7 @@ function TabMini() {
                 <InputLabel id="image" style={{ marginBottom: 15 }}>
                   Gambar
                 </InputLabel>
-                {!cropImage && (
+                {!uri && (
                   <Avatar
                     alt="image"
                     src={image?.name ? URL.createObjectURL(image) : image}
@@ -1459,25 +1429,27 @@ function TabMini() {
                   />
                 )}
 
-                <div style={{ textAlign: 'center' }}>
-                  <ReactCrop
-                    src={cropImage}
-                    crop={crop}
-                    onImageLoaded={imageLoaded}
-                    onComplete={onCropComplete}
-                    onChange={onChangeCrop}
-                  />
-                </div>
-
-                {cropImage && (
+                {uri && (
                   <div style={{ textAlign: 'center' }}>
-                    <p>Preview Crop</p>
                     <canvas
                       ref={previewCanvasRef}
                       style={{
                         width: Math.round(completeCrop?.width ?? 0),
                         height: Math.round(completeCrop?.height ?? 0)
                       }}
+                    />
+                  </div>
+                )}
+
+                {uri && (
+                  <div style={{ textAlign: 'center' }}>
+                    <ReactCrop
+                      src={uri}
+                      crop={crop}
+                      onImageLoaded={imageLoaded}
+                      onComplete={onCropComplete}
+                      onChange={onChangeCrop}
+                      keepSelection={true}
                     />
                   </div>
                 )}
@@ -1491,38 +1463,22 @@ function TabMini() {
                 />
 
                 <div className={classes.actionUploadFile}>
-                  {!cropImage && (
-                    <label htmlFor="upload" className={classes.item}>
-                      <IoCloudDownloadOutline />
-                      Upload
-                    </label>
-                  )}
-                  {!cropImage && (
-                    <label
-                      onClick={() => setImage('')}
-                      className={classes.item}>
-                      hapus
-                    </label>
-                  )}
-                  {image?.name && (
-                    <label
-                      onClick={() => {
-                        setCropImage(image?.name ? uri : image);
-                      }}
-                      className={classes.item}>
-                      crop
-                    </label>
-                  )}
-                  {cropImage && (
-                    <label
-                      onClick={() => setCropImage()}
-                      className={classes.item}>
-                      batal crop
-                    </label>
-                  )}
-                  {cropImage && (
+                  <label htmlFor="upload" className={classes.item}>
+                    pilih foto
+                  </label>
+                  {/* {isActiveForm && !uri && (
+            <label
+              onClick={() => {
+                setURI(form.photo);
+                console.log(form.photo);
+              }}
+              className={classes.item}>
+              crop
+            </label>
+          )} */}
+                  {uri && (
                     <label onClick={onClickToSetCrop} className={classes.item}>
-                      set crop
+                      set
                     </label>
                   )}
                 </div>
@@ -1649,7 +1605,7 @@ function TabMini() {
                 <InputLabel id="image" style={{ marginBottom: 15 }}>
                   Gambar
                 </InputLabel>
-                {!cropImage && (
+                {!uri && (
                   <Avatar
                     alt="image"
                     src={image?.name ? URL.createObjectURL(image) : image}
@@ -1658,25 +1614,27 @@ function TabMini() {
                   />
                 )}
 
-                <div style={{ textAlign: 'center' }}>
-                  <ReactCrop
-                    src={cropImage}
-                    crop={crop}
-                    onImageLoaded={imageLoaded}
-                    onComplete={onCropComplete}
-                    onChange={onChangeCrop}
-                  />
-                </div>
-
-                {cropImage && (
+                {uri && (
                   <div style={{ textAlign: 'center' }}>
-                    <p>Preview Crop</p>
                     <canvas
                       ref={previewCanvasRef}
                       style={{
                         width: Math.round(completeCrop?.width ?? 0),
                         height: Math.round(completeCrop?.height ?? 0)
                       }}
+                    />
+                  </div>
+                )}
+
+                {uri && (
+                  <div style={{ textAlign: 'center' }}>
+                    <ReactCrop
+                      src={uri}
+                      crop={crop}
+                      onImageLoaded={imageLoaded}
+                      onComplete={onCropComplete}
+                      onChange={onChangeCrop}
+                      keepSelection={true}
                     />
                   </div>
                 )}
@@ -1690,38 +1648,22 @@ function TabMini() {
                 />
 
                 <div className={classes.actionUploadFile}>
-                  {!cropImage && (
-                    <label htmlFor="upload" className={classes.item}>
-                      <IoCloudDownloadOutline />
-                      Upload
-                    </label>
-                  )}
-                  {!cropImage && (
-                    <label
-                      onClick={() => setImage('')}
-                      className={classes.item}>
-                      hapus
-                    </label>
-                  )}
-                  {image?.name && (
-                    <label
-                      onClick={() => {
-                        setCropImage(image?.name ? uri : image);
-                      }}
-                      className={classes.item}>
-                      crop
-                    </label>
-                  )}
-                  {cropImage && (
-                    <label
-                      onClick={() => setCropImage()}
-                      className={classes.item}>
-                      batal crop
-                    </label>
-                  )}
-                  {cropImage && (
+                  <label htmlFor="upload" className={classes.item}>
+                    pilih foto
+                  </label>
+                  {/* {isActiveForm && !uri && (
+            <label
+              onClick={() => {
+                setURI(form.photo);
+                console.log(form.photo);
+              }}
+              className={classes.item}>
+              crop
+            </label>
+          )} */}
+                  {uri && (
                     <label onClick={onClickToSetCrop} className={classes.item}>
-                      set crop
+                      set
                     </label>
                   )}
                 </div>
@@ -1761,7 +1703,7 @@ function TabMini() {
             product: '',
             image: ''
           });
-          setCropImage();
+          setURI();
           setOpenFS(false);
         }}
         title="Form Mini Jasa">
@@ -1839,7 +1781,7 @@ function TabMini() {
                 <InputLabel id="image" style={{ marginBottom: 15 }}>
                   Gambar
                 </InputLabel>
-                {!cropImage && (
+                {!uri && (
                   <Avatar
                     alt="image"
                     src={image?.name ? URL.createObjectURL(image) : image}
@@ -1848,25 +1790,27 @@ function TabMini() {
                   />
                 )}
 
-                <div style={{ textAlign: 'center' }}>
-                  <ReactCrop
-                    src={cropImage}
-                    crop={crop}
-                    onImageLoaded={imageLoaded}
-                    onComplete={onCropComplete}
-                    onChange={onChangeCrop}
-                  />
-                </div>
-
-                {cropImage && (
+                {uri && (
                   <div style={{ textAlign: 'center' }}>
-                    <p>Preview Crop</p>
                     <canvas
                       ref={previewCanvasRef}
                       style={{
                         width: Math.round(completeCrop?.width ?? 0),
                         height: Math.round(completeCrop?.height ?? 0)
                       }}
+                    />
+                  </div>
+                )}
+
+                {uri && (
+                  <div style={{ textAlign: 'center' }}>
+                    <ReactCrop
+                      src={uri}
+                      crop={crop}
+                      onImageLoaded={imageLoaded}
+                      onComplete={onCropComplete}
+                      onChange={onChangeCrop}
+                      keepSelection={true}
                     />
                   </div>
                 )}
@@ -1880,38 +1824,22 @@ function TabMini() {
                 />
 
                 <div className={classes.actionUploadFile}>
-                  {!cropImage && (
-                    <label htmlFor="upload" className={classes.item}>
-                      <IoCloudDownloadOutline />
-                      Upload
-                    </label>
-                  )}
-                  {!cropImage && (
-                    <label
-                      onClick={() => setImage('')}
-                      className={classes.item}>
-                      hapus
-                    </label>
-                  )}
-                  {image?.name && (
-                    <label
-                      onClick={() => {
-                        setCropImage(image?.name ? uri : image);
-                      }}
-                      className={classes.item}>
-                      crop
-                    </label>
-                  )}
-                  {cropImage && (
-                    <label
-                      onClick={() => setCropImage()}
-                      className={classes.item}>
-                      batal crop
-                    </label>
-                  )}
-                  {cropImage && (
+                  <label htmlFor="upload" className={classes.item}>
+                    pilih foto
+                  </label>
+                  {/* {isActiveForm && !uri && (
+            <label
+              onClick={() => {
+                setURI(form.photo);
+                console.log(form.photo);
+              }}
+              className={classes.item}>
+              crop
+            </label>
+          )} */}
+                  {uri && (
                     <label onClick={onClickToSetCrop} className={classes.item}>
-                      set crop
+                      set
                     </label>
                   )}
                 </div>
@@ -2038,7 +1966,7 @@ function TabMini() {
                 <InputLabel id="image" style={{ marginBottom: 15 }}>
                   Gambar
                 </InputLabel>
-                {!cropImage && (
+                {!uri && (
                   <Avatar
                     alt="image"
                     src={image?.name ? URL.createObjectURL(image) : image}
@@ -2047,25 +1975,27 @@ function TabMini() {
                   />
                 )}
 
-                <div style={{ textAlign: 'center' }}>
-                  <ReactCrop
-                    src={cropImage}
-                    crop={crop}
-                    onImageLoaded={imageLoaded}
-                    onComplete={onCropComplete}
-                    onChange={onChangeCrop}
-                  />
-                </div>
-
-                {cropImage && (
+                {uri && (
                   <div style={{ textAlign: 'center' }}>
-                    <p>Preview Crop</p>
                     <canvas
                       ref={previewCanvasRef}
                       style={{
                         width: Math.round(completeCrop?.width ?? 0),
                         height: Math.round(completeCrop?.height ?? 0)
                       }}
+                    />
+                  </div>
+                )}
+
+                {uri && (
+                  <div style={{ textAlign: 'center' }}>
+                    <ReactCrop
+                      src={uri}
+                      crop={crop}
+                      onImageLoaded={imageLoaded}
+                      onComplete={onCropComplete}
+                      onChange={onChangeCrop}
+                      keepSelection={true}
                     />
                   </div>
                 )}
@@ -2079,38 +2009,22 @@ function TabMini() {
                 />
 
                 <div className={classes.actionUploadFile}>
-                  {!cropImage && (
-                    <label htmlFor="upload" className={classes.item}>
-                      <IoCloudDownloadOutline />
-                      Upload
-                    </label>
-                  )}
-                  {!cropImage && (
-                    <label
-                      onClick={() => setImage('')}
-                      className={classes.item}>
-                      hapus
-                    </label>
-                  )}
-                  {image?.name && (
-                    <label
-                      onClick={() => {
-                        setCropImage(image?.name ? uri : image);
-                      }}
-                      className={classes.item}>
-                      crop
-                    </label>
-                  )}
-                  {cropImage && (
-                    <label
-                      onClick={() => setCropImage()}
-                      className={classes.item}>
-                      batal crop
-                    </label>
-                  )}
-                  {cropImage && (
+                  <label htmlFor="upload" className={classes.item}>
+                    pilih foto
+                  </label>
+                  {/* {isActiveForm && !uri && (
+            <label
+              onClick={() => {
+                setURI(form.photo);
+                console.log(form.photo);
+              }}
+              className={classes.item}>
+              crop
+            </label>
+          )} */}
+                  {uri && (
                     <label onClick={onClickToSetCrop} className={classes.item}>
-                      set crop
+                      set
                     </label>
                   )}
                 </div>

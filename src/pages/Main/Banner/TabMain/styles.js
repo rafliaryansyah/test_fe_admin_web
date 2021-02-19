@@ -70,7 +70,8 @@ const useStyles = makeStyles(theme => ({
     justifyContent: 'center',
     alignItems: 'center',
     gridGap: 5,
-    cursor: 'pointer'
+    cursor: 'pointer',
+    textTransform: 'uppercase'
   },
 
   submit: {

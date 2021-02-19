@@ -1,5 +1,12 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import useStyles from './styles';
+
+// resize image
+import Resizer from 'react-image-file-resizer';
+
+// image crop
+import ReactCrop from 'react-image-crop';
+import 'react-image-crop/dist/ReactCrop.css';
 
 // debounce untuk fitur pencarian
 import { debounce } from 'debounce';
@@ -51,7 +58,13 @@ import {
 } from 'services';
 
 // utils
-import { currency, dateConverterReq, dateConverterRes } from 'utils';
+import {
+  currency,
+  dateConverterReq,
+  dateConverterRes,
+  fileExtention,
+  uriToFile
+} from 'utils';
 
 function Voucher() {
   const classes = useStyles();
@@ -84,7 +97,7 @@ function Voucher() {
 
   // data form
   const [form, setForm] = useState({
-    code: '',
+    title: '',
     type: '1',
     status: '1',
     category: '',
@@ -99,7 +112,7 @@ function Voucher() {
 
   // data errors form
   const [error, setError] = useState({
-    code: '',
+    title: '',
     type: '',
     status: '',
     category: '',
@@ -111,6 +124,13 @@ function Voucher() {
     tac: '',
     image: ''
   });
+
+  // crop
+  const [uri, setURI] = useState();
+  const [crop, setCrop] = useState({ unit: 'px', height: 450, aspect: 1 / 1 });
+  const [completeCrop, setCompleteCrop] = useState(null);
+  const previewCanvasRef = useRef();
+  const imageRef = useRef();
 
   // change input field pada form
   const handleChange = e => {
@@ -129,8 +149,8 @@ function Voucher() {
   const validate = () => {
     const newError = { ...error };
 
-    if (!form.code) {
-      newError.code = 'Field masih kosong';
+    if (!form.title) {
+      newError.title = 'Field masih kosong';
     }
 
     if (!form.type) {
@@ -169,6 +189,10 @@ function Voucher() {
       newError.tac = 'Field masih kosong';
     }
 
+    if (!form.image) {
+      newError.image = 'Field masih kosong';
+    }
+
     return newError;
   };
 
@@ -203,7 +227,7 @@ function Voucher() {
       if (isEdit) {
         // state
         const {
-          code,
+          title,
           type,
           status,
           category,
@@ -220,7 +244,7 @@ function Voucher() {
         const dataUpdate = new FormData();
 
         // mengisi data menggunakan append
-        dataUpdate.append('code', code);
+        dataUpdate.append('title', title);
         dataUpdate.append('type', parseInt(type));
         dataUpdate.append('status', status);
         dataUpdate.append('category', category);
@@ -242,15 +266,8 @@ function Voucher() {
         if (result.success) {
           setOpenForm(false);
 
-          // read kembali data
-          readVoucher(false).then(res => {
-            setVouchers(res.data.data);
-            setCurrentPage(res.data.meta.current_page);
-            setLastPage(res.data.meta.last_page);
-          });
-
           setForm({
-            code: '',
+            title: '',
             type: '1',
             status: 1,
             category: '',
@@ -263,23 +280,30 @@ function Voucher() {
             image: ''
           });
 
+          // read kembali data
+          readVoucher(false).then(res => {
+            setVouchers(res.data.data);
+            setCurrentPage(res.data.meta.current_page);
+            setLastPage(res.data.meta.last_page);
+          });
+
           enqueueSnackbar('Berhasil memperbarui data', {
             variant: 'success'
           });
         } else {
           // cek error validation dari api
           if (
-            result.data.response.data.errors?.code ||
+            result.data.response.data.errors?.title ||
             result.data.response.data.errors?.expired_at ||
             result.data.response.data.errors?.min_amount
           ) {
             setError({
               ...error,
-              code: result.data.response.data.errors?.code
+              title: result.data.response.data.errors?.title
                 ? 'Nama sudah ada.'
                 : '',
               expired_at: result.data.response.data.errors?.expired_at
-                ? 'Minimal tanggal hari esok.'
+                ? 'Minimal tanggal setelah hari ini.'
                 : '',
               min_amount: result.data.response.data.errors?.min_amount
                 ? 'Minimal transaksi harus lebih besar dari potongan harga.'
@@ -292,7 +316,7 @@ function Voucher() {
             setOpenForm(false);
 
             setForm({
-              code: '',
+              title: '',
               type: '1',
               status: 1,
               category: '',
@@ -313,7 +337,7 @@ function Voucher() {
       } else {
         // state
         const {
-          code,
+          title,
           type,
           status,
           category,
@@ -330,7 +354,7 @@ function Voucher() {
         const dataCreate = new FormData();
 
         // mengisi data menggunakan append
-        dataCreate.append('code', code);
+        dataCreate.append('title', title);
         dataCreate.append('type', parseInt(type));
         dataCreate.append('status', status);
         dataCreate.append('category', category);
@@ -340,11 +364,7 @@ function Voucher() {
         dataCreate.append('quantity', quantity);
         dataCreate.append('description', description);
         dataCreate.append('tac', tac);
-
-        // cek image baru atau tetap yang lama
-        if (image.name) {
-          dataCreate.append('image', image);
-        }
+        dataCreate.append('image', image);
 
         // services
         const result = await createVoucher(dataCreate).catch(err => err);
@@ -352,15 +372,8 @@ function Voucher() {
         if (result.success) {
           setOpenForm(false);
 
-          // read kembali data
-          readVoucher(false).then(res => {
-            setVouchers(res.data.data);
-            setCurrentPage(res.data.meta.current_page);
-            setLastPage(res.data.meta.last_page);
-          });
-
           setForm({
-            code: '',
+            title: '',
             type: '1',
             status: 1,
             category: '',
@@ -373,23 +386,30 @@ function Voucher() {
             image: ''
           });
 
-          enqueueSnackbar('Berhasil menambahkan data', {
+          // read kembali data
+          readVoucher(false).then(res => {
+            setVouchers(res.data.data);
+            setCurrentPage(res.data.meta.current_page);
+            setLastPage(res.data.meta.last_page);
+          });
+
+          enqueueSnackbar('Berhasil menambah data', {
             variant: 'success'
           });
         } else {
           // cek error validation dari api
           if (
-            result.data.response.data.errors?.code ||
+            result.data.response.data.errors?.title ||
             result.data.response.data.errors?.expired_at ||
             result.data.response.data.errors?.min_amount
           ) {
             setError({
               ...error,
-              code: result.data.response.data.errors?.code
+              title: result.data.response.data.errors?.title
                 ? 'Nama sudah ada.'
                 : '',
               expired_at: result.data.response.data.errors?.expired_at
-                ? 'Minimal tanggal hari esok.'
+                ? 'Minimal tanggal setelah hari ini.'
                 : '',
               min_amount: result.data.response.data.errors?.min_amount
                 ? 'Minimal transaksi harus lebih besar dari potongan harga.'
@@ -402,7 +422,7 @@ function Voucher() {
             setOpenForm(false);
 
             setForm({
-              code: '',
+              title: '',
               type: '1',
               status: 1,
               category: '',
@@ -456,7 +476,7 @@ function Voucher() {
   };
 
   // upload image
-  const handleUploadFile = async e => {
+  const onSelectedImage = async e => {
     const file = e.target.files[0];
 
     if (!['image/png', 'image/jpeg'].includes(file && file.type)) {
@@ -493,10 +513,22 @@ function Voucher() {
         });
 
         try {
-          setForm({
-            ...form,
-            image: file
-          });
+          if (file) {
+            Resizer.imageFileResizer(
+              file,
+              300,
+              300,
+              file?.type === 'image/jpeg' ? 'JPEG' : 'PNG',
+              100,
+              0,
+              uri => {
+                if (uri) {
+                  setURI(uri);
+                }
+              },
+              'base64'
+            );
+          }
         } catch (e) {
           setError({
             ...error,
@@ -506,6 +538,67 @@ function Voucher() {
       };
 
       reader.readAsDataURL(file);
+    }
+  };
+
+  // crop
+  const imageLoaded = image => {
+    imageRef.current = image;
+  };
+
+  const onChangeCrop = crop => {
+    setCrop(crop);
+  };
+
+  const onCropComplete = crop => {
+    setCompleteCrop(crop);
+
+    const image = imageRef.current; // image
+    const canvas = previewCanvasRef.current; // document.createElement('canvas');
+    const pixelRatio = window.devicePixelRatio; // pixel ratio
+
+    const scaleX = image.naturalWidth / image.width;
+    const scaleY = image.naturalHeight / image.height;
+
+    const ctx = canvas.getContext('2d');
+
+    canvas.width = crop.width * pixelRatio;
+    canvas.height = crop.height * pixelRatio;
+
+    image.crossOrigin = 'anonymus';
+
+    ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+    ctx.imageSmoothingQuality = 'high';
+
+    ctx.drawImage(
+      image,
+      crop.x * scaleX,
+      crop.y * scaleY,
+      crop.width * scaleX,
+      crop.height * scaleY,
+      0,
+      0,
+      crop.width,
+      crop.height
+    );
+  };
+
+  // set crop
+  const onClickToSetCrop = e => {
+    e.preventDefault();
+
+    if (uri) {
+      const canvasRef = previewCanvasRef.current;
+
+      const fileExtension = fileExtention(uri);
+      const imageBase64 = canvasRef.toDataURL(`image/${fileExtension}`);
+
+      // sebelum upload ubah dari base64 ke file
+      const base64ToFile = uriToFile(imageBase64);
+
+      setForm({ ...form, image: base64ToFile });
+
+      setURI();
     }
   };
 
@@ -562,7 +655,7 @@ function Voucher() {
                 title="Contemplative Reptile"
               />
               <CardContent className={classes.content}>
-                <span>{data.code}</span>
+                <span>{data.title}</span>
               </CardContent>
             </CardActionArea>
             <CardActions className={classes.action}>
@@ -575,7 +668,7 @@ function Voucher() {
                   setIsEdit(true);
                   setForm({
                     ...form,
-                    code: data.code,
+                    title: data.title,
                     type: data.voucherType?.id.toString(),
                     status: data.voucherStatus?.id,
                     category: data.voucherCategory?.id,
@@ -621,7 +714,7 @@ function Voucher() {
       <CompDialog
         open={openDetail}
         close={() => setOpenDetail(false)}
-        title={dataDetail.code}>
+        title={dataDetail.title}>
         <Avatar
           alt="photo"
           src={dataDetail.image}
@@ -659,7 +752,7 @@ function Voucher() {
         close={() => {
           setIsEdit(false);
           setForm({
-            code: '',
+            title: '',
             type: '1',
             status: 1,
             category: '',
@@ -672,7 +765,7 @@ function Voucher() {
             image: ''
           });
           setError({
-            code: '',
+            title: '',
             type: '',
             status: '',
             category: '',
@@ -684,11 +777,12 @@ function Voucher() {
             tac: '',
             image: ''
           });
+          setURI();
           setOpenForm(false);
         }}
         title="Form Voucher">
         <div className={classes.form}>
-          <InputLabel htmlFor="code" error={error.code ? true : false}>
+          <InputLabel htmlFor="title" error={error.title ? true : false}>
             Nama Voucher
           </InputLabel>
           <FormControl
@@ -697,15 +791,15 @@ function Voucher() {
             margin="normal"
             fullWidth>
             <OutlinedInput
-              name="code"
-              id="code"
+              name="title"
+              id="title"
               color="primary"
               onChange={handleChange}
-              value={form.code}
-              error={error.code ? true : false}
+              value={form.title}
+              error={error.title ? true : false}
             />
-            <FormHelperText id="outlined-helper-text" error={error.code}>
-              {error.code}
+            <FormHelperText id="outlined-helper-text" error={error.title}>
+              {error.title}
             </FormHelperText>
           </FormControl>
 
@@ -935,24 +1029,78 @@ function Voucher() {
           </FormControl>
 
           <div className={classes.inputFile}>
-            <Avatar
-              alt="photo"
-              src={
-                form.image.name ? URL.createObjectURL(form.image) : form.image
-              }
-              variant="rounded"
-              className={classes.preview}
-            />
+            <InputLabel
+              id="image"
+              style={{ marginBottom: 15 }}
+              error={error.image ? true : false}>
+              Gambar
+            </InputLabel>
+            {!uri && (
+              <Avatar
+                alt="image"
+                src={
+                  form.image?.name
+                    ? URL.createObjectURL(form.image)
+                    : form.image
+                }
+                variant="rounded"
+                className={classes.preview}
+              />
+            )}
+
+            {uri && (
+              <div style={{ textAlign: 'center' }}>
+                <canvas
+                  ref={previewCanvasRef}
+                  style={{
+                    width: Math.round(completeCrop?.width ?? 0),
+                    height: Math.round(completeCrop?.height ?? 0)
+                  }}
+                />
+              </div>
+            )}
+
+            {uri && (
+              <div style={{ textAlign: 'center' }}>
+                <ReactCrop
+                  src={uri}
+                  crop={crop}
+                  onImageLoaded={imageLoaded}
+                  onComplete={onCropComplete}
+                  onChange={onChangeCrop}
+                  keepSelection={true}
+                />
+              </div>
+            )}
+
             <input
               type="file"
               id="upload"
               accept="image/jpeg,image/png"
-              onChange={handleUploadFile}
+              onChange={onSelectedImage}
               style={{ display: 'none' }}
             />
-            <label htmlFor="upload" className={classes.itemUpload}>
-              Upload Foto
+
+            <div className={classes.actionUploadFile}>
+              <label htmlFor="upload" className={classes.item}>
+                pilih foto
+              </label>
+              {/* {isActiveForm && !uri && (
+            <label
+              onClick={() => {
+                setURI(form.photo);
+                console.log(form.photo);
+              }}
+              className={classes.item}>
+              crop
             </label>
+          )} */}
+              {uri && (
+                <label onClick={onClickToSetCrop} className={classes.item}>
+                  set
+                </label>
+              )}
+            </div>
           </div>
           <br />
           <FormHelperText
@@ -960,6 +1108,7 @@ function Voucher() {
             error={error.image ? true : false}>
             {error.image}
           </FormHelperText>
+          <br />
 
           <Button
             variant="contained"

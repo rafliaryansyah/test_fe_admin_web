@@ -1,5 +1,12 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import useStyles from './styles';
+
+// resize image
+import Resizer from 'react-image-file-resizer';
+
+// image crop
+import ReactCrop from 'react-image-crop';
+import 'react-image-crop/dist/ReactCrop.css';
 
 // debounce untuk fitur pencarian
 import { debounce } from 'debounce';
@@ -24,7 +31,6 @@ import { useSnackbar } from 'notistack';
 // icons
 import {
   IoSearchOutline,
-  IoCloudDownloadOutline,
   IoPencilOutline,
   IoTrashOutline
 } from 'react-icons/io5';
@@ -34,6 +40,9 @@ import { CardKurir, CompDialog, ConfirmDialog, Paginasi } from 'components';
 
 // services
 import { readKurir, updateKurir, deleteKurir } from 'services';
+
+// utils
+import { fileExtention, uriToFile } from 'utils';
 
 function Kurir() {
   const classes = useStyles();
@@ -60,6 +69,13 @@ function Kurir() {
     image: ''
   });
 
+  // crop
+  const [uri, setURI] = useState();
+  const [crop, setCrop] = useState({ unit: 'px', height: 300, aspect: 1 / 1 });
+  const [completeCrop, setCompleteCrop] = useState(null);
+  const previewCanvasRef = useRef();
+  const imageRef = useRef();
+
   // validation form
   const validate = () => {
     const newError = { ...error };
@@ -68,18 +84,20 @@ function Kurir() {
       newError.name = 'Field masih kosong';
     }
 
+    if (!image) {
+      newError.image = 'Field masih kosong';
+    }
+
     return newError;
   };
 
   // read data kurir
   useEffect(() => {
-    readKurir()
-      .then(res => {
-        setKurirs(res.data.data);
-        setLastPage(res.data.meta.last_page);
-        setCurrentPage(res.data.meta.current_page);
-      })
-      .catch(err => err);
+    readKurir().then(res => {
+      setKurirs(res.data.data);
+      setLastPage(res.data.meta.last_page);
+      setCurrentPage(res.data.meta.current_page);
+    });
   }, []);
 
   // update data
@@ -115,13 +133,11 @@ function Kurir() {
         setImage('');
 
         // read kembali data kurir
-        readKurir()
-          .then(res => {
-            setKurirs(res.data.data);
-            setLastPage(res.data.meta.last_page);
-            setCurrentPage(res.data.meta.current_page);
-          })
-          .catch(err => err);
+        readKurir().then(res => {
+          setKurirs(res.data.data);
+          setLastPage(res.data.meta.last_page);
+          setCurrentPage(res.data.meta.current_page);
+        });
 
         enqueueSnackbar('Berhasil memperbarui data', { variant: 'success' });
       } else {
@@ -141,13 +157,11 @@ function Kurir() {
       setOpenConfirmDelete(false);
 
       // read kembali data kurir
-      readKurir()
-        .then(res => {
-          setKurirs(res.data.data);
-          setLastPage(res.data.meta.last_page);
-          setCurrentPage(res.data.meta.current_page);
-        })
-        .catch(err => err);
+      readKurir().then(res => {
+        setKurirs(res.data.data);
+        setLastPage(res.data.meta.last_page);
+        setCurrentPage(res.data.meta.current_page);
+      });
 
       enqueueSnackbar('Berhasil menghapus data', { variant: 'success' });
     } else {
@@ -158,7 +172,7 @@ function Kurir() {
   };
 
   // upload image
-  const onChangeImage = async e => {
+  const onSelectedImage = async e => {
     const file = e.target.files[0];
 
     if (!['image/png', 'image/jpeg'].includes(file && file.type)) {
@@ -195,7 +209,22 @@ function Kurir() {
         });
 
         try {
-          setImage(file);
+          if (file) {
+            Resizer.imageFileResizer(
+              file,
+              300,
+              300,
+              file?.type === 'image/jpeg' ? 'JPEG' : 'PNG',
+              100,
+              0,
+              uri => {
+                if (uri) {
+                  setURI(uri);
+                }
+              },
+              'base64'
+            );
+          }
         } catch (e) {
           setError({
             ...error,
@@ -205,6 +234,67 @@ function Kurir() {
       };
 
       reader.readAsDataURL(file);
+    }
+  };
+
+  // crop
+  const imageLoaded = image => {
+    imageRef.current = image;
+  };
+
+  const onChangeCrop = crop => {
+    setCrop(crop);
+  };
+
+  const onCropComplete = crop => {
+    setCompleteCrop(crop);
+
+    const image = imageRef.current; // image
+    const canvas = previewCanvasRef.current; // document.createElement('canvas');
+    const pixelRatio = window.devicePixelRatio; // pixel ratio
+
+    const scaleX = image.naturalWidth / image.width;
+    const scaleY = image.naturalHeight / image.height;
+
+    const ctx = canvas.getContext('2d');
+
+    canvas.width = crop.width * pixelRatio;
+    canvas.height = crop.height * pixelRatio;
+
+    image.crossOrigin = 'anonymus';
+
+    ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+    ctx.imageSmoothingQuality = 'high';
+
+    ctx.drawImage(
+      image,
+      crop.x * scaleX,
+      crop.y * scaleY,
+      crop.width * scaleX,
+      crop.height * scaleY,
+      0,
+      0,
+      crop.width,
+      crop.height
+    );
+  };
+
+  // set crop
+  const onClickToSetCrop = e => {
+    e.preventDefault();
+
+    if (uri) {
+      const canvasRef = previewCanvasRef.current;
+
+      const fileExtension = fileExtention(uri);
+      const imageBase64 = canvasRef.toDataURL(`image/${fileExtension}`);
+
+      // sebelum upload ubah dari base64 ke file
+      const base64ToFile = uriToFile(imageBase64);
+
+      setImage(base64ToFile);
+
+      setURI();
     }
   };
 
@@ -269,23 +359,22 @@ function Kurir() {
         count={lastPage}
         page={currentPage}
         onChange={(e, value) =>
-          readKurir('', value)
-            .then(res => {
-              setKurirs(res.data.data);
-              setLastPage(res.data.meta.last_page);
-              setCurrentPage(res.data.meta.current_page);
-            })
-            .catch(err => err)
+          readKurir('', value).then(res => {
+            setKurirs(res.data.data);
+            setLastPage(res.data.meta.last_page);
+            setCurrentPage(res.data.meta.current_page);
+          })
         }
       />
 
       <CompDialog
         open={openForm}
         close={() => {
-          setOpenForm(false);
           setStatus(1);
           setName('');
           setImage('');
+          setURI();
+          setOpenForm(false);
         }}
         title="Form Edit">
         <div className={classes.form}>
@@ -329,24 +418,71 @@ function Kurir() {
           </FormControl>
 
           <div className={classes.inputFile}>
-            <InputLabel id="image">Gambar (max 500KB)</InputLabel>
-            <Avatar
-              alt="photo"
-              src={image.name ? URL.createObjectURL(image) : image}
-              variant="rounded"
-              className={classes.preview}
-            />
+            <InputLabel id="image" style={{ marginBottom: 15 }}>
+              Gambar
+            </InputLabel>
+            {!uri && (
+              <Avatar
+                alt="image"
+                src={image?.name ? URL.createObjectURL(image) : image}
+                variant="rounded"
+                className={classes.preview}
+              />
+            )}
+
+            {uri && (
+              <div style={{ textAlign: 'center' }}>
+                <canvas
+                  ref={previewCanvasRef}
+                  style={{
+                    width: Math.round(completeCrop?.width ?? 0),
+                    height: Math.round(completeCrop?.height ?? 0)
+                  }}
+                />
+              </div>
+            )}
+
+            {uri && (
+              <div style={{ textAlign: 'center' }}>
+                <ReactCrop
+                  src={uri}
+                  crop={crop}
+                  onImageLoaded={imageLoaded}
+                  onComplete={onCropComplete}
+                  onChange={onChangeCrop}
+                  keepSelection={true}
+                />
+              </div>
+            )}
+
             <input
               type="file"
               id="upload"
               accept="image/jpeg,image/png"
-              onChange={onChangeImage}
+              onChange={onSelectedImage}
               style={{ display: 'none' }}
             />
-            <label htmlFor="upload" className={classes.itemUpload}>
-              <IoCloudDownloadOutline />
-              Upload
+
+            <div className={classes.actionUploadFile}>
+              <label htmlFor="upload" className={classes.item}>
+                pilih foto
+              </label>
+              {/* {isActiveForm && !uri && (
+            <label
+              onClick={() => {
+                setURI(form.photo);
+                console.log(form.photo);
+              }}
+              className={classes.item}>
+              crop
             </label>
+          )} */}
+              {uri && (
+                <label onClick={onClickToSetCrop} className={classes.item}>
+                  set
+                </label>
+              )}
+            </div>
           </div>
           <br />
           <FormHelperText
