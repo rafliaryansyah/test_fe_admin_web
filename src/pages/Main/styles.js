@@ -66,8 +66,11 @@ const useStyles = makeStyles(theme => ({
 
   paper: {
     width: drawerWidth,
-    zIndex: 0,
-    position: 'unset'
+
+    [theme.breakpoints.up('sm')]: {
+      zIndex: 0,
+      position: 'unset'
+    }
   },
 
   listPadding: {
