@@ -8,6 +8,10 @@ const useStyles = makeStyles(theme => ({
   },
 
   // app bar
+  root: {
+    zIndex: 1201
+  },
+
   menuButton: {
     marginRight: theme.spacing(2),
 
@@ -68,8 +72,7 @@ const useStyles = makeStyles(theme => ({
     width: drawerWidth,
 
     [theme.breakpoints.up('sm')]: {
-      zIndex: 0,
-      position: 'unset'
+      marginTop: 73
     }
   },
 

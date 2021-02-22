@@ -72,7 +72,10 @@ function Main({ history, window }) {
 
   return (
     <div className={classes.wrapper}>
-      <AppBar position="sticky" color="transparent">
+      <AppBar
+        position="sticky"
+        color="transparent"
+        classes={{ root: classes.root }}>
         <Toolbar>
           <IconButton
             edge="start"
