@@ -9,7 +9,7 @@ const useStyles = makeStyles(theme => ({
   },
 
   title: {
-    fontSize: 20,
+    fontSize: 18,
     textTransform: 'capitalize',
     letterSpacing: 1,
     fontWeight: 'bold',
@@ -52,7 +52,11 @@ const useStyles = makeStyles(theme => ({
   preview: {
     objectFit: 'cover',
     width: '100%',
-    height: '100%'
+    height: '100%',
+
+    [theme.breakpoints.down('sm')]: {
+      height: 100
+    }
   },
 
   actionUploadFile: {

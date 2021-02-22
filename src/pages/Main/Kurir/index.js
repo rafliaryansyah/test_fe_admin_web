@@ -301,7 +301,10 @@ function Kurir() {
   return (
     <div className={classes.wrapper}>
       <div className={classes.pencarian}>
-        <FormControl variant="outlined" size="small">
+        <FormControl
+          variant="outlined"
+          size="small"
+          className={classes.formControl}>
           <OutlinedInput
             color="primary"
             placeholder="Cari"

@@ -301,12 +301,13 @@ function Category({
         <Button
           variant="contained"
           color="primary"
-          onClick={() => setOpen(true)}>
+          onClick={() => setOpen(true)}
+          className={classes.formControl}>
           buat kategori
         </Button>
       </div>
 
-      <AppBar position="static" color="default">
+      <AppBar position="static" color="transparent">
         <Tabs
           variant="fullWidth"
           bac

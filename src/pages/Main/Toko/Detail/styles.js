@@ -11,8 +11,8 @@ const useStyles = makeStyles(() => ({
   },
 
   menuTabToko: {
-    backgroundColor: '#FFFFFF',
-    boxShadow: '0px 0px 1px rgba(0, 0, 0, 0.3)',
+    boxShadow: '0px 0px 5px rgba(0, 0, 0, 0.3)',
+    borderRadius: 5,
     padding: 15
   }
 }));

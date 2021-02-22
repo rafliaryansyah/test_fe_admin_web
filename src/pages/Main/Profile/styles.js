@@ -2,7 +2,6 @@ import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles(theme => ({
   wrapper: {
-    backgroundColor: '#ffffff',
     display: 'grid',
     gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
     gridGap: 15,
@@ -13,7 +12,11 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     flexDirection: 'column',
     gridGap: 15,
-    width: 300
+    width: 300,
+
+    [theme.breakpoints.down('sm')]: {
+      width: '100%'
+    }
   },
 
   preview: {

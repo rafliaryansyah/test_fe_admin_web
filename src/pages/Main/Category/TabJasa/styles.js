@@ -6,10 +6,18 @@ const useStyles = makeStyles(theme => ({
   },
 
   cardGrid: {
+    padding: 15,
+    marginBottom: 15,
     display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 250px))',
     gridGap: 15,
-    margin: '30px 0px 30px 0px'
+    justifyContent: 'center',
+    alignItems: 'center',
+    margin: '30px 0px 30px 0px',
+
+    [theme.breakpoints.down('sm')]: {
+      gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))'
+    }
   },
 
   content: {
@@ -66,7 +74,11 @@ const useStyles = makeStyles(theme => ({
   preview: {
     objectFit: 'cover',
     width: '100%',
-    height: 450
+    height: 450,
+
+    [theme.breakpoints.down('sm')]: {
+      height: 200
+    }
   },
 
   actionUploadFile: {

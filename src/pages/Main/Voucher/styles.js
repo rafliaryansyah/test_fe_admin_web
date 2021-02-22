@@ -2,7 +2,6 @@ import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles(theme => ({
   pencarian: {
-    backgroundColor: '#ffffff',
     padding: 15,
     display: 'flex',
     justifyContent: 'flex-end',
@@ -33,7 +32,7 @@ const useStyles = makeStyles(theme => ({
     display: 'grid',
     gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 250px))',
     gridGap: 15,
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     alignItems: 'center',
 
     [theme.breakpoints.down('sm')]: {

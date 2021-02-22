@@ -9,12 +9,21 @@ const useStyles = makeStyles(theme => ({
     alignItems: 'center',
     gridGap: 15,
     marginBottom: 15,
-    boxShadow: '0px 0px 1px rgba(0, 0, 0, 0.5)',
+    boxShadow: '0px 0px 5px rgba(0, 0, 0, 0.3)',
+    borderRadius: 5,
 
     [theme.breakpoints.down('sm')]: {
       flexDirection: 'column',
       alignItems: 'stretch'
     }
+  },
+
+  hasilPencarian: {
+    border: '1px solid #cacaca',
+    borderRadius: 4,
+    padding: 7,
+    textAlign: 'center',
+    color: theme.palette.grey
   },
 
   formControl: {
@@ -26,14 +35,13 @@ const useStyles = makeStyles(theme => ({
   },
 
   wrapperCard: {
+    padding: 15,
     marginBottom: 15,
     display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(500px, 1fr))',
-    justifyContent: 'space-between',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 517px))',
     gridGap: 15,
-    padding: 15,
-    backgroundColor: '#ffffff',
-    boxShadow: '0px 0px 1px rgba(0, 0, 0, 0.5)',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
 
     [theme.breakpoints.down('sm')]: {
       gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))'

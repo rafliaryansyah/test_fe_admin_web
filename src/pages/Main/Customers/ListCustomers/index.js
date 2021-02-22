@@ -11,8 +11,7 @@ import {
   InputAdornment,
   InputLabel,
   MenuItem,
-  Select,
-  Chip
+  Select
 } from '@material-ui/core';
 
 // react icons
@@ -62,10 +61,9 @@ function ListCustomers({ history }) {
   return (
     <div className={classes.wrapper}>
       <div className={classes.pencarian}>
-        <Chip
-          label={`Hasil Pencarian : ${count ? count : 0}`}
-          variant="default"
-        />
+        <div className={classes.hasilPencarian}>
+          <span>{`Hasil Pencarian : ${count ? count : 0}`}</span>
+        </div>
         <FormControl
           variant="outlined"
           size="small"

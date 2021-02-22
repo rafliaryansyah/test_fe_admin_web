@@ -23,7 +23,7 @@ const useStyles = makeStyles(theme => ({
     display: 'grid',
     backgroundColor: '#ffffff',
     boxShadow: '0px 0px 3px rgba(0, 0, 0, 0.5)',
-    borderRadius: 10,
+    borderRadius: 5,
     padding: 15
   },
 

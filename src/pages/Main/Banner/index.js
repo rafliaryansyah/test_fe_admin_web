@@ -18,7 +18,7 @@ function Banner({ history, location }) {
   return (
     <div className={classes.wrapper}>
       <div>
-        <AppBar position="static" color="default">
+        <AppBar position="static" color="transparent">
           <Tabs
             variant="fullWidth"
             indicatorColor="primary"

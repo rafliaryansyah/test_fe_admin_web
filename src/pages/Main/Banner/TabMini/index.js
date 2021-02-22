@@ -241,12 +241,12 @@ function TabMini() {
 
   // read data promo dan kategori
   useEffect(() => {
-    readPromo('').then(res => setDataPromo(res.data.data));
+    readPromo(false).then(res => setDataPromo(res.data.data));
   }, []);
 
   useEffect(() => {
-    getCategory('1').then(res => setKategoriProduk(res.data.data));
-    getCategory('2').then(res => setKategoriJasa(res.data.data));
+    getCategory(false, '1').then(res => setKategoriProduk(res.data.data));
+    getCategory(false, '2').then(res => setKategoriJasa(res.data.data));
   }, []);
 
   // create dan update data tipe produk
@@ -837,7 +837,7 @@ function TabMini() {
                         <CardMedia
                           component="img"
                           alt="Contemplative Reptile"
-                          height="230"
+                          height="100"
                           image={item.image}
                           title={item.headline}
                         />
@@ -889,7 +889,7 @@ function TabMini() {
                         <CardMedia
                           component="img"
                           alt="Contemplative Reptile"
-                          height="230"
+                          height="100"
                           image={item.image}
                           title={item.headline}
                         />
@@ -963,7 +963,7 @@ function TabMini() {
                         <CardMedia
                           component="img"
                           alt="Contemplative Reptile"
-                          height="230"
+                          height="100"
                           image={item.image}
                           title={item.headline}
                         />
@@ -1015,7 +1015,7 @@ function TabMini() {
                         <CardMedia
                           component="img"
                           alt="Contemplative Reptile"
-                          height="230"
+                          height="100"
                           image={item.image}
                           title={item.headline}
                         />
@@ -1094,7 +1094,7 @@ function TabMini() {
                         <CardMedia
                           component="img"
                           alt="Contemplative Reptile"
-                          height="230"
+                          height="100"
                           image={item.image}
                           title={item.headline}
                         />
@@ -1146,7 +1146,7 @@ function TabMini() {
                         <CardMedia
                           component="img"
                           alt="Contemplative Reptile"
-                          height="230"
+                          height="100"
                           image={item.image}
                           title={item.headline}
                         />
@@ -1220,7 +1220,7 @@ function TabMini() {
                         <CardMedia
                           component="img"
                           alt="Contemplative Reptile"
-                          height="230"
+                          height="100"
                           image={item.image}
                           title={item.headline}
                         />
@@ -1272,7 +1272,7 @@ function TabMini() {
                         <CardMedia
                           component="img"
                           alt="Contemplative Reptile"
-                          height="230"
+                          height="100"
                           image={item.image}
                           title={item.headline}
                         />
@@ -1529,7 +1529,7 @@ function TabMini() {
                   input={<Input />}
                   MenuProps={MenuProps}>
                   <List dense>
-                    {dataPromo.map(item => {
+                    {dataPromo?.map(item => {
                       const labelId = `checkbox-list-secondary-label-${item.title}`;
                       return (
                         <ListItem
@@ -1572,7 +1572,7 @@ function TabMini() {
                   input={<Input />}
                   MenuProps={MenuProps}>
                   <List dense>
-                    {kategoriProduk.map(item => {
+                    {kategoriProduk?.map(item => {
                       const labelId = `checkbox-list-secondary-label-${item.name}`;
                       return (
                         <ListItem
@@ -1890,7 +1890,7 @@ function TabMini() {
                   input={<Input />}
                   MenuProps={MenuProps}>
                   <List dense>
-                    {dataPromo.map(item => {
+                    {dataPromo?.map(item => {
                       const labelId = `checkbox-list-secondary-label-${item.title}`;
                       return (
                         <ListItem
@@ -1933,7 +1933,7 @@ function TabMini() {
                   input={<Input />}
                   MenuProps={MenuProps}>
                   <List dense>
-                    {kategoriJasa.map(item => {
+                    {kategoriJasa?.map(item => {
                       const labelId = `checkbox-list-secondary-label-${item.name}`;
                       return (
                         <ListItem

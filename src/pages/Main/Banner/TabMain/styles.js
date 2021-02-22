@@ -9,7 +9,7 @@ const useStyles = makeStyles(theme => ({
   },
 
   title: {
-    fontSize: 20,
+    fontSize: 18,
     textTransform: 'capitalize',
     letterSpacing: 1,
     fontWeight: 'bold',

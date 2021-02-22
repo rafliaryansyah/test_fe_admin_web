@@ -13,7 +13,17 @@ const useStyles = makeStyles(theme => ({
     alignItems: 'center',
     gridGap: 15,
     marginBottom: 15,
-    boxShadow: '0px 0px 1px rgba(0, 0, 0, 0.5)'
+    boxShadow: '0px 0px 5px rgba(0, 0, 0, 0.3)',
+    borderRadius: 5
+  },
+
+  formControl: {
+    width: 200,
+    padding: 8,
+
+    [theme.breakpoints.down('sm')]: {
+      width: '100%'
+    }
   },
 
   form: {
@@ -31,7 +41,11 @@ const useStyles = makeStyles(theme => ({
   preview: {
     objectFit: 'cover',
     width: '100%',
-    height: 450
+    height: 450,
+
+    [theme.breakpoints.down('sm')]: {
+      height: 200
+    }
   },
 
   actionUploadFile: {

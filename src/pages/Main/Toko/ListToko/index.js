@@ -5,12 +5,14 @@ import useStyles from './styles';
 import { debounce } from 'debounce';
 
 // material-ui core
-import FormControl from '@material-ui/core/FormControl';
-import OutlinedInput from '@material-ui/core/OutlinedInput';
-import InputAdornment from '@material-ui/core/InputAdornment';
-import InputLabel from '@material-ui/core/InputLabel';
-import MenuItem from '@material-ui/core/MenuItem';
-import Select from '@material-ui/core/Select';
+import {
+  FormControl,
+  InputLabel,
+  OutlinedInput,
+  InputAdornment,
+  MenuItem,
+  Select
+} from '@material-ui/core';
 
 // react icons
 import { IoSearchOutline } from 'react-icons/io5';
@@ -66,7 +68,10 @@ const ListToko = ({ history }) => {
             <MenuItem value="3">Rejected</MenuItem>
           </Select>
         </FormControl>
-        <FormControl variant="outlined" size="small">
+        <FormControl
+          variant="outlined"
+          size="small"
+          className={classes.formControl}>
           <OutlinedInput
             name="email"
             id="email"

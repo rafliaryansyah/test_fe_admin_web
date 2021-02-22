@@ -2,17 +2,21 @@ import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles(theme => ({
   form: {
-    margin: '15px 0px 15px 0px',
-    width: 534,
-
-    [theme.breakpoints.down('sm')]: {
-      width: 250
-    }
+    display: 'grid',
+    padding: 15
   },
 
   title: {
     textAlign: 'center',
     padding: 0
+  },
+
+  notif: {
+    fontSize: 15,
+
+    [theme.breakpoints.down('sm')]: {
+      fontSize: 10
+    }
   }
 }));
 

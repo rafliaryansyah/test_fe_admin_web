@@ -163,7 +163,7 @@ function ChangePassword({ open, close, history }) {
       </DialogTitle>
       <DialogContent>
         <div className={classes.form}>
-          <span style={{ fontSize: 15 }}>
+          <span className={classes.notif}>
             Sebelum memperbarui Password. Mohon masukkan Email & Password lama
             dengan benar.
           </span>
@@ -241,7 +241,7 @@ function ChangePassword({ open, close, history }) {
               <div>
                 <br />
                 <br />
-                <span style={{ fontSize: 15 }}>
+                <span className={classes.notif}>
                   Silahkan memperbarui password
                 </span>
                 <br />

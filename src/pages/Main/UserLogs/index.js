@@ -43,7 +43,10 @@ function UserLogs() {
             <MenuItem value="3">Rejected</MenuItem>
           </Select>
         </FormControl>
-        <FormControl variant="outlined" size="small">
+        <FormControl
+          variant="outlined"
+          size="small"
+          className={classes.formControl}>
           <OutlinedInput
             name="email"
             id="email"

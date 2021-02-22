@@ -783,7 +783,7 @@ function TabHighLight() {
                         <CardMedia
                           component="img"
                           alt="Contemplative Reptile"
-                          height="230"
+                          height="200"
                           image={item.image}
                           title={item.headline}
                         />
@@ -855,7 +855,7 @@ function TabHighLight() {
                         <CardMedia
                           component="img"
                           alt="Contemplative Reptile"
-                          height="230"
+                          height="200"
                           image={item.image}
                           title={item.headline}
                         />
@@ -937,7 +937,7 @@ function TabHighLight() {
                         <CardMedia
                           component="img"
                           alt="Contemplative Reptile"
-                          height="230"
+                          height="200"
                           image={item.image}
                           title={item.headline}
                         />
@@ -1009,7 +1009,7 @@ function TabHighLight() {
                         <CardMedia
                           component="img"
                           alt="Contemplative Reptile"
-                          height="230"
+                          height="200"
                           image={item.image}
                           title={item.headline}
                         />

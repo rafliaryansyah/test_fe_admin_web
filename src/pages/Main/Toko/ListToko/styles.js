@@ -6,11 +6,14 @@ const useStyles = makeStyles(theme => ({
     padding: 15,
     display: 'flex',
     justifyContent: 'flex-end',
+    alignItems: 'center',
     gridGap: 15,
     marginBottom: 15,
-    boxShadow: '0px 0px 1px rgba(0, 0, 0, 0.5)',
+    boxShadow: '0px 0px 5px rgba(0, 0, 0, 0.3)',
+    borderRadius: 5,
 
     [theme.breakpoints.down('sm')]: {
+      justifyContent: 'center',
       flexDirection: 'column'
     }
   },
@@ -24,15 +27,13 @@ const useStyles = makeStyles(theme => ({
   },
 
   wrapperCard: {
-    boxShadow: '0px 0px 1px rgba(0, 0, 0, 0.5)',
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(500px, 1fr))',
-    gridGap: 15,
-    justifyContent: 'space-between',
-    alignItems: 'center',
     padding: 15,
     marginBottom: 15,
-    backgroundColor: '#ffffff',
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 517px))',
+    gridGap: 15,
+    justifyContent: 'flex-start',
+    alignItems: 'center',
 
     [theme.breakpoints.down('sm')]: {
       gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))'
