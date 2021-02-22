@@ -640,7 +640,7 @@ function Voucher() {
 
       <div className={classes.main}>
         {vouchers?.map(data => (
-          <Card key={data.id}>
+          <Card key={data.id} className={classes.card}>
             <CardActionArea
               disabled={data.isDeleted}
               onClick={() => {
@@ -699,6 +699,7 @@ function Voucher() {
         ))}
       </div>
 
+      <br />
       <Paginasi
         count={lastPage}
         page={currentPage}
@@ -710,6 +711,7 @@ function Voucher() {
           })
         }
       />
+      <br />
 
       <CompDialog
         open={openDetail}
@@ -782,251 +784,287 @@ function Voucher() {
         }}
         title="Form Voucher">
         <div className={classes.form}>
-          <InputLabel htmlFor="title" error={error.title ? true : false}>
-            Nama Voucher
-          </InputLabel>
-          <FormControl
-            variant="outlined"
-            size="small"
-            margin="normal"
-            fullWidth>
-            <OutlinedInput
-              name="title"
-              id="title"
-              color="primary"
-              onChange={handleChange}
-              value={form.title}
-              error={error.title ? true : false}
-            />
-            <FormHelperText id="outlined-helper-text" error={error.title}>
-              {error.title}
-            </FormHelperText>
-          </FormControl>
+          <div>
+            <InputLabel htmlFor="title" error={error.title ? true : false}>
+              Nama Voucher
+            </InputLabel>
+            <FormControl
+              variant="outlined"
+              size="small"
+              margin="normal"
+              fullWidth>
+              <OutlinedInput
+                name="title"
+                id="title"
+                color="primary"
+                onChange={handleChange}
+                value={form.title}
+                error={error.title ? true : false}
+              />
+              <FormHelperText id="outlined-helper-text" error={error.title}>
+                {error.title}
+              </FormHelperText>
+            </FormControl>
+          </div>
 
-          <FormControl component="fieldset" style={{ marginBottom: 15 }}>
+          <div>
             <FormLabel component="legend">Tipe Voucher</FormLabel>
-            <RadioGroup
-              row
-              aria-label="type"
-              name="type"
-              value={form.type}
-              onChange={handleChange}>
-              <FormControlLabel
-                value="1"
-                control={<Radio color="primary" />}
-                label="Produk"
+            <FormControl component="fieldset" style={{ marginTop: 15 }}>
+              <RadioGroup
+                row
+                aria-label="type"
+                name="type"
+                value={form.type}
+                onChange={handleChange}>
+                <FormControlLabel
+                  value="1"
+                  control={<Radio color="primary" />}
+                  label="Produk"
+                />
+                <FormControlLabel
+                  value="2"
+                  control={<Radio color="primary" />}
+                  label="Jasa"
+                />
+              </RadioGroup>
+            </FormControl>
+          </div>
+
+          <div>
+            <InputLabel id="status" error={error.status ? true : false}>
+              Status
+            </InputLabel>
+            <FormControl
+              variant="outlined"
+              size="small"
+              fullWidth
+              style={{ marginTop: 15 }}>
+              <Select
+                labelId="status"
+                id="status"
+                name="status"
+                value={form.status}
+                onChange={handleChange}>
+                <MenuItem value={1}>Aktif</MenuItem>
+                <MenuItem value={2}>Tidak Aktif</MenuItem>
+              </Select>
+              <FormHelperText id="outlined-helper-text" error={error.status}>
+                {error.status}
+              </FormHelperText>
+            </FormControl>
+          </div>
+
+          <div>
+            <InputLabel id="category" error={error.category ? true : false}>
+              Kategori
+            </InputLabel>
+            <FormControl
+              variant="outlined"
+              size="small"
+              fullWidth
+              style={{ marginTop: 15 }}>
+              <Select
+                labelId="category"
+                id="category"
+                name="category"
+                value={form.category}
+                onChange={handleChange}>
+                <TextField
+                  id="search"
+                  name="search"
+                  value={form.type === '1' ? categoryProduct : categoryJasa}
+                  onChange={e => {
+                    form.type === '1'
+                      ? getCategory(false, '1', e.target.value)
+                          .then(res => {
+                            setCategoryProduct(res.data.data);
+                          })
+                          .catch(err => err)
+                      : getCategory(false, '2', e.target.value)
+                          .then(res => {
+                            setCategoryJasa(res.data.data);
+                          })
+                          .catch(err => err);
+                  }}
+                  placeholder="search"
+                  fullWidth
+                />
+                {form.type === '1' &&
+                  categoryProduct.map(item => (
+                    <MenuItem key={item.id} value={item.id}>
+                      {item.name}
+                    </MenuItem>
+                  ))}
+                {form.type === '2' &&
+                  categoryJasa.map(item => (
+                    <MenuItem key={item.id} value={item.id}>
+                      {item.name}
+                    </MenuItem>
+                  ))}
+              </Select>
+              <FormHelperText id="outlined-helper-text" error={error.category}>
+                {error.category}
+              </FormHelperText>
+            </FormControl>
+          </div>
+
+          <div>
+            <InputLabel
+              htmlFor="expired_at"
+              error={error.expired_at ? true : false}>
+              Berlaku Hingga
+            </InputLabel>
+            <FormControl
+              variant="outlined"
+              size="small"
+              margin="normal"
+              fullWidth>
+              <OutlinedInput
+                type="date"
+                name="expired_at"
+                id="expired_at"
+                color="primary"
+                onChange={handleChange}
+                value={form.expired_at}
+                error={error.expired_at ? true : false}
               />
-              <FormControlLabel
-                value="2"
-                control={<Radio color="primary" />}
-                label="Jasa"
+              <FormHelperText
+                id="outlined-helper-text"
+                error={error.expired_at}>
+                {error.expired_at}
+              </FormHelperText>
+            </FormControl>
+          </div>
+
+          <div>
+            <InputLabel
+              htmlFor="min_amount"
+              error={error.min_amount ? true : false}>
+              Minimum Transaksi
+            </InputLabel>
+            <FormControl
+              variant="outlined"
+              size="small"
+              margin="normal"
+              fullWidth>
+              <OutlinedInput
+                type="number"
+                name="min_amount"
+                id="min_amount"
+                color="primary"
+                onChange={handleChange}
+                value={form.min_amount}
+                error={error.min_amount ? true : false}
               />
-            </RadioGroup>
-          </FormControl>
+              <FormHelperText
+                id="outlined-helper-text"
+                error={error.min_amount}>
+                {error.min_amount}
+              </FormHelperText>
+            </FormControl>
+          </div>
 
-          <FormControl
-            variant="outlined"
-            size="small"
-            fullWidth
-            style={{ marginBottom: 15 }}>
-            <InputLabel id="status">Status</InputLabel>
-            <Select
-              labelId="status"
-              id="status"
-              name="status"
-              value={form.status}
-              onChange={handleChange}
-              label="Status">
-              <MenuItem value={1}>Aktif</MenuItem>
-              <MenuItem value={2}>Tidak Aktif</MenuItem>
-            </Select>
-          </FormControl>
-
-          <FormControl
-            variant="outlined"
-            size="small"
-            fullWidth
-            style={{ marginBottom: 15 }}>
-            <InputLabel id="category">Kategori</InputLabel>
-            <Select
-              labelId="category"
-              id="category"
-              name="category"
-              value={form.category}
-              onChange={handleChange}
-              label="Kategori">
-              <TextField
-                id="search"
-                name="search"
-                value={form.type === '1' ? categoryProduct : categoryJasa}
-                onChange={e => {
-                  form.type === '1'
-                    ? getCategory(false, '1', e.target.value)
-                        .then(res => {
-                          setCategoryProduct(res.data.data);
-                        })
-                        .catch(err => err)
-                    : getCategory(false, '2', e.target.value)
-                        .then(res => {
-                          setCategoryJasa(res.data.data);
-                        })
-                        .catch(err => err);
-                }}
-                placeholder="search"
-                fullWidth
+          <div>
+            <InputLabel htmlFor="amount" error={error.amount ? true : false}>
+              Potongan Harga
+            </InputLabel>
+            <FormControl
+              variant="outlined"
+              size="small"
+              margin="normal"
+              fullWidth>
+              <OutlinedInput
+                type="number"
+                name="amount"
+                id="amount"
+                color="primary"
+                onChange={handleChange}
+                value={form.amount}
+                error={error.amount ? true : false}
               />
-              {form.type === '1' &&
-                categoryProduct.map(item => (
-                  <MenuItem key={item.id} value={item.id}>
-                    {item.name}
-                  </MenuItem>
-                ))}
-              {form.type === '2' &&
-                categoryJasa.map(item => (
-                  <MenuItem key={item.id} value={item.id}>
-                    {item.name}
-                  </MenuItem>
-                ))}
-            </Select>
-          </FormControl>
+              <FormHelperText id="outlined-helper-text" error={error.amount}>
+                {error.amount}
+              </FormHelperText>
+            </FormControl>
+          </div>
 
-          <InputLabel
-            htmlFor="expired_at"
-            error={error.expired_at ? true : false}>
-            Berlaku Hingga
-          </InputLabel>
-          <FormControl
-            variant="outlined"
-            size="small"
-            margin="normal"
-            fullWidth>
-            <OutlinedInput
-              type="date"
-              name="expired_at"
-              id="expired_at"
-              color="primary"
-              onChange={handleChange}
-              value={form.expired_at}
-              error={error.expired_at ? true : false}
-            />
-            <FormHelperText id="outlined-helper-text" error={error.expired_at}>
-              {error.expired_at}
-            </FormHelperText>
-          </FormControl>
+          <div>
+            <InputLabel
+              htmlFor="quantity"
+              error={error.quantity ? true : false}>
+              Kuantitas
+            </InputLabel>
+            <FormControl
+              variant="outlined"
+              size="small"
+              margin="normal"
+              fullWidth>
+              <OutlinedInput
+                type="number"
+                name="quantity"
+                id="quantity"
+                color="primary"
+                onChange={handleChange}
+                value={form.quantity}
+                error={error.quantity ? true : false}
+              />
+              <FormHelperText id="outlined-helper-text" error={error.quantity}>
+                {error.quantity}
+              </FormHelperText>
+            </FormControl>
+          </div>
 
-          <InputLabel
-            htmlFor="min_amount"
-            error={error.min_amount ? true : false}>
-            Minimum Transaksi
-          </InputLabel>
-          <FormControl
-            variant="outlined"
-            size="small"
-            margin="normal"
-            fullWidth>
-            <OutlinedInput
-              type="number"
-              name="min_amount"
-              id="min_amount"
-              color="primary"
-              onChange={handleChange}
-              value={form.min_amount}
-              error={error.min_amount ? true : false}
-            />
-            <FormHelperText id="outlined-helper-text" error={error.min_amount}>
-              {error.min_amount}
-            </FormHelperText>
-          </FormControl>
+          <div>
+            <InputLabel
+              htmlFor="description"
+              error={error.description ? true : false}>
+              Deskripsi
+            </InputLabel>
+            <FormControl
+              variant="outlined"
+              size="small"
+              margin="normal"
+              fullWidth>
+              <OutlinedInput
+                name="description"
+                id="description"
+                color="primary"
+                multiline
+                onChange={handleChange}
+                value={form.description}
+                error={error.description ? true : false}
+              />
+              <FormHelperText
+                id="outlined-helper-text"
+                error={error.description}>
+                {error.description}
+              </FormHelperText>
+            </FormControl>
+          </div>
 
-          <InputLabel htmlFor="amount" error={error.amount ? true : false}>
-            Potongan Harga
-          </InputLabel>
-          <FormControl
-            variant="outlined"
-            size="small"
-            margin="normal"
-            fullWidth>
-            <OutlinedInput
-              type="number"
-              name="amount"
-              id="amount"
-              color="primary"
-              onChange={handleChange}
-              value={form.amount}
-              error={error.amount ? true : false}
-            />
-            <FormHelperText id="outlined-helper-text" error={error.amount}>
-              {error.amount}
-            </FormHelperText>
-          </FormControl>
-
-          <InputLabel htmlFor="quantity" error={error.quantity ? true : false}>
-            Kuantitas
-          </InputLabel>
-          <FormControl
-            variant="outlined"
-            size="small"
-            margin="normal"
-            fullWidth>
-            <OutlinedInput
-              type="number"
-              name="quantity"
-              id="quantity"
-              color="primary"
-              onChange={handleChange}
-              value={form.quantity}
-              error={error.quantity ? true : false}
-            />
-            <FormHelperText id="outlined-helper-text" error={error.quantity}>
-              {error.quantity}
-            </FormHelperText>
-          </FormControl>
-
-          <InputLabel
-            htmlFor="description"
-            error={error.description ? true : false}>
-            Deskripsi
-          </InputLabel>
-          <FormControl
-            variant="outlined"
-            size="small"
-            margin="normal"
-            fullWidth>
-            <OutlinedInput
-              name="description"
-              id="description"
-              color="primary"
-              multiline
-              onChange={handleChange}
-              value={form.description}
-              error={error.description ? true : false}
-            />
-            <FormHelperText id="outlined-helper-text" error={error.description}>
-              {error.description}
-            </FormHelperText>
-          </FormControl>
-
-          <InputLabel htmlFor="tac" error={error.tac ? true : false}>
-            Syarat & Ketentuan
-          </InputLabel>
-          <FormControl
-            variant="outlined"
-            size="small"
-            margin="normal"
-            fullWidth>
-            <OutlinedInput
-              name="tac"
-              id="tac"
-              color="primary"
-              multiline
-              onChange={handleChange}
-              value={form.tac}
-              error={error.tac ? true : false}
-            />
-            <FormHelperText id="outlined-helper-text" error={error.tac}>
-              {error.tac}
-            </FormHelperText>
-          </FormControl>
+          <div>
+            <InputLabel htmlFor="tac" error={error.tac ? true : false}>
+              Syarat & Ketentuan
+            </InputLabel>
+            <FormControl
+              variant="outlined"
+              size="small"
+              margin="normal"
+              fullWidth>
+              <OutlinedInput
+                name="tac"
+                id="tac"
+                color="primary"
+                multiline
+                onChange={handleChange}
+                value={form.tac}
+                error={error.tac ? true : false}
+              />
+              <FormHelperText id="outlined-helper-text" error={error.tac}>
+                {error.tac}
+              </FormHelperText>
+            </FormControl>
+          </div>
 
           <div className={classes.inputFile}>
             <InputLabel
@@ -1085,30 +1123,19 @@ function Voucher() {
               <label htmlFor="upload" className={classes.item}>
                 pilih foto
               </label>
-              {/* {isActiveForm && !uri && (
-            <label
-              onClick={() => {
-                setURI(form.photo);
-                console.log(form.photo);
-              }}
-              className={classes.item}>
-              crop
-            </label>
-          )} */}
+
               {uri && (
                 <label onClick={onClickToSetCrop} className={classes.item}>
                   set
                 </label>
               )}
             </div>
+            <FormHelperText
+              id="outlined-helper-text"
+              error={error.image ? true : false}>
+              {error.image}
+            </FormHelperText>
           </div>
-          <br />
-          <FormHelperText
-            id="outlined-helper-text"
-            error={error.image ? true : false}>
-            {error.image}
-          </FormHelperText>
-          <br />
 
           <Button
             variant="contained"
