@@ -64,11 +64,10 @@ const useStyles = makeStyles(theme => ({
     }
   },
 
-  drawerPaper: {
+  paper: {
     width: drawerWidth,
-    top: 0,
-    position: 'sticky',
-    zIndex: 0
+    zIndex: 0,
+    position: 'unset'
   },
 
   listPadding: {
