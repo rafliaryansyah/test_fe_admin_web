@@ -114,7 +114,7 @@ function Main({ history, window }) {
               open={mobileOpen}
               onClose={() => setMobileOpen(!mobileOpen)}
               classes={{
-                paper: classes.drawerPaper
+                paper: classes.paper
               }}
               ModalProps={{
                 keepMounted: true // Better open performance on mobile.
@@ -327,7 +327,7 @@ function Main({ history, window }) {
           <Hidden xsDown implementation="css">
             <Drawer
               classes={{
-                paper: classes.drawerPaper
+                paper: classes.paper
               }}
               variant="permanent"
               open>
