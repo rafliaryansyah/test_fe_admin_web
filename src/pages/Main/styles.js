@@ -1,49 +1,32 @@
 import { makeStyles } from '@material-ui/core/styles';
 
-const drawerWidth = 50;
+const drawerWidth = 240;
 
 const useStyles = makeStyles(theme => ({
+  wrapper: {
+    // height: '100vh'
+  },
+
   // app bar
-  appBar: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    boxShadow: '0px 0px 5px rgba(0, 0, 0, 0.3)',
-    position: 'fixed',
-    zIndex: 1001,
-    width: '100%',
-    backgroundColor: '#ffffff'
+  menuButton: {
+    marginRight: theme.spacing(2),
+
+    [theme.breakpoints.up('sm')]: {
+      display: 'none'
+    }
   },
 
-  buttonDanTitle: {
-    display: 'flex',
-    alignItems: 'center',
-    gridGap: 15
-  },
-
-  // nama app
   title: {
-    fontSize: 18,
-    textTransform: 'capitalize',
-    fontWeight: 'bold',
-    color: theme.palette.primary.main,
+    display: 'none',
 
-    [theme.breakpoints.down('sm')]: {
-      fontSize: 15
+    [theme.breakpoints.up('sm')]: {
+      display: 'block',
+      marginLeft: 20
     }
   },
 
-  // avatar
-  wrapperAvatar: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    gridGap: 5,
-    marginRight: 15,
-
-    [theme.breakpoints.down('sm')]: {
-      marginRight: 10
-    }
+  grow: {
+    flexGrow: 1
   },
 
   teks: {
@@ -65,112 +48,52 @@ const useStyles = makeStyles(theme => ({
     letterSpacing: 1,
     fontWeight: 'lighter'
   },
+  // close app bar
 
-  // menu
-  menu: {
-    width: 200,
-    height: '100vh',
-    position: 'fixed',
-    zIndex: 200,
-    top: 64,
-    backgroundColor: '#ffffff',
-    boxShadow: '0px 0px 1px rgba(0, 0, 0, 0.5)',
-    display: 'flex',
-    flexDirection: 'column',
-    paddingTop: 18,
-    paddingBottom: 15,
+  // sidebar & main
+  navDanMain: {
+    display: 'flex'
+  },
+  // close sidebar & main
 
-    [theme.breakpoints.down('sm')]: {
-      width: drawerWidth
+  // sidebar
+  drawer: {
+    [theme.breakpoints.up('sm')]: {
+      width: drawerWidth,
+      flexShrink: 0
     }
   },
 
-  menuShift: {
+  drawerPaper: {
     width: drawerWidth,
-    height: '100vh',
-    position: 'fixed',
-    zIndex: 200,
-    top: 64,
-    backgroundColor: '#ffffff',
-    boxShadow: '0px 0px 1px rgba(0, 0, 0, 0.5)',
-    display: 'flex',
-    flexDirection: 'column',
-    paddingTop: 18,
-    paddingBottom: 15,
-
-    [theme.breakpoints.down('sm')]: {
-      width: 173
-    }
+    top: 0,
+    position: 'sticky',
+    zIndex: 0
   },
 
-  wrapperList: {
-    overflowY: 'auto',
-    maxHeight: 430,
-    overflowX: 'hidden',
-    flex: 1
+  listPadding: {
+    padding: 0,
+    margin: 15
   },
+  // close sidebar
 
-  labelAktif: {
-    textTransform: 'capitalize',
-    fontWeight: 'bold',
-    letterSpacing: 1,
-    color: theme.palette.primary.main,
-    display: 'flex',
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-    gridGap: 15
-  },
-
-  keluar: {
-    border: `1px solid ${theme.palette.secondary.main}`,
-    color: theme.palette.secondary.main,
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-
-    '&:hover': {
-      backgroundColor: theme.palette.secondary.main,
-      color: '#ffffff'
-    }
-  },
-
-  // Content
+  // main
   main: {
-    padding: theme.spacing(1),
-    backgroundColor: '#F2F2F2',
-    paddingTop: 73,
-    transition: theme.transitions.create('margin', {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen
-    }),
-    marginLeft: 200,
-
-    [theme.breakpoints.down('sm')]: {
-      marginLeft: drawerWidth
-    }
+    width: '100%',
+    maxHeight: '100vh',
+    overflowY: 'auto',
+    padding: 15
   },
-
-  mainShift: {
-    padding: theme.spacing(1),
-    backgroundColor: '#F2F2F2',
-    paddingTop: 73,
-    transition: theme.transitions.create('margin', {
-      easing: theme.transitions.easing.easeOut,
-      duration: theme.transitions.duration.enteringScreen
-    }),
-    marginLeft: drawerWidth,
-
-    [theme.breakpoints.down('sm')]: {
-      marginLeft: 173
-    }
-  },
+  // close main
 
   // footer
   footer: {
     backgroundColor: '#FFFFFF',
-    boxShadow: '0px 0px 3px rgba(0, 0, 0, 0.1)',
+    boxShadow: '0px 0px 5px rgba(0, 0, 0, 0.3)',
+    borderRadius: 5,
     padding: 15,
     marginTop: 15,
+    marginBottom: 94,
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
@@ -180,6 +103,7 @@ const useStyles = makeStyles(theme => ({
       fontSize: 13
     }
   }
+  // close footer
 }));
 
 export default useStyles;

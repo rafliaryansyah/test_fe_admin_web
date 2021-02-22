@@ -111,23 +111,24 @@ function Login({ requestLoadingApp, loadingApp }) {
       // cek sukses atau gagal
       if (result.success) {
         requestLoadingApp(false);
+
+        // ambil data user untuk disimpan ke localStorage
+        getProfile().then(res => {
+          const user = JSON.stringify({
+            name: res.data.data?.name,
+            image: res.data.data?.image,
+            role: res.data.data?.roles?.[0].name
+          });
+
+          localStorage.setItem('user', user);
+        });
+
         enqueueSnackbar('Selamat datang di Grocery Admin App', {
           variant: 'success'
         });
-
-        // ambil data user untuk disimpan ke localStorage
-        getProfile()
-          .then(res => {
-            const user = JSON.stringify({
-              name: res.data.data?.name,
-              image: res.data.data?.image,
-              role: res.data.data?.roles?.[0].name
-            });
-            localStorage.setItem('user', user);
-          })
-          .catch(err => err);
       } else {
         requestLoadingApp(false);
+
         if (result.data.response?.data.code === 400) {
           enqueueSnackbar('Email atau Password anda salah', {
             variant: 'error'

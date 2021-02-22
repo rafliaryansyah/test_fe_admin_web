@@ -13,12 +13,12 @@ export const login = form => {
     API.login(data)
       .then(res => {
         if (res.data.code === 200) {
-          const token = JSON.stringify(res.data.token);
+          const token = JSON.stringify(res.data.message);
 
           localStorage.setItem('token', token);
-        }
 
-        resolve({ success: true, data: res.data });
+          resolve({ success: true, data: res.data });
+        }
       })
       .catch(err => {
         reject({ success: false, data: err });

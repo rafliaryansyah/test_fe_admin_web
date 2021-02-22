@@ -4,6 +4,7 @@ body {
   margin: 0;
   font-family: 'Poppins', sans-serif;
   -webkit-font-smoothing: antialiased;
+  overflow-y: hidden;
   -moz-osx-font-smoothing: grayscale;
 }
 
