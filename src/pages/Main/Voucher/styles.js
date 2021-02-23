@@ -115,7 +115,11 @@ const useStyles = makeStyles(theme => ({
   preview: {
     objectFit: 'cover',
     width: '100%',
-    height: 450
+    height: 250,
+
+    [theme.breakpoints.down('sm')]: {
+      height: 130
+    }
   },
 
   actionUploadFile: {

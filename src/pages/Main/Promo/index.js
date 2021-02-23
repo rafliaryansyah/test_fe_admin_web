@@ -427,11 +427,7 @@ function Promo({ setDataID, setDataDari, setDataTerkait, history }) {
                 <div className={classes.wrapperTeks}>
                   <span className={classes.teksPromo}>
                     <span style={{ fontWeight: 'bold' }}>periode promo</span>
-                    <span>
-                      {`${dateConverterRes(
-                        data.startedAt
-                      )} - ${dateConverterRes(data.endedAt)}`}
-                    </span>
+                    <span>{dateConverterRes(data.endedAt)}</span>
                   </span>
                   {data.discountType && data.discountType.slug === 'percent' ? (
                     <span className={classes.teksPromo}>
