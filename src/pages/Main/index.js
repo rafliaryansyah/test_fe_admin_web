@@ -14,7 +14,6 @@ import {
   Avatar,
   Hidden,
   Drawer,
-  List,
   ListItem,
   ListItemIcon,
   ListItemText
@@ -122,7 +121,7 @@ function Main({ history, window }) {
               ModalProps={{
                 keepMounted: true // Better open performance on mobile.
               }}>
-              <List component="nav" className={classes.listRoot}>
+              <div className={classes.listRoot}>
                 <Route
                   exact
                   path="/"
@@ -314,7 +313,7 @@ function Main({ history, window }) {
                     );
                   }}
                 />
-              </List>
+              </div>
 
               <div style={{ margin: '0px 15px 15px 15px' }}>
                 <Button
@@ -334,7 +333,7 @@ function Main({ history, window }) {
               }}
               variant="permanent"
               open>
-              <List component="nav" className={classes.listRoot}>
+              <div className={classes.listRoot}>
                 <Route
                   exact
                   path="/"
@@ -526,7 +525,7 @@ function Main({ history, window }) {
                     );
                   }}
                 />
-              </List>
+              </div>
 
               <div style={{ margin: '0px 15px 15px 15px' }}>
                 <Button

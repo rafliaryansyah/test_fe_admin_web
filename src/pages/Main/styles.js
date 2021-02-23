@@ -77,7 +77,6 @@ const useStyles = makeStyles(theme => ({
   },
 
   listRoot: {
-    padding: 0,
     margin: 15
   },
   // close sidebar
