@@ -1,4 +1,8 @@
+import { useEffect, useState } from 'react';
 import useStyles from './styles';
+
+// debounce
+import { debounce } from 'debounce';
 
 // material-ui core
 import {
@@ -18,8 +22,29 @@ import { IoSearchOutline } from 'react-icons/io5';
 // components
 import { Paginasi } from '../../../components';
 
+// services
+import { aktivitas } from 'services';
+
+// utils
+import { dateConverterRes } from 'utils';
+
 function UserLogs() {
   const classes = useStyles();
+
+  // paginasi
+  const [currentPage, setCurrentPage] = useState(0);
+  const [lastPage, setLastPage] = useState(0);
+
+  const [logAktivitas, setLogAktivitas] = useState([]);
+
+  // read data aktivitas
+  useEffect(() => {
+    aktivitas().then(res => {
+      setLogAktivitas(res.data.data);
+      setLastPage(res.data.meta.last_page);
+      setCurrentPage(res.data.meta.current_page);
+    });
+  }, []);
 
   return (
     <div className={classes.wrapper}>
@@ -28,19 +53,24 @@ function UserLogs() {
           variant="outlined"
           size="small"
           className={classes.formControl}>
-          <InputLabel id="select-status">Semua Status</InputLabel>
+          <InputLabel id="select-status">Semua Tanggal</InputLabel>
           <Select
             labelId="select-status"
             name="select-status"
             id="select-status"
-            // onChange={e => {
-            //
-            // }}
+            onChange={debounce(e => {
+              aktivitas(e.target.value).then(res => {
+                setLogAktivitas(res.data.data);
+                setLastPage(res.data.meta.last_page);
+                setCurrentPage(res.data.meta.current_page);
+              });
+            }, 3000)}
             label="Semua Status">
-            <MenuItem value="">Semua Status</MenuItem>
-            <MenuItem value="1">Waiting</MenuItem>
-            <MenuItem value="2">Approved</MenuItem>
-            <MenuItem value="3">Rejected</MenuItem>
+            {Array.from(Array(32)).map((tgl, i) => (
+              <MenuItem key={i} value={i === 0 ? '' : i}>
+                {i === 0 ? 'Semua Tanggal' : i}
+              </MenuItem>
+            ))}
           </Select>
         </FormControl>
         <FormControl
@@ -48,13 +78,17 @@ function UserLogs() {
           size="small"
           className={classes.formControl}>
           <OutlinedInput
-            name="email"
-            id="email"
+            name="cari"
+            id="cari"
             color="primary"
             placeholder="Cari"
-            // onChange={e =>
-            //
-            // }
+            onChange={debounce(e => {
+              aktivitas(e.target.value).then(res => {
+                setLogAktivitas(res.data.data);
+                setLastPage(res.data.meta.last_page);
+                setCurrentPage(res.data.meta.current_page);
+              });
+            }, 3000)}
             endAdornment={
               <InputAdornment position="start">
                 <IoSearchOutline />
@@ -66,18 +100,29 @@ function UserLogs() {
 
       <div className={classes.main}>
         <List component="nav" aria-label="main mailbox folders">
-          <ListItem button className={classes.item}>
-            <div className={classes.desk}>
-              <span className={classes.nama}>alex pratama</span>
-              <span className={classes.aksi}>menonaktifkan produk</span>
-              <span className={classes.ket}>Narkoboy</span>
-            </div>
-            <span className={classes.date}>1 Desember 2020, 17:10</span>
-          </ListItem>
+          {logAktivitas?.map(log => (
+            <ListItem key={log.id} button className={classes.item}>
+              <div className={classes.desk}>
+                <span className={classes.nama}>{log.causerUser}</span>
+                <span className={classes.aksi}>{log.description}</span>
+              </div>
+              <span className={classes.date}>{dateConverterRes(log.date)}</span>
+            </ListItem>
+          ))}
         </List>
       </div>
 
-      <Paginasi count={5} page={1} onClick={(e, value) => value} />
+      <Paginasi
+        count={lastPage}
+        page={currentPage}
+        onChange={(e, value) => {
+          aktivitas('', value).then(res => {
+            setLogAktivitas(res.data.data);
+            setLastPage(res.data.meta.last_page);
+            setCurrentPage(res.data.meta.current_page);
+          });
+        }}
+      />
     </div>
   );
 }

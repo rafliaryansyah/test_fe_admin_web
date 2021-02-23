@@ -35,12 +35,7 @@ const useStyles = makeStyles(theme => ({
     borderBottom: '1px solid #c4c4c4',
     display: 'flex',
     justifyContent: 'space-between',
-    padding: 15,
-
-    [theme.breakpoints.down('sm')]: {
-      flexDirection: 'column',
-      gridGap: 15
-    }
+    padding: 15
   },
 
   desk: {
@@ -55,7 +50,7 @@ const useStyles = makeStyles(theme => ({
     color: '#FFA53A',
 
     [theme.breakpoints.down('sm')]: {
-      fontSize: 13
+      fontSize: 8
     }
   },
 
@@ -65,17 +60,7 @@ const useStyles = makeStyles(theme => ({
     color: '#424242',
 
     [theme.breakpoints.down('sm')]: {
-      fontSize: 13
-    }
-  },
-
-  ket: {
-    fontSize: 15,
-    textTransform: 'capitalize',
-    color: '#FFA53A',
-
-    [theme.breakpoints.down('sm')]: {
-      fontSize: 13
+      fontSize: 8
     }
   },
 
@@ -86,7 +71,7 @@ const useStyles = makeStyles(theme => ({
     textAlign: 'left',
 
     [theme.breakpoints.down('sm')]: {
-      fontSize: 13
+      fontSize: 8
     }
   }
 }));

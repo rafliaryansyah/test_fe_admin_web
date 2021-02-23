@@ -650,7 +650,7 @@ function Voucher() {
               <CardMedia
                 component="img"
                 alt="Contemplative Reptile"
-                height="200"
+                height="130"
                 image={data.image}
                 title="Contemplative Reptile"
               />
