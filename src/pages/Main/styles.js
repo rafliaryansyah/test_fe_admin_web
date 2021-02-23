@@ -76,7 +76,7 @@ const useStyles = makeStyles(theme => ({
     }
   },
 
-  listPadding: {
+  listRoot: {
     padding: 0,
     margin: 15
   },

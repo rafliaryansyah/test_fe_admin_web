@@ -122,7 +122,7 @@ function Main({ history, window }) {
               ModalProps={{
                 keepMounted: true // Better open performance on mobile.
               }}>
-              <List component="nav" classes={{ padding: classes.listPadding }}>
+              <List component="nav" classes={{ root: classes.listRoot }}>
                 <Route
                   exact
                   path="/"
@@ -334,7 +334,7 @@ function Main({ history, window }) {
               }}
               variant="permanent"
               open>
-              <List component="nav" classes={{ padding: classes.listPadding }}>
+              <List component="nav" classes={{ root: classes.listRoot }}>
                 <Route
                   exact
                   path="/"
