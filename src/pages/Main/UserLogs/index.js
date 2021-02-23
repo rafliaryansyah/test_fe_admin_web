@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import useStyles from './styles';
 
 // material-ui core
@@ -18,8 +19,20 @@ import { IoSearchOutline } from 'react-icons/io5';
 // components
 import { Paginasi } from '../../../components';
 
+// services
+import { aktivitas } from 'services';
+
 function UserLogs() {
   const classes = useStyles();
+
+  const [logAktivitas, setLogAktivitas] = useState([]);
+
+  // read data aktivitas
+  useEffect(() => {
+    aktivitas().then(res => setLogAktivitas(res.data.data));
+  }, []);
+
+  console.log('aktivitas : ', logAktivitas);
 
   return (
     <div className={classes.wrapper}>

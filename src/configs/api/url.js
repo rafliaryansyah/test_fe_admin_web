@@ -46,6 +46,9 @@ const apiEndpoint = {
   deleteVoucher: `${appActiveConfig.api.baseurl}/admin/vouchers`,
   restoreVoucher: `${appActiveConfig.api.baseurl}/admin/vouchers`,
 
+  // log aktivitas
+  logActivity: `${appActiveConfig.api.baseurl}/admin/user-logs`,
+
   // banners
 
   // main

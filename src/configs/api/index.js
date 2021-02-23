@@ -61,6 +61,9 @@ API.updateVoucher = apiRequest.post(apiEndpoint.updateVoucher, true);
 API.deleteVoucher = apiRequest.delete(apiEndpoint.deleteVoucher, true);
 API.restoreVoucher = apiRequest.patch(apiEndpoint.restoreVoucher, true);
 
+// log aktivitas
+API.logActivity = apiRequest.get(apiEndpoint.logActivity, true);
+
 // banners
 
 // main
