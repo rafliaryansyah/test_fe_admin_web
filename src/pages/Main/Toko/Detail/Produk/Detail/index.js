@@ -7,7 +7,10 @@ import propTypes from 'prop-types';
 import { useSnackbar } from 'notistack';
 
 // material-ui core
-import { Avatar, Button } from '@material-ui/core';
+import { Avatar, Button, IconButton } from '@material-ui/core';
+
+// react icons
+import { IoCopyOutline } from 'react-icons/io5';
 
 // redux
 import { connect } from 'react-redux';
@@ -94,6 +97,21 @@ function Detail({ dataStore }) {
         className={classes.avatar}
       />
       <div className={classes.itemLabel}>
+        <div className={classes.input}>
+          <label className={classes.label}>id</label>
+          <span className={classes.text}>
+            {produk.id}
+            <IconButton
+              onClick={() => {
+                navigator.clipboard.writeText(produk.id);
+                enqueueSnackbar('ID telah dicopy', { variant: 'success' });
+              }}
+              onMouseDown={e => e.preventDefault()}
+              edge="end">
+              <IoCopyOutline />
+            </IconButton>
+          </span>
+        </div>
         <div className={classes.input}>
           <label className={classes.label}>nama</label>
           <span className={classes.text}>{produk.name}</span>

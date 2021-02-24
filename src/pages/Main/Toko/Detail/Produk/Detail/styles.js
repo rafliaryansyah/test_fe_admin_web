@@ -40,6 +40,9 @@ const useStyles = makeStyles(theme => ({
   },
 
   text: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     fontSize: 18,
     textTransform: 'capitalize',
     letterSpacing: 1,
