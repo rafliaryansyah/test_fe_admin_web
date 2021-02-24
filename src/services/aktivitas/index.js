@@ -4,11 +4,10 @@ import API from 'configs/api';
 /**
  * service aktivitas
  */
-export const aktivitas = (date, search, page) => {
+export const aktivitas = (search, page) => {
   return new Promise((resolve, reject) => {
     const data = {
       params: {
-        date: date ? date : '',
         search: search ? search : '',
         page: page ? page : 1
       }

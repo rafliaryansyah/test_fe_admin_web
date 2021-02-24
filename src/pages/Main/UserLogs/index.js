@@ -6,12 +6,9 @@ import { debounce } from 'debounce';
 
 // material-ui core
 import {
-  InputLabel,
   FormControl,
   OutlinedInput,
   InputAdornment,
-  Select,
-  MenuItem,
   List,
   ListItem
 } from '@material-ui/core';
@@ -53,37 +50,13 @@ function UserLogs() {
           variant="outlined"
           size="small"
           className={classes.formControl}>
-          <InputLabel id="select-status">Semua Tanggal</InputLabel>
-          <Select
-            labelId="select-status"
-            name="select-status"
-            id="select-status"
-            onChange={debounce(e => {
-              aktivitas(e.target.value).then(res => {
-                setLogAktivitas(res.data.data);
-                setLastPage(res.data.meta.last_page);
-                setCurrentPage(res.data.meta.current_page);
-              });
-            }, 3000)}
-            label="Semua Status">
-            {Array.from(Array(32)).map((tgl, i) => (
-              <MenuItem key={i} value={i === 0 ? '' : i}>
-                {i === 0 ? 'Semua Tanggal' : i}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-        <FormControl
-          variant="outlined"
-          size="small"
-          className={classes.formControl}>
           <OutlinedInput
             name="cari"
             id="cari"
             color="primary"
             placeholder="Cari"
             onChange={debounce(e => {
-              aktivitas('', e.target.value).then(res => {
+              aktivitas(e.target.value).then(res => {
                 setLogAktivitas(res.data.data);
                 setLastPage(res.data.meta.last_page);
                 setCurrentPage(res.data.meta.current_page);
@@ -116,7 +89,7 @@ function UserLogs() {
         count={lastPage}
         page={currentPage}
         onChange={(e, value) => {
-          aktivitas('', '', value).then(res => {
+          aktivitas('', value).then(res => {
             setLogAktivitas(res.data.data);
             setLastPage(res.data.meta.last_page);
             setCurrentPage(res.data.meta.current_page);
