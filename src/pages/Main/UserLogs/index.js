@@ -83,7 +83,7 @@ function UserLogs() {
             color="primary"
             placeholder="Cari"
             onChange={debounce(e => {
-              aktivitas(e.target.value).then(res => {
+              aktivitas('', e.target.value).then(res => {
                 setLogAktivitas(res.data.data);
                 setLastPage(res.data.meta.last_page);
                 setCurrentPage(res.data.meta.current_page);
@@ -116,7 +116,7 @@ function UserLogs() {
         count={lastPage}
         page={currentPage}
         onChange={(e, value) => {
-          aktivitas('', value).then(res => {
+          aktivitas('', '', value).then(res => {
             setLogAktivitas(res.data.data);
             setLastPage(res.data.meta.last_page);
             setCurrentPage(res.data.meta.current_page);

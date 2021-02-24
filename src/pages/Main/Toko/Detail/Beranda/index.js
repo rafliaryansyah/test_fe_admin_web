@@ -136,7 +136,7 @@ function Beranda({ setDataStore, dataStore }) {
       <div>
         <Avatar
           alt={dataStore.name}
-          // src=""
+          src={dataStore.image}
           variant="rounded"
           className={classes.avatar}
         />

@@ -95,7 +95,7 @@ const ListToko = ({ history }) => {
         {stores?.map(data => (
           <CardToko
             key={data.id}
-            srcImage=""
+            srcImage={data.image}
             nama={data.name}
             status={data.status?.name === 'Approved' ? 'aktif' : 'tidak aktif'}
             alamat={data.address}
