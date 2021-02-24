@@ -70,7 +70,7 @@ function Beranda({ setDataStore, dataStore }) {
     // services
     const result = await updateStatusStore(
       id,
-      status === 2 ? 3 : 2,
+      status === 1 ? 2 : 1,
       officialStore ? 1 : 2
     ).catch(err => err);
 
@@ -104,7 +104,7 @@ function Beranda({ setDataStore, dataStore }) {
     // services
     const result = await updateStatusStore(
       id,
-      status === 2 ? 2 : 3,
+      status === 1 ? 1 : 2,
       officialStore ? 2 : 1
     ).catch(err => err);
 
@@ -147,7 +147,7 @@ function Beranda({ setDataStore, dataStore }) {
             setOpenStatus(true);
           }}
           className={classes.btnNonaktifkan}>
-          {dataStore.status?.name === 'Approved' ? 'nonaktifkan' : 'aktifkan'}
+          {dataStore.status?.name === 'Active' ? 'nonaktifkan' : 'aktifkan'}
         </Button>
         <br />
         <FormControlLabel

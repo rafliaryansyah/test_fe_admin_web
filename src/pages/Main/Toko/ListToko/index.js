@@ -145,9 +145,7 @@ const ListToko = ({ history }) => {
               key={data.id}
               srcImage={data.image}
               nama={data.name}
-              status={
-                data.status?.name === 'Approved' ? 'aktif' : 'tidak aktif'
-              }
+              status={data.status?.name === 'Active' ? 'aktif' : 'tidak aktif'}
               alamat={data.address}
               bukaSejak={data.joinedAt && dateConverterRes(data.joinedAt)}
               handleDetail={() => history.push(`/toko/${data.id}`)}
