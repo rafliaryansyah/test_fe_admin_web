@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react';
 import useStyles from './styles';
 
+// skeleton
+import { Skeleton } from '@material-ui/lab';
+
 // debonce untuk fitur pencarian
 import { debounce } from 'debounce';
 
@@ -46,16 +49,23 @@ function ListCustomers({ history }) {
   // data hasil pencarian
   const [count, setCount] = useState(0);
 
+  const [skeleton, setSkeleton] = useState(false);
+
   // data customers
   const [customers, setCustomers] = useState([]);
 
   // read data customers
   useEffect(() => {
-    getCustomers().then(res => {
-      setCustomers(res.data.data);
-      setCurrentPage(res.data.meta.current_page);
-      setLastPage(res.data.meta.last_page);
-    });
+    setSkeleton(true);
+
+    setTimeout(() => {
+      getCustomers().then(res => {
+        setSkeleton(false);
+        setCustomers(res.data.data);
+        setCurrentPage(res.data.meta.current_page);
+        setLastPage(res.data.meta.last_page);
+      });
+    }, 1000);
   }, []);
 
   return (
@@ -73,11 +83,16 @@ function ListCustomers({ history }) {
             labelId="select-role"
             name="select-role"
             id="select-role"
-            onChange={e =>
+            onChange={e => {
+              setSkeleton(true);
+
               getCustomers(e.target.value).then(res => {
+                setSkeleton(false);
                 setCustomers(res.data.data);
-              })
-            }
+                setCurrentPage(res.data.meta.current_page);
+                setLastPage(res.data.meta.last_page);
+              });
+            }}
             label="Semua Role">
             {roles?.map((role, index) => (
               <MenuItem key={index} value={role.value}>
@@ -88,16 +103,21 @@ function ListCustomers({ history }) {
         </FormControl>
         <FormControl variant="outlined" size="small">
           <OutlinedInput
-            name="email"
-            id="email"
+            name="cari"
+            id="cari"
             color="primary"
             placeholder="Cari"
             onChange={debounce(e => {
+              setSkeleton(true);
+
               getCustomers('', e.target.value).then(res => {
+                setSkeleton(false);
                 setCustomers(res.data.data);
                 setCount(res.data.count);
+                setCurrentPage(res.data.meta.current_page);
+                setLastPage(res.data.meta.last_page);
               });
-            }, 3000)}
+            }, 1000)}
             endAdornment={
               <InputAdornment position="start">
                 <IoSearchOutline />
@@ -107,38 +127,82 @@ function ListCustomers({ history }) {
         </FormControl>
       </div>
 
-      <div className={classes.wrapperCard}>
-        {customers?.map(user => (
-          <CardCustomers
-            key={user.id}
-            nama={user.name}
-            status={
-              user.statusUser?.name === 'Active' ? 'aktif' : 'tidak aktif'
-            }
-            jenisKelamin={
-              user.gender?.id !== ''
-                ? user.gender?.id === 1
-                  ? 'Laki-Laki'
-                  : 'Perempuan'
-                : null
-            }
-            email={user.email}
-            noTelp={user.phone}
-            roles={user.roles}
-            handleDetail={() => history.push(`/customers/${user.id}`)}
-          />
-        ))}
+      <div
+        className={
+          skeleton
+            ? classes.wrapperCard
+            : customers.length > 0
+            ? classes.wrapperCard
+            : classes.noData
+        }>
+        {skeleton ? (
+          Array.from(Array(10)).map((v, i) => (
+            <div className={classes.card} key={i}>
+              <div className={classes.info}>
+                <Skeleton
+                  variant="rect"
+                  width={130}
+                  height={100}
+                  animation="wave"
+                />
+                <div className={classes.text}>
+                  <Skeleton variant="text" width={250} animation="wave" />
+                  <Skeleton variant="text" width={250} animation="wave" />
+                  <Skeleton variant="text" width={250} animation="wave" />
+                  <Skeleton variant="text" width={250} animation="wave" />
+                  <Skeleton variant="text" width={250} animation="wave" />
+                </div>
+              </div>
+              <div className={classes.garis}></div>
+              <div className={classes.role}>
+                <Skeleton
+                  variant="rect"
+                  width={60}
+                  height={25}
+                  animation="wave"
+                />
+              </div>
+            </div>
+          ))
+        ) : customers.length > 0 ? (
+          customers.map(user => (
+            <CardCustomers
+              key={user.id}
+              nama={user.name}
+              status={
+                user.statusUser?.name === 'Active' ? 'aktif' : 'tidak aktif'
+              }
+              jenisKelamin={
+                user.gender?.id !== ''
+                  ? user.gender?.id === 1
+                    ? 'Laki-Laki'
+                    : 'Perempuan'
+                  : null
+              }
+              email={user.email}
+              noTelp={user.phone}
+              roles={user.roles}
+              handleDetail={() => history.push(`/customers/${user.id}`)}
+            />
+          ))
+        ) : (
+          <span>Maaf. Saat ini data tidak tersedia!</span>
+        )}
       </div>
 
       <Paginasi
         count={lastPage}
         page={currentPage}
-        onChange={(e, value) =>
+        onChange={(e, value) => {
+          setSkeleton(true);
+
           getCustomers('', '', value).then(res => {
+            setSkeleton(false);
             setCustomers(res.data.data);
             setCurrentPage(res.data.meta.current_page);
-          })
-        }
+            setLastPage(res.data.meta.last_page);
+          });
+        }}
       />
     </div>
   );

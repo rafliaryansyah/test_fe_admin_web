@@ -20,7 +20,7 @@ const CardCustomers = ({
     <div className={classes.card} onClick={handleDetail}>
       <div className={classes.info}>
         <Avatar
-          alt={nama}
+          alt="photo"
           src={srcImage}
           variant="rounded"
           className={classes.img}
@@ -65,7 +65,7 @@ const CardCustomers = ({
       </div>
       <div className={classes.garis}></div>
       <div className={classes.role}>
-        {roles.map((item, i) => (
+        {roles?.map((item, i) => (
           <p key={i} className={classes.isiRole}>
             {(item === 'customer' && 'C') ||
               (item === 'super-admin-merchant' && 'S-A-M') ||

@@ -38,6 +38,46 @@ const useStyles = makeStyles(theme => ({
     [theme.breakpoints.down('sm')]: {
       gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))'
     }
+  },
+
+  noData: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: 345
+  },
+
+  // card skeleton
+  card: {
+    boxShadow: '0px 0px 5px rgba(0, 0, 0, 0.3)',
+    borderRadius: 5,
+    padding: 15,
+    cursor: 'pointer',
+
+    [theme.breakpoints.down('sm')]: {
+      boxShadow: '0px 0px 5px rgba(0, 0, 0, 0.1)',
+      padding: 10
+    }
+  },
+
+  info: {
+    display: 'flex',
+    gridGap: 10,
+
+    [theme.breakpoints.down('sm')]: {
+      gridGap: 15,
+      flexDirection: 'column'
+    }
+  },
+
+  text: {
+    display: 'grid',
+    gridGap: 15,
+    width: '100%',
+
+    [theme.breakpoints.down('sm')]: {
+      gridGap: 5
+    }
   }
 }));
 
