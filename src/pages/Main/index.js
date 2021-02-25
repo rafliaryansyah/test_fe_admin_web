@@ -144,19 +144,19 @@ function Main({ history, window }) {
                 />
 
                 <Route
-                  path="/customers"
+                  path="/user"
                   children={({ match, history }) => {
                     return (
                       <ListItem
                         button
                         selected={match ? true : false}
                         onClick={() => {
-                          history.push('/customers');
+                          history.push('/user');
                         }}>
                         <ListItemIcon>
                           <IoPersonCircleOutline />
                         </ListItemIcon>
-                        <ListItemText primary="Customers" />
+                        <ListItemText primary="User" />
                       </ListItem>
                     );
                   }}
@@ -356,19 +356,19 @@ function Main({ history, window }) {
                 />
 
                 <Route
-                  path="/customers"
+                  path="/user"
                   children={({ match, history }) => {
                     return (
                       <ListItem
                         button
                         selected={match ? true : false}
                         onClick={() => {
-                          history.push('/customers');
+                          history.push('/user');
                         }}>
                         <ListItemIcon>
                           <IoPersonCircleOutline />
                         </ListItemIcon>
-                        <ListItemText primary="Customers" />
+                        <ListItemText primary="User" />
                       </ListItem>
                     );
                   }}
@@ -542,7 +542,7 @@ function Main({ history, window }) {
 
         <div className={classes.main}>
           <Switch>
-            <PrivateRoute path="/customers" component={Customers} />
+            <PrivateRoute path="/user" component={Customers} />
             <PrivateRoute path="/toko" component={Toko} />
             <PrivateRoute path="/category" component={Category} />
             <PrivateRoute path="/voucher" component={Voucher} />

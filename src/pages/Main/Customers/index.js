@@ -7,7 +7,7 @@ import Detail from './Detail';
 function Customers() {
   return (
     <Switch>
-      <Route exact path="/customers/:id" component={Detail} />
+      <Route exact path="/user/:id" component={Detail} />
       <Route exact component={ListCustomers} />
     </Switch>
   );

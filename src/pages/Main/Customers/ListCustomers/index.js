@@ -182,7 +182,7 @@ function ListCustomers({ history }) {
               email={user.email}
               noTelp={user.phone}
               roles={user.roles}
-              handleDetail={() => history.push(`/customers/${user.id}`)}
+              handleDetail={() => history.push(`/user/${user.id}`)}
             />
           ))
         ) : (

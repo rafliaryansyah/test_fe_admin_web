@@ -137,15 +137,15 @@ const appRoutes = [
   },
   {
     id: 4,
-    title: 'Detail Customer',
-    path: '/customers/:id',
+    title: 'Detail User',
+    path: '/user/:id',
     component: Main,
     exact: true
   },
   {
     id: 3,
-    title: 'Customers',
-    path: '/customers',
+    title: 'User',
+    path: '/user',
     component: Main,
     exact: true
   },

@@ -76,6 +76,7 @@ function Detail({ history }) {
 
     rolesCustomer?.map(name => {
       if (
+        name !== 'super-admin-ecommerce' &&
         name !== 'admin-ecommerce' &&
         name !== 'contributor-ecommerce' &&
         name !== 'finance-ecommerce'
