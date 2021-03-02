@@ -4,7 +4,7 @@ import { apiEndpoint } from './url';
 const API = {};
 // auth
 API.login = apiRequest.post(apiEndpoint.login);
-API.register = apiRequest.post(apiEndpoint.register);
+API.logout = apiRequest.post(apiEndpoint.logout, true);
 
 // dashboard
 API.dashboard = apiRequest.get(apiEndpoint.dashboard, true);

@@ -30,13 +30,13 @@ const useStyles = makeStyles(theme => ({
     padding: 15,
     marginBottom: 15,
     display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 250px))',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 250px))',
     gridGap: 15,
     justifyContent: 'flex-start',
     alignItems: 'center',
 
     [theme.breakpoints.down('sm')]: {
-      gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))'
+      gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))'
     }
   },
 

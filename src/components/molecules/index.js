@@ -10,6 +10,9 @@ import AreaApexChart from './AreaApexChart';
 import CompCheckbox from './CompCheckbox';
 import CardKurir from './CardKurir';
 import RowTable from './RowTable';
+import SwitchPageRoute from './SwitchPageRoute';
+import SideBar from './SideBar';
+import AppBarProfile from './AppBarProfile';
 
 export {
   ConfirmDialog,
@@ -22,5 +25,8 @@ export {
   AreaApexChart,
   CompCheckbox,
   CardKurir,
-  RowTable
+  RowTable,
+  SwitchPageRoute,
+  SideBar,
+  AppBarProfile
 };

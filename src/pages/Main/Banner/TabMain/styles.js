@@ -39,7 +39,8 @@ const useStyles = makeStyles(theme => ({
 
   form: {
     display: 'grid',
-    padding: 15
+    padding: 15,
+    gridGap: 15
   },
 
   inputFile: {

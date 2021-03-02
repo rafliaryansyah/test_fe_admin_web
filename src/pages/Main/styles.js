@@ -3,10 +3,6 @@ import { makeStyles } from '@material-ui/core/styles';
 const drawerWidth = 240;
 
 const useStyles = makeStyles(theme => ({
-  wrapper: {
-    // height: '100vh'
-  },
-
   // app bar
   root: {
     zIndex: 1201
@@ -32,31 +28,12 @@ const useStyles = makeStyles(theme => ({
   grow: {
     flexGrow: 1
   },
-
-  teks: {
-    display: 'flex',
-    flexDirection: 'column',
-    gridGap: 10
-  },
-
-  nama: {
-    fontSize: 13,
-    textTransform: 'capitalize',
-    letterSpacing: 1,
-    fontWeight: 'bold'
-  },
-
-  akses: {
-    fontSize: 10,
-    textTransform: 'capitalize',
-    letterSpacing: 1,
-    fontWeight: 'lighter'
-  },
   // close app bar
 
   // sidebar & main
   navDanMain: {
-    display: 'flex'
+    display: 'flex',
+    width: '100%'
   },
   // close sidebar & main
 

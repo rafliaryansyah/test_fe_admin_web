@@ -117,7 +117,7 @@ function Detail({ history }) {
       setCustomer(res.data.data);
 
       // push ke state roles customer
-      res.data.data.roles.map(role => rolesCustomer.push(role));
+      res.data.data.roles?.map(role => rolesCustomer.push(role));
 
       setTimeout(() => {
         getCustomerRoles();
@@ -180,7 +180,7 @@ function Detail({ history }) {
         setCustomer(res.data.data);
 
         // push ke state roles customer
-        res.data.data.roles.map(role => rolesCustomer.push(role));
+        res.data.data.roles?.map(role => rolesCustomer.push(role));
 
         setTimeout(() => {
           getCustomerRoles();
@@ -215,8 +215,7 @@ function Detail({ history }) {
       <div className={classes.wrapperInfo}>
         <div className={classes.itemFotoDanRoles}>
           <Avatar
-            alt={customer.name}
-            // src={customer.image}
+            src={customer.image}
             variant="rounded"
             className={classes.img}
           />
@@ -298,9 +297,9 @@ function Detail({ history }) {
               <div className={classes.input}>
                 <label className={classes.label}>akses admin sebagai</label>
                 <span className={classes.text}>
-                  {(role === 'admin-ecommerce' && 'admin') ||
-                    (role === 'contributor-ecommerce' && 'Contributor') ||
-                    (role === 'finance-ecommerce' && 'Finance')}
+                  {role === 'admin-ecommerce' ? 'Admin' : ''}
+                  {role === 'contributor-ecommerce' ? 'Contributor' : ''}
+                  {role === 'finance-ecommerce' ? 'Finance' : ''}
                 </span>
               </div>
             ) : null

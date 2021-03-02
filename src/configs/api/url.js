@@ -4,7 +4,7 @@ import { appActiveConfig } from '../appConfig';
 const apiEndpoint = {
   // auth
   login: `${appActiveConfig.api.baseurl}/admin/login`,
-  register: `${appActiveConfig.api.baseurl}`,
+  logout: `${appActiveConfig.api.baseurl}/admin/logout`,
 
   // dashboard
   dashboard: `${appActiveConfig.api.baseurl}/admin/dashboard`,

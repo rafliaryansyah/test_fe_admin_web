@@ -3,12 +3,15 @@ import { Redirect } from 'react-router-dom';
 import useStyles from './styles';
 import propTypes from 'prop-types';
 
+// jwt
+import jwt from 'jsonwebtoken';
+
 // react redux
 import { connect } from 'react-redux';
 import { setLoadingApp } from 'modules';
 
 // services
-import { login, getProfile } from 'services';
+import { login, logout, getProfile } from 'services';
 
 // notistack
 import { useSnackbar } from 'notistack';
@@ -84,12 +87,16 @@ function Login({ requestLoadingApp, loadingApp }) {
   }
 
   if (JSON.parse(localStorage.getItem('token'))) {
-    const RedirectTo =
-      location.state && location.state.from && location.state.from.pathname
-        ? location.state.from.pathname
-        : '/';
+    // decode token
+    const decode = jwt.decode(JSON.parse(localStorage.getItem('token')));
 
-    return <Redirect to={RedirectTo} />;
+    const RedirectTo = location?.state?.from?.pathname
+      ? location.state.from.pathname
+      : decode.roles?.map(role =>
+          role === 'contributor-ecommerce' ? '/user' : '/'
+        );
+
+    return <Redirect to={RedirectTo[0]} />;
   }
 
   // submit untuk login
@@ -110,22 +117,73 @@ function Login({ requestLoadingApp, loadingApp }) {
 
       // cek sukses atau gagal
       if (result.success) {
-        requestLoadingApp(false);
+        // baca data user profile
+        const profile = await getProfile().catch(err => err);
 
-        // ambil data user untuk disimpan ke localStorage
-        getProfile().then(res => {
+        if (profile.success) {
+          requestLoadingApp(false);
+          // simpan juga data profile ke localStorage
+
           const user = JSON.stringify({
-            name: res.data.data?.name,
-            image: res.data.data?.image,
-            role: res.data.data?.roles?.[0].name
+            name: profile.data.data?.name,
+            image: profile.data.data?.image,
+            role: profile.data.data?.roles?.[0].name
           });
 
           localStorage.setItem('user', user);
-        });
 
-        enqueueSnackbar('Selamat datang di Grocery Admin App', {
-          variant: 'success'
-        });
+          // decode token
+          const decode = jwt.decode(JSON.parse(localStorage.getItem('token')));
+
+          // cek role
+          decode.roles?.map(
+            role =>
+              (role === 'super-admin-ecommerce' &&
+                enqueueSnackbar('Selamat datang Super Admin.', {
+                  variant: 'success'
+                })) ||
+              (role === 'contributor-ecommerce' &&
+                enqueueSnackbar('Selamat datang Contributor Admin.', {
+                  variant: 'success'
+                })) ||
+              (role === 'finance-ecommerce' &&
+                enqueueSnackbar('Selamat datang Finance Admin.', {
+                  variant: 'success'
+                }))
+          );
+        } else {
+          // cek unauthentikasi
+
+          if (profile.data.response?.data.code === 401) {
+            localStorage.removeItem('token');
+
+            const keluar = await logout().catch(err => err);
+
+            if (keluar.success) {
+              enqueueSnackbar('Terima kasih udah masuk.', {
+                variant: 'success'
+              });
+            } else {
+              enqueueSnackbar('Terjadi kesalahan.', {
+                variant: 'error'
+              });
+            }
+
+            requestLoadingApp(false);
+          }
+
+          // cek user akses
+
+          if (profile.data.response?.data.code === 403) {
+            localStorage.removeItem('token');
+
+            enqueueSnackbar('Maaf! Anda tidak memiliki akses untuk masuk.', {
+              variant: 'info'
+            });
+
+            requestLoadingApp(false);
+          }
+        }
       } else {
         requestLoadingApp(false);
 

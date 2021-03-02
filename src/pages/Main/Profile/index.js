@@ -75,7 +75,7 @@ function Profile({ history }) {
         ...form,
         name: res.data.data.name,
         dob: dateConverterReq(res.data.data.date_of_birth),
-        gender: res.data.data.gender && res.data.data.gender.id.toString(),
+        gender: res.data.data.gender?.id.toString(),
         email: res.data.data.email,
         phone: res.data.data.phone,
         photo: res.data.data.image
@@ -261,7 +261,6 @@ function Profile({ history }) {
       <div className={classes.itemFotoDanRoles}>
         {!uri && (
           <Avatar
-            alt="image"
             src={
               form.photo?.name ? URL.createObjectURL(form.photo) : form.photo
             }

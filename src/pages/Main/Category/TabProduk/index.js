@@ -397,7 +397,8 @@ function TabProduk({
               <CardMedia
                 component="img"
                 alt="Contemplative Reptile"
-                height="150"
+                width="100%"
+                height="100%"
                 image={data.image}
                 title={data.name}
               />
@@ -441,7 +442,7 @@ function TabProduk({
         count={lastPage}
         page={currentPage}
         onChange={(e, value) => {
-          getCategory('1', '', value).then(res => {
+          getCategory(false, '1', '', value).then(res => {
             setDataCategoriesProduk(res.data.data);
             setCurrentPage(res.data.meta.current_page);
             setLastPage(res.data.meta.last_page);

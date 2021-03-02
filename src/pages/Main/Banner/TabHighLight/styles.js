@@ -39,7 +39,8 @@ const useStyles = makeStyles(theme => ({
 
   form: {
     display: 'grid',
-    padding: 15
+    padding: 15,
+    gridGap: 15
   },
 
   inputFile: {
@@ -52,7 +53,7 @@ const useStyles = makeStyles(theme => ({
   preview: {
     objectFit: 'cover',
     width: '100%',
-    height: 300,
+    height: '100%',
 
     [theme.breakpoints.down('sm')]: {
       height: 130

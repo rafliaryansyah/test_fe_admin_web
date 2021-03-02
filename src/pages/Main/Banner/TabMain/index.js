@@ -163,7 +163,7 @@ function TabMain() {
 
   // crop
   const [uri, setURI] = useState();
-  const [crop, setCrop] = useState({ unit: 'px', height: 300, aspect: 16 / 9 });
+  const [crop, setCrop] = useState({ unit: 'px', width: 414, aspect: 4 / 3 });
   const [completeCrop, setCompleteCrop] = useState(null);
   const previewCanvasRef = useRef();
   const imageRef = useRef();
@@ -585,7 +585,8 @@ function TabMain() {
                         <CardMedia
                           component="img"
                           alt="Contemplative Reptile"
-                          height="230"
+                          width="100%"
+                          height="100%"
                           image={item.image}
                           title="main"
                         />
@@ -635,7 +636,8 @@ function TabMain() {
                         <CardMedia
                           component="img"
                           alt="Contemplative Reptile"
-                          height="230"
+                          width="100%"
+                          height="100%"
                           image={item.image}
                           title="Main"
                         />
@@ -708,7 +710,8 @@ function TabMain() {
                         <CardMedia
                           component="img"
                           alt="Contemplative Reptile"
-                          height="230"
+                          width="100%"
+                          height="100%"
                           image={item.image}
                           title="main"
                         />
@@ -758,7 +761,8 @@ function TabMain() {
                         <CardMedia
                           component="img"
                           alt="Contemplative Reptile"
-                          height="230"
+                          width="100%"
+                          height="100%"
                           image={item.image}
                           title="Main"
                         />
@@ -828,316 +832,294 @@ function TabMain() {
         }}
         title="Form Main">
         <div className={classes.form}>
-          <FormControl component="fieldset">
+          <div>
             <FormLabel component="legend">Arahkan ke</FormLabel>
-            <RadioGroup
-              row
-              aria-label="relate"
-              name="relate"
-              value={relate}
-              onChange={e => setRelate(e.target.value)}>
-              <FormControlLabel
-                value="1"
-                control={<Radio color="primary" />}
-                label="Detail Produk"
-              />
-              <FormControlLabel
-                value="2"
-                control={<Radio color="primary" />}
-                label="List Produk"
-              />
-            </RadioGroup>
-          </FormControl>
+            <FormControl component="fieldset">
+              <RadioGroup
+                row
+                aria-label="relate"
+                name="relate"
+                value={relate}
+                onChange={e => setRelate(e.target.value)}>
+                <FormControlLabel
+                  value="1"
+                  control={<Radio color="primary" />}
+                  label="Detail Produk"
+                />
+                <FormControlLabel
+                  value="2"
+                  control={<Radio color="primary" />}
+                  label="List Produk"
+                />
+              </RadioGroup>
+            </FormControl>
+          </div>
 
-          <FormControl component="fieldset" style={{ marginBottom: 15 }}>
+          <div>
             <FormLabel component="legend">Tipe</FormLabel>
-            <RadioGroup
-              row
-              aria-label="type"
-              name="type"
-              value={type}
-              onChange={e => setType(e.target.value)}>
-              <FormControlLabel
-                value="1"
-                control={<Radio color="primary" />}
-                label="Produk"
-              />
-              <FormControlLabel
-                value="2"
-                control={<Radio color="primary" />}
-                label="Jasa"
-              />
-            </RadioGroup>
-          </FormControl>
+            <FormControl component="fieldset">
+              <RadioGroup
+                row
+                aria-label="type"
+                name="type"
+                value={type}
+                onChange={e => setType(e.target.value)}>
+                <FormControlLabel
+                  value="1"
+                  control={<Radio color="primary" />}
+                  label="Produk"
+                />
+                <FormControlLabel
+                  value="2"
+                  control={<Radio color="primary" />}
+                  label="Jasa"
+                />
+              </RadioGroup>
+            </FormControl>
+          </div>
 
           {relate === '1' ? (
-            <div style={{ marginTop: 10 }}>
+            <div>
               {isEdit && (
+                <div>
+                  <InputLabel id="status" style={{ marginBottom: 10 }}>
+                    status
+                  </InputLabel>
+                  <FormControl variant="outlined" size="small" fullWidth>
+                    <Select
+                      labelId="status"
+                      id="status"
+                      name="status"
+                      value={status}
+                      onChange={e => setStatus(e.target.value)}>
+                      <MenuItem value={1}>Aktif</MenuItem>
+                      <MenuItem value={2}>Tidak Aktif</MenuItem>
+                    </Select>
+                  </FormControl>
+                </div>
+              )}
+
+              <div style={{ margin: '15px 0px' }}>
+                <InputLabel
+                  htmlFor="product"
+                  error={error.produk ? true : false}>
+                  ID {type === '1' ? 'Produk' : 'Jasa'}
+                </InputLabel>
                 <FormControl
                   variant="outlined"
                   size="small"
-                  fullWidth
-                  style={{ marginBottom: 15 }}>
-                  <InputLabel id="status">status</InputLabel>
-                  <Select
-                    labelId="status"
-                    id="status"
-                    name="status"
-                    value={status}
-                    onChange={e => setStatus(e.target.value)}
-                    label="Status">
-                    <MenuItem value={1}>Aktif</MenuItem>
-                    <MenuItem value={2}>Tidak Aktif</MenuItem>
-                  </Select>
+                  margin="normal"
+                  fullWidth>
+                  <OutlinedInput
+                    name="product"
+                    id="product"
+                    color="primary"
+                    onChange={e => setProduk(e.target.value)}
+                    value={produk}
+                    error={error.produk ? true : false}
+                  />
+                  <FormHelperText
+                    id="outlined-helper-text"
+                    error={error.produk ? true : false}>
+                    {error.produk}
+                  </FormHelperText>
                 </FormControl>
-              )}
+              </div>
 
-              <InputLabel
-                htmlFor="product"
-                error={error.produk ? true : false}
-                className={classes.label}>
-                ID {type === '1' ? 'Produk' : 'Jasa'}
-              </InputLabel>
-              <FormControl
-                variant="outlined"
-                size="small"
-                margin="normal"
-                fullWidth>
-                <OutlinedInput
-                  name="product"
-                  id="product"
-                  color="primary"
-                  onChange={e => setProduk(e.target.value)}
-                  value={produk}
-                  error={error.produk ? true : false}
+              <div className={classes.inputFile}>
+                <InputLabel id="image">Gambar ( 4 / 3 )</InputLabel>
+                {!uri && (
+                  <Avatar
+                    src={image?.name ? URL.createObjectURL(image) : image}
+                    variant="rounded"
+                    className={classes.preview}
+                  />
+                )}
+
+                {uri && (
+                  <div style={{ textAlign: 'center' }}>
+                    <canvas
+                      ref={previewCanvasRef}
+                      style={{
+                        width: Math.round(completeCrop?.width ?? 0),
+                        height: Math.round(completeCrop?.height ?? 0)
+                      }}
+                    />
+                  </div>
+                )}
+
+                {uri && (
+                  <div style={{ textAlign: 'center' }}>
+                    <ReactCrop
+                      src={uri}
+                      crop={crop}
+                      onImageLoaded={imageLoaded}
+                      onComplete={onCropComplete}
+                      onChange={onChangeCrop}
+                      keepSelection={true}
+                    />
+                  </div>
+                )}
+
+                <input
+                  type="file"
+                  id="upload"
+                  accept="image/jpeg,image/png"
+                  onChange={onSelectedImage}
+                  style={{ display: 'none' }}
                 />
+
+                <div className={classes.actionUploadFile}>
+                  <label htmlFor="upload" className={classes.item}>
+                    pilih foto
+                  </label>
+                  {uri && (
+                    <label onClick={onClickToSetCrop} className={classes.item}>
+                      set
+                    </label>
+                  )}
+                </div>
                 <FormHelperText
                   id="outlined-helper-text"
-                  error={error.produk ? true : false}>
-                  {error.produk}
+                  error={error.image ? true : false}>
+                  {error.image}
                 </FormHelperText>
-              </FormControl>
-
-              <div className={classes.inputFile}>
-                <InputLabel id="image" style={{ marginBottom: 15 }}>
-                  Gambar
-                </InputLabel>
-                {!uri && (
-                  <Avatar
-                    alt="image"
-                    src={image?.name ? URL.createObjectURL(image) : image}
-                    variant="rounded"
-                    className={classes.preview}
-                  />
-                )}
-
-                {uri && (
-                  <div style={{ textAlign: 'center' }}>
-                    <canvas
-                      ref={previewCanvasRef}
-                      style={{
-                        width: Math.round(completeCrop?.width ?? 0),
-                        height: Math.round(completeCrop?.height ?? 0)
-                      }}
-                    />
-                  </div>
-                )}
-
-                {uri && (
-                  <div style={{ textAlign: 'center' }}>
-                    <ReactCrop
-                      src={uri}
-                      crop={crop}
-                      onImageLoaded={imageLoaded}
-                      onComplete={onCropComplete}
-                      onChange={onChangeCrop}
-                      keepSelection={true}
-                    />
-                  </div>
-                )}
-
-                <input
-                  type="file"
-                  id="upload"
-                  accept="image/jpeg,image/png"
-                  onChange={onSelectedImage}
-                  style={{ display: 'none' }}
-                />
-
-                <div className={classes.actionUploadFile}>
-                  <label htmlFor="upload" className={classes.item}>
-                    pilih foto
-                  </label>
-                  {/* {isActiveForm && !uri && (
-            <label
-              onClick={() => {
-                setURI(form.photo);
-                console.log(form.photo);
-              }}
-              className={classes.item}>
-              crop
-            </label>
-          )} */}
-                  {uri && (
-                    <label onClick={onClickToSetCrop} className={classes.item}>
-                      set
-                    </label>
-                  )}
-                </div>
               </div>
-              <br />
-              <FormHelperText
-                id="outlined-helper-text"
-                error={error.image ? true : false}>
-                {error.image}
-              </FormHelperText>
             </div>
           ) : (
-            <div style={{ marginTop: 10 }}>
+            <div>
               {isEdit && (
-                <FormControl
-                  variant="outlined"
-                  size="small"
-                  fullWidth
-                  style={{ marginBottom: 15 }}>
-                  <InputLabel id="status">status</InputLabel>
-                  <Select
-                    labelId="status"
-                    id="status"
-                    name="status"
-                    value={status}
-                    onChange={e => setStatus(e.target.value)}
-                    label="Status">
-                    <MenuItem value={1}>Aktif</MenuItem>
-                    <MenuItem value={2}>Tidak Aktif</MenuItem>
-                  </Select>
-                </FormControl>
+                <div>
+                  <InputLabel id="status" style={{ marginBottom: 10 }}>
+                    status
+                  </InputLabel>
+                  <FormControl variant="outlined" size="small" fullWidth>
+                    <Select
+                      labelId="status"
+                      id="status"
+                      name="status"
+                      value={status}
+                      onChange={e => setStatus(e.target.value)}>
+                      <MenuItem value={1}>Aktif</MenuItem>
+                      <MenuItem value={2}>Tidak Aktif</MenuItem>
+                    </Select>
+                  </FormControl>
+                </div>
               )}
 
-              <InputLabel id="products" style={{ marginBottom: 15 }}>
-                Promo (max 5)
-              </InputLabel>
-              <FormControl
-                variant="outlined"
-                size="small"
-                fullWidth
-                style={{ marginBottom: 15 }}>
-                <Select
-                  labelId="promos"
-                  id="promos"
-                  name="promos"
-                  multiple
-                  value={promos}
-                  input={<Input />}
-                  MenuProps={MenuProps}>
-                  <List dense>
-                    {dataPromo?.map(item => {
-                      const labelId = `checkbox-list-secondary-label-${item.title}`;
-                      return (
-                        <ListItem
-                          key={item.id}
-                          button
-                          onClick={onCheckboxPromos(item.id)}>
-                          <ListItemAvatar>
-                            <Avatar alt={`Avatar ${item.title}`} />
-                          </ListItemAvatar>
-                          <ListItemText id={labelId} primary={item.title} />
-                          <ListItemSecondaryAction>
-                            <Checkbox
-                              edge="end"
-                              onChange={onCheckboxPromos(item.id)}
-                              checked={promos?.indexOf(item.id) !== -1}
-                              inputProps={{ 'aria-labelledby': labelId }}
-                            />
-                          </ListItemSecondaryAction>
-                        </ListItem>
-                      );
-                    })}
-                  </List>
-                </Select>
-              </FormControl>
-
-              <InputLabel id="categories" style={{ marginBottom: 15 }}>
-                Kategori (max 5)
-              </InputLabel>
-              <FormControl
-                variant="outlined"
-                size="small"
-                fullWidth
-                style={{ marginBottom: 15 }}>
-                <Select
-                  labelId="categories"
-                  id="categories"
-                  name="categories"
-                  multiple
-                  value={categories}
-                  input={<Input />}
-                  MenuProps={MenuProps}>
-                  <List dense>
-                    {type === '1' &&
-                      kategoriProduk?.map(item => {
-                        const labelId = `checkbox-list-secondary-label-${item.name}`;
+              <div style={{ marginTop: 15 }}>
+                <InputLabel id="products">Promo (max 5)</InputLabel>
+                <FormControl variant="outlined" size="small" fullWidth>
+                  <Select
+                    labelId="promos"
+                    id="promos"
+                    name="promos"
+                    multiple
+                    value={promos}
+                    input={<Input />}
+                    MenuProps={MenuProps}>
+                    <List dense>
+                      {dataPromo?.map(item => {
+                        const labelId = `checkbox-list-secondary-label-${item.title}`;
                         return (
                           <ListItem
                             key={item.id}
                             button
-                            onClick={onCheckboxKategori(item.id)}>
+                            onClick={onCheckboxPromos(item.id)}>
                             <ListItemAvatar>
-                              <Avatar
-                                alt={`Avatar ${item.name}`}
-                                src={item.image}
-                              />
+                              <Avatar alt={`Avatar ${item.title}`} />
                             </ListItemAvatar>
-                            <ListItemText id={labelId} primary={item.name} />
+                            <ListItemText id={labelId} primary={item.title} />
                             <ListItemSecondaryAction>
                               <Checkbox
                                 edge="end"
-                                onChange={onCheckboxKategori(item.id)}
-                                checked={categories?.indexOf(item.id) !== -1}
+                                onChange={onCheckboxPromos(item.id)}
+                                checked={promos?.indexOf(item.id) !== -1}
                                 inputProps={{ 'aria-labelledby': labelId }}
                               />
                             </ListItemSecondaryAction>
                           </ListItem>
                         );
                       })}
+                    </List>
+                  </Select>
+                </FormControl>
+              </div>
 
-                    {type === '2' &&
-                      kategoriJasa?.map(item => {
-                        const labelId = `checkbox-list-secondary-label-${item.name}`;
-                        return (
-                          <ListItem
-                            key={item.id}
-                            button
-                            onClick={onCheckboxKategori(item.id)}>
-                            <ListItemAvatar>
-                              <Avatar
-                                alt={`Avatar ${item.name}`}
-                                src={item.image}
-                              />
-                            </ListItemAvatar>
-                            <ListItemText id={labelId} primary={item.name} />
-                            <ListItemSecondaryAction>
-                              <Checkbox
-                                edge="end"
-                                onChange={onCheckboxKategori(item.id)}
-                                checked={categories?.indexOf(item.id) !== -1}
-                                inputProps={{ 'aria-labelledby': labelId }}
-                              />
-                            </ListItemSecondaryAction>
-                          </ListItem>
-                        );
-                      })}
-                  </List>
-                </Select>
-              </FormControl>
+              <div style={{ margin: '30px 0px' }}>
+                <InputLabel id="categories">Kategori (max 5)</InputLabel>
+                <FormControl variant="outlined" size="small" fullWidth>
+                  <Select
+                    labelId="categories"
+                    id="categories"
+                    name="categories"
+                    multiple
+                    value={categories}
+                    input={<Input />}
+                    MenuProps={MenuProps}>
+                    <List dense>
+                      {type === '1' &&
+                        kategoriProduk?.map(item => {
+                          const labelId = `checkbox-list-secondary-label-${item.name}`;
+                          return (
+                            <ListItem
+                              key={item.id}
+                              button
+                              onClick={onCheckboxKategori(item.id)}>
+                              <ListItemAvatar>
+                                <Avatar
+                                  alt={`Avatar ${item.name}`}
+                                  src={item.image}
+                                />
+                              </ListItemAvatar>
+                              <ListItemText id={labelId} primary={item.name} />
+                              <ListItemSecondaryAction>
+                                <Checkbox
+                                  edge="end"
+                                  onChange={onCheckboxKategori(item.id)}
+                                  checked={categories?.indexOf(item.id) !== -1}
+                                  inputProps={{ 'aria-labelledby': labelId }}
+                                />
+                              </ListItemSecondaryAction>
+                            </ListItem>
+                          );
+                        })}
+
+                      {type === '2' &&
+                        kategoriJasa?.map(item => {
+                          const labelId = `checkbox-list-secondary-label-${item.name}`;
+                          return (
+                            <ListItem
+                              key={item.id}
+                              button
+                              onClick={onCheckboxKategori(item.id)}>
+                              <ListItemAvatar>
+                                <Avatar
+                                  alt={`Avatar ${item.name}`}
+                                  src={item.image}
+                                />
+                              </ListItemAvatar>
+                              <ListItemText id={labelId} primary={item.name} />
+                              <ListItemSecondaryAction>
+                                <Checkbox
+                                  edge="end"
+                                  onChange={onCheckboxKategori(item.id)}
+                                  checked={categories?.indexOf(item.id) !== -1}
+                                  inputProps={{ 'aria-labelledby': labelId }}
+                                />
+                              </ListItemSecondaryAction>
+                            </ListItem>
+                          );
+                        })}
+                    </List>
+                  </Select>
+                </FormControl>
+              </div>
 
               <div className={classes.inputFile}>
-                <InputLabel id="image" style={{ marginBottom: 15 }}>
-                  Gambar
-                </InputLabel>
+                <InputLabel id="image">Gambar ( 4 / 3 )</InputLabel>
                 {!uri && (
                   <Avatar
-                    alt="image"
                     src={image?.name ? URL.createObjectURL(image) : image}
                     variant="rounded"
                     className={classes.preview}
@@ -1181,29 +1163,18 @@ function TabMain() {
                   <label htmlFor="upload" className={classes.item}>
                     pilih foto
                   </label>
-                  {/* {isActiveForm && !uri && (
-            <label
-              onClick={() => {
-                setURI(form.photo);
-                console.log(form.photo);
-              }}
-              className={classes.item}>
-              crop
-            </label>
-          )} */}
                   {uri && (
                     <label onClick={onClickToSetCrop} className={classes.item}>
                       set
                     </label>
                   )}
                 </div>
+                <FormHelperText
+                  id="outlined-helper-text"
+                  error={error.image ? true : false}>
+                  {error.image}
+                </FormHelperText>
               </div>
-              <br />
-              <FormHelperText
-                id="outlined-helper-text"
-                error={error.image ? true : false}>
-                {error.image}
-              </FormHelperText>
             </div>
           )}
 

@@ -11,6 +11,7 @@
     "apexcharts": "^3.25.0",
     "axios": "^0.21.1",
     "debounce": "^1.2.0",
+    "jsonwebtoken": "^8.5.1",
     "notistack": "^1.0.1",
     "numeral": "^2.0.6",
     "react": "^17.0.1",
@@ -45,7 +46,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "GENERATE_SOURCEMAP=false react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "lint": "eslint ."

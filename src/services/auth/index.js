@@ -13,8 +13,8 @@ export const login = form => {
     API.login(data)
       .then(res => {
         if (res.data.code === 200) {
+          // simpan token ke localStorage
           const token = JSON.stringify(res.data.message);
-
           localStorage.setItem('token', token);
 
           resolve({ success: true, data: res.data });
@@ -27,6 +27,16 @@ export const login = form => {
 };
 
 /**
- * service authentication for registration
+ * service authentication for log out
  */
-export const registration = () => {};
+export const logout = () => {
+  return new Promise((resolve, reject) => {
+    API.logout()
+      .then(res => {
+        resolve({ success: true, data: res.data });
+      })
+      .catch(err => {
+        reject({ success: false, data: err });
+      });
+  });
+};

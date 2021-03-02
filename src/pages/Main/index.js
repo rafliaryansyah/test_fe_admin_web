@@ -1,8 +1,9 @@
-/* eslint-disable react/no-children-prop */
 import { useState } from 'react';
-import { Switch, Route } from 'react-router-dom';
 import useStyles from './styles';
 import propTypes from 'prop-types';
+
+// jwt
+import jwt from 'jsonwebtoken';
 
 // material-ui core
 import {
@@ -11,43 +12,23 @@ import {
   IconButton,
   Button,
   Typography,
-  Avatar,
   Hidden,
-  Drawer,
-  ListItem,
-  ListItemIcon,
-  ListItemText
+  Drawer
 } from '@material-ui/core';
 
 // react icons
-import {
-  IoMenuOutline,
-  IoHomeOutline,
-  IoPersonCircleOutline,
-  IoStorefrontOutline,
-  IoGridOutline,
-  IoTicketOutline,
-  IoListOutline,
-  IoImagesOutline,
-  IoPricetagOutline
-} from 'react-icons/io5';
-
-// Pages
-import DashboardPage from './Dahsboard';
-import Customers from './Customers';
-import Toko from './Toko';
-import Category from './Category';
-import Voucher from './Voucher';
-import UserLogs from './UserLogs';
-import Banner from './Banner';
-import Promo from './Promo';
-import Kurir from './Kurir';
-import Izin from './Izin';
-import ProdukTerkait from './ProdukTerkait';
-import Profile from './Profile';
+import { IoMenuOutline } from 'react-icons/io5';
 
 // components
-import { PrivateRoute, ConfirmDialog } from 'components';
+import {
+  AppBarProfile,
+  SideBar,
+  SwitchPageRoute,
+  ConfirmDialog
+} from 'components';
+
+// services
+import { logout } from 'services';
 
 function Main({ history, window }) {
   const classes = useStyles();
@@ -56,18 +37,25 @@ function Main({ history, window }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [open, setOpen] = useState(false);
 
-  // data profile admin form localstorage
-  const user = JSON.parse(localStorage.getItem('user'));
-
   // keluar dari app
-  const logout = () => {
-    setOpen(false);
-    localStorage.clear();
-    history.push('/login');
+  const keluar = async () => {
+    // services
+    const result = await logout().catch(err => err);
+
+    if (result.success) {
+      setOpen(false);
+      localStorage.clear();
+      history.push('/login');
+    } else {
+      setOpen(false);
+    }
   };
 
   const container =
     window !== undefined ? () => window().document.body : undefined;
+
+  // decode token
+  const decode = jwt.decode(JSON.parse(localStorage.getItem('token')));
 
   return (
     <div className={classes.wrapper}>
@@ -91,17 +79,7 @@ function Main({ history, window }) {
 
           <div className={classes.grow} />
 
-          <IconButton onClick={() => history.push('/profile')}>
-            <Avatar alt={user?.name} src={user?.image} />
-          </IconButton>
-
-          <div className={classes.teks}>
-            <span className={classes.nama}>{`Halo, ${user?.name}`}</span>
-            <span className={classes.akses}>
-              {user?.role === 'super-admin-ecommerce' &&
-                'super admin ecommerce'}
-            </span>
-          </div>
+          <AppBarProfile onClick={() => history.push('/profile')} />
         </Toolbar>
       </AppBar>
 
@@ -121,199 +99,25 @@ function Main({ history, window }) {
               ModalProps={{
                 keepMounted: true // Better open performance on mobile.
               }}>
-              <div className={classes.listRoot}>
-                <Route
-                  exact
-                  path="/"
-                  children={({ match, history }) => {
-                    return (
-                      <ListItem
-                        button
-                        selected={match ? true : false}
-                        onClick={() => {
-                          history.push('/');
-                        }}>
-                        <ListItemIcon>
-                          <IoHomeOutline />
-                        </ListItemIcon>
-
-                        <ListItemText primary="Dashboard" />
-                      </ListItem>
-                    );
-                  }}
-                />
-
-                <Route
-                  path="/user"
-                  children={({ match, history }) => {
-                    return (
-                      <ListItem
-                        button
-                        selected={match ? true : false}
-                        onClick={() => {
-                          history.push('/user');
-                        }}>
-                        <ListItemIcon>
-                          <IoPersonCircleOutline />
-                        </ListItemIcon>
-                        <ListItemText primary="User" />
-                      </ListItem>
-                    );
-                  }}
-                />
-
-                <Route
-                  path="/toko"
-                  children={({ match, history }) => {
-                    return (
-                      <ListItem
-                        button
-                        selected={match ? true : false}
-                        onClick={() => {
-                          history.push('/toko');
-                        }}>
-                        <ListItemIcon>
-                          <IoStorefrontOutline />
-                        </ListItemIcon>
-                        <ListItemText primary="Toko" />
-                      </ListItem>
-                    );
-                  }}
-                />
-
-                <Route
-                  path="/category"
-                  children={({ match, history }) => {
-                    return (
-                      <ListItem
-                        button
-                        selected={match ? true : false}
-                        onClick={() => {
-                          history.push('/category');
-                        }}>
-                        <ListItemIcon>
-                          <IoGridOutline />
-                        </ListItemIcon>
-                        <ListItemText primary="Category" />
-                      </ListItem>
-                    );
-                  }}
-                />
-
-                <Route
-                  path="/voucher"
-                  children={({ match, history }) => {
-                    return (
-                      <ListItem
-                        button
-                        selected={match ? true : false}
-                        onClick={() => {
-                          history.push('/voucher');
-                        }}>
-                        <ListItemIcon>
-                          <IoTicketOutline />
-                        </ListItemIcon>
-                        <ListItemText primary="Voucher" />
-                      </ListItem>
-                    );
-                  }}
-                />
-
-                <Route
-                  path="/user-logs"
-                  children={({ match, history }) => {
-                    return (
-                      <ListItem
-                        button
-                        selected={match ? true : false}
-                        onClick={() => {
-                          history.push('/user-logs');
-                        }}>
-                        <ListItemIcon>
-                          <IoListOutline />
-                        </ListItemIcon>
-                        <ListItemText primary="User Logs" />
-                      </ListItem>
-                    );
-                  }}
-                />
-
-                <Route
-                  path="/banner/main"
-                  children={({ match, history }) => {
-                    return (
-                      <ListItem
-                        button
-                        selected={match ? true : false}
-                        onClick={() => {
-                          history.push('/banner/main');
-                        }}>
-                        <ListItemIcon>
-                          <IoImagesOutline />
-                        </ListItemIcon>
-                        <ListItemText primary="Banner" />
-                      </ListItem>
-                    );
-                  }}
-                />
-
-                <Route
-                  path="/promo"
-                  children={({ match, history }) => {
-                    return (
-                      <ListItem
-                        button
-                        selected={match ? true : false}
-                        onClick={() => {
-                          history.push('/promo');
-                        }}>
-                        <ListItemIcon>
-                          <IoPricetagOutline />
-                        </ListItemIcon>
-                        <ListItemText primary="Promo" />
-                      </ListItem>
-                    );
-                  }}
-                />
-
-                <Route
-                  path="/kurir"
-                  children={({ match, history }) => {
-                    return (
-                      <ListItem
-                        button
-                        selected={match ? true : false}
-                        onClick={() => {
-                          history.push('/kurir');
-                        }}>
-                        <ListItemIcon>
-                          <IoPricetagOutline />
-                        </ListItemIcon>
-                        <ListItemText primary="Kurir" />
-                      </ListItem>
-                    );
-                  }}
-                />
-
-                <Route
-                  path="/izin"
-                  children={({ match, history }) => {
-                    return (
-                      <ListItem
-                        button
-                        selected={match ? true : false}
-                        onClick={() => {
-                          history.push('/izin');
-                        }}>
-                        <ListItemIcon>
-                          <IoPricetagOutline />
-                        </ListItemIcon>
-                        <ListItemText primary="Izin" />
-                      </ListItem>
-                    );
-                  }}
-                />
-              </div>
+              {decode ? (
+                decode.roles?.map(
+                  role =>
+                    (role === 'super-admin-ecommerce' && (
+                      <SideBar style={classes.listRoot} />
+                    )) ||
+                    (role === 'admin-ecommerce' && (
+                      <SideBar variant="admin" style={classes.listRoot} />
+                    )) ||
+                    (role === 'contributor-ecommerce' && (
+                      <SideBar variant="contributor" style={classes.listRoot} />
+                    )) ||
+                    (role === 'finance-ecommerce' && (
+                      <SideBar variant="finance" style={classes.listRoot} />
+                    ))
+                )
+              ) : (
+                <SideBar style={classes.listRoot} />
+              )}
 
               <div style={{ margin: '0px 15px 15px 15px' }}>
                 <Button
@@ -333,199 +137,25 @@ function Main({ history, window }) {
               }}
               variant="permanent"
               open>
-              <div className={classes.listRoot}>
-                <Route
-                  exact
-                  path="/"
-                  children={({ match, history }) => {
-                    return (
-                      <ListItem
-                        button
-                        selected={match ? true : false}
-                        onClick={() => {
-                          history.push('/');
-                        }}>
-                        <ListItemIcon>
-                          <IoHomeOutline />
-                        </ListItemIcon>
-
-                        <ListItemText primary="Dashboard" />
-                      </ListItem>
-                    );
-                  }}
-                />
-
-                <Route
-                  path="/user"
-                  children={({ match, history }) => {
-                    return (
-                      <ListItem
-                        button
-                        selected={match ? true : false}
-                        onClick={() => {
-                          history.push('/user');
-                        }}>
-                        <ListItemIcon>
-                          <IoPersonCircleOutline />
-                        </ListItemIcon>
-                        <ListItemText primary="User" />
-                      </ListItem>
-                    );
-                  }}
-                />
-
-                <Route
-                  path="/toko"
-                  children={({ match, history }) => {
-                    return (
-                      <ListItem
-                        button
-                        selected={match ? true : false}
-                        onClick={() => {
-                          history.push('/toko');
-                        }}>
-                        <ListItemIcon>
-                          <IoStorefrontOutline />
-                        </ListItemIcon>
-                        <ListItemText primary="Toko" />
-                      </ListItem>
-                    );
-                  }}
-                />
-
-                <Route
-                  path="/category"
-                  children={({ match, history }) => {
-                    return (
-                      <ListItem
-                        button
-                        selected={match ? true : false}
-                        onClick={() => {
-                          history.push('/category');
-                        }}>
-                        <ListItemIcon>
-                          <IoGridOutline />
-                        </ListItemIcon>
-                        <ListItemText primary="Category" />
-                      </ListItem>
-                    );
-                  }}
-                />
-
-                <Route
-                  path="/voucher"
-                  children={({ match, history }) => {
-                    return (
-                      <ListItem
-                        button
-                        selected={match ? true : false}
-                        onClick={() => {
-                          history.push('/voucher');
-                        }}>
-                        <ListItemIcon>
-                          <IoTicketOutline />
-                        </ListItemIcon>
-                        <ListItemText primary="Voucher" />
-                      </ListItem>
-                    );
-                  }}
-                />
-
-                <Route
-                  path="/user-logs"
-                  children={({ match, history }) => {
-                    return (
-                      <ListItem
-                        button
-                        selected={match ? true : false}
-                        onClick={() => {
-                          history.push('/user-logs');
-                        }}>
-                        <ListItemIcon>
-                          <IoListOutline />
-                        </ListItemIcon>
-                        <ListItemText primary="User Logs" />
-                      </ListItem>
-                    );
-                  }}
-                />
-
-                <Route
-                  path="/banner/main"
-                  children={({ match, history }) => {
-                    return (
-                      <ListItem
-                        button
-                        selected={match ? true : false}
-                        onClick={() => {
-                          history.push('/banner/main');
-                        }}>
-                        <ListItemIcon>
-                          <IoImagesOutline />
-                        </ListItemIcon>
-                        <ListItemText primary="Banner" />
-                      </ListItem>
-                    );
-                  }}
-                />
-
-                <Route
-                  path="/promo"
-                  children={({ match, history }) => {
-                    return (
-                      <ListItem
-                        button
-                        selected={match ? true : false}
-                        onClick={() => {
-                          history.push('/promo');
-                        }}>
-                        <ListItemIcon>
-                          <IoPricetagOutline />
-                        </ListItemIcon>
-                        <ListItemText primary="Promo" />
-                      </ListItem>
-                    );
-                  }}
-                />
-
-                <Route
-                  path="/kurir"
-                  children={({ match, history }) => {
-                    return (
-                      <ListItem
-                        button
-                        selected={match ? true : false}
-                        onClick={() => {
-                          history.push('/kurir');
-                        }}>
-                        <ListItemIcon>
-                          <IoPricetagOutline />
-                        </ListItemIcon>
-                        <ListItemText primary="Kurir" />
-                      </ListItem>
-                    );
-                  }}
-                />
-
-                <Route
-                  path="/izin"
-                  children={({ match, history }) => {
-                    return (
-                      <ListItem
-                        button
-                        selected={match ? true : false}
-                        onClick={() => {
-                          history.push('/izin');
-                        }}>
-                        <ListItemIcon>
-                          <IoPricetagOutline />
-                        </ListItemIcon>
-                        <ListItemText primary="Izin" />
-                      </ListItem>
-                    );
-                  }}
-                />
-              </div>
+              {decode ? (
+                decode.roles?.map(
+                  role =>
+                    (role === 'super-admin-ecommerce' && (
+                      <SideBar style={classes.listRoot} />
+                    )) ||
+                    (role === 'admin-ecommerce' && (
+                      <SideBar variant="admin" style={classes.listRoot} />
+                    )) ||
+                    (role === 'contributor-ecommerce' && (
+                      <SideBar variant="contributor" style={classes.listRoot} />
+                    )) ||
+                    (role === 'finance-ecommerce' && (
+                      <SideBar variant="finance" style={classes.listRoot} />
+                    ))
+                )
+              ) : (
+                <SideBar style={classes.listRoot} />
+              )}
 
               <div style={{ margin: '0px 15px 15px 15px' }}>
                 <Button
@@ -541,20 +171,23 @@ function Main({ history, window }) {
         </nav>
 
         <div className={classes.main}>
-          <Switch>
-            <PrivateRoute path="/user" component={Customers} />
-            <PrivateRoute path="/toko" component={Toko} />
-            <PrivateRoute path="/category" component={Category} />
-            <PrivateRoute path="/voucher" component={Voucher} />
-            <PrivateRoute path="/user-logs" component={UserLogs} />
-            <PrivateRoute path="/banner" component={Banner} />
-            <PrivateRoute path="/promo" component={Promo} />
-            <PrivateRoute path="/kurir" component={Kurir} />
-            <PrivateRoute path="/izin" component={Izin} />
-            <PrivateRoute path="/produk-terkait" component={ProdukTerkait} />
-            <PrivateRoute path="/profile" component={Profile} />
-            <PrivateRoute exact path="/" component={DashboardPage} />
-          </Switch>
+          {decode ? (
+            decode.roles?.map(
+              role =>
+                (role === 'super-admin-ecommerce' && <SwitchPageRoute />) ||
+                (role === 'admin-ecommerce' && (
+                  <SwitchPageRoute variant="admin" />
+                )) ||
+                (role === 'contributor-ecommerce' && (
+                  <SwitchPageRoute variant="contributor" />
+                )) ||
+                (role === 'finance-ecommerce' && (
+                  <SwitchPageRoute variant="finance" />
+                ))
+            )
+          ) : (
+            <SwitchPageRoute />
+          )}
 
           <div className={classes.footer}>
             <span className={classes.copyRight}>
@@ -568,7 +201,7 @@ function Main({ history, window }) {
       <ConfirmDialog
         open={open}
         close={() => setOpen(false)}
-        submit={logout}
+        submit={keluar}
         title="Yakin keluar ?"
       />
     </div>

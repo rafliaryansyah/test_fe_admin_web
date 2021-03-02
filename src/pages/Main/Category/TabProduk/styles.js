@@ -6,17 +6,16 @@ const useStyles = makeStyles(theme => ({
   },
 
   main: {
-    padding: 15,
+    marginTop: 15,
     marginBottom: 15,
     display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 250px))',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 250px))',
     gridGap: 15,
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     alignItems: 'center',
-    margin: '30px 0px 30px 0px',
 
     [theme.breakpoints.down('sm')]: {
-      gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))'
+      gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))'
     }
   },
 

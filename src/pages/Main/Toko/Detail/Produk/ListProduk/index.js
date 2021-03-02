@@ -41,7 +41,7 @@ function ListProduk({ history }) {
 
   return (
     <div className={classes.wrapper}>
-      <div className={classes.cardGrid}>
+      <div className={classes.main}>
         {items?.map(item => (
           <CardProduk
             key={item.id}

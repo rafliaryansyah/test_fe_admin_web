@@ -380,7 +380,8 @@ function TabJasa({
           }
         />
       </FormControl>
-      <div className={classes.cardGrid}>
+
+      <div className={classes.main}>
         {dataCategoriesJasa?.map(data => (
           <Card key={data.id}>
             <CardActionArea
@@ -393,7 +394,8 @@ function TabJasa({
               <CardMedia
                 component="img"
                 alt="Contemplative Reptile"
-                height="150"
+                width="100%"
+                height="100%"
                 image={data.image}
                 title={data.name}
               />
@@ -437,7 +439,7 @@ function TabJasa({
         count={lastPage}
         page={currentPage}
         onChange={(e, value) =>
-          getCategory('2', '', value).then(res => {
+          getCategory(false, '2', '', value).then(res => {
             setDataCategoriesJasa(res.data.data);
             setCurrentPage(res.data.meta.current_page);
             setLastPage(res.data.meta.last_page);

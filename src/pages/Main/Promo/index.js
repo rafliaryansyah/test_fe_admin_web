@@ -254,6 +254,26 @@ function Promo({ setDataID, setDataDari, setDataTerkait, history }) {
 
             enqueueSnackbar('Image masih kosong.', { variant: 'error' });
           }
+
+          // cek code error
+          if (result.data.response.data.code === 400) {
+            setForm({
+              title: '',
+              started_at: '',
+              ended_at: '',
+              discount_type: 'percent',
+              discount: '',
+              description: '',
+              tac: ''
+            });
+
+            setOpenForm(false);
+
+            enqueueSnackbar(
+              'Tidak dapat memperbarui data! Sudah melewati masa kedaluarsa.',
+              { variant: 'error' }
+            );
+          }
         }
       } else {
         // state
