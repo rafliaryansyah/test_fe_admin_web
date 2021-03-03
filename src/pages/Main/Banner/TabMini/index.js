@@ -171,7 +171,7 @@ function TabMini() {
 
   // crop
   const [uri, setURI] = useState();
-  const [crop, setCrop] = useState({ unit: 'px', width: '100%' });
+  const [crop, setCrop] = useState({ unit: 'px', width: 30, height: 20 });
   const [completeCrop, setCompleteCrop] = useState(null);
   const previewCanvasRef = useRef();
   const imageRef = useRef();
@@ -688,11 +688,6 @@ function TabMini() {
       setError({
         ...error,
         image: `Tipe file tidak didukung: ${file.type}`
-      });
-    } else if (file.size >= 512000) {
-      setError({
-        ...error,
-        image: 'Ukuran file terlalu besar dari 500KB'
       });
     } else {
       const reader = new FileReader();
@@ -1427,12 +1422,14 @@ function TabMini() {
               </div>
 
               <div className={classes.inputFile}>
-                <InputLabel id="image">Gambar</InputLabel>
+                <InputLabel id="image">Gambar ( 223 / 84 )</InputLabel>
                 {!uri && (
                   <Avatar
                     src={image?.name ? URL.createObjectURL(image) : image}
                     variant="rounded"
-                    className={classes.preview}
+                    classes={{
+                      root: classes.previewRoot
+                    }}
                   />
                 )}
 
@@ -1589,12 +1586,14 @@ function TabMini() {
               </div>
 
               <div className={classes.inputFile}>
-                <InputLabel id="image">Gambar</InputLabel>
+                <InputLabel id="image">Gambar ( 223 / 84 )</InputLabel>
                 {!uri && (
                   <Avatar
                     src={image?.name ? URL.createObjectURL(image) : image}
                     variant="rounded"
-                    className={classes.preview}
+                    classes={{
+                      root: classes.previewRoot
+                    }}
                   />
                 )}
 
@@ -1753,12 +1752,14 @@ function TabMini() {
               </div>
 
               <div className={classes.inputFile}>
-                <InputLabel id="image">Gambar</InputLabel>
+                <InputLabel id="image">Gambar ( 223 / 84 )</InputLabel>
                 {!uri && (
                   <Avatar
                     src={image?.name ? URL.createObjectURL(image) : image}
                     variant="rounded"
-                    className={classes.preview}
+                    classes={{
+                      root: classes.previewRoot
+                    }}
                   />
                 )}
 
@@ -1915,12 +1916,14 @@ function TabMini() {
               </div>
 
               <div className={classes.inputFile}>
-                <InputLabel id="image">Gambar</InputLabel>
+                <InputLabel id="image">Gambar ( 223 / 84 )</InputLabel>
                 {!uri && (
                   <Avatar
                     src={image?.name ? URL.createObjectURL(image) : image}
                     variant="rounded"
-                    className={classes.preview}
+                    classes={{
+                      root: classes.previewRoot
+                    }}
                   />
                 )}
 

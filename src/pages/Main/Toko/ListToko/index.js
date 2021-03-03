@@ -78,9 +78,8 @@ const ListToko = ({ history }) => {
             }}
             label="Semua Status">
             <MenuItem value="">Semua Status</MenuItem>
-            <MenuItem value="1">Waiting</MenuItem>
-            <MenuItem value="2">Approved</MenuItem>
-            <MenuItem value="3">Rejected</MenuItem>
+            <MenuItem value="1">Aktif</MenuItem>
+            <MenuItem value="2">Tidak aktif</MenuItem>
           </Select>
         </FormControl>
         <FormControl

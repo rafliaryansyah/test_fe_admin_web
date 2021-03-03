@@ -194,7 +194,7 @@ function TabHighLight() {
 
   // crop
   const [uri, setURI] = useState();
-  const [crop, setCrop] = useState({ unit: 'px', width: 414, aspect: 4 / 3 });
+  const [crop, setCrop] = useState({ unit: '%', width: 30, height: 20 });
   const [completeCrop, setCompleteCrop] = useState(null);
   const previewCanvasRef = useRef();
   const imageRef = useRef();
@@ -1422,7 +1422,7 @@ function TabHighLight() {
           )}
 
           <div className={classes.inputFile}>
-            <InputLabel id="image">Gambar ( 4 / 3 )</InputLabel>
+            <InputLabel id="image">Gambar ( 414 / 332 )</InputLabel>
             {!uri && (
               <Avatar
                 src={
@@ -1431,7 +1431,9 @@ function TabHighLight() {
                     : formProduk.image
                 }
                 variant="rounded"
-                className={classes.preview}
+                classes={{
+                  root: classes.previewRoot
+                }}
               />
             )}
 
@@ -1486,10 +1488,6 @@ function TabHighLight() {
               {errorProduk.image}
             </FormHelperText>
           </div>
-
-          <br />
-          <br />
-          <br />
 
           <div style={{ margin: '15px 0px' }}>
             <InputLabel id="namaStore" style={{ marginBottom: 10 }}>
@@ -1645,7 +1643,7 @@ function TabHighLight() {
           )}
 
           <div className={classes.inputFile}>
-            <InputLabel id="image">Gambar ( 4 / 3 )</InputLabel>
+            <InputLabel id="image">Gambar ( 414 / 332 )</InputLabel>
             {!uri && (
               <Avatar
                 src={
@@ -1654,7 +1652,9 @@ function TabHighLight() {
                     : formServices.image
                 }
                 variant="rounded"
-                className={classes.preview}
+                classes={{
+                  root: classes.previewRoot
+                }}
               />
             )}
 
@@ -1709,10 +1709,6 @@ function TabHighLight() {
               {errorServices.image}
             </FormHelperText>
           </div>
-
-          <br />
-          <br />
-          <br />
 
           <div style={{ margin: '15px 0px' }}>
             <InputLabel id="namaStore" style={{ marginBottom: 10 }}>

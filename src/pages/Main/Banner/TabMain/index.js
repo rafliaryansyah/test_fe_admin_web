@@ -163,7 +163,7 @@ function TabMain() {
 
   // crop
   const [uri, setURI] = useState();
-  const [crop, setCrop] = useState({ unit: 'px', width: 414, aspect: 4 / 3 });
+  const [crop, setCrop] = useState({ unit: '%', width: 30, height: 20 });
   const [completeCrop, setCompleteCrop] = useState(null);
   const previewCanvasRef = useRef();
   const imageRef = useRef();
@@ -927,12 +927,14 @@ function TabMain() {
               </div>
 
               <div className={classes.inputFile}>
-                <InputLabel id="image">Gambar ( 4 / 3 )</InputLabel>
+                <InputLabel id="image">Gambar ( 414 / 332 )</InputLabel>
                 {!uri && (
                   <Avatar
                     src={image?.name ? URL.createObjectURL(image) : image}
                     variant="rounded"
-                    className={classes.preview}
+                    classes={{
+                      root: classes.previewRoot
+                    }}
                   />
                 )}
 
@@ -1117,12 +1119,14 @@ function TabMain() {
               </div>
 
               <div className={classes.inputFile}>
-                <InputLabel id="image">Gambar ( 4 / 3 )</InputLabel>
+                <InputLabel id="image">Gambar ( 414 / 332 )</InputLabel>
                 {!uri && (
                   <Avatar
                     src={image?.name ? URL.createObjectURL(image) : image}
                     variant="rounded"
-                    className={classes.preview}
+                    classes={{
+                      root: classes.previewRoot
+                    }}
                   />
                 )}
 
