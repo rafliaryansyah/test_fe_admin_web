@@ -2,6 +2,9 @@ import { useEffect, useRef, useState } from 'react';
 import useStyles from './styles';
 import propTypes from 'prop-types';
 
+// select
+import MultiSelect from 'react-select';
+
 // resize image
 import Resizer from 'react-image-file-resizer';
 
@@ -73,14 +76,7 @@ import {
   FormHelperText,
   Select,
   MenuItem,
-  Input,
-  InputAdornment,
-  List,
-  ListItem,
-  ListItemSecondaryAction,
-  ListItemText,
-  ListItemAvatar,
-  Checkbox
+  InputAdornment
 } from '@material-ui/core';
 
 // react icons
@@ -109,18 +105,6 @@ import {
 
 // utils
 import { fileExtention, uriToFile } from 'utils';
-
-// MenuProps
-const ITEM_HEIGHT = 48;
-const ITEM_PADDING_TOP = 8;
-const MenuProps = {
-  PaperProps: {
-    style: {
-      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-      width: 250
-    }
-  }
-};
 
 function TabMini() {
   const classes = useStyles();
@@ -176,57 +160,37 @@ function TabMini() {
   const previewCanvasRef = useRef();
   const imageRef = useRef();
 
-  // mencocokan data response kategori agar tercheckbox
-  const autoCheckboxPromo = values => {
-    values?.map(v => {
-      dataPromo.findIndex(promo => promo.title === v && promos.push(promo.id));
+  // mencocokan data response promo
+  const autoSelectPromos = values => {
+    values?.map(title => {
+      dataPromo.findIndex(
+        promo =>
+          promo.label === title &&
+          promos.push({ value: promo.value, label: promo.label })
+      );
     });
   };
 
-  // checkbox promos
-  const onCheckboxPromos = value => () => {
-    const currentIndex = promos.indexOf(value);
-    const newChecked = [...promos];
-
-    if (currentIndex === -1) {
-      newChecked.push(value);
-    } else {
-      newChecked.splice(currentIndex, 1);
-    }
-
-    setPromos(newChecked);
-  };
-
-  // mencocokan data response kategori agar tercheckbox
-  const autoCheckboxKategoriProduk = values => {
-    values?.map(v => {
+  // mencocokan data response kategori
+  const autoSelectCategoriesProduk = values => {
+    values?.map(name => {
       kategoriProduk.findIndex(
-        kategori => kategori.name === v && categories.push(kategori.id)
+        kategori =>
+          kategori.label === name &&
+          categories.push({ value: kategori.value, label: kategori.label })
       );
     });
   };
 
-  // mencocokan data response kategori agar tercheckbox
-  const autoCheckboxKategoriJasa = values => {
-    values?.map(v => {
+  // mencocokan data response kategori
+  const autoSelectCategoriesJasa = values => {
+    values?.map(name => {
       kategoriJasa.findIndex(
-        kategori => kategori.name === v && categories.push(kategori.id)
+        kategori =>
+          kategori.label === name &&
+          categories.push({ value: kategori.value, label: kategori.label })
       );
     });
-  };
-
-  // checkbox kategori
-  const onCheckboxKategori = value => () => {
-    const currentIndex = categories.indexOf(value);
-    const newChecked = [...categories];
-
-    if (currentIndex === -1) {
-      newChecked.push(value);
-    } else {
-      newChecked.splice(currentIndex, 1);
-    }
-
-    setCategories(newChecked);
   };
 
   // read data mini
@@ -241,12 +205,36 @@ function TabMini() {
 
   // read data promo dan kategori
   useEffect(() => {
-    readPromo(false).then(res => setDataPromo(res.data.data));
+    readPromo(false).then(res => {
+      const data = [];
+
+      res.data.data.map(promo => {
+        data.push({ value: promo.id, label: promo.title });
+      });
+
+      setDataPromo(data);
+    });
   }, []);
 
   useEffect(() => {
-    getCategory(false, '1').then(res => setKategoriProduk(res.data.data));
-    getCategory(false, '2').then(res => setKategoriJasa(res.data.data));
+    getCategory(false, '1').then(res => {
+      const data = [];
+
+      res.data.data.map(kategori => {
+        data.push({ value: kategori.id, label: kategori.name });
+      });
+
+      setKategoriProduk(data);
+    });
+    getCategory(false, '2').then(res => {
+      const data = [];
+
+      res.data.data.map(kategori => {
+        data.push({ value: kategori.id, label: kategori.name });
+      });
+
+      setKategoriJasa(data);
+    });
   }, []);
 
   // create dan update data tipe produk
@@ -362,11 +350,11 @@ function TabMini() {
         formdata.append('status', status);
 
         promos.map((promo, index) => {
-          formdata.append(`promos[${index}]`, promo);
+          formdata.append(`promos[${index}]`, promo.value);
         });
 
         categories.map((category, index) => {
-          formdata.append(`categories[${index}]`, category);
+          formdata.append(`categories[${index}]`, category.value);
         });
 
         // cek apakah image baru atau tetap yang lama
@@ -411,11 +399,11 @@ function TabMini() {
         formdata.append('status', status);
 
         promos.map((promo, index) => {
-          formdata.append(`promos[${index}]`, promo);
+          formdata.append(`promos[${index}]`, promo.value);
         });
 
         categories.map((category, index) => {
-          formdata.append(`categories[${index}]`, category);
+          formdata.append(`categories[${index}]`, category.value);
         });
 
         formdata.append('image', image);
@@ -564,11 +552,11 @@ function TabMini() {
         formdata.append('status', status);
 
         promos.map((promo, index) => {
-          formdata.append(`promos[${index}]`, promo);
+          formdata.append(`promos[${index}]`, promo.value);
         });
 
         categories.map((category, index) => {
-          formdata.append(`categories[${index}]`, category);
+          formdata.append(`categories[${index}]`, category.value);
         });
 
         // cek apakah image baru atau tetap yang lama
@@ -613,11 +601,11 @@ function TabMini() {
         formdata.append('status', status);
 
         promos.map((promo, index) => {
-          formdata.append(`promos[${index}]`, promo);
+          formdata.append(`promos[${index}]`, promo.value);
         });
 
         categories.map((category, index) => {
-          formdata.append(`categories[${index}]`, category);
+          formdata.append(`categories[${index}]`, category.value);
         });
 
         formdata.append('image', image);
@@ -904,8 +892,8 @@ function TabMini() {
                             );
                             setTypeProduk(1);
                             setStatus(item.status?.id);
-                            autoCheckboxPromo(item.detail?.promos);
-                            autoCheckboxKategoriProduk(item.detail?.categories);
+                            autoSelectPromos(item.detail?.promos);
+                            autoSelectCategoriesProduk(item.detail?.categories);
                             setImage(item.image);
                             setOpenFP(true);
                           }}>
@@ -1032,8 +1020,8 @@ function TabMini() {
                             );
                             setTypeProduk(1);
                             setStatus(item.status?.id);
-                            autoCheckboxPromo(item.detail?.promos);
-                            autoCheckboxKategoriProduk(item.detail?.categories);
+                            autoSelectPromos(item.detail?.promos);
+                            autoSelectCategoriesProduk(item.detail?.categories);
                             setImage(item.image);
                             setOpenFP(true);
                           }}>
@@ -1165,8 +1153,8 @@ function TabMini() {
                             );
                             setTypeService(2);
                             setStatus(item.status?.id);
-                            autoCheckboxPromo(item.detail?.promos);
-                            autoCheckboxKategoriJasa(item.detail?.categories);
+                            autoSelectPromos(item.detail?.promos);
+                            autoSelectCategoriesJasa(item.detail?.categories);
                             setImage(item.image);
                             setOpenFS(true);
                           }}>
@@ -1293,8 +1281,8 @@ function TabMini() {
                             );
                             setTypeService(2);
                             setStatus(item.status?.id);
-                            autoCheckboxPromo(item.detail?.promos);
-                            autoCheckboxKategoriJasa(item.detail?.categories);
+                            autoSelectPromos(item.detail?.promos);
+                            autoSelectCategoriesJasa(item.detail?.categories);
                             setImage(item.image);
                             setOpenFS(true);
                           }}>
@@ -1506,83 +1494,28 @@ function TabMini() {
 
               <div style={{ marginTop: 30 }}>
                 <InputLabel id="products">Promo (max 5)</InputLabel>
-                <FormControl variant="outlined" size="small" fullWidth>
-                  <Select
-                    labelId="promos"
-                    id="promos"
-                    name="promos"
-                    multiple
-                    value={promos}
-                    input={<Input />}
-                    MenuProps={MenuProps}>
-                    <List dense>
-                      {dataPromo?.map(item => {
-                        const labelId = `checkbox-list-secondary-label-${item.title}`;
-                        return (
-                          <ListItem
-                            key={item.id}
-                            button
-                            onClick={onCheckboxPromos(item.id)}>
-                            <ListItemAvatar>
-                              <Avatar alt={`Avatar ${item.title}`} />
-                            </ListItemAvatar>
-                            <ListItemText id={labelId} primary={item.title} />
-                            <ListItemSecondaryAction>
-                              <Checkbox
-                                edge="end"
-                                onChange={onCheckboxPromos(item.id)}
-                                checked={promos.indexOf(item.id) !== -1}
-                                inputProps={{ 'aria-labelledby': labelId }}
-                              />
-                            </ListItemSecondaryAction>
-                          </ListItem>
-                        );
-                      })}
-                    </List>
-                  </Select>
-                </FormControl>
+                <MultiSelect
+                  name="promos"
+                  onChange={setPromos}
+                  options={dataPromo}
+                  placeHolder="Silakan pilih promo"
+                  isMulti
+                  autoFocus
+                  isFocused
+                />
               </div>
 
               <div style={{ margin: '30px 0px' }}>
                 <InputLabel id="products">Kategori (max 5)</InputLabel>
-                <FormControl variant="outlined" size="small" fullWidth>
-                  <Select
-                    labelId="categories"
-                    id="categories"
-                    name="categories"
-                    multiple
-                    value={categories}
-                    input={<Input />}
-                    MenuProps={MenuProps}>
-                    <List dense>
-                      {kategoriProduk?.map(item => {
-                        const labelId = `checkbox-list-secondary-label-${item.name}`;
-                        return (
-                          <ListItem
-                            key={item.id}
-                            button
-                            onClick={onCheckboxKategori(item.id)}>
-                            <ListItemAvatar>
-                              <Avatar
-                                alt={`Avatar ${item.name}`}
-                                src={item.image}
-                              />
-                            </ListItemAvatar>
-                            <ListItemText id={labelId} primary={item.name} />
-                            <ListItemSecondaryAction>
-                              <Checkbox
-                                edge="end"
-                                onChange={onCheckboxKategori(item.id)}
-                                checked={categories.indexOf(item.id) !== -1}
-                                inputProps={{ 'aria-labelledby': labelId }}
-                              />
-                            </ListItemSecondaryAction>
-                          </ListItem>
-                        );
-                      })}
-                    </List>
-                  </Select>
-                </FormControl>
+                <MultiSelect
+                  name="categories"
+                  onChange={setCategories}
+                  options={kategoriProduk}
+                  placeHolder="Silakan pilih kategori"
+                  isMulti
+                  autoFocus
+                  isFocused
+                />
               </div>
 
               <div className={classes.inputFile}>
@@ -1836,83 +1769,28 @@ function TabMini() {
 
               <div style={{ marginTop: 30 }}>
                 <InputLabel id="products">Promo (max 5)</InputLabel>
-                <FormControl variant="outlined" size="small" fullWidth>
-                  <Select
-                    labelId="promos"
-                    id="promos"
-                    name="promos"
-                    multiple
-                    value={promos}
-                    input={<Input />}
-                    MenuProps={MenuProps}>
-                    <List dense>
-                      {dataPromo?.map(item => {
-                        const labelId = `checkbox-list-secondary-label-${item.title}`;
-                        return (
-                          <ListItem
-                            key={item.id}
-                            button
-                            onClick={onCheckboxPromos(item.id)}>
-                            <ListItemAvatar>
-                              <Avatar alt={`Avatar ${item.title}`} />
-                            </ListItemAvatar>
-                            <ListItemText id={labelId} primary={item.title} />
-                            <ListItemSecondaryAction>
-                              <Checkbox
-                                edge="end"
-                                onChange={onCheckboxPromos(item.id)}
-                                checked={promos.indexOf(item.id) !== -1}
-                                inputProps={{ 'aria-labelledby': labelId }}
-                              />
-                            </ListItemSecondaryAction>
-                          </ListItem>
-                        );
-                      })}
-                    </List>
-                  </Select>
-                </FormControl>
+                <MultiSelect
+                  name="promos"
+                  onChange={setPromos}
+                  options={dataPromo}
+                  placeHolder="Silakan pilih promo"
+                  isMulti
+                  autoFocus
+                  isFocused
+                />
               </div>
 
               <div style={{ margin: '30px 0px' }}>
                 <InputLabel id="products">Kategori (max 5)</InputLabel>
-                <FormControl variant="outlined" size="small" fullWidth>
-                  <Select
-                    labelId="categories"
-                    id="categories"
-                    name="categories"
-                    multiple
-                    value={categories}
-                    input={<Input />}
-                    MenuProps={MenuProps}>
-                    <List dense>
-                      {kategoriJasa?.map(item => {
-                        const labelId = `checkbox-list-secondary-label-${item.name}`;
-                        return (
-                          <ListItem
-                            key={item.id}
-                            button
-                            onClick={onCheckboxKategori(item.id)}>
-                            <ListItemAvatar>
-                              <Avatar
-                                alt={`Avatar ${item.name}`}
-                                src={item.image}
-                              />
-                            </ListItemAvatar>
-                            <ListItemText id={labelId} primary={item.name} />
-                            <ListItemSecondaryAction>
-                              <Checkbox
-                                edge="end"
-                                onChange={onCheckboxKategori(item.id)}
-                                checked={categories.indexOf(item.id) !== -1}
-                                inputProps={{ 'aria-labelledby': labelId }}
-                              />
-                            </ListItemSecondaryAction>
-                          </ListItem>
-                        );
-                      })}
-                    </List>
-                  </Select>
-                </FormControl>
+                <MultiSelect
+                  name="categories"
+                  onChange={setCategories}
+                  options={kategoriJasa}
+                  placeHolder="Silakan pilih kategori"
+                  isMulti
+                  autoFocus
+                  isFocused
+                />
               </div>
 
               <div className={classes.inputFile}>
@@ -1992,10 +1870,11 @@ function TabMini() {
       {relate === '1' ? (
         <CompDialog open={openDetail} close={() => setOpenDetail(false)}>
           <Avatar
-            alt="photo"
             src={detail.image}
             variant="rounded"
-            style={{ width: '100%', height: '100%' }}
+            classes={{
+              root: classes.previewRoot
+            }}
           />
 
           <InputLabel htmlFor="nama_toko" style={{ marginTop: 15 }}>
@@ -2041,10 +1920,11 @@ function TabMini() {
       ) : (
         <CompDialog open={openDetail} close={() => setOpenDetail(false)}>
           <Avatar
-            alt="photo"
             src={detail.image}
             variant="rounded"
-            style={{ width: '100%', height: '100%' }}
+            classes={{
+              root: classes.previewRoot
+            }}
           />
 
           <InputLabel htmlFor="nama_toko" style={{ marginTop: 15 }}>

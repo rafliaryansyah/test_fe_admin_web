@@ -6,6 +6,9 @@ import propTypes from 'prop-types';
 import Carousel from 'react-multi-carousel';
 import 'react-multi-carousel/lib/styles.css';
 
+// select
+import MultiSelect from 'react-select';
+
 // notistack
 import { useSnackbar } from 'notistack';
 
@@ -68,15 +71,8 @@ import {
   OutlinedInput,
   Select,
   TextField,
-  // List,
-  // ListItem,
-  // ListItemSecondaryAction,
-  // ListItemText,
-  // ListItemAvatar,
-  // Checkbox,
   MenuItem,
   FormHelperText,
-  Input,
   Table,
   TableBody,
   TableCell,
@@ -109,17 +105,6 @@ import {
   getStore
 } from 'services';
 
-const ITEM_HEIGHT = 48;
-const ITEM_PADDING_TOP = 8;
-const MenuProps = {
-  PaperProps: {
-    style: {
-      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-      width: 250
-    }
-  }
-};
-
 // utils
 import { dateConverterRes, fileExtention, uriToFile } from 'utils';
 
@@ -139,9 +124,7 @@ function TabHighLight() {
   const [stores, setStores] = useState([]);
   const [namaStore, setNamaStore] = useState('');
   const [produkToko, setProdukToko] = useState([]);
-  const [produkName, setProdukName] = useState([]);
   const [serviceToko, setServiceToko] = useState([]);
-  const [serviceName, setServiceName] = useState([]);
 
   // data id dan type highlight
   const [id, setID] = useState('');
@@ -198,34 +181,6 @@ function TabHighLight() {
   const [completeCrop, setCompleteCrop] = useState(null);
   const previewCanvasRef = useRef();
   const imageRef = useRef();
-
-  // checkbox tipe produk
-  const onCheckboxProduk = id => () => {
-    const currentIndex = formProduk.products.indexOf(id);
-    const newChecked = [...formProduk.products];
-
-    if (currentIndex === -1) {
-      newChecked.push(id);
-    } else {
-      newChecked.splice(currentIndex, 1);
-    }
-
-    setFormProduk({ ...formProduk, products: newChecked });
-  };
-
-  // checkbox tipe service
-  const onCheckboxService = id => () => {
-    const currentIndex = formServices.services.indexOf(id);
-    const newChecked = [...formServices.services];
-
-    if (currentIndex === -1) {
-      newChecked.push(id);
-    } else {
-      newChecked.splice(currentIndex, 1);
-    }
-
-    setFormServices({ ...formServices, services: newChecked });
-  };
 
   // change untuk tipe produk
   const onChangeProduk = e => {
@@ -325,7 +280,7 @@ function TabHighLight() {
         formdata.append('headline', headline);
 
         products.map((product, index) => {
-          formdata.append(`products[${index}]`, product);
+          formdata.append(`products[${index}]`, product.value);
         });
 
         // cek apakah image baru atau tetap yang lama
@@ -376,7 +331,7 @@ function TabHighLight() {
         formdata.append('headline', headline);
 
         products.map((product, index) => {
-          formdata.append(`products[${index}]`, product);
+          formdata.append(`products[${index}]`, product.value);
         });
 
         formdata.append('image', image);
@@ -436,7 +391,7 @@ function TabHighLight() {
 
         // ambil data per index
         services.map((service, index) => {
-          formdata.append(`services[${index}]`, service);
+          formdata.append(`services[${index}]`, service.value);
         });
 
         // cek apakah image baru atau tetap yang lama
@@ -486,7 +441,7 @@ function TabHighLight() {
 
         // ambil data per index
         services.map((service, index) => {
-          formdata.append(`services[${index}]`, service);
+          formdata.append(`services[${index}]`, service.value);
         });
 
         formdata.append('image', image);
@@ -773,12 +728,11 @@ function TabHighLight() {
                       <CardActionArea
                         disabled={item.isDeleted}
                         onClick={() => {
-                          readDetailBannersHighlight(item.id)
-                            .then(res => {
-                              setDetailHP(res.data.data);
-                            })
-                            .catch(err => err);
-                          setOpenHPD(true);
+                          readDetailBannersHighlight(item.id).then(res => {
+                            setDetailHP(res.data.data);
+
+                            setOpenHPD(true);
+                          });
                         }}>
                         <CardMedia
                           component="img"
@@ -846,12 +800,11 @@ function TabHighLight() {
                       <CardActionArea
                         disabled={item.isDeleted}
                         onClick={() => {
-                          readDetailBannersHighlight(item.id)
-                            .then(res => {
-                              setDetailHP(res.data.data);
-                            })
-                            .catch(err => err);
-                          setOpenHPD(true);
+                          readDetailBannersHighlight(item.id).then(res => {
+                            setDetailHP(res.data.data);
+
+                            setOpenHPD(true);
+                          });
                         }}>
                         <CardMedia
                           component="img"
@@ -929,12 +882,11 @@ function TabHighLight() {
                       <CardActionArea
                         disabled={item.isDeleted}
                         onClick={() => {
-                          readDetailBannersHighlight(item.id)
-                            .then(res => {
-                              setDetailHS(res.data.data);
-                            })
-                            .catch(err => err);
-                          setOpenHSD(true);
+                          readDetailBannersHighlight(item.id).then(res => {
+                            setDetailHS(res.data.data);
+
+                            setOpenHSD(true);
+                          });
                         }}>
                         <CardMedia
                           component="img"
@@ -1002,12 +954,11 @@ function TabHighLight() {
                       <CardActionArea
                         disabled={item.isDeleted}
                         onClick={() => {
-                          readDetailBannersHighlight(item.id)
-                            .then(res => {
-                              setDetailHS(res.data.data);
-                            })
-                            .catch(err => err);
-                          setOpenHSD(true);
+                          readDetailBannersHighlight(item.id).then(res => {
+                            setDetailHS(res.data.data);
+
+                            setOpenHSD(true);
+                          });
                         }}>
                         <CardMedia
                           component="img"
@@ -1074,10 +1025,11 @@ function TabHighLight() {
         title="Detail Highlight">
         <div style={{ display: 'flex', flexDirection: 'column' }}>
           <Avatar
-            alt="photo"
             src={detailHP.detail?.image}
             variant="rounded"
-            className={classes.preview}
+            classes={{
+              root: classes.previewRoot
+            }}
           />
           <br />
           <div>
@@ -1220,7 +1172,9 @@ function TabHighLight() {
           <Avatar
             src={detailHS.detail?.image}
             variant="rounded"
-            className={classes.preview}
+            classes={{
+              root: classes.previewRoot
+            }}
           />
           <br />
           <div>
@@ -1421,6 +1375,78 @@ function TabHighLight() {
             </div>
           )}
 
+          <div style={{ margin: '15px 0px' }}>
+            <InputLabel id="namaStore" style={{ marginBottom: 10 }}>
+              Pilih Toko
+            </InputLabel>
+            <FormControl variant="outlined" size="small" fullWidth>
+              <Select
+                labelId="namaStore"
+                id="namaStore"
+                name="namaStore"
+                value={namaStore}
+                onChange={e => setNamaStore(e.target.value)}>
+                <TextField
+                  id="search"
+                  name="search"
+                  value={stores}
+                  onChange={e =>
+                    getStores('', e.target.value)
+                      .then(res => {
+                        setStores(res.data.data);
+                      })
+                      .catch(err => err)
+                  }
+                  placeholder="search"
+                  fullWidth
+                />
+                {stores.map(store => (
+                  <MenuItem
+                    key={store.id}
+                    value={store.name}
+                    onClick={() => {
+                      getStore(store.id)
+                        .then(res => {
+                          const data = [];
+
+                          res.data.data.merchantProductsAndService.products.data.map(
+                            produk => {
+                              data.push({
+                                value: produk.id,
+                                label: produk.name
+                              });
+                            }
+                          );
+
+                          setProdukToko(data);
+                        })
+                        .catch(err => err);
+                    }}>
+                    {store.name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </div>
+
+          <div>
+            <InputLabel id="demo-mutiple-name-label">Produk (max 5)</InputLabel>
+            <MultiSelect
+              name="produks"
+              onChange={e =>
+                setFormProduk({
+                  ...formProduk,
+                  products: e
+                })
+              }
+              options={produkToko}
+              placeHolder="Silakan pilih produk"
+              isMulti
+              autoFocus
+              isFocused
+            />
+          </div>
+
           <div className={classes.inputFile}>
             <InputLabel id="image">Gambar ( 414 / 332 )</InputLabel>
             {!uri && (
@@ -1487,80 +1513,6 @@ function TabHighLight() {
               error={errorProduk.image ? true : false}>
               {errorProduk.image}
             </FormHelperText>
-          </div>
-
-          <div style={{ margin: '15px 0px' }}>
-            <InputLabel id="namaStore" style={{ marginBottom: 10 }}>
-              Pilih Toko
-            </InputLabel>
-            <FormControl variant="outlined" size="small" fullWidth>
-              <Select
-                labelId="namaStore"
-                id="namaStore"
-                name="namaStore"
-                value={namaStore}
-                onChange={e => setNamaStore(e.target.value)}>
-                <TextField
-                  id="search"
-                  name="search"
-                  value={stores}
-                  onChange={e =>
-                    getStores('', e.target.value)
-                      .then(res => {
-                        setStores(res.data.data);
-                      })
-                      .catch(err => err)
-                  }
-                  placeholder="search"
-                  fullWidth
-                />
-                {stores.map(store => (
-                  <MenuItem
-                    key={store.id}
-                    value={store.name}
-                    onClick={() => {
-                      getStore(store.id)
-                        .then(res => {
-                          const data =
-                            res.data.data.merchantProductsAndService.products
-                              .data;
-
-                          setProdukToko(data);
-                        })
-                        .catch(err => err);
-                    }}>
-                    {store.name}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </div>
-
-          <div>
-            <InputLabel id="demo-mutiple-name-label">Produk (max 5)</InputLabel>
-            <FormControl fullWidth>
-              <Select
-                labelId="demo-mutiple-name-label"
-                id="demo-mutiple-name"
-                multiple
-                value={produkName}
-                onChange={event => setProdukName(event.target.value)}
-                input={<Input />}
-                MenuProps={MenuProps}>
-                {produkToko?.map(produk => (
-                  <MenuItem
-                    key={produk.id}
-                    value={produk.name}
-                    onClick={onCheckboxProduk(produk.id)}>
-                    {produk.name}
-                    <input
-                      type="checkbox"
-                      checked={formProduk.products?.indexOf(produk.id) !== -1}
-                    />
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
           </div>
 
           <Button
@@ -1642,6 +1594,78 @@ function TabHighLight() {
             </div>
           )}
 
+          <div style={{ margin: '15px 0px' }}>
+            <InputLabel id="namaStore" style={{ marginBottom: 10 }}>
+              Pilih Toko
+            </InputLabel>
+            <FormControl variant="outlined" size="small" fullWidth>
+              <Select
+                labelId="namaStore"
+                id="namaStore"
+                name="namaStore"
+                value={namaStore}
+                onChange={e => setNamaStore(e.target.value)}>
+                <TextField
+                  id="search"
+                  name="search"
+                  value={stores}
+                  onChange={e =>
+                    getStores('', e.target.value)
+                      .then(res => {
+                        setStores(res.data.data);
+                      })
+                      .catch(err => err)
+                  }
+                  placeholder="search"
+                  fullWidth
+                />
+                {stores.map(store => (
+                  <MenuItem
+                    key={store.id}
+                    value={store.name}
+                    onClick={() => {
+                      getStore(store.id)
+                        .then(res => {
+                          const data = [];
+
+                          res.data.data.merchantProductsAndService.services.data.map(
+                            service => {
+                              data.push({
+                                value: service.id,
+                                label: service.name
+                              });
+                            }
+                          );
+
+                          setServiceToko(data);
+                        })
+                        .catch(err => err);
+                    }}>
+                    {store.name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </div>
+
+          <div>
+            <InputLabel id="demo-mutiple-name-label">Jasa (max 5)</InputLabel>
+            <MultiSelect
+              name="services"
+              onChange={e =>
+                setFormServices({
+                  ...formServices,
+                  services: e
+                })
+              }
+              options={serviceToko}
+              placeHolder="Silakan pilih jasa"
+              isMulti
+              autoFocus
+              isFocused
+            />
+          </div>
+
           <div className={classes.inputFile}>
             <InputLabel id="image">Gambar ( 414 / 332 )</InputLabel>
             {!uri && (
@@ -1708,82 +1732,6 @@ function TabHighLight() {
               error={errorServices.image ? true : false}>
               {errorServices.image}
             </FormHelperText>
-          </div>
-
-          <div style={{ margin: '15px 0px' }}>
-            <InputLabel id="namaStore" style={{ marginBottom: 10 }}>
-              Pilih Toko
-            </InputLabel>
-            <FormControl variant="outlined" size="small" fullWidth>
-              <Select
-                labelId="namaStore"
-                id="namaStore"
-                name="namaStore"
-                value={namaStore}
-                onChange={e => setNamaStore(e.target.value)}>
-                <TextField
-                  id="search"
-                  name="search"
-                  value={stores}
-                  onChange={e =>
-                    getStores('', e.target.value)
-                      .then(res => {
-                        setStores(res.data.data);
-                      })
-                      .catch(err => err)
-                  }
-                  placeholder="search"
-                  fullWidth
-                />
-                {stores.map(store => (
-                  <MenuItem
-                    key={store.id}
-                    value={store.name}
-                    onClick={() => {
-                      getStore(store.id)
-                        .then(res => {
-                          const data =
-                            res.data.data.merchantProductsAndService.services
-                              .data;
-
-                          setServiceToko(data);
-                        })
-                        .catch(err => err);
-                    }}>
-                    {store.name}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </div>
-
-          <div>
-            <InputLabel id="demo-mutiple-name-label">Jasa (max 5)</InputLabel>
-            <FormControl fullWidth>
-              <Select
-                labelId="demo-mutiple-name-label"
-                id="demo-mutiple-name"
-                multiple
-                value={serviceName}
-                onChange={event => setServiceName(event.target.value)}
-                input={<Input />}
-                MenuProps={MenuProps}>
-                {serviceToko?.map(service => (
-                  <MenuItem
-                    key={service.id}
-                    value={service.name}
-                    onClick={onCheckboxService(service.id)}>
-                    {service.name}
-                    <input
-                      type="checkbox"
-                      checked={
-                        formServices.services?.indexOf(service.id) !== -1
-                      }
-                    />
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
           </div>
 
           <Button
