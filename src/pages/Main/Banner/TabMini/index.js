@@ -12,47 +12,7 @@ import Resizer from 'react-image-file-resizer';
 import ReactCrop from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
 
-// react multi carousel
-import Carousel from 'react-multi-carousel';
-import 'react-multi-carousel/lib/styles.css';
-
-// responsive carousel
-const responsive = {
-  desktop: {
-    breakpoint: { max: 3000, min: 1024 },
-    items: 3,
-    paritialVisibilityGutter: 74
-  },
-  tablet: {
-    breakpoint: { max: 1024, min: 464 },
-    items: 2,
-    paritialVisibilityGutter: 115
-  },
-  mobile: {
-    breakpoint: { max: 464, min: 0 },
-    items: 1,
-    paritialVisibilityGutter: 0
-  }
-};
-
-// responsive carousel
-const responsiveHistory = {
-  desktop: {
-    breakpoint: { max: 3000, min: 1024 },
-    items: 6,
-    paritialVisibilityGutter: 0
-  },
-  tablet: {
-    breakpoint: { max: 1024, min: 464 },
-    items: 3,
-    paritialVisibilityGutter: 60
-  },
-  mobile: {
-    breakpoint: { max: 464, min: 0 },
-    items: 1,
-    paritialVisibilityGutter: -15
-  }
-};
+import ScrollContainer from 'react-indiana-drag-scroll';
 
 // notistack
 import { useSnackbar } from 'notistack';
@@ -797,13 +757,12 @@ function TabMini() {
           <label className={classes.title}>mini produk aktif</label>
           <br />
           <br />
-          {miniProduk && (
-            <Carousel
-              ssr
-              partialVisbile
-              itemClass={classes.card}
-              responsive={responsive}>
-              {miniProduk.map(item =>
+          <ScrollContainer
+            vertical={false}
+            nativeMobileScroll
+            className={classes.scrollContainer}>
+            <div className={classes.wrapperItem}>
+              {miniProduk?.map(item =>
                 item.status?.id === 1 ? (
                   item.relatedTo === 'Product Detail' ? (
                     <Card key={item.id}>
@@ -915,8 +874,8 @@ function TabMini() {
                   )
                 ) : null
               )}
-            </Carousel>
-          )}
+            </div>
+          </ScrollContainer>
         </div>
         <br />
         <br />
@@ -925,13 +884,12 @@ function TabMini() {
           <label className={classes.title}>mini produk history</label>
           <br />
           <br />
-          {miniProduk && (
-            <Carousel
-              ssr
-              partialVisbile
-              itemClass={classes.card}
-              responsive={responsiveHistory}>
-              {miniProduk.map(item =>
+          <ScrollContainer
+            vertical={false}
+            nativeMobileScroll
+            className={classes.scrollContainer}>
+            <div className={classes.wrapperItem}>
+              {miniProduk?.map(item =>
                 item.status?.id !== 1 ? (
                   item.relatedTo === 'Product Detail' ? (
                     <Card key={item.id}>
@@ -1043,8 +1001,8 @@ function TabMini() {
                   )
                 ) : null
               )}
-            </Carousel>
-          )}
+            </div>
+          </ScrollContainer>
         </div>
         <div className={classes.wrapperButton}>
           <Button
@@ -1058,13 +1016,12 @@ function TabMini() {
           <label className={classes.title}>mini jasa aktif</label>
           <br />
           <br />
-          {miniService && (
-            <Carousel
-              ssr
-              partialVisbile
-              itemClass={classes.card}
-              responsive={responsive}>
-              {miniService.map(item =>
+          <ScrollContainer
+            vertical={false}
+            nativeMobileScroll
+            className={classes.scrollContainer}>
+            <div className={classes.wrapperItem}>
+              {miniService?.map(item =>
                 item.status?.id === 1 ? (
                   item.relatedTo === 'Product Detail' ? (
                     <Card key={item.id}>
@@ -1176,8 +1133,8 @@ function TabMini() {
                   )
                 ) : null
               )}
-            </Carousel>
-          )}
+            </div>
+          </ScrollContainer>
         </div>
         <br />
         <br />
@@ -1186,13 +1143,12 @@ function TabMini() {
           <label className={classes.title}>mini jasa history</label>
           <br />
           <br />
-          {miniService && (
-            <Carousel
-              ssr
-              partialVisbile
-              itemClass={classes.card}
-              responsive={responsiveHistory}>
-              {miniService.map(item =>
+          <ScrollContainer
+            vertical={false}
+            nativeMobileScroll
+            className={classes.scrollContainer}>
+            <div className={classes.wrapperItem}>
+              {miniService?.map(item =>
                 item.status?.id !== 1 ? (
                   item.relatedTo === 'Product Detail' ? (
                     <Card key={item.id}>
@@ -1304,8 +1260,8 @@ function TabMini() {
                   )
                 ) : null
               )}
-            </Carousel>
-          )}
+            </div>
+          </ScrollContainer>
         </div>
         <div className={classes.wrapperButton}>
           <Button

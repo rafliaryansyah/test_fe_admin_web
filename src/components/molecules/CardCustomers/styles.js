@@ -23,11 +23,10 @@ const useStyles = makeStyles(theme => ({
     }
   },
 
-  img: {
-    objectFit: 'cover',
-    width: 90,
-    height: 90,
-    borderRadius: 5,
+  previewRoot: {
+    width: 100,
+    height: 80,
+    flexShrink: 'unset',
 
     [theme.breakpoints.down('sm')]: {
       width: '100%',

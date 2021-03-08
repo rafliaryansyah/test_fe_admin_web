@@ -11,47 +11,7 @@ import Resizer from 'react-image-file-resizer';
 import ReactCrop from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
 
-// react multi carousel
-import Carousel from 'react-multi-carousel';
-import 'react-multi-carousel/lib/styles.css';
-
-// responsive carousel
-const responsive = {
-  desktop: {
-    breakpoint: { max: 3000, min: 1024 },
-    items: 3,
-    paritialVisibilityGutter: 74
-  },
-  tablet: {
-    breakpoint: { max: 1024, min: 464 },
-    items: 2,
-    paritialVisibilityGutter: 115
-  },
-  mobile: {
-    breakpoint: { max: 464, min: 0 },
-    items: 1,
-    paritialVisibilityGutter: 0
-  }
-};
-
-// responsive carousel
-const responsiveHistory = {
-  desktop: {
-    breakpoint: { max: 3000, min: 1024 },
-    items: 6,
-    paritialVisibilityGutter: 0
-  },
-  tablet: {
-    breakpoint: { max: 1024, min: 464 },
-    items: 3,
-    paritialVisibilityGutter: 60
-  },
-  mobile: {
-    breakpoint: { max: 464, min: 0 },
-    items: 1,
-    paritialVisibilityGutter: -15
-  }
-};
+import ScrollContainer from 'react-indiana-drag-scroll';
 
 // notistack
 import { useSnackbar } from 'notistack';
@@ -575,123 +535,126 @@ function TabMain() {
           <label className={classes.title}>main aktif</label>
           <br />
           <br />
-          {mains && (
-            <Carousel
-              ssr
-              partialVisbile
-              itemClass={classes.card}
-              responsive={responsive}>
-              {mains.map(
-                item =>
-                  item.status?.id === 1 &&
-                  (item.relatedTo === 'Product Detail' ? (
-                    <Card key={item.id}>
-                      <CardActionArea
-                        disabled={item.isDeleted}
-                        onClick={() => {
-                          setDetail(item);
-                          setRelate(
-                            item.relatedTo === 'Product Detail' ? '1' : '2'
-                          );
-                          setOpenDetail(true);
-                        }}>
-                        <CardMedia
-                          component="img"
-                          alt="Contemplative Reptile"
-                          width="100%"
-                          height="100%"
-                          image={item.image}
-                          title="main"
-                        />
-                      </CardActionArea>
-                      <CardActions className={classes.action}>
-                        <IconButton
-                          size="small"
-                          color="primary"
+          <div>
+            <ScrollContainer
+              vertical={false}
+              nativeMobileScroll
+              className={classes.scrollContainer}>
+              <div className={classes.wrapperItem}>
+                {mains?.map(
+                  item =>
+                    item.status?.id === 1 &&
+                    (item.relatedTo === 'Product Detail' ? (
+                      <Card key={item.id}>
+                        <CardActionArea
                           disabled={item.isDeleted}
                           onClick={() => {
-                            setID(item.id);
-                            setIsEdit(true);
+                            setDetail(item);
                             setRelate(
                               item.relatedTo === 'Product Detail' ? '1' : '2'
                             );
-                            setType(item.type?.id);
-                            setStatus(item.status?.id);
-                            setProduk(item.detail);
-                            setImage(item.image);
-                            setOpenForm(true);
+                            setOpenDetail(true);
                           }}>
-                          <IoPencilOutline />
-                        </IconButton>
-                        <IconButton
-                          size="small"
-                          color="primary"
+                          <CardMedia
+                            component="img"
+                            alt="Contemplative Reptile"
+                            width="100%"
+                            height="100%"
+                            image={item.image}
+                            title="main"
+                          />
+                        </CardActionArea>
+                        <CardActions className={classes.action}>
+                          <IconButton
+                            size="small"
+                            color="primary"
+                            disabled={item.isDeleted}
+                            onClick={() => {
+                              setID(item.id);
+                              setIsEdit(true);
+                              setRelate(
+                                item.relatedTo === 'Product Detail' ? '1' : '2'
+                              );
+                              setType(item.type?.id);
+                              setStatus(item.status?.id);
+                              setProduk(item.detail);
+                              setImage(item.image);
+                              setOpenForm(true);
+                            }}>
+                            <IoPencilOutline />
+                          </IconButton>
+                          <IconButton
+                            size="small"
+                            color="primary"
+                            disabled={item.isDeleted}
+                            onClick={() => {
+                              setID(item.id);
+                              setOpenHapus(true);
+                            }}>
+                            <IoTrashOutline />
+                          </IconButton>
+                        </CardActions>
+                      </Card>
+                    ) : (
+                      <Card key={item.id}>
+                        <CardActionArea
                           disabled={item.isDeleted}
                           onClick={() => {
-                            setID(item.id);
-                            setOpenHapus(true);
-                          }}>
-                          <IoTrashOutline />
-                        </IconButton>
-                      </CardActions>
-                    </Card>
-                  ) : (
-                    <Card key={item.id}>
-                      <CardActionArea
-                        disabled={item.isDeleted}
-                        onClick={() => {
-                          setDetail(item);
-                          setRelate(
-                            item.relatedTo === 'Product Detail' ? '1' : '2'
-                          );
-                          setOpenDetail(true);
-                        }}>
-                        <CardMedia
-                          component="img"
-                          alt="Contemplative Reptile"
-                          width="100%"
-                          height="100%"
-                          image={item.image}
-                          title="Main"
-                        />
-                      </CardActionArea>
-                      <CardActions className={classes.action}>
-                        <IconButton
-                          size="small"
-                          color="primary"
-                          disabled={item.isDeleted}
-                          onClick={() => {
-                            setID(item.id);
-                            setIsEdit(true);
+                            setDetail(item);
                             setRelate(
                               item.relatedTo === 'Product Detail' ? '1' : '2'
                             );
-                            setType(item.type?.id);
-                            setStatus(item.status?.id);
-                            autoSelectPromos(item.detail?.promos);
-                            autoSelectCategoriesProduk(item.detail?.categories);
-                            autoSelectCategoriesJasa(item.detail?.categories);
-                            setImage(item.image);
-                            setOpenForm(true);
+                            setOpenDetail(true);
                           }}>
-                          <IoPencilOutline />
-                        </IconButton>
-                        <IconButton
-                          size="small"
-                          color="primary"
-                          disabled={item.isDeleted}
-                          onClick={() => {
-                            setID(item.id);
-                            setOpenHapus(true);
-                          }}>
-                          <IoTrashOutline />
-                        </IconButton>
-                      </CardActions>
-                    </Card>
-                  ))
-              )}
-            </Carousel>
-          )}
+                          <CardMedia
+                            component="img"
+                            alt="Contemplative Reptile"
+                            width="100%"
+                            height="100%"
+                            image={item.image}
+                            title="Main"
+                          />
+                        </CardActionArea>
+                        <CardActions className={classes.action}>
+                          <IconButton
+                            size="small"
+                            color="primary"
+                            disabled={item.isDeleted}
+                            onClick={() => {
+                              setID(item.id);
+                              setIsEdit(true);
+                              setRelate(
+                                item.relatedTo === 'Product Detail' ? '1' : '2'
+                              );
+                              setType(item.type?.id);
+                              setStatus(item.status?.id);
+                              autoSelectPromos(item.detail?.promos);
+                              autoSelectCategoriesProduk(
+                                item.detail?.categories
+                              );
+                              autoSelectCategoriesJasa(item.detail?.categories);
+                              setImage(item.image);
+                              setOpenForm(true);
+                            }}>
+                            <IoPencilOutline />
+                          </IconButton>
+                          <IconButton
+                            size="small"
+                            color="primary"
+                            disabled={item.isDeleted}
+                            onClick={() => {
+                              setID(item.id);
+                              setOpenHapus(true);
+                            }}>
+                            <IoTrashOutline />
+                          </IconButton>
+                        </CardActions>
+                      </Card>
+                    ))
+                )}
+              </div>
+            </ScrollContainer>
+          </div>
         </div>
         <br />
         <br />
@@ -700,13 +663,12 @@ function TabMain() {
           <label className={classes.title}>main history</label>
           <br />
           <br />
-          {mains && (
-            <Carousel
-              ssr
-              partialVisbile
-              itemClass={classes.card}
-              responsive={responsiveHistory}>
-              {mains.map(
+          <ScrollContainer
+            vertical={false}
+            nativeMobileScroll
+            className={classes.scrollContainer}>
+            <div className={classes.wrapperItem}>
+              {mains?.map(
                 item =>
                   item.status?.id === 2 &&
                   (item.relatedTo === 'Product Detail' ? (
@@ -815,8 +777,8 @@ function TabMain() {
                     </Card>
                   ))
               )}
-            </Carousel>
-          )}
+            </div>
+          </ScrollContainer>
         </div>
         <div className={classes.wrapperButton}>
           <Button

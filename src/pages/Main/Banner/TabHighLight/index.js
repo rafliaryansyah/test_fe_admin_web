@@ -2,9 +2,8 @@ import { useEffect, useRef, useState } from 'react';
 import useStyles from './styles';
 import propTypes from 'prop-types';
 
-// react multi carousel
-import Carousel from 'react-multi-carousel';
-import 'react-multi-carousel/lib/styles.css';
+// scroll
+import ScrollContainer from 'react-indiana-drag-scroll';
 
 // select
 import MultiSelect from 'react-select';
@@ -18,44 +17,6 @@ import Resizer from 'react-image-file-resizer';
 // image crop
 import ReactCrop from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
-
-// responsive carousel
-const responsive = {
-  desktop: {
-    breakpoint: { max: 3000, min: 1024 },
-    items: 3,
-    paritialVisibilityGutter: 0
-  },
-  tablet: {
-    breakpoint: { max: 1024, min: 464 },
-    items: 2,
-    paritialVisibilityGutter: 0
-  },
-  mobile: {
-    breakpoint: { max: 464, min: 0 },
-    items: 1,
-    paritialVisibilityGutter: -15
-  }
-};
-
-// responsive carousel
-const responsiveHistory = {
-  desktop: {
-    breakpoint: { max: 3000, min: 1024 },
-    items: 6,
-    paritialVisibilityGutter: 0
-  },
-  tablet: {
-    breakpoint: { max: 1024, min: 464 },
-    items: 3,
-    paritialVisibilityGutter: 60
-  },
-  mobile: {
-    breakpoint: { max: 464, min: 0 },
-    items: 1,
-    paritialVisibilityGutter: -15
-  }
-};
 
 // material-ui core
 import {
@@ -715,13 +676,12 @@ function TabHighLight() {
           <label className={classes.title}>highlight produk aktif</label>
           <br />
           <br />
-          {highlightProduks && (
-            <Carousel
-              ssr
-              partialVisbile
-              itemClass={classes.card}
-              responsive={responsive}>
-              {highlightProduks.map(
+          <ScrollContainer
+            vertical={false}
+            nativeMobileScroll
+            className={classes.scrollContainer}>
+            <div className={classes.wrapperItem}>
+              {highlightProduks?.map(
                 item =>
                   item.bannerStatus?.id === 1 && (
                     <Card key={item.id}>
@@ -777,8 +737,8 @@ function TabHighLight() {
                     </Card>
                   )
               )}
-            </Carousel>
-          )}
+            </div>
+          </ScrollContainer>
         </div>
         <br />
         <br />
@@ -787,13 +747,12 @@ function TabHighLight() {
           <label className={classes.title}>highlight produk history</label>
           <br />
           <br />
-          {highlightProduks && (
-            <Carousel
-              ssr
-              partialVisbile
-              itemClass={classes.card}
-              responsive={responsiveHistory}>
-              {highlightProduks.map(
+          <ScrollContainer
+            vertical={false}
+            nativeMobileScroll
+            className={classes.scrollContainerHostory}>
+            <div className={classes.wrapperItem}>
+              {highlightProduks?.map(
                 item =>
                   item.bannerStatus?.id !== 1 && (
                     <Card key={item.id}>
@@ -849,8 +808,8 @@ function TabHighLight() {
                     </Card>
                   )
               )}
-            </Carousel>
-          )}
+            </div>
+          </ScrollContainer>
         </div>
         <div className={classes.wrapperButton}>
           <Button
@@ -869,13 +828,12 @@ function TabHighLight() {
           <label className={classes.title}>highlight jasa aktif</label>
           <br />
           <br />
-          {highlightServices && (
-            <Carousel
-              ssr
-              partialVisbile
-              itemClass={classes.card}
-              responsive={responsive}>
-              {highlightServices.map(
+          <ScrollContainer
+            vertical={false}
+            nativeMobileScroll
+            className={classes.scrollContainer}>
+            <div className={classes.wrapperItem}>
+              {highlightServices?.map(
                 item =>
                   item.bannerStatus?.id === 1 && (
                     <Card key={item.id}>
@@ -931,8 +889,8 @@ function TabHighLight() {
                     </Card>
                   )
               )}
-            </Carousel>
-          )}
+            </div>
+          </ScrollContainer>
         </div>
         <br />
         <br />
@@ -941,13 +899,12 @@ function TabHighLight() {
           <label className={classes.title}>highlight jasa history</label>
           <br />
           <br />
-          {highlightServices && (
-            <Carousel
-              ssr
-              partialVisbile
-              itemClass={classes.card}
-              responsive={responsiveHistory}>
-              {highlightServices.map(
+          <ScrollContainer
+            vertical={false}
+            nativeMobileScroll
+            className={classes.scrollContainerHostory}>
+            <div className={classes.wrapperItem}>
+              {highlightServices?.map(
                 item =>
                   item.bannerStatus?.id !== 1 && (
                     <Card key={item.id}>
@@ -1003,8 +960,8 @@ function TabHighLight() {
                     </Card>
                   )
               )}
-            </Carousel>
-          )}
+            </div>
+          </ScrollContainer>
         </div>
         <div className={classes.wrapperButton}>
           <Button

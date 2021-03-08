@@ -20,6 +20,25 @@ const useStyles = makeStyles(theme => ({
     }
   },
 
+  scrollContainer: {
+    width: 320,
+    height: 280
+  },
+
+  scrollContainerHostory: {
+    width: '100%',
+    height: 280
+  },
+
+  wrapperItem: {
+    width: 1400,
+    height: '100%',
+    display: 'flex',
+    alignItems: 'center',
+    gridGap: 15,
+    padding: '0px 10px'
+  },
+
   card: {
     padding: 5
   },

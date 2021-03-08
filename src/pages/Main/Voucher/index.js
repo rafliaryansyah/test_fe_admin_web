@@ -127,7 +127,7 @@ function Voucher() {
 
   // crop
   const [uri, setURI] = useState();
-  const [crop, setCrop] = useState({ unit: 'px', height: 450, aspect: 1 / 1 });
+  const [crop, setCrop] = useState({ unit: '%', width: 30, height: 20 });
   const [completeCrop, setCompleteCrop] = useState(null);
   const previewCanvasRef = useRef();
   const imageRef = useRef();
@@ -483,11 +483,6 @@ function Voucher() {
       setError({
         ...error,
         image: `Tipe file tidak didukung: ${file && file.type}`
-      });
-    } else if (file && file.size >= 2097152) {
-      setError({
-        ...error,
-        image: 'Ukuran file terlalu besar dari 500KB'
       });
     } else {
       const reader = new FileReader();

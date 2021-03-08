@@ -169,6 +169,7 @@ function ListCustomers({ history }) {
             <CardCustomers
               key={user.id}
               nama={user.name}
+              srcImage={user.image}
               status={
                 user.statusUser?.name === 'Active' ? 'aktif' : 'tidak aktif'
               }

@@ -19,6 +19,16 @@ const useStyles = makeStyles(theme => ({
     backgroundColor: '#ffffff'
   },
 
+  previewRoot: {
+    width: 250,
+    height: 250,
+    flexShrink: 'unset',
+
+    [theme.breakpoints.down('sm')]: {
+      width: '100%'
+    }
+  },
+
   img: {
     objectFit: 'cover',
     width: 250,

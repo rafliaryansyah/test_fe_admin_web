@@ -217,7 +217,9 @@ function Detail({ history }) {
           <Avatar
             src={customer.image}
             variant="rounded"
-            className={classes.img}
+            classes={{
+              root: classes.previewRoot
+            }}
           />
           <br />
           <FormControl component="fieldset">

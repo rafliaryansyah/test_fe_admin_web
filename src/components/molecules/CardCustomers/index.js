@@ -20,10 +20,11 @@ const CardCustomers = ({
     <div className={classes.card} onClick={handleDetail}>
       <div className={classes.info}>
         <Avatar
-          alt="photo"
           src={srcImage}
           variant="rounded"
-          className={classes.img}
+          classes={{
+            root: classes.previewRoot
+          }}
         />
         <div className={classes.text}>
           <div className={classes.labelText}>
