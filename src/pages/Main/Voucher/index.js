@@ -127,7 +127,12 @@ function Voucher() {
 
   // crop
   const [uri, setURI] = useState();
-  const [crop, setCrop] = useState({ unit: '%', width: 30, height: 20 });
+  const [crop, setCrop] = useState({
+    unit: '%',
+    width: 30,
+    height: 20,
+    aspect: 4 / 3
+  });
   const [completeCrop, setCompleteCrop] = useState(null);
   const previewCanvasRef = useRef();
   const imageRef = useRef();
