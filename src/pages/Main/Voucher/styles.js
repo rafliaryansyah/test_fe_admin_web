@@ -112,14 +112,10 @@ const useStyles = makeStyles(theme => ({
     gridGap: 10
   },
 
-  preview: {
-    objectFit: 'cover',
+  previewRoot: {
     width: '100%',
-    height: 250,
-
-    [theme.breakpoints.down('sm')]: {
-      height: 130
-    }
+    height: '100%',
+    flexShrink: 'unset'
   },
 
   actionUploadFile: {

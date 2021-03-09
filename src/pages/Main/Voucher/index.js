@@ -1071,14 +1071,15 @@ function Voucher() {
             </InputLabel>
             {!uri && (
               <Avatar
-                alt="image"
                 src={
                   form.image?.name
                     ? URL.createObjectURL(form.image)
                     : form.image
                 }
                 variant="rounded"
-                className={classes.preview}
+                classes={{
+                  root: classes.previewRoot
+                }}
               />
             )}
 
