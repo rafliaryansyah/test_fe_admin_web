@@ -21,13 +21,14 @@ const useStyles = makeStyles(theme => ({
   },
 
   scrollContainer: {
-    width: 320,
-    height: 280
+    width: '100%',
+    height: '100%',
+    padding: 15
   },
 
   scrollContainerHostory: {
     width: '100%',
-    height: 280
+    height: '100%'
   },
 
   wrapperItem: {

@@ -23,11 +23,12 @@ export const createPromo = formdata => {
 /**
  * service promo for get all data promo
  */
-export const readPromo = (isDeleted, search, page) => {
+export const readPromo = (isDeleted, per_page, search, page) => {
   return new Promise((resolve, reject) => {
     const data = {
       params: {
         isDeleted: isDeleted,
+        per_page: per_page ? per_page : 10,
         search: search ? search : '',
         page: page ? page : 1
       }

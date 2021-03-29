@@ -3,12 +3,13 @@ import API from 'configs/api';
 /**
  * service category for get all data category
  */
-export const getCategory = (isDeleted, type, search, page) => {
+export const getCategory = (isDeleted, type, per_page, search, page) => {
   return new Promise((resolve, reject) => {
     const data = {
       params: {
         isDeleted: isDeleted,
         type: type,
+        per_page: per_page ? per_page : 10,
         search: search ? search : '',
         page: page ? page : 1
       }

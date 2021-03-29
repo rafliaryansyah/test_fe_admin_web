@@ -510,7 +510,7 @@ function Promo({ setDataID, setDataDari, setDataTerkait, history }) {
         count={lastPage}
         page={currentPage}
         onChange={(e, value) =>
-          readPromo(false, '', value).then(res => {
+          readPromo(false, null, '', value).then(res => {
             setPromos(res.data.data);
             setCurrentPage(res.data.meta.current_page);
             setLastPage(res.data.meta.last_page);

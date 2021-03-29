@@ -697,8 +697,7 @@ function TabHighLight() {
                         <CardMedia
                           component="img"
                           alt="Contemplative Reptile"
-                          width="100%"
-                          height="100%"
+                          height="480px"
                           image={item.image}
                           title={item.headline}
                         />
@@ -768,8 +767,7 @@ function TabHighLight() {
                         <CardMedia
                           component="img"
                           alt="Contemplative Reptile"
-                          width="100%"
-                          height="100%"
+                          height="480px"
                           image={item.image}
                           title={item.headline}
                         />
@@ -849,8 +847,7 @@ function TabHighLight() {
                         <CardMedia
                           component="img"
                           alt="Contemplative Reptile"
-                          width="100%"
-                          height="100%"
+                          height="480px"
                           image={item.image}
                           title={item.headline}
                         />
@@ -920,8 +917,7 @@ function TabHighLight() {
                         <CardMedia
                           component="img"
                           alt="Contemplative Reptile"
-                          width="100%"
-                          height="100%"
+                          height="480px"
                           image={item.image}
                           title={item.headline}
                         />
@@ -1357,31 +1353,33 @@ function TabHighLight() {
                   placeholder="search"
                   fullWidth
                 />
-                {stores.map(store => (
-                  <MenuItem
-                    key={store.id}
-                    value={store.name}
-                    onClick={() => {
-                      getStore(store.id)
-                        .then(res => {
-                          const data = [];
+                <div style={{ maxHeight: 109, overflowY: 'auto' }}>
+                  {stores.map(store => (
+                    <MenuItem
+                      key={store.id}
+                      value={store.name}
+                      onClick={() => {
+                        getStore(store.id)
+                          .then(res => {
+                            const data = [];
 
-                          res.data.data.merchantProductsAndService.products.data.map(
-                            produk => {
-                              data.push({
-                                value: produk.id,
-                                label: produk.name
-                              });
-                            }
-                          );
+                            res.data.data.merchantProductsAndService.products.data.map(
+                              produk => {
+                                data.push({
+                                  value: produk.id,
+                                  label: produk.name
+                                });
+                              }
+                            );
 
-                          setProdukToko(data);
-                        })
-                        .catch(err => err);
-                    }}>
-                    {store.name}
-                  </MenuItem>
-                ))}
+                            setProdukToko(data);
+                          })
+                          .catch(err => err);
+                      }}>
+                      {store.name}
+                    </MenuItem>
+                  ))}
+                </div>
               </Select>
             </FormControl>
           </div>

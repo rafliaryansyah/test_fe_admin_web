@@ -212,10 +212,10 @@ function Voucher() {
 
   // read data kategori
   useEffect(() => {
-    getCategory(false, '1').then(res => {
+    getCategory(false, '1', 10).then(res => {
       setCategoryProduct(res.data.data);
     });
-    getCategory(false, '2').then(res => {
+    getCategory(false, '2', 10).then(res => {
       setCategoryJasa(res.data.data);
     });
   }, []);
@@ -876,12 +876,12 @@ function Voucher() {
                   value={form.type === '1' ? categoryProduct : categoryJasa}
                   onChange={e => {
                     form.type === '1'
-                      ? getCategory(false, '1', e.target.value)
+                      ? getCategory(false, '1', null, e.target.value)
                           .then(res => {
                             setCategoryProduct(res.data.data);
                           })
                           .catch(err => err)
-                      : getCategory(false, '2', e.target.value)
+                      : getCategory(false, '2', null, e.target.value)
                           .then(res => {
                             setCategoryJasa(res.data.data);
                           })
@@ -890,18 +890,20 @@ function Voucher() {
                   placeholder="search"
                   fullWidth
                 />
-                {form.type === '1' &&
-                  categoryProduct.map(item => (
-                    <MenuItem key={item.id} value={item.id}>
-                      {item.name}
-                    </MenuItem>
-                  ))}
-                {form.type === '2' &&
-                  categoryJasa.map(item => (
-                    <MenuItem key={item.id} value={item.id}>
-                      {item.name}
-                    </MenuItem>
-                  ))}
+                <div style={{ maxHeight: 109, overflowY: 'auto' }}>
+                  {form.type === '1' &&
+                    categoryProduct.map(item => (
+                      <MenuItem key={item.id} value={item.id}>
+                        {item.name}
+                      </MenuItem>
+                    ))}
+                  {form.type === '2' &&
+                    categoryJasa.map(item => (
+                      <MenuItem key={item.id} value={item.id}>
+                        {item.name}
+                      </MenuItem>
+                    ))}
+                </div>
               </Select>
               <FormHelperText id="outlined-helper-text" error={error.category}>
                 {error.category}

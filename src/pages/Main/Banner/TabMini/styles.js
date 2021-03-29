@@ -22,7 +22,7 @@ const useStyles = makeStyles(theme => ({
 
   scrollContainer: {
     width: '100%',
-    height: 180
+    height: '100%'
   },
 
   wrapperItem: {

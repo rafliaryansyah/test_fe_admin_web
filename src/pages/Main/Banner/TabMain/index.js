@@ -152,7 +152,7 @@ function TabMain() {
 
   // read data promo
   useEffect(() => {
-    readPromo(false).then(res => {
+    readPromo(false, 999999).then(res => {
       const data = [];
 
       res.data.data.map(promo => {
@@ -165,7 +165,7 @@ function TabMain() {
 
   // read data kategori per tipe
   useEffect(() => {
-    getCategory(false, '1').then(res => {
+    getCategory(false, '1', 999999).then(res => {
       const data = [];
 
       res.data.data.map(kategori => {
@@ -175,7 +175,7 @@ function TabMain() {
       setKategoriProduk(data);
     });
 
-    getCategory(false, '2').then(res => {
+    getCategory(false, '2', 999999).then(res => {
       const data = [];
 
       res.data.data.map(kategori => {
@@ -558,8 +558,7 @@ function TabMain() {
                           <CardMedia
                             component="img"
                             alt="Contemplative Reptile"
-                            width="100%"
-                            height="100%"
+                            height="480px"
                             image={item.image}
                             title="main"
                           />
@@ -609,8 +608,7 @@ function TabMain() {
                           <CardMedia
                             component="img"
                             alt="Contemplative Reptile"
-                            width="100%"
-                            height="100%"
+                            height="480px"
                             image={item.image}
                             title="Main"
                           />
@@ -685,8 +683,7 @@ function TabMain() {
                         <CardMedia
                           component="img"
                           alt="Contemplative Reptile"
-                          width="100%"
-                          height="100%"
+                          height="480px"
                           image={item.image}
                           title="main"
                         />
@@ -736,8 +733,7 @@ function TabMain() {
                         <CardMedia
                           component="img"
                           alt="Contemplative Reptile"
-                          width="100%"
-                          height="100%"
+                          height="480px"
                           image={item.image}
                           title="Main"
                         />

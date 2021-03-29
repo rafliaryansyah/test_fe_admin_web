@@ -439,7 +439,7 @@ function TabJasa({
         count={lastPage}
         page={currentPage}
         onChange={(e, value) =>
-          getCategory(false, '2', '', value).then(res => {
+          getCategory(false, '2', null, '', value).then(res => {
             setDataCategoriesJasa(res.data.data);
             setCurrentPage(res.data.meta.current_page);
             setLastPage(res.data.meta.last_page);
@@ -600,16 +600,6 @@ function TabJasa({
               <label htmlFor="upload" className={classes.item}>
                 pilih foto
               </label>
-              {/* {isActiveForm && !uri && (
-            <label
-              onClick={() => {
-                setURI(form.photo);
-                console.log(form.photo);
-              }}
-              className={classes.item}>
-              crop
-            </label>
-          )} */}
               {uri && (
                 <label onClick={onClickToSetCrop} className={classes.item}>
                   set

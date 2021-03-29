@@ -165,7 +165,7 @@ function TabMini() {
 
   // read data promo dan kategori
   useEffect(() => {
-    readPromo(false).then(res => {
+    readPromo(false, 999999).then(res => {
       const data = [];
 
       res.data.data.map(promo => {
@@ -177,7 +177,7 @@ function TabMini() {
   }, []);
 
   useEffect(() => {
-    getCategory(false, '1').then(res => {
+    getCategory(false, '1', 999999).then(res => {
       const data = [];
 
       res.data.data.map(kategori => {
@@ -186,7 +186,7 @@ function TabMini() {
 
       setKategoriProduk(data);
     });
-    getCategory(false, '2').then(res => {
+    getCategory(false, '2', 999999).then(res => {
       const data = [];
 
       res.data.data.map(kategori => {
@@ -779,8 +779,7 @@ function TabMini() {
                         <CardMedia
                           component="img"
                           alt="Contemplative Reptile"
-                          width="100%"
-                          height="100%"
+                          height="280px"
                           image={item.image}
                           title={item.headline}
                         />
@@ -832,8 +831,7 @@ function TabMini() {
                         <CardMedia
                           component="img"
                           alt="Contemplative Reptile"
-                          width="100%"
-                          height="100%"
+                          height="280px"
                           image={item.image}
                           title={item.headline}
                         />
@@ -906,8 +904,7 @@ function TabMini() {
                         <CardMedia
                           component="img"
                           alt="Contemplative Reptile"
-                          width="100%"
-                          height="100%"
+                          height="280px"
                           image={item.image}
                           title={item.headline}
                         />
@@ -959,8 +956,7 @@ function TabMini() {
                         <CardMedia
                           component="img"
                           alt="Contemplative Reptile"
-                          width="100%"
-                          height="100%"
+                          height="280px"
                           image={item.image}
                           title={item.headline}
                         />
@@ -1038,8 +1034,7 @@ function TabMini() {
                         <CardMedia
                           component="img"
                           alt="Contemplative Reptile"
-                          width="100%"
-                          height="100%"
+                          height="280px"
                           image={item.image}
                           title={item.headline}
                         />
@@ -1091,8 +1086,7 @@ function TabMini() {
                         <CardMedia
                           component="img"
                           alt="Contemplative Reptile"
-                          width="100%"
-                          height="100%"
+                          height="280px"
                           image={item.image}
                           title={item.headline}
                         />
@@ -1165,8 +1159,7 @@ function TabMini() {
                         <CardMedia
                           component="img"
                           alt="Contemplative Reptile"
-                          width="100%"
-                          height="100%"
+                          height="280px"
                           image={item.image}
                           title={item.headline}
                         />
@@ -1218,8 +1211,7 @@ function TabMini() {
                         <CardMedia
                           component="img"
                           alt="Contemplative Reptile"
-                          width="100%"
-                          height="100%"
+                          height="280px"
                           image={item.image}
                           title={item.headline}
                         />

@@ -442,7 +442,7 @@ function TabProduk({
         count={lastPage}
         page={currentPage}
         onChange={(e, value) => {
-          getCategory(false, '1', '', value).then(res => {
+          getCategory(false, '1', null, '', value).then(res => {
             setDataCategoriesProduk(res.data.data);
             setCurrentPage(res.data.meta.current_page);
             setLastPage(res.data.meta.last_page);
