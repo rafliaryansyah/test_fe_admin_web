@@ -27,6 +27,7 @@ API.storeUpdateStatusProduk = apiRequest.patch(
   apiEndpoint.storeUpdateStatusProduk,
   true
 );
+API.storeReporting = apiRequest.get(apiEndpoint.storeReporting, true);
 
 // customers management
 API.customers = apiRequest.get(apiEndpoint.customers, true);

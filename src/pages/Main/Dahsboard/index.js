@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import useStyles from './styles';
 import propTypes from 'prop-types';
 
@@ -37,31 +37,25 @@ function Dashboard({ setDataDashboard, data }) {
   const classes = useStyles();
 
   // bar chart
-  const [bar] = useState({
+  const bar = {
     options: {
       chart: {
         id: 'basic-bar'
       },
       xaxis: {
-        categories: [
-          'Sanjaya Store',
-          'Pet Carez',
-          'Clean Freak',
-          'Chips Factory',
-          'Toy Haven'
-        ]
+        categories: data?.topMerchant?.product?.map(top => top.name)
       }
     },
     series: [
       {
         name: 'Top',
-        data: [30, 40, 45, 70, 91]
+        data: data?.topMerchant?.product?.map(top => top.total)
       }
     ]
-  });
+  };
 
   // area chart
-  const [area] = useState({
+  const area = {
     options: {
       chart: {
         id: 'basic-area'
@@ -89,7 +83,7 @@ function Dashboard({ setDataDashboard, data }) {
         data: [10, 41, 35, 51, 49, 62, 69, 91, 148]
       }
     ]
-  });
+  };
 
   useEffect(() => {
     readDashboard()
@@ -104,13 +98,13 @@ function Dashboard({ setDataDashboard, data }) {
           variant="outlined"
           size="small"
           className={classes.formControl}>
-          <InputLabel id="select-role">bulan</InputLabel>
+          <InputLabel id="select-role">Bulan</InputLabel>
           <Select
             labelId="select-role"
             id="select-role"
             value="Januari"
             // onChange={handleChange}
-            label="Semua Role">
+            label="bulan">
             <MenuItem value="Januari">Januari</MenuItem>
           </Select>
         </FormControl>
@@ -128,10 +122,7 @@ function Dashboard({ setDataDashboard, data }) {
                 <div>
                   <p className={classes.totalPendapatan}>total pendapatan</p>
                   <p className={classes.nilai}>
-                    {currency(
-                      data.detail?.totalEarnProducts +
-                        data.detail?.totalEarnServices
-                    )}
+                    {currency(data?.others?.totalIncome)}
                   </p>
                 </div>
                 <IoCashOutline size={65} />
@@ -144,8 +135,8 @@ function Dashboard({ setDataDashboard, data }) {
                 <div>
                   <p className={classes.totalPendapatan}>total order</p>
                   <p className={classes.nilai}>
-                    {data.detail?.totalOrderProducts +
-                      data.detail?.totalOrderServices}
+                    {data?.others?.totalOrder?.product +
+                      data?.others?.totalOrder?.service}
                   </p>
                 </div>
                 <IoCartOutline size={65} />
@@ -157,7 +148,7 @@ function Dashboard({ setDataDashboard, data }) {
               <CardContent className={classes.content}>
                 <div>
                   <p className={classes.totalPendapatan}>total pengguna</p>
-                  <p className={classes.nilai}>{data.detail?.totalUsers}</p>
+                  <p className={classes.nilai}>{data?.others?.totalUser}</p>
                 </div>
                 <IoPersonCircleOutline size={65} />
               </CardContent>

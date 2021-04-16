@@ -21,6 +21,7 @@ const apiEndpoint = {
   storeUpdateMode: `${appActiveConfig.api.baseurl}/admin/stores`,
   storeProduk: `${appActiveConfig.api.baseurl}/admin/stores`,
   storeUpdateStatusProduk: `${appActiveConfig.api.baseurl}/admin/stores`,
+  storeReporting: `${appActiveConfig.api.baseurl}/admin/stores`,
 
   // customers
   customers: `${appActiveConfig.api.baseurl}/admin/users`,

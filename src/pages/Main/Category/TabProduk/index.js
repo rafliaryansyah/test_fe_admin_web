@@ -373,7 +373,7 @@ function TabProduk({
           color="primary"
           placeholder="Cari"
           onChange={debounce(e => {
-            getCategory(false, '1', e.target.value).then(res => {
+            getCategory(false, '1', 999999, e.target.value).then(res => {
               setDataCategoriesProduk(res.data.data);
             });
           }, 3000)}

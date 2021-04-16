@@ -369,7 +369,7 @@ function TabJasa({
           color="primary"
           placeholder="Cari"
           onChange={debounce(e => {
-            getCategory(false, '2', e.target.value).then(res => {
+            getCategory(false, '2', 999999, e.target.value).then(res => {
               setDataCategoriesJasa(res.data.data);
             });
           }, 3000)}

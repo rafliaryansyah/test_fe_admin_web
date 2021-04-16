@@ -78,6 +78,30 @@ export const getStore = (id, page) => {
 };
 
 /**
+ * service customer for get detail store
+ */
+export const getStoreReporting = (id, type, month, year) => {
+  return new Promise((resolve, reject) => {
+    const data = {
+      path: `${id}/reports`,
+      params: {
+        type: type,
+        month: month,
+        year: year
+      }
+    };
+
+    API.storeReporting(data)
+      .then(res => {
+        resolve({ success: true, data: res.data });
+      })
+      .catch(err => {
+        reject({ success: false, data: err });
+      });
+  });
+};
+
+/**
  * service customer for update status store
  */
 export const updateStatusStore = (id, status, official_store) => {

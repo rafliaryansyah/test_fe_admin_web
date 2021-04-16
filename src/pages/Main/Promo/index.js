@@ -416,7 +416,7 @@ function Promo({ setDataID, setDataDari, setDataTerkait, history }) {
             color="primary"
             placeholder="Cari"
             onChange={debounce(e => {
-              readPromo(false, e.target.value).then(res => {
+              readPromo(false, 999999, e.target.value).then(res => {
                 setPromos(res.data.data);
               });
             }, 3000)}

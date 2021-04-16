@@ -8,9 +8,41 @@ const useStyles = makeStyles(theme => ({
   },
 
   filter: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+    justifyContent: 'flex-end'
+  },
+
+  selections: {
     display: 'flex',
-    justifyContent: 'flex-end',
-    gridGap: 15
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    gap: 5,
+
+    [theme.breakpoints.down('sm')]: {
+      justifyContent: 'center'
+    }
+  },
+
+  formControl: {
+    width: 130,
+    [theme.breakpoints.down('sm')]: {
+      width: 95
+    }
+  },
+
+  buttons: {
+    display: 'flex',
+    justifyContent: 'flex-end'
+  },
+
+  button: {
+    width: 130,
+    height: 40,
+    [theme.breakpoints.down('sm')]: {
+      width: '100%',
+      height: '100%'
+    }
   },
 
   report: {
