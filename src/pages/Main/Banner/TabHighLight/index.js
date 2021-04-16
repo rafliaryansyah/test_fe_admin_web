@@ -1388,6 +1388,7 @@ function TabHighLight() {
             <InputLabel id="demo-mutiple-name-label">Produk (max 5)</InputLabel>
             <MultiSelect
               name="produks"
+              defaultValue={formProduk.products}
               onChange={e =>
                 setFormProduk({
                   ...formProduk,
@@ -1607,6 +1608,7 @@ function TabHighLight() {
             <InputLabel id="demo-mutiple-name-label">Jasa (max 5)</InputLabel>
             <MultiSelect
               name="services"
+              defaultValue={formServices.services}
               onChange={e =>
                 setFormServices({
                   ...formServices,

@@ -984,6 +984,7 @@ function TabMain() {
                 <InputLabel id="products">Promo (max 5)</InputLabel>
                 <MultiSelect
                   name="promos"
+                  defaultValue={promos}
                   onChange={setPromos}
                   options={dataPromo}
                   placeHolder="Silakan pilih promo"
@@ -997,6 +998,7 @@ function TabMain() {
                 <InputLabel id="categories">Kategori (max 5)</InputLabel>
                 <MultiSelect
                   name="categories"
+                  defaultValue={categories}
                   onChange={setCategories}
                   options={type === '1' ? kategoriProduk : kategoriJasa}
                   placeHolder="Silakan pilih kategori"
