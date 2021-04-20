@@ -403,7 +403,7 @@ function TabProduk({
                 title={data.name}
               />
               <CardContent className={classes.content}>
-                <span>{data.name}</span>
+                <span style={{ fontSize: 8 }}>{data.name}</span>
               </CardContent>
             </CardActionArea>
             <CardActions className={classes.action}>
@@ -601,16 +601,6 @@ function TabProduk({
               <label htmlFor="upload" className={classes.item}>
                 pilih foto
               </label>
-              {/* {isActiveForm && !uri && (
-            <label
-              onClick={() => {
-                setURI(form.photo);
-                console.log(form.photo);
-              }}
-              className={classes.item}>
-              crop
-            </label>
-          )} */}
               {uri && (
                 <label onClick={onClickToSetCrop} className={classes.item}>
                   set

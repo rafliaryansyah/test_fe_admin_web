@@ -400,7 +400,7 @@ function TabJasa({
                 title={data.name}
               />
               <CardContent className={classes.content}>
-                <span>{data.name}</span>
+                <span style={{ fontSize: 8 }}>{data.name}</span>
               </CardContent>
             </CardActionArea>
             <CardActions className={classes.action}>

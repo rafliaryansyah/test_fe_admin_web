@@ -697,9 +697,12 @@ function TabHighLight() {
                         <CardMedia
                           component="img"
                           alt="Contemplative Reptile"
-                          height="480px"
+                          height="280px"
                           image={item.image}
                           title={item.headline}
+                          classes={{
+                            media: classes.cardMedia
+                          }}
                         />
                       </CardActionArea>
                       <CardActions className={classes.action}>
@@ -767,9 +770,12 @@ function TabHighLight() {
                         <CardMedia
                           component="img"
                           alt="Contemplative Reptile"
-                          height="480px"
+                          height="280px"
                           image={item.image}
                           title={item.headline}
+                          classes={{
+                            media: classes.cardMedia
+                          }}
                         />
                       </CardActionArea>
                       <CardActions className={classes.action}>
@@ -847,9 +853,12 @@ function TabHighLight() {
                         <CardMedia
                           component="img"
                           alt="Contemplative Reptile"
-                          height="480px"
+                          height="280px"
                           image={item.image}
                           title={item.headline}
+                          classes={{
+                            media: classes.cardMedia
+                          }}
                         />
                       </CardActionArea>
                       <CardActions className={classes.action}>
@@ -917,9 +926,12 @@ function TabHighLight() {
                         <CardMedia
                           component="img"
                           alt="Contemplative Reptile"
-                          height="480px"
+                          height="280px"
                           image={item.image}
                           title={item.headline}
+                          classes={{
+                            media: classes.cardMedia
+                          }}
                         />
                       </CardActionArea>
                       <CardActions className={classes.action}>

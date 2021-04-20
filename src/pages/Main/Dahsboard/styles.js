@@ -18,8 +18,14 @@ const useStyles = makeStyles(theme => ({
   },
 
   formControl: {
-    width: 200,
+    width: 130,
 
+    [theme.breakpoints.down('sm')]: {
+      width: '100%'
+    }
+  },
+
+  btnLihat: {
     [theme.breakpoints.down('sm')]: {
       width: '100%'
     }

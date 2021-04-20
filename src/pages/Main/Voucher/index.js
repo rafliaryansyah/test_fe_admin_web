@@ -656,7 +656,7 @@ function Voucher() {
                 title="Contemplative Reptile"
               />
               <CardContent className={classes.content}>
-                <span>{data.title}</span>
+                <span style={{ fontSize: 8 }}>{data.title}</span>
               </CardContent>
             </CardActionArea>
             <CardActions className={classes.action}>
@@ -722,7 +722,9 @@ function Voucher() {
           alt="photo"
           src={dataDetail.image}
           variant="rounded"
-          className={classes.preview}
+          classes={{
+            root: classes.previewRoot
+          }}
         />
         <p className={classes.nama}>{dataDetail.description}</p>
         <div className={classes.desk}>

@@ -558,9 +558,12 @@ function TabMain() {
                           <CardMedia
                             component="img"
                             alt="Contemplative Reptile"
-                            height="480px"
+                            height="280px"
                             image={item.image}
                             title="main"
+                            classes={{
+                              media: classes.cardMedia
+                            }}
                           />
                         </CardActionArea>
                         <CardActions className={classes.action}>
@@ -574,7 +577,7 @@ function TabMain() {
                               setRelate(
                                 item.relatedTo === 'Product Detail' ? '1' : '2'
                               );
-                              setType(item.type?.id);
+                              setType(item.type?.id.toString());
                               setStatus(item.status?.id);
                               setProduk(item.detail);
                               setImage(item.image);
@@ -608,9 +611,12 @@ function TabMain() {
                           <CardMedia
                             component="img"
                             alt="Contemplative Reptile"
-                            height="480px"
+                            height="280px"
                             image={item.image}
                             title="Main"
+                            classes={{
+                              media: classes.cardMedia
+                            }}
                           />
                         </CardActionArea>
                         <CardActions className={classes.action}>
@@ -624,7 +630,7 @@ function TabMain() {
                               setRelate(
                                 item.relatedTo === 'Product Detail' ? '1' : '2'
                               );
-                              setType(item.type?.id);
+                              setType(item.type?.id.toString());
                               setStatus(item.status?.id);
                               autoSelectPromos(item.detail?.promos);
                               autoSelectCategoriesProduk(
@@ -683,9 +689,12 @@ function TabMain() {
                         <CardMedia
                           component="img"
                           alt="Contemplative Reptile"
-                          height="480px"
+                          height="280px"
                           image={item.image}
                           title="main"
+                          classes={{
+                            media: classes.cardMedia
+                          }}
                         />
                       </CardActionArea>
                       <CardActions className={classes.action}>
@@ -699,7 +708,7 @@ function TabMain() {
                             setRelate(
                               item.relatedTo === 'Product Detail' ? '1' : '2'
                             );
-                            setType(item.type?.id);
+                            setType(item.type?.id.toString());
                             setStatus(item.status?.id);
                             setProduk(item.detail);
                             setImage(item.image);
@@ -733,9 +742,12 @@ function TabMain() {
                         <CardMedia
                           component="img"
                           alt="Contemplative Reptile"
-                          height="480px"
+                          height="280px"
                           image={item.image}
                           title="Main"
+                          classes={{
+                            media: classes.cardMedia
+                          }}
                         />
                       </CardActionArea>
                       <CardActions className={classes.action}>
@@ -749,7 +761,7 @@ function TabMain() {
                             setRelate(
                               item.relatedTo === 'Product Detail' ? '1' : '2'
                             );
-                            setType(item.type?.id);
+                            setType(item.type?.id.toString());
                             setStatus(item.status?.id);
                             autoSelectPromos(item.detail?.promos);
                             autoSelectCategoriesProduk(item.detail?.categories);

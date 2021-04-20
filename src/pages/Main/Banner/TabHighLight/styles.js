@@ -49,6 +49,10 @@ const useStyles = makeStyles(theme => ({
     justifyContent: 'flex-end'
   },
 
+  cardMedia: {
+    width: 'unset'
+  },
+
   wrapperButton: {
     display: 'flex',
     justifyContent: 'flex-end',

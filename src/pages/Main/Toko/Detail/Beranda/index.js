@@ -201,7 +201,10 @@ function Beranda({ setDataStore, dataStore }) {
           Alamat
         </InputLabel>
         <FormControl variant="outlined" size="small" margin="normal" fullWidth>
-          <OutlinedInput value={dataStore.address} disabled />
+          <OutlinedInput
+            value={`${dataStore.address?.city}, ${dataStore.address?.province}`}
+            disabled
+          />
         </FormControl>
         <InputLabel htmlFor="nama_toko" className={classes.label}>
           Buka Sejak

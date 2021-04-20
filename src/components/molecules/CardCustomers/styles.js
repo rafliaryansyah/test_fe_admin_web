@@ -88,21 +88,23 @@ const useStyles = makeStyles(theme => ({
   },
 
   role: {
-    display: 'flex',
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(100px, 1fr))',
     justifyContent: 'flex-start',
     alignItems: 'center',
-    gridGap: 5
+    gap: 5,
+    maxHeight: 50,
+    overflowY: 'auto'
   },
 
   isiRole: {
-    height: 10,
     display: 'flex',
+    justifyContent: 'center',
     alignItems: 'center',
-    textAlign: 'center',
-    fontSize: 10,
+    fontSize: 8,
     textTransform: 'capitalize',
     letterSpacing: 1.5,
-    padding: 10,
+    padding: 5,
     backgroundColor: `${theme.palette.primary.main}`,
     borderRadius: 5,
     color: '#ffffff',

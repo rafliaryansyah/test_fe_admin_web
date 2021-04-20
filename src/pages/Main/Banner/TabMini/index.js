@@ -779,9 +779,12 @@ function TabMini() {
                         <CardMedia
                           component="img"
                           alt="Contemplative Reptile"
-                          height="280px"
+                          height="180px"
                           image={item.image}
                           title={item.headline}
+                          classes={{
+                            media: classes.cardMedia
+                          }}
                         />
                       </CardActionArea>
                       <CardActions className={classes.action}>
@@ -831,9 +834,12 @@ function TabMini() {
                         <CardMedia
                           component="img"
                           alt="Contemplative Reptile"
-                          height="280px"
+                          height="180px"
                           image={item.image}
                           title={item.headline}
+                          classes={{
+                            media: classes.cardMedia
+                          }}
                         />
                       </CardActionArea>
                       <CardActions className={classes.action}>
@@ -904,9 +910,12 @@ function TabMini() {
                         <CardMedia
                           component="img"
                           alt="Contemplative Reptile"
-                          height="280px"
+                          height="180px"
                           image={item.image}
                           title={item.headline}
+                          classes={{
+                            media: classes.cardMedia
+                          }}
                         />
                       </CardActionArea>
                       <CardActions className={classes.action}>
@@ -956,9 +965,12 @@ function TabMini() {
                         <CardMedia
                           component="img"
                           alt="Contemplative Reptile"
-                          height="280px"
+                          height="180px"
                           image={item.image}
                           title={item.headline}
+                          classes={{
+                            media: classes.cardMedia
+                          }}
                         />
                       </CardActionArea>
                       <CardActions className={classes.action}>
@@ -1034,9 +1046,12 @@ function TabMini() {
                         <CardMedia
                           component="img"
                           alt="Contemplative Reptile"
-                          height="280px"
+                          height="180px"
                           image={item.image}
                           title={item.headline}
+                          classes={{
+                            media: classes.cardMedia
+                          }}
                         />
                       </CardActionArea>
                       <CardActions className={classes.action}>
@@ -1086,9 +1101,12 @@ function TabMini() {
                         <CardMedia
                           component="img"
                           alt="Contemplative Reptile"
-                          height="280px"
+                          height="180px"
                           image={item.image}
                           title={item.headline}
+                          classes={{
+                            media: classes.cardMedia
+                          }}
                         />
                       </CardActionArea>
                       <CardActions className={classes.action}>
@@ -1159,9 +1177,12 @@ function TabMini() {
                         <CardMedia
                           component="img"
                           alt="Contemplative Reptile"
-                          height="280px"
+                          height="180px"
                           image={item.image}
                           title={item.headline}
+                          classes={{
+                            media: classes.cardMedia
+                          }}
                         />
                       </CardActionArea>
                       <CardActions className={classes.action}>
@@ -1211,9 +1232,12 @@ function TabMini() {
                         <CardMedia
                           component="img"
                           alt="Contemplative Reptile"
-                          height="280px"
+                          height="180px"
                           image={item.image}
                           title={item.headline}
+                          classes={{
+                            media: classes.cardMedia
+                          }}
                         />
                       </CardActionArea>
                       <CardActions className={classes.action}>
