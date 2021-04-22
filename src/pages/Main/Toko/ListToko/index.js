@@ -43,15 +43,12 @@ const ListToko = ({ history }) => {
 
   useEffect(() => {
     setSkeleton(true);
-
-    setTimeout(() => {
-      getStores().then(res => {
-        setSkeleton(false);
-        setStores(res.data.data);
-        setCurrentPage(res.data.meta.current_page);
-        setLastPage(res.data.meta.last_page);
-      });
-    }, 1000);
+    getStores().then(res => {
+      setSkeleton(false);
+      setStores(res.data.data);
+      setCurrentPage(res.data.meta.current_page);
+      setLastPage(res.data.meta.last_page);
+    });
   }, []);
 
   return (
@@ -145,7 +142,7 @@ const ListToko = ({ history }) => {
               srcImage={data.image}
               nama={data.name}
               status={data.status?.name === 'Active' ? 'aktif' : 'tidak aktif'}
-              alamat={data.address}
+              alamat={data.address?.city}
               bukaSejak={data.joinedAt && dateConverterRes(data.joinedAt)}
               handleDetail={() => history.push(`/toko/${data.id}`)}
             />
