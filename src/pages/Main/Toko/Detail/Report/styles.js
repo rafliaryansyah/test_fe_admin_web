@@ -45,10 +45,18 @@ const useStyles = makeStyles(theme => ({
     }
   },
 
+  // wrapper
   report: {
     display: 'grid',
     gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+    justifyContent: 'space-between',
     gridGap: 15
+  },
+
+  // item grid card
+  gridCard: {
+    display: 'grid',
+    gap: 15
   },
 
   cardReport: {
@@ -147,9 +155,11 @@ const useStyles = makeStyles(theme => ({
     fontWeight: 'bolder'
   },
 
+  // item info
   wrapperInfo: {
-    display: 'grid',
-    gridGap: 15
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 15
   },
 
   input: {

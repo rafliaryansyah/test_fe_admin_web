@@ -68,15 +68,15 @@ const CardCustomers = ({
       <div className={classes.role}>
         {roles?.map((item, i) => (
           <p key={i} className={classes.isiRole}>
-            {(item === 'customer' && 'C') ||
-              (item === 'super-admin-merchant' && 'S-A-M') ||
-              (item === 'admin-merchant' && 'A-M') ||
-              (item === 'contributor-merchant' && 'C-M') ||
-              (item === 'finance-merchant' && 'F-M') ||
-              (item === 'super-admin-ecommerce' && 'S-A-E') ||
-              (item === 'admin-ecommerce' && 'A-E') ||
-              (item === 'contributor-ecommerce' && 'C-E') ||
-              (item === 'finance-ecommerce' && 'F-E')}
+            {(item === 'customer' && 'Customer') ||
+              (item === 'super-admin-merchant' && 'Super Admin Merchant') ||
+              (item === 'admin-merchant' && 'Admin Merchant') ||
+              (item === 'contributor-merchant' && 'Contributor Merchant') ||
+              (item === 'finance-merchant' && 'Finance Merchant') ||
+              (item === 'super-admin-ecommerce' && 'Super Admin Ecommerce') ||
+              (item === 'admin-ecommerce' && 'Admin Ecommerce') ||
+              (item === 'contributor-ecommerce' && 'Contributor Ecommerce') ||
+              (item === 'finance-ecommerce' && 'Finance Ecommerce')}
           </p>
         ))}
       </div>

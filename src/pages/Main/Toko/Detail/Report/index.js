@@ -11,9 +11,6 @@ import {
   Select
 } from '@material-ui/core';
 
-// redux
-import { connect } from 'react-redux';
-
 // services
 import { getStoreReporting } from 'services';
 import { useState } from 'react';
@@ -21,13 +18,24 @@ import { useState } from 'react';
 // utils
 import { currency } from 'utils';
 
-// notistack
-import { useSnackbar } from 'notistack';
-
 function Report() {
   const classes = useStyles();
-  const { enqueueSnackbar } = useSnackbar();
   const { id } = useParams();
+  const nameMonth = [
+    '',
+    'Januari',
+    'Februari',
+    'Maret',
+    'April',
+    'Mei',
+    'Juni',
+    'Juli',
+    'Agustus',
+    'September',
+    'Oktober',
+    'November',
+    'Desember'
+  ];
 
   const listMonths = () => {
     var list = [];
@@ -47,29 +55,14 @@ function Report() {
   };
 
   // input select value
-  const [type, setType] = useState(null);
-  const [month, setMonth] = useState(null);
-  const [year, setYear] = useState(null);
+  const [type, setType] = useState('product');
+  const [month, setMonth] = useState(1);
+  const [year, setYear] = useState(2021);
 
   // data reporting toko
   const [data, setData] = useState(null);
 
   const getReporting = async () => {
-    if (!type) {
-      return enqueueSnackbar('harap pilih tipe!', {
-        variant: 'error'
-      });
-    }
-    if (!month) {
-      return enqueueSnackbar('harap pilih bulan!', {
-        variant: 'error'
-      });
-    }
-    if (!year) {
-      return enqueueSnackbar('harap pilih tahun!', {
-        variant: 'error'
-      });
-    }
     await getStoreReporting(id, type, month, year).then(res =>
       setData(res.data.data)
     );
@@ -83,9 +76,11 @@ function Report() {
             variant="outlined"
             size="small"
             className={classes.formControl}>
+            <InputLabel id="select-role">Tipe</InputLabel>
             <Select
               labelId="select-type"
               id="select-type"
+              label="Bulan"
               value={type}
               onChange={e => setType(e.target.value)}>
               {['product', 'service'].map((type, i) => (
@@ -99,14 +94,16 @@ function Report() {
             variant="outlined"
             size="small"
             className={classes.formControl}>
+            <InputLabel id="select-role">Bulan</InputLabel>
             <Select
               labelId="select-month"
               id="select-month"
+              label="Bulan"
               value={month}
               onChange={e => setMonth(e.target.value)}>
               {listMonths().map((month, i) => (
                 <MenuItem key={i} value={month}>
-                  {month}
+                  {nameMonth[month]}
                 </MenuItem>
               ))}
             </Select>
@@ -135,47 +132,54 @@ function Report() {
             onClick={getReporting}
             variant="contained"
             color="primary"
+            disabled={type && month && year ? false : true}
             className={classes.button}>
             lihat report
           </Button>
         </div>
       </div>
       <div className={classes.report}>
-        {data?.reports?.map((report, i) => (
-          <div key={i} className={classes.cardReport}>
-            <label className={classes.date}>Bulan {data?.month}</label>
-            {report.items?.map((item, i) => (
-              <div key={i} className={classes.card}>
-                <Avatar
-                  alt={item.name}
-                  src={item.image}
-                  variant="rounded"
-                  className={classes.avatar}
-                />
-                <div className={classes.descCard}>
-                  <span className={classes.nama}>{item.name}</span>
-                  <span className={classes.harga}>{currency(item.price)}</span>
-                  <div className={classes.wrapperTerjual}>
-                    <span className={classes.labelTerjual}>
-                      terjual: {item.quantity}
+        <div className={classes.gridCard}>
+          {data?.reports?.map((report, i) => (
+            <div key={i} className={classes.cardReport}>
+              <label className={classes.date}>
+                Bulan {nameMonth[data?.month]}
+              </label>
+              {report.items?.map((item, i) => (
+                <div key={i} className={classes.card}>
+                  <Avatar
+                    alt={item.name}
+                    src={item.image}
+                    variant="rounded"
+                    className={classes.avatar}
+                  />
+                  <div className={classes.descCard}>
+                    <span className={classes.nama}>{item.name}</span>
+                    <span className={classes.harga}>
+                      {currency(item.price)}
                     </span>
-                    <span className={classes.total}>
-                      total: {currency(report.total)}
-                    </span>
+                    <div className={classes.wrapperTerjual}>
+                      <span className={classes.labelTerjual}>
+                        terjual: {item.quantity}
+                      </span>
+                      <span className={classes.total}>
+                        total: {currency(report.total)}
+                      </span>
+                    </div>
                   </div>
                 </div>
+              ))}
+              <div className={classes.wrapperTotalPenjualan}>
+                <label className={classes.labelTotalPenjualan}>
+                  total penjualan
+                </label>
+                <span className={classes.totalPenjualan}>
+                  {currency(data?.total?.totalSales)}
+                </span>
               </div>
-            ))}
-            <div className={classes.wrapperTotalPenjualan}>
-              <label className={classes.labelTotalPenjualan}>
-                total penjualan
-              </label>
-              <span className={classes.totalPenjualan}>
-                {currency(data?.total?.totalSales)}
-              </span>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
 
         <div className={classes.wrapperInfo}>
           <div className={classes.input}>
@@ -210,4 +214,4 @@ function Report() {
   );
 }
 
-export default connect(null, null)(Report);
+export default Report;

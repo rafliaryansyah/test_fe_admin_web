@@ -4,9 +4,14 @@ import API from 'configs/api';
 /**
  * service read for dashboard
  */
-export const readDashboard = () => {
+export const readDashboard = type => {
   return new Promise((resolve, reject) => {
-    API.dashboard()
+    const data = {
+      params: {
+        type: type ? type : 'product'
+      }
+    }
+    API.dashboard(data)
       .then(res => {
         resolve({ success: true, data: res.data });
       })

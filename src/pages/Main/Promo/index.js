@@ -449,15 +449,16 @@ function Promo({ setDataID, setDataDari, setDataTerkait, history }) {
                     <span style={{ fontWeight: 'bold' }}>periode promo</span>
                     <span>{dateConverterRes(data.endedAt)}</span>
                   </span>
-                  {data.discountType && data.discountType.slug === 'percent' ? (
+                  {data.discountType &&
+                  data.discountType.slug.toLowerCase() === 'percent' ? (
                     <span className={classes.teksPromo}>
                       <span style={{ fontWeight: 'bold' }}>potongan harga</span>
-                      <span>{`${data.discount}${data.discountType.name}`}</span>
+                      <span>{`${data.discount}%`}</span>
                     </span>
                   ) : (
                     <span className={classes.teksPromo}>
                       <span style={{ fontWeight: 'bold' }}>potongan harga</span>
-                      <span>{data.discount && currency(data.discount)}</span>
+                      <span>{currency(data.discount)}</span>
                     </span>
                   )}
                   <span className={classes.teksPromo}>
@@ -482,7 +483,7 @@ function Promo({ setDataID, setDataDari, setDataTerkait, history }) {
                     title: data.title,
                     started_at: dateConverterReq(data.startedAt),
                     ended_at: dateConverterReq(data.endedAt),
-                    discount_type: data.discountType && data.discountType.slug,
+                    discount_type: data?.discountType?.slug.toLowerCase(),
                     discount: data.discount,
                     description: data.description,
                     tac: data.termAndConditions
@@ -533,12 +534,10 @@ function Promo({ setDataID, setDataDari, setDataTerkait, history }) {
           )} - ${dateConverterRes(dataDetail.endedAt)}`}</span>
         </div>
         {dataDetail.discountType &&
-        dataDetail.discountType.slug === 'percent' ? (
+        dataDetail.discountType.slug.toLowerCase() === 'percent' ? (
           <div className={classes.desk}>
             <span className={classes.teks}>Potongan Harga</span>
-            <span className={classes.teks}>
-              {`${dataDetail.discount}${dataDetail.discountType.name}`}
-            </span>
+            <span className={classes.teks}>{`${dataDetail.discount}%`}</span>
           </div>
         ) : (
           <div className={classes.desk}>

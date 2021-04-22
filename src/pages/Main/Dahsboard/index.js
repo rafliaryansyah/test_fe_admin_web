@@ -1,9 +1,9 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import useStyles from './styles';
-import propTypes from 'prop-types';
 
 // material-ui core
 import {
+  Button,
   FormControl,
   InputLabel,
   Select,
@@ -23,72 +23,22 @@ import {
 // components
 import { BarApexChart, AreaApexChart } from 'components';
 
-// redux
-import { connect } from 'react-redux';
-import { setDashboard } from 'modules';
-
 // services
 import { readDashboard } from 'services';
 
 // utils
 import { currency } from 'utils';
 
-function Dashboard({ setDataDashboard, data }) {
+function Dashboard() {
   const classes = useStyles();
 
-  // bar chart
-  const bar = {
-    options: {
-      chart: {
-        id: 'basic-bar'
-      },
-      xaxis: {
-        categories: data?.topMerchant?.product?.map(top => top.name)
-      }
-    },
-    series: [
-      {
-        name: 'Top',
-        data: data?.topMerchant?.product?.map(top => top.total)
-      }
-    ]
-  };
-
-  // area chart
-  const area = {
-    options: {
-      chart: {
-        id: 'basic-area'
-      },
-      xaxis: {
-        categories: [
-          'Jan',
-          'Feb',
-          'Mar',
-          'Apr',
-          'May',
-          'Jun',
-          'Jul',
-          'Aug',
-          'Sep',
-          'Okt',
-          'Nov',
-          'Des'
-        ]
-      }
-    },
-    series: [
-      {
-        name: 'Nilai',
-        data: [10, 41, 35, 51, 49, 62, 69, 91, 148]
-      }
-    ]
-  };
+  const [type, setType] = useState('product');
+  const [data, setData] = useState(null);
 
   useEffect(() => {
-    readDashboard()
-      .then(res => setDataDashboard(res.data.data))
-      .catch(err => err);
+    readDashboard(type).then(res => {
+      setData(res.data.data);
+    });
   }, []);
 
   return (
@@ -98,21 +48,71 @@ function Dashboard({ setDataDashboard, data }) {
           variant="outlined"
           size="small"
           className={classes.formControl}>
-          <InputLabel id="select-role">Bulan</InputLabel>
+          <InputLabel id="select-type">Type</InputLabel>
           <Select
-            labelId="select-role"
-            id="select-role"
-            value="Januari"
-            // onChange={handleChange}
-            label="bulan">
-            <MenuItem value="Januari">Januari</MenuItem>
+            labelId="select-type"
+            id="select-type"
+            value={type}
+            onChange={e => setType(e.target.value)}
+            label="Type">
+            <MenuItem value="product">Produk</MenuItem>
+            <MenuItem value="service">Jasa</MenuItem>
           </Select>
         </FormControl>
+        <Button
+          variant="contained"
+          color="primary"
+          className={classes.btnLihat}
+          onClick={() => {
+            readDashboard(type).then(res => setData(res.data.data));
+          }}>
+          Lihat
+        </Button>
       </div>
       <div className={classes.main}>
         <div className={classes.itemCharts}>
-          <BarApexChart options={bar.options} series={bar.series} />
-          <AreaApexChart options={area.options} series={area.series} />
+          <BarApexChart
+            options={{
+              chart: {
+                type: 'bar'
+              },
+              xaxis: {
+                categories: data
+                  ? data.topMerchants?.map(toko => toko.name)
+                  : []
+              }
+            }}
+            series={[
+              {
+                name: 'Top',
+                data: data
+                  ? data.topMerchants?.map(toko => toko.totalOrder)
+                  : []
+              }
+            ]}
+          />
+          <AreaApexChart
+            options={{
+              chart: {
+                type: 'area'
+              },
+              xaxis: {
+                categories: data
+                  ? data.totalSalesPerMonth &&
+                    Object.keys(data?.totalSalesPerMonth)
+                  : []
+              }
+            }}
+            series={[
+              {
+                name: 'Nilai',
+                data: data
+                  ? data.totalSalesPerMonth &&
+                    Object.values(data?.totalSalesPerMonth)
+                  : []
+              }
+            ]}
+          />
         </div>
 
         <div className={classes.itemCard}>
@@ -134,10 +134,7 @@ function Dashboard({ setDataDashboard, data }) {
               <CardContent className={classes.content}>
                 <div>
                   <p className={classes.totalPendapatan}>total order</p>
-                  <p className={classes.nilai}>
-                    {data?.others?.totalOrder?.product +
-                      data?.others?.totalOrder?.service}
-                  </p>
+                  <p className={classes.nilai}>{data?.others?.totalOrders}</p>
                 </div>
                 <IoCartOutline size={65} />
               </CardContent>
@@ -148,7 +145,7 @@ function Dashboard({ setDataDashboard, data }) {
               <CardContent className={classes.content}>
                 <div>
                   <p className={classes.totalPendapatan}>total pengguna</p>
-                  <p className={classes.nilai}>{data?.others?.totalUser}</p>
+                  <p className={classes.nilai}>{data?.others?.totalUsers}</p>
                 </div>
                 <IoPersonCircleOutline size={65} />
               </CardContent>
@@ -160,17 +157,4 @@ function Dashboard({ setDataDashboard, data }) {
   );
 }
 
-Dashboard.propTypes = {
-  setDataDashboard: propTypes.func,
-  data: propTypes.object
-};
-
-const mapStateToProps = state => ({
-  data: state.dashboard.dashboard
-});
-
-const mapDispatchToProps = dispatch => ({
-  setDataDashboard: value => dispatch(setDashboard(value))
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(Dashboard);
+export default Dashboard;
