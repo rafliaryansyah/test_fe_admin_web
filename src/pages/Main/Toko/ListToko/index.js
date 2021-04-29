@@ -43,16 +43,15 @@ const ListToko = ({ history }) => {
 
   useEffect(() => {
     setSkeleton(true);
-
-    setTimeout(() => {
-      getStores().then(res => {
-        setSkeleton(false);
-        setStores(res.data.data);
-        setCurrentPage(res.data.meta.current_page);
-        setLastPage(res.data.meta.last_page);
-      });
-    }, 1000);
+    getStores().then(res => {
+      setSkeleton(false);
+      setStores(res.data.data);
+      setCurrentPage(res.data.meta.current_page);
+      setLastPage(res.data.meta.last_page);
+    });
   }, []);
+
+  // return <div>hahahahah</div>;
 
   return (
     <div className={classes.wrapper}>

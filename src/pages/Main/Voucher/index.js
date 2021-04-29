@@ -139,6 +139,7 @@ function Voucher() {
 
   // change input field pada form
   const handleChange = e => {
+    console.log('e', e.target.name);
     setForm({
       ...form,
       [e.target.name]: e.target.value
