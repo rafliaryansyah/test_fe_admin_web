@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import useStyles from './styles';
 import propTypes from 'prop-types';
 
@@ -100,21 +100,25 @@ function Main({ history, window }) {
                 keepMounted: true // Better open performance on mobile.
               }}>
               {decode ? (
-                decode.roles?.map(
-                  role =>
-                    (role === 'super-admin-ecommerce' && (
+                decode.roles?.map((role, index) => (
+                  <React.Fragment key={index}>
+                    {(role === 'super-admin-ecommerce' && (
                       <SideBar style={classes.listRoot} />
                     )) ||
-                    (role === 'admin-ecommerce' && (
-                      <SideBar variant="admin" style={classes.listRoot} />
-                    )) ||
-                    (role === 'contributor-ecommerce' && (
-                      <SideBar variant="contributor" style={classes.listRoot} />
-                    )) ||
-                    (role === 'finance-ecommerce' && (
-                      <SideBar variant="finance" style={classes.listRoot} />
-                    ))
-                )
+                      (role === 'admin-ecommerce' && (
+                        <SideBar variant="admin" style={classes.listRoot} />
+                      )) ||
+                      (role === 'contributor-ecommerce' && (
+                        <SideBar
+                          variant="contributor"
+                          style={classes.listRoot}
+                        />
+                      )) ||
+                      (role === 'finance-ecommerce' && (
+                        <SideBar variant="finance" style={classes.listRoot} />
+                      ))}
+                  </React.Fragment>
+                ))
               ) : (
                 <SideBar style={classes.listRoot} />
               )}
@@ -138,21 +142,25 @@ function Main({ history, window }) {
               variant="permanent"
               open>
               {decode ? (
-                decode.roles?.map(
-                  role =>
-                    (role === 'super-admin-ecommerce' && (
+                decode.roles?.map((role, index) => (
+                  <React.Fragment key={index}>
+                    {(role === 'super-admin-ecommerce' && (
                       <SideBar style={classes.listRoot} />
                     )) ||
-                    (role === 'admin-ecommerce' && (
-                      <SideBar variant="admin" style={classes.listRoot} />
-                    )) ||
-                    (role === 'contributor-ecommerce' && (
-                      <SideBar variant="contributor" style={classes.listRoot} />
-                    )) ||
-                    (role === 'finance-ecommerce' && (
-                      <SideBar variant="finance" style={classes.listRoot} />
-                    ))
-                )
+                      (role === 'admin-ecommerce' && (
+                        <SideBar variant="admin" style={classes.listRoot} />
+                      )) ||
+                      (role === 'contributor-ecommerce' && (
+                        <SideBar
+                          variant="contributor"
+                          style={classes.listRoot}
+                        />
+                      )) ||
+                      (role === 'finance-ecommerce' && (
+                        <SideBar variant="finance" style={classes.listRoot} />
+                      ))}
+                  </React.Fragment>
+                ))
               ) : (
                 <SideBar style={classes.listRoot} />
               )}
@@ -172,19 +180,20 @@ function Main({ history, window }) {
 
         <div className={classes.main}>
           {decode ? (
-            decode.roles?.map(
-              role =>
-                (role === 'super-admin-ecommerce' && <SwitchPageRoute />) ||
-                (role === 'admin-ecommerce' && (
-                  <SwitchPageRoute variant="admin" />
-                )) ||
-                (role === 'contributor-ecommerce' && (
-                  <SwitchPageRoute variant="contributor" />
-                )) ||
-                (role === 'finance-ecommerce' && (
-                  <SwitchPageRoute variant="finance" />
-                ))
-            )
+            decode.roles?.map((role, index) => (
+              <React.Fragment key={index}>
+                {(role === 'super-admin-ecommerce' && <SwitchPageRoute />) ||
+                  (role === 'admin-ecommerce' && (
+                    <SwitchPageRoute variant="admin" />
+                  )) ||
+                  (role === 'contributor-ecommerce' && (
+                    <SwitchPageRoute variant="contributor" />
+                  )) ||
+                  (role === 'finance-ecommerce' && (
+                    <SwitchPageRoute variant="finance" />
+                  ))}
+              </React.Fragment>
+            ))
           ) : (
             <SwitchPageRoute />
           )}

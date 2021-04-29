@@ -51,6 +51,8 @@ const ListToko = ({ history }) => {
     });
   }, []);
 
+  // return <div>hahahahah</div>;
+
   return (
     <div className={classes.wrapper}>
       <div className={classes.pencarian}>
