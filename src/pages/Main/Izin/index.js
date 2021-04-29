@@ -210,7 +210,6 @@ function Izin() {
                       }
 
                       setPermissions(newChecked);
-                      // console.log(newChecked);
                     }}
                     name={cb.label}
                     value={cb.label}
