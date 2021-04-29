@@ -451,16 +451,6 @@ function Category({
               <label htmlFor="upload" className={classes.item}>
                 pilih foto
               </label>
-              {/* {isActiveForm && !uri && (
-            <label
-              onClick={() => {
-                setURI(form.photo);
-                console.log(form.photo);
-              }}
-              className={classes.item}>
-              crop
-            </label>
-          )} */}
               {uri && (
                 <label onClick={onClickToSetCrop} className={classes.item}>
                   set

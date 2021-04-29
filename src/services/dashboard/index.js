@@ -10,7 +10,8 @@ export const readDashboard = type => {
       params: {
         type: type ? type : 'product'
       }
-    }
+    };
+
     API.dashboard(data)
       .then(res => {
         resolve({ success: true, data: res.data });

@@ -308,16 +308,6 @@ function Profile({ history }) {
               pilih foto
             </label>
           )}
-          {/* {isActiveForm && !uri && (
-            <label
-              onClick={() => {
-                setURI(form.photo);
-                console.log(form.photo);
-              }}
-              className={classes.item}>
-              crop
-            </label>
-          )} */}
           {isActiveForm && uri && (
             <label onClick={onClickToSetCrop} className={classes.item}>
               set
