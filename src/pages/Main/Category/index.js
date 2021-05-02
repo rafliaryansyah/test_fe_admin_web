@@ -30,7 +30,9 @@ import {
   Radio,
   RadioGroup,
   FormControlLabel,
-  FormLabel
+  FormLabel,
+  Select,
+  MenuItem
 } from '@material-ui/core';
 
 import { useTheme } from '@material-ui/core/styles';
@@ -53,6 +55,8 @@ import { postCategory, getCategory } from 'services';
 import { fileExtention, uriToFile } from 'utils';
 
 function Category({
+  dataCategoriesProduk,
+  dataCategoriesJasa,
   setDataCategoriesProduk,
   setDataCategoriesJasa,
   location,
@@ -67,13 +71,15 @@ function Category({
   const [form, setForm] = useState({
     type: '1',
     name: '',
-    image: ''
+    image: '',
+    parent: null
   });
 
   const [error, setError] = useState({
     type: '',
     name: '',
-    image: ''
+    image: '',
+    parent: null
   });
 
   // crop
@@ -126,7 +132,7 @@ function Category({
       setError(findErrors);
     } else {
       // state
-      const { type, name, image } = form;
+      const { type, name, image, parent } = form;
 
       // menggunakan form-data yang kosong
       const formdata = new FormData();
@@ -135,6 +141,9 @@ function Category({
       formdata.append('type', parseInt(type));
       formdata.append('name', name);
       formdata.append('image', image);
+      if (parent) {
+        formdata.append('parent', parent);
+      }
 
       // services
       const result = await postCategory(formdata).catch(err => err);
@@ -146,7 +155,8 @@ function Category({
         setForm({
           type: '1',
           name: '',
-          image: ''
+          image: '',
+          parent: null
         });
 
         // cek tipe
@@ -295,6 +305,9 @@ function Category({
     }
   };
 
+  const selectParentList =
+    form.type === '2' ? dataCategoriesJasa : dataCategoriesProduk;
+
   return (
     <div>
       <div className={classes.pencarian}>
@@ -342,12 +355,14 @@ function Category({
           setForm({
             type: '1',
             name: '',
-            image: ''
+            image: '',
+            parent: null
           });
           setError({
             type: '',
             name: '',
-            image: ''
+            image: '',
+            parent: null
           });
           setURI();
           setOpen(false);
@@ -374,6 +389,28 @@ function Category({
               />
             </RadioGroup>
           </FormControl>
+
+          <InputLabel id="parent-category" style={{ marginBottom: 10 }}>
+            Parent (Opsional)
+          </InputLabel>
+          <FormControl variant="outlined" size="small" fullWidth>
+            <Select
+              labelId="parent-category"
+              id="parent-category"
+              name="parent"
+              value={form.parent}
+              onChange={handleChange}>
+              {selectParentList.map(item => {
+                return (
+                  <MenuItem key={item?.id} value={item?.id}>
+                    {item?.name}
+                  </MenuItem>
+                );
+              })}
+            </Select>
+          </FormControl>
+
+          <div style={{ height: 16 }}></div>
 
           <InputLabel
             htmlFor="name"
@@ -481,12 +518,19 @@ function Category({
 
 Category.propTypes = {
   setDataCategoriesProduk: propTypes.func,
-  setDataCategoriesJasa: propTypes.func
+  setDataCategoriesJasa: propTypes.func,
+  dataCategoriesProduk: propTypes.array,
+  dataCategoriesJasa: propTypes.array
 };
+
+const mapStateToProps = state => ({
+  dataCategoriesProduk: state.category.categoriesProduk,
+  dataCategoriesJasa: state.category.categoriesJasa
+});
 
 const mapDispatchToProps = dispatch => ({
   setDataCategoriesProduk: value => dispatch(setCategoriesProduk(value)),
   setDataCategoriesJasa: value => dispatch(setCategoriesJasa(value))
 });
 
-export default connect(null, mapDispatchToProps)(Category);
+export default connect(mapStateToProps, mapDispatchToProps)(Category);

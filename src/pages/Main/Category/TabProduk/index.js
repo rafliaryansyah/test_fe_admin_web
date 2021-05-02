@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import useStyles from './styles';
 import propTypes from 'prop-types';
 
@@ -482,6 +482,35 @@ function TabProduk({
               }}>
               cek
             </span>
+          </span>
+        </div>
+
+        <div className={classes.desk}>
+          <span className={classes.teks}>Sub Kategori</span>
+          <span className={classes.teks}>
+            {detail?.childs?.map((val, i) => {
+              if (i !== detail?.childs.length - 1) {
+                return (
+                  <React.Fragment>
+                    <span key={i}>{val.name}</span>
+                    <span>{', '}</span>
+                  </React.Fragment>
+                );
+              }
+              return <span key={i}>{val.name}</span>;
+            })}
+            {/* <span
+              className={classes.cekTerkait}
+              onClick={() => {
+                getDetailCategoryProducts(id).then(res => {
+                  setDataID(id);
+                  setDataDari('kategori-produk');
+                  setDataTerkait(res.data);
+                  history.replace('/produk-terkait');
+                });
+              }}>
+              cek
+            </span> */}
           </span>
         </div>
       </CompDialog>

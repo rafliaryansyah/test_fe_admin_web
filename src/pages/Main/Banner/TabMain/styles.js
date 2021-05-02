@@ -27,12 +27,16 @@ const useStyles = makeStyles(theme => ({
   },
 
   wrapperItem: {
-    width: 1400,
+    width: '100%',
     height: '100%',
     display: 'flex',
     alignItems: 'center',
     gridGap: 15,
     padding: '0px 10px'
+  },
+
+  itemScroll: {
+    width: 300
   },
 
   card: {
